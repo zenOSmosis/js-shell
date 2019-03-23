@@ -3,7 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // @see https://nodejs.org/api/child_process.html
 // var exec = require('child_process').exec;
-const LinuxGPUChildProcess = require('./utils/LinuxGPUChildProcess');
+const LinuxGPUChildProcess = require('./utils/linux/LinuxGPUChildProcess');
+const {fetchFreedesktopAppList} = require('./utils/freedesktop/appUtils');
 
 const HTTP_LISTEN_PORT = 3001;
 
@@ -14,6 +15,17 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
   console.log('a user connected');
   console.log(socket);
+
+  socket.on('request-app-list', async (options = {}, ack) => {
+    try {
+      const appList = await fetchFreedesktopAppList();
+
+      ack(appList);
+    } catch (exc) {
+      // TODO: Pipe this up to ack
+      throw exc;
+    }
+  });
 
   socket.on('sys-command', (commandData, ack) => {
     const {command, args, options = {}} = commandData;

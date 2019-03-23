@@ -1,4 +1,4 @@
-import io from './../host_modules/socket.io-client/dist/socket.io';
+import io from 'socket.io-client';
 import {SOCKET_IO_URL} from './../config';
 var socket = io.connect(SOCKET_IO_URL);
 
