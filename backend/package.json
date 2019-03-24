@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "recursive-readdir": "^2.2.2",
+    "fs-readdir-recursive": "^1.1.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {

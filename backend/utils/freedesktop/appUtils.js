@@ -16,6 +16,8 @@ const DEFAULT_FREEDESKTOP_READ_DIRECTORIES = [
   '/usr/local/share/applications'
 ];
 
+const ERROR_MSG_NOT_FREEDESKTOP_FILE = 'Not a freedesktop entry file';
+
 const fetchFreedesktopEntryPaths = async (readDirectories = DEFAULT_FREEDESKTOP_READ_DIRECTORIES) => {
   try {
     const appDesktopPaths = [];
@@ -46,7 +48,7 @@ const parseFreedesktopFile = (freedesktopFilePath) => {
       const lines = data.split('\n');
 
       if (!lines.includes('[Desktop Entry]')) {
-        return reject('Not a desktop entry file');
+        return reject(ERROR_MSG_NOT_FREEDESKTOP_FILE);
       }
 
       const meta = (() => {
@@ -126,9 +128,14 @@ const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_REA
     for (let i = 0; i < listPaths.length; i++) {
       const listPath = listPaths[i];
 
-      const freedesktopParse = await parseFreedesktopFile(listPath);
-      
-      appList.push(freedesktopParse);
+      try {
+        const freedesktopParse = await parseFreedesktopFile(listPath);
+        appList.push(freedesktopParse);
+      } catch (exc) {
+        if (exc !== ERROR_MSG_NOT_FREEDESKTOP_FILE) {
+          throw exc;
+        }
+      }
     }
 
     appList = appList.map((listItem) => {

@@ -1,5 +1,5 @@
 const path = require('path');
-const recursive = require('recursive-readdir');
+const rread = require('fs-readdir-recursive');
 
 /**
  * Recursively retrieves all file paths for the given types.
@@ -11,24 +11,20 @@ const recursive = require('recursive-readdir');
  */
 const fetchFilePaths = async (baseDirname, extensions = ['.desktop']) => {
   try {
-    const ignoreFunc = (file) => {
-      try {
-        return !extensions.includes(path.extname(file));
-      } catch (exc) {
-        return true;
-      }     
-    };
-
     const filePaths = await (() => {
       return new Promise((resolve, reject) => {
         try {
-          recursive(baseDirname, [ignoreFunc], (err, files) => {
-            if (err) {
-              return reject(err);
-            }
+          let readFiles = rread(baseDirname);
 
-            return resolve(files);
+          readFiles = readFiles.map((file) => {
+            return `${baseDirname}/${file}`;
           });
+
+          readFiles = readFiles.filter((file) => {
+            return extensions.includes(path.extname(file));
+          });
+
+          return resolve(readFiles);
         } catch (exc) {
           return reject(exc);
         }
