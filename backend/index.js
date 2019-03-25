@@ -4,23 +4,23 @@ var io = require('socket.io')(http);
 // @see https://nodejs.org/api/child_process.html
 // var exec = require('child_process').exec;
 const LinuxGPUChildProcess = require('./utils/linux/LinuxGPUChildProcess');
-const {fetchFreedesktopAppList} = require('./utils/freedesktop/appUtils');
+const {fetchFreedesktopApps} = require('./utils/freedesktop/appUtils');
 
 const HTTP_LISTEN_PORT = 3001;
 
-app.get('/', function(req, res){
+app.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
 });
 
-io.on('connection', function(socket){
+io.on('connection', (socket) => {
   console.log('a user connected');
   console.log(socket);
 
   socket.on('request-app-list', async (options = {}, ack) => {
     try {
-      const appList = await fetchFreedesktopAppList();
+      const apps = await fetchFreedesktopApps();
 
-      ack(appList);
+      ack(apps);
     } catch (exc) {
       // TODO: Pipe this up to ack
       throw exc;

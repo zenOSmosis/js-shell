@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const fetchFilePaths = require('../fetchFilePaths');
+const {fetchIconPath} = require('./iconUtils');
 
 const TERMINAL_COMMAND = 'xterm';
 
@@ -118,19 +119,19 @@ const _toArray = (str, delimiter = ';') => {
   return values;
 }
 
-const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_READ_DIRECTORIES) => {
+const fetchFreedesktopApps = async (readDirectories = DEFAULT_FREEDESKTOP_READ_DIRECTORIES) => {
   try {
     // Acquire paths for all freedesktop entries
     const listPaths = await fetchFreedesktopEntryPaths(readDirectories);
 
-    let appList = [];
+    let apps = [];
 
     for (let i = 0; i < listPaths.length; i++) {
       const listPath = listPaths[i];
 
       try {
         const freedesktopParse = await parseFreedesktopFile(listPath);
-        appList.push(freedesktopParse);
+        apps.push(freedesktopParse);
       } catch (exc) {
         if (exc !== ERROR_MSG_NOT_FREEDESKTOP_FILE) {
           throw exc;
@@ -138,8 +139,8 @@ const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_REA
       }
     }
 
-    appList = appList.map((listItem) => {
-      const {meta} = listItem;
+    apps = apps.map((app) => {
+      const {meta} = app;
       let exec = meta.Exec;
 
       const name = meta.Name;
@@ -183,7 +184,7 @@ const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_REA
         };
       })();
 
-      return Object.assign(listItem, {
+      return Object.assign(app, {
         name,
         description,
         categories,
@@ -199,9 +200,17 @@ const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_REA
       });
     });
 
+    for (let i = 0; i < apps.length; i++) {
+      let app = apps[i];
+      if (app.meta.Icon) {
+        app.iconPath = await fetchIconPath(app.meta.Icon);
+        // console.log(app.meta.Icon);
+      }
+    }
+
     // Alphabetically sort apps
     // @see https://stackoverflow.com/questions/6712034/sort-array-by-firstname-alphabetically-in-javascript
-    appList = appList.sort((a, b) => {
+    apps = apps.sort((a, b) => {
       if (a.name < b.name) {
         return -1;
       }
@@ -211,12 +220,12 @@ const fetchFreedesktopAppList = async (readDirectories = DEFAULT_FREEDESKTOP_REA
       return 0;
     });
 
-    return appList;
+    return apps;
   } catch (exc) {
     throw exc;
   }
 };
 
 module.exports = {
-  fetchFreedesktopAppList
+  fetchFreedesktopApps
 };
