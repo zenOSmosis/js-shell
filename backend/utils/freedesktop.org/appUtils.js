@@ -4,29 +4,18 @@
 const fs = require('fs');
 const fetchFilePaths = require('../fetchFilePaths');
 const {fetchIconPath} = require('./iconUtils');
-
-const TERMINAL_COMMAND = 'xterm';
-
-const FREEDESKTOP_FILE_EXTENSIONS = ['.desktop'];
-
-const FREEDESKTOP_ENCODING_TYPE = 'utf8';
-
-const DEFAULT_FREEDESKTOP_READ_DIRECTORIES = [
-  `${process.env.HOME}/.local/share/applications`,
-  '/usr/share/applications',
-  '/usr/local/share/applications'
-];
+const config = require('../../config');
 
 const ERROR_MSG_NOT_FREEDESKTOP_FILE = 'Not a freedesktop entry file';
 
-const fetchFreedesktopEntryPaths = async (readDirectories = DEFAULT_FREEDESKTOP_READ_DIRECTORIES) => {
+const fetchFreedesktopEntryPaths = async (readDirectories = config.FREEDESKTOP_APP_READ_DIRECTORIES) => {
   try {
     const appDesktopPaths = [];
 
     for (let i = 0; i < readDirectories.length; i++) {
       const dir = readDirectories[i];
   
-      const dirPaths = await fetchFilePaths(dir, FREEDESKTOP_FILE_EXTENSIONS);
+      const dirPaths = await fetchFilePaths(dir, config.FREEDESKTOP_FILE_EXTENSIONS);
   
       dirPaths.forEach((dirPath) => {
         appDesktopPaths.push(dirPath);
@@ -41,7 +30,7 @@ const fetchFreedesktopEntryPaths = async (readDirectories = DEFAULT_FREEDESKTOP_
 
 const parseFreedesktopFile = (freedesktopFilePath) => {
   return new Promise((resolve, reject) => {
-    fs.readFile(freedesktopFilePath, FREEDESKTOP_ENCODING_TYPE, (err, data) => {
+    fs.readFile(freedesktopFilePath, config.FREEDESKTOP_ENCODING_TYPE, (err, data) => {
       if (err) {
         return reject(err);
       }
@@ -119,7 +108,7 @@ const _toArray = (str, delimiter = ';') => {
   return values;
 }
 
-const fetchFreedesktopApps = async (readDirectories = DEFAULT_FREEDESKTOP_READ_DIRECTORIES) => {
+const fetchFreedesktopApps = async (readDirectories = config.FREEDESKTOP_APP_READ_DIRECTORIES) => {
   try {
     // Acquire paths for all freedesktop entries
     const listPaths = await fetchFreedesktopEntryPaths(readDirectories);
@@ -153,7 +142,7 @@ const fetchFreedesktopApps = async (readDirectories = DEFAULT_FREEDESKTOP_READ_D
 
       if (opensInTerminal) {
         // Prepend terminal command to execution string
-        exec = `${TERMINAL_COMMAND} ${exec}`;
+        exec = `${config.TERMINAL_COMMAND} ${exec}`;
       }
 
       // Parse command and arguments

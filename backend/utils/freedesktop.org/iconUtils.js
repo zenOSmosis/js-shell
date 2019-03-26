@@ -6,22 +6,16 @@
 const path = require('path');
 const fetchFilePaths = require('../fetchFilePaths');
 
-// ex XPM icon: Python 2.7 / 3.6 apps
-const ICON_FILE_EXTENSIONS = ['.png', '.svg', '.xpm'];
+const config = require('../../config');
 
-const DEFAULT_ICON_READ_DIRECTORIES = [
-  `${process.env.HOME}/.local/share/icons`,
-  '/usr/share/icons'
-];
-
-const fetchAllParsedIconPaths = async (readDirectories = DEFAULT_ICON_READ_DIRECTORIES) => {
+const fetchAllParsedIconPaths = async (readDirectories = config.FREEDESKTOP_ICON_READ_DIRECTORIES) => {
   try {
     let parsedIconPaths = [];
 
     for (let i = 0; i < readDirectories.length; i++) {
       const dir = readDirectories[i];
   
-      const dirPaths = await fetchFilePaths(dir, ICON_FILE_EXTENSIONS);
+      const dirPaths = await fetchFilePaths(dir, config.FREEDESKTOP_ICON_FILE_EXTENSIONS);
   
       dirPaths.forEach((dirPath) => {
         parsedIconPaths.push(dirPath);
@@ -66,7 +60,7 @@ const fetchAllParsedIconPaths = async (readDirectories = DEFAULT_ICON_READ_DIREC
 const fetchIconPath = (() => {
   let cachedParsedIconPaths = [];
 
-  return async (iconName, useCache = true, readDirectories = DEFAULT_ICON_READ_DIRECTORIES) => {
+  return async (iconName, useCache = true, readDirectories = config.FREEDESKTOP_ICON_READ_DIRECTORIES) => {
     try {
       const isAbsolute = path.isAbsolute(iconName);
       if (isAbsolute) {

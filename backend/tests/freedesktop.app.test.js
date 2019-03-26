@@ -1,4 +1,4 @@
-const {fetchFreedesktopApps} = require('../utils/freedesktop/appUtils');
+const {fetchFreedesktopApps} = require('../utils/freedesktop.org/appUtils');
 
 (async () => {
   try {
