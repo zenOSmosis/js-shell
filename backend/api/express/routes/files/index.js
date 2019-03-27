@@ -1,13 +1,18 @@
 const {Router} = require('express');
 const router = new Router();
 
-// TODO: Send file of the same name as the file request
+// TODO: Set header file name as same file name in request
 
 const sendFile = (req, res) => {
   const {filePath} = req.params || req.query;
   
+  // TODO: Determine if file exists before trying to send
 
-  res.sendFile(filePath);
+  if (!filePath) {
+    res.status(404);
+  } else {
+    res.sendFile(filePath);
+  }
 };
 
 router.get('/filePath/:filePath', (req, res) => {

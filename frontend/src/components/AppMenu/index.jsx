@@ -35,7 +35,7 @@ export default class AppMenu extends Component {
   };
 
   fetchAppList() {
-    socket.emit('request-app-list', {}, (data) => {
+    socket.emit('fetch-apps', {}, (data) => {
       console.debug(data);
 
       this.setState({
