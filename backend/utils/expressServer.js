@@ -19,5 +19,6 @@ module.exports = {
   app,
   expressRoutes,
   http,
-  start
+  start,
+  HTTP_LISTEN_PORT
 };

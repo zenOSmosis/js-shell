@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 64 80"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg102"
+   sodipodi:docname="computer.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata108">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs106" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1029"
+     id="namedview104"
+     showgrid="false"
+     inkscape:zoom="10.675"
+     inkscape:cx="32"
+     inkscape:cy="28.758782"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg102" />
+  <title
+     id="title84">computer, PC, office, equipment, desktop</title>
+  <g
+     data-name="10"
+     id="g96">
+    <path
+       d="M44,49.17A1.5,1.5,0,0,0,42.5,48H7.5A1.5,1.5,0,0,0,6,49.17l-2,9A1.5,1.5,0,0,0,5.5,60h39A1.5,1.5,0,0,0,46,58.17Z"
+       id="path86" />
+    <path
+       d="M55.5,48A4.5,4.5,0,0,0,51,52.5v3a4.5,4.5,0,0,0,9,0v-3A4.5,4.5,0,0,0,55.5,48Z"
+       id="path88" />
+    <path
+       d="M60,37.5v-4H4v4A1.5,1.5,0,0,0,5.5,39h53A1.5,1.5,0,0,0,60,37.5Z"
+       id="path90" />
+    <path
+       d="M60,31.5V5.5A1.5,1.5,0,0,0,58.5,4H5.5A1.5,1.5,0,0,0,4,5.5v26Z"
+       id="path92" />
+    <path
+       d="M40.5,43H36V41H28v2H23.5a1.5,1.5,0,0,0,0,3h17a1.5,1.5,0,0,0,0-3Z"
+       id="path94" />
+  </g>
+</svg>

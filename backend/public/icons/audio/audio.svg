@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   viewBox="0 0 64 80"
+   x="0px"
+   y="0px"
+   id="svg132"
+   sodipodi:docname="audio.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata138">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs136" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview134"
+     showgrid="false"
+     inkscape:zoom="2.95"
+     inkscape:cx="32"
+     inkscape:cy="40"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg132" />
+  <title
+     id="title124">headphone</title>
+  <path
+     d="M29.333 1.337c-10.503-0.267-20.778 7.734-25.667 19.734-0.474 1.947 0.46 3.37 1.667 3.906v3.292c-1.564 0.533-2.667 1.868-2.667 3.734 0 2.133 1.791 4 4 4h0.167l6.5 11.198v10.135c0 1.333 1.194 2.667 2.667 2.667v2.667h6.667c2.209 0 4-1.867 4-4v-24c0-2.4-1.791-4-4-4h-6.667v2.667c-1.473 0-2.667 1.067-2.667 2.667v4l-3.333-5.865c0.431-0.533 0.667-1.335 0.667-2.135 0-1.867-1.103-3.201-2.667-3.734v-3.781c0.311-0.321 0.583-0.72 0.75-1.286 3.654-8.167 10.366-13.677 17.505-14.927 1.020-0.178 2.049-0.271 3.078-0.271h5.333c1.030 0 2.058 0.093 3.078 0.271 7.139 1.251 13.851 6.76 17.505 14.927 0.167 0.567 0.44 0.966 0.75 1.286v3.781c-1.563 0.533-2.667 1.868-2.667 3.734 0 0.8 0.235 1.602 0.667 2.135l-3.333 5.865v-4c0-1.6-1.195-2.667-2.667-2.667v-2.667h-6.667c-2.208 0-4 1.6-4 4v24c0 1.867 1.37 3.53 3.193 3.917 0.26 0.055 0.531 0.083 0.807 0.083h6.667v-2.667c0.368 0 0.717-0.083 1.036-0.229 0.957-0.438 1.63-1.438 1.63-2.438v-10.135l6.5-11.198h0.167c2.208 0 4-1.867 4-4 0-1.867-1.104-3.201-2.667-3.734v-3.297c1.204-0.539 2.14-1.958 1.667-3.901-4.888-12-15.163-20.001-25.667-19.734z"
+     id="path126" />
+</svg>

@@ -1,52 +1,51 @@
 import React, { Component } from 'react';
 import './Grid.css';
-// const style: any = require('./Grid.css');
 
 /**
  * Contained within GridItemWrapper.
  */
-class GridItem extends Component {
-  render() {
-    return (
-      <div
-        {...this.props}
-        className={`item ${this.props.className ? this.props.className : ''}`}
-      >
-        {this.props.children}
-      </div>
-    );
-  }
-}
+const GridItem = (props) => {
+  const {children, className, ...rest} = props;
+
+  return (
+    <div
+      {...rest}
+      className={`item ${className ? className : ''}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 /**
  * Contains a GridItem.
  */
-class GridItemWrapper extends Component {
-  // TODO: Implement ability to autosize according to largest sized container
-  /*public componentDidMount(): void {
-  }*/
+const GridItemWrapper = (props) => {
+  const {children, className, style} = props;
 
-  render() {
-    return (
-      <div
-        className={`item ${this.props.className ? this.props.className : ''}`}
-        style={this.props.style}
-      >
-        {this.props.children}
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      className={`item ${className ? className : ''}`}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
 
 class Grid extends Component {
   render() {
     let idx = -1;
 
+    let {children, className} = this.props;
+
     // Hack to enable iterable children, even if only one child
-    const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
+    children = Array.isArray(children) ? children : [children];
     
     return (
-      <div className={`gridComponent ${this.props.className ? this.props.className : ''}`}>
+      <div
+        {...this.props}
+        className={`gridComponent ${className ? className : ''}`}>
         <div className="flex">
           <div className="itemsWrapper">
             {

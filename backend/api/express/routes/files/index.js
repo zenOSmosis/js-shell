@@ -4,7 +4,10 @@ const router = new Router();
 // TODO: Set header file name as same file name in request
 
 const sendFile = (req, res) => {
-  const {filePath} = req.params || req.query;
+  const {filePath: paramsFilePath} = req.params;
+  const {filePath: queryFilePath} = req.query;
+
+  const filePath = queryFilePath || paramsFilePath;
   
   // TODO: Determine if file exists before trying to send
 
@@ -15,12 +18,10 @@ const sendFile = (req, res) => {
   }
 };
 
-router.get('/filePath/:filePath', (req, res) => {
-  res.sendFile(req.params.filePath);
-});
+// Params-based URL
+router.get('/filePath/:filePath', sendFile);
 
-router.get('/', (req, res) => {
-  res.sendFile(req.query.filePath);
-});
+// Query-based URL
+router.get('/', sendFile);
 
 module.exports = router;

@@ -1,0 +1,58 @@
+.FullViewportPanelTransitioner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.FullViewportPanel {
+  display: none;
+  position: absolute;
+  overflow: auto;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background-color: rgba(0,0,0,.8);
+  z-index: 9999;
+  /* TODO: Use CSS window here  */
+}
+
+.FullViewportPanel.open {
+  display: block;
+}
+
+.FullViewportPanelHeader {
+  text-align: left;
+  overflow: auto;
+  padding: .4rem;
+}
+
+.FullViewportPanelHeader button {
+  background-color: transparent !important;
+  border: 0px transparent !important;
+  color: #ccc !important;
+  font-weight: bold !important;
+  font-size: 1.4em !important;
+  padding: .2rem !important;
+  margin: 0px 0px 0px 4px !important;
+  /* TODO: No browser-styling here */
+}
+
+.FullViewportPanelHeader .Title {
+  float: right;
+  font-weight: bold;
+}
+
+.FullViewportPanelHeader .Description {
+  clear: right;
+  float: right;
+  font-size: .9rem;
+}
+
+.FullViewportPanelBody {
+  text-align: left;
+  padding: .4rem;
+}
