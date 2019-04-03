@@ -4,13 +4,59 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
+  font-size: 12px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   background-color: #282c34 !important;
+
+  overflow: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  /*
+    .noselect 
+    @see https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting
+  */
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+*:not(input[type="radio"]) {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input,
+button {
+  background-color: #545864 !important;
+  color: #ccc !important;
+  border: 1px #ccc solid;
+}
+
+input:hover,
+button:hover {
+  color: #fff !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.root {
+  width: 100%;
+  height: 100%;
 }

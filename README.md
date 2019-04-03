@@ -36,6 +36,7 @@ These are prioritized by importance.
 
 #### Low Priority 
 
+- [TODO] Dual desktop
 - [TODO] Use logger (e.g. Winston)
 - [TODO] Sniffing environment variables of a currently opened program.
 - Implement 3D transition library.

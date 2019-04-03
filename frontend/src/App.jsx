@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
+import Shape3DTesterWindow from './components/windows/Shape3DTesterWindow';
+import SystemInformationWindow from './components/windows/SystemInformationWindow';
+import Window from './components/Window';
+import FullViewport from './components/FullViewport';
+import BackgroundView from './components/BackgroundView';
 import FullViewportHostConnection from './components/FullViewportHostConnection';
 // import FileNavigator from './components/FileNavigator';
 import FullViewportAppMenu from './components/FullViewportAppMenu';
-import FullViewportSystemInformation from './components/FullViewportSystemInformation';
 import FullVieportSocketIOInformation from './components/FullViewportSocketIOInformation';
 // import RenderObject from './components/RenderObject';
 import socket from './utils/socket.io';
@@ -12,10 +16,11 @@ import socket from './utils/socket.io';
 class App extends Component {
   state = {
     appMenuOpenCode: -1,
-    sysInfoOpenCode: -1,
     socketInfoOpenCode: -1,
 
-    wallpaperPaths: []
+    wallpaperPaths: [],
+
+    desktopWindows: []
   };
 
   componentDidMount() {
@@ -39,13 +44,6 @@ class App extends Component {
     });
   }
 
-  openSysInfo() {
-    const {sysInfoOpenCode} = this.state;
-    this.setState({
-      sysInfoOpenCode: sysInfoOpenCode + 1
-    });
-  }
-
   openSocketInfo() {
     const {socketInfoOpenCode} = this.state;
     this.setState({
@@ -57,36 +55,63 @@ class App extends Component {
     console.debug(app);
   }
 
+  createWindow() {
+    const desktopWindow = {};
+    let {desktopWindows} = this.state;
+    desktopWindows.push(desktopWindow);
+
+    this.setState({
+      desktopWindows
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-          {
-            // <img src={logo} className="App-logo" alt="logo" />
-          }
+      <FullViewport>
+        <BackgroundView className="App">
+            {
+              // <img src={logo} className="App-logo" alt="logo" />
+            }
 
-          <button onClick={ (evt) => this.openAppMenu() }>Launch App Menu</button>
-          <button onClick={ (evt) => this.openSysInfo() }>View System Information</button>
-          <button onClick={ (evt) => this.openSocketInfo() }>View Socket.io Information</button>
+            <button onClick={ evt => this.createWindow() }>+</button>
 
-          <FullViewportAppMenu
-            openCode={this.state.appMenuOpenCode}
-            onAppSelect={this.onAppSelect}
-          />
+            <Shape3DTesterWindow />
+            <SystemInformationWindow />
 
-          <FullViewportSystemInformation
-            openCode={this.state.sysInfoOpenCode}
-          />
+            {
+              this.state.desktopWindows.map((desktopWindow, idx) => {
+                return (
+                  <Window key={idx}>
+                    [Window]
+                  </Window>
+                )
+              })
+            }
 
-          <FullVieportSocketIOInformation
-            openCode={this.state.socketInfoOpenCode}
-          />
-        
-          <FullViewportHostConnection />
+            <button onClick={ (evt) => this.openAppMenu() }>Launch App Menu</button>
+            <button onClick={ (evt) => this.openSocketInfo() }>View Socket.io Information</button>
+
+            {
+              this.state.wallpaperPaths.length > 0 &&
+              <img src={`http://localhost:3001/files?filePath=${this.state.wallpaperPaths[0]}`} />
+            }
+
+            <FullViewportAppMenu
+              openCode={this.state.appMenuOpenCode}
+              onAppSelect={this.onAppSelect}
+            />
+
+            <FullVieportSocketIOInformation
+              openCode={this.state.socketInfoOpenCode}
+            />
           
-          {
-            // <FileNavigator />
-          }
-      </div>
+            <FullViewportHostConnection />
+            
+            {
+              // <FileNavigator />
+            }
+        </BackgroundView>
+      </FullViewport>
     );
   }
 }

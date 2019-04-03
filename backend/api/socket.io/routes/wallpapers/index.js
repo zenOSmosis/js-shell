@@ -6,9 +6,7 @@ const fetchWallpaperPaths = async (options = {}, ack) => {
     console.log('..');
     const wallpaperPaths = await doFetchWallpaperPaths();
 
-    return ack({
-      wallpaperPaths
-    });
+    return ack(wallpaperPaths);
   } catch (exc) {
     // TODO: Pipe this up to ack
     throw exc;

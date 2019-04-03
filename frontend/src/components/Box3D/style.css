@@ -1,0 +1,73 @@
+.Box3DScene {
+  width: 300px;
+  height: 200px;
+  margin: 80px;
+  perspective: 400px;
+}
+
+.Box {
+  width: 300px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(-50px);
+  transition: transform 1s;
+}
+
+.Box.show-Front  { transform: translateZ( -50px) rotateY(   0deg); }
+.Box.show-Back   { transform: translateZ( -50px) rotateY(-180deg); }
+.Box.show-Right  { transform: translateZ(-150px) rotateY( -90deg); }
+.Box.show-Left   { transform: translateZ(-150px) rotateY(  90deg); }
+.Box.show-Top    { transform: translateZ(-100px) rotateX( -90deg); }
+.Box.show-Bottom { transform: translateZ(-100px) rotateX(  90deg); }
+
+
+.Box__Face {
+  position: absolute;
+  border: 2px solid black;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+.Box__Face--Front,
+.Box__Face--Back {
+  width: 300px;
+  height: 200px;
+  line-height: 200px;
+}
+
+.Box__Face--Right,
+.Box__Face--Left {
+  width: 100px;
+  height: 200px;
+  left: 100px;
+  line-height: 200px;
+}
+
+.Box__Face--Top,
+.Box__Face--Bottom {
+  width: 300px;
+  height: 100px;
+  top: 50px;
+  line-height: 100px;
+}
+
+.Box__Face--Front  { background: hsla(  0, 100%, 50%, 0.7); }
+.Box__Face--Right  { background: hsla( 60, 100%, 50%, 0.7); }
+.Box__Face--Back   { background: hsla(120, 100%, 50%, 0.7); }
+.Box__Face--Left   { background: hsla(180, 100%, 50%, 0.7); }
+.Box__Face--Top    { background: hsla(240, 100%, 50%, 0.7); }
+.Box__Face--Bottom { background: hsla(300, 100%, 50%, 0.7); }
+
+.Box__Face--Front  { transform: rotateY(  0deg) translateZ( 50px); }
+.Box__Face--Back   { transform: rotateY(180deg) translateZ( 50px); }
+
+.Box__Face--Right  { transform: rotateY( 90deg) translateZ(150px); }
+.Box__Face--Left   { transform: rotateY(-90deg) translateZ(150px); }
+
+.Box__Face--Top    { transform: rotateX( 90deg) translateZ(100px); }
+.Box__Face--Bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+label { margin-Right: 10px; }

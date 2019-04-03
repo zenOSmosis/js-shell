@@ -9,7 +9,7 @@
 .FullViewportPanel {
   display: none;
   position: absolute;
-  overflow: auto;
+  /* overflow: auto; */
   top: 0px;
   left: 0px;
   width: 100%;
