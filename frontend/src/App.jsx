@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import FullViewportHostConnection from './components/FullViewportHostConnection';
-import FileNavigator from './components/FileNavigator';
+// import FileNavigator from './components/FileNavigator';
 import FullViewportAppMenu from './components/FullViewportAppMenu';
 import FullViewportSystemInformation from './components/FullViewportSystemInformation';
 import FullVieportSocketIOInformation from './components/FullViewportSocketIOInformation';
@@ -13,8 +13,24 @@ class App extends Component {
   state = {
     appMenuOpenCode: -1,
     sysInfoOpenCode: -1,
-    socketInfoOpenCode: -1
+    socketInfoOpenCode: -1,
+
+    wallpaperPaths: []
   };
+
+  componentDidMount() {
+    this.fetchWallpaperPaths();
+  }
+
+  fetchWallpaperPaths() {
+    socket.emit('wallpapers:fetch-wallpaper-paths', null, (wallpaperPaths) => {
+      console.debug('wallpaper paths', wallpaperPaths);
+
+      this.setState({
+        wallpaperPaths
+      });
+    });
+  }
 
   openAppMenu() {
     const {appMenuOpenCode} = this.state;

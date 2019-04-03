@@ -2,6 +2,7 @@ const apps = require('./apps');
 const appCategories = require('./appCategories');
 const systemCommand = require('./systemCommand');
 const portAudio = require('./portAudio');
+const wallpapers = require('./wallpapers');
 const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemInformation');
 
 /**
@@ -25,6 +26,8 @@ const initSocket = (socket) => {
 
   socket.on('port-audio:fetch-devices', portAudio.fetchDevices);
   socket.on('port-audio:fetch-host-apis', portAudio.fetchHostAPIs);
+
+  socket.on('wallpapers:fetch-wallpaper-paths', wallpapers.fetchWallpaperPaths);
   
   console.log(`Initialized Socket.io routes for socket with id: ${socket.id}`);
 };

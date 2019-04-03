@@ -1,10 +1,10 @@
 // Freedesktop text files
 // @see https://specifications.freedesktop.org/menu-spec/latest/
 
+const config = require('../../config');
 const fs = require('fs');
 const fetchFilePaths = require('../fetchFilePaths');
 const {fetchIconPath} = require('./iconUtils');
-const config = require('../../config');
 
 const ERROR_MSG_NOT_FREEDESKTOP_FILE = 'Not a freedesktop entry file';
 
