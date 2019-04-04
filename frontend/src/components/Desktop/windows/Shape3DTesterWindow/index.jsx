@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Box3D from '../../Box3D';
+import Box3D from '../../../Box3D';
 import Window from '../../Window';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 

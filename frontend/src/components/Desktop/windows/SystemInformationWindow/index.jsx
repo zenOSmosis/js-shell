@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import RenderObject from '../../RenderObject';
+import { Button, ButtonGroup, ButtonToolbar } from 'reactstrap';
+import RenderObject from '../../../RenderObject';
 import Window from '../../Window';
-import { Grid, GridItem } from '../../Grid';
-import socket from './../../../utils/socket.io';
-import systemCommand from '../../../utils/systemCommand';
-import Scroll from '../../Scroll';
+import { Grid, GridItem } from '../../../Grid';
+import socket from './../../../../utils/socket.io';
+import systemCommand from '../../../../utils/systemCommand';
+import Icon from '../../../Icon';
 
 // speaker-test -c 2
 
@@ -70,11 +71,65 @@ export default class SystemInformationWindow extends Component {
         title="System Information"
         description="View system information"
       >
-        <Scroll>
+        <ButtonGroup>
+          <Button size="sm">Overview</Button>
+          <Button size="sm">CPU</Button>
+          <Button size="sm">Memory</Button>
+          <Button size="sm">Processes</Button>
+          <Button size="sm">Audio</Button>
+          <Button size="sm">Network</Button>
+        </ButtonGroup>
+        
+        <div style={{padding: 4}}>
+          <Grid>
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Chassis" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="CPU" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Power" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Memory" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Storage" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Graphics" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Audio" />
+            </GridItem>
+
+            <GridItem style={{width: 100, height: 100}}>
+              <Icon name="Network" />
+            </GridItem>
+          </Grid>
+        </div>
+        <div style={{textAlign: 'left', display: 'none'}}>
+          <h1>Host</h1>
+          <h2>Motherboard / CPU</h2>
+          <h2>Power</h2>
+          <h2>Memory</h2>
+          <h2>Storage</h2>
+          <h2>Graphics</h2>
+          <h2>Audio</h2>
+
           <button onClick={evt => this.fetchPortAudioDevices()}>Fetch PortAudio Devices</button>
           <button onClick={evt => this.fetchPortAudioHostAPIs()}>Fetch PortAudio Host APIs</button>
 
           <button onClick={evt => this.initSpeakerTest()}>Init Speaker Test</button>
+
+          <button>Fetch Socket.io information</button>
 
           <select onChange={(evt) => this.setState({
             selectedMode: evt.target.value
@@ -147,7 +202,7 @@ export default class SystemInformationWindow extends Component {
             this.state.renderData &&
             <RenderObject data={this.state.renderData} />
           }
-        </Scroll>
+        </div>
       </Window>
     );
   }

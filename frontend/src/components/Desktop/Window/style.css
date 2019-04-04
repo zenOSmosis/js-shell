@@ -1,31 +1,43 @@
 .Window {
   min-width: 500px;
   min-height: 400px;
-  background-color: rgba(0,0,0,.6);
+  background-color: rgba(0,0,0,.8);
   color: #fff;
   border-radius: 4px;
   overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * Create a new stacking context.
+   * @see https://tiffanybbrown.com/2015/09/css-stacking-contexts-wtf/index.html
+   */
+  transform: scale(1);
 }
 
-.WindowHeader .column {
+.Window .WindowHeader .column {
   float: left;
 }
 
-.WindowHeader {
-  background-color: rgba(0,0,0,.6);
+.Window .WindowHeader {
   height: 20px;
   overflow: hidden;
 }
 
+.Window.Active .WindowHeader {
+  background-color: rgba(0,0,0,.6);
+}
+
 /* Three dots */
-.WindowHeader .Dot {
+.Window .WindowHeader .Dot {
   margin-top: 4px;
   height: 12px;
   width: 12px;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;;
-  margin: 3px;
+  margin: 3px 4px !important;
 
   padding: 0px;
   border: 0px transparent solid;
@@ -43,8 +55,8 @@
   background-color: #5AC05A !important;
 }
 
-.WindowBody {
-  overflow: auto;
-  height: 100%;
+.Window .WindowBody {
+  flex: auto;
+  overflow: hidden;
   text-align: center;
 }

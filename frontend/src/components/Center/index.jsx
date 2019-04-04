@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import './style.css';
 
+let Center;
+
 export default Center = (props = {}) => {
-  const {children, className, ...propsRest} = this.props;
+  const {children, className, ...propsRest} = props;
 
   return (
     <div
@@ -15,6 +17,5 @@ export default Center = (props = {}) => {
         }
       </div>
     </div>
-
   );
 };
