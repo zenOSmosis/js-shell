@@ -1,8 +1,11 @@
 .Window {
-  min-width: 500px;
+  /* TODO: Change these values */
+  min-width: 400px;
   min-height: 400px;
+
   background-color: rgba(0,0,0,.8);
   color: #fff;
+  border: 1px rgb(112, 112, 112) solid;
   border-radius: 4px;
   overflow: hidden;
 
@@ -13,7 +16,18 @@
    * Create a new stacking context.
    * @see https://tiffanybbrown.com/2015/09/css-stacking-contexts-wtf/index.html
    */
-  transform: scale(1);
+   transform: scale(1);
+}
+
+/**
+* Active Window shading.
+*
+* @see https://www.cssmatic.com/box-shadow
+*/
+.Window.Active {
+  -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
 }
 
 .Window .WindowHeader .column {
@@ -21,8 +35,10 @@
 }
 
 .Window .WindowHeader {
-  height: 20px;
-  overflow: hidden;
+  min-height: 22px;
+  background-color: black;
+  position: relative;
+  padding: .1rem 0px;
 }
 
 .Window.Active .WindowHeader {
@@ -31,16 +47,15 @@
 
 /* Three dots */
 .Window .WindowHeader .Dot {
-  margin-top: 4px;
-  height: 12px;
-  width: 12px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;;
-  margin: 3px 4px !important;
+  height: 12px !important;
+  width: 12px !important;
+  background-color: #bbb !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  margin: 5px 4px 0px 4px !important;
 
-  padding: 0px;
-  border: 0px transparent solid;
+  padding: 0px !important;
+  border: 0px transparent solid !important;
 }
 
 .Window.Active .WindowHeader .Dot.Red {
@@ -59,4 +74,50 @@
   flex: auto;
   overflow: hidden;
   text-align: center;
+  position: relative;
+}
+
+.WindowResizableLayer {
+  display: table;
+}
+
+.WindowResizableLayer .TableRow {
+  display: table-row;
+}
+
+.WindowResizableLayer .TableCell {
+  display: table-cell;
+  border: 1px transparent solid;
+}
+
+.WindowResizableLayer .RSControl.Top {
+  cursor: n-resize;
+}
+
+.WindowResizableLayer .RSControl.TopRight {
+  cursor: ne-resize;
+}
+
+.WindowResizableLayer .RSControl.Right {
+  cursor: e-resize;
+}
+
+.WindowResizableLayer .RSControl.BottomRight {
+  cursor: se-resize;
+}
+
+.WindowResizableLayer .RSControl.Bottom {
+  cursor: s-resize;
+}
+
+.WindowResizableLayer .RSControl.BottomLeft {
+  cursor: sw-resize;
+}
+
+.WindowResizableLayer .RSControl.Left {
+  cursor: w-resize;
+}
+
+.WindowResizableLayer .RSControl.TopLeft {
+  cursor: nw-resize;
 }

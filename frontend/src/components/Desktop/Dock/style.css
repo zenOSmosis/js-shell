@@ -1,0 +1,24 @@
+.DesktopDock {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 52px;
+  text-align: center;
+}
+
+.DesktopDock .DesktopDockItems {
+  padding: 4px;
+  display: inline-block;
+  background-color: rgba(255,255,255,.4);
+  border: 1px rgba(255,255,255,.42) solid;
+  border-top-left-radius: .4rem;
+  border-top-right-radius: .4rem;
+  min-width: 25px;
+  max-width: 90%;
+  height: 100%;
+}
+
+.DesktopDock .DesktopDockItems button {
+  background-color: transparent;
+  border: 0px;
+}

@@ -1,25 +1,20 @@
 import React, { Component } from 'react';
 import Panel from './Panel';
 // import logo from './logo.svg';
+import 'normalize.css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.css';
+// import * as Blueprint from '../toolkits/Blueprint';
+import 'antd/dist/antd.css';
 import './style.css';
-import AppMenuWindow from './../../components/Desktop/windows/AppMenuWindow';
-import Center from './../../components/Center';
+import './style-scrollbar.css';
 import ContextMenu from './../../components/ContextMenu';
+import Dock from './Dock';
+import BackgroundSelectionWindow from './windows/BackgroundSelectionWindow';
 import SystemInformationWindow from './../../components/Desktop/windows/SystemInformationWindow';
-import WindowManager from './../../components/Desktop/windows/WindowManager';
 import FullViewport from './../../components/FullViewport';
 import Background from './../../components/Background';
-import FullViewportHostConnection from './../../components/FullViewportHostConnection';
-// import FileNavigator from './../../components/FileNavigator';
-import FullViewportAppMenu from './../../components/FullViewportAppMenu';
-import FullVieportSocketIOInformation from './../../components/FullViewportSocketIOInformation';
-// import RenderObject from './../../components/RenderObject';
 import Window from './../../components/Desktop/Window';
-import HelloWorldWindow from './../../components/Desktop/windows/HelloWorldWindow';
-import XTermWindow from './../../components/Desktop/windows/XTermWindow';
-// import WebAmpPlayer from './../../components/Desktop/windows/WebampPlayer';
-import VideoPlayerWindow from './../../components/Desktop/windows/VideoPlayerWindow';
+import NoHostConnectionModal from './modals/NoHostConnectionModal';
 import socket from '../../utils/socket.io';
 
 export default class Desktop extends Component {
@@ -37,6 +32,9 @@ export default class Desktop extends Component {
 
   componentDidMount() {
     this.fetchWallpaperPaths();
+
+    // this.createWindow(<Shape3DTesterWindow />);
+    this.createWindow(<BackgroundSelectionWindow />);
   }
 
   fetchWallpaperPaths() {
@@ -59,11 +57,21 @@ export default class Desktop extends Component {
     if (typeof props.$$typeof !== 'undefined') {
       desktopWindow = props;
     } else {
-      desktopWindow = <Window {...props} /> 
+      // TODO: Differentiate key
+      desktopWindow = <Window key={props.title} {...props} />
     }
     
     let { desktopWindows } = this.state;
-    desktopWindows.push(desktopWindow);
+    desktopWindows.push(
+      <div
+        key={this.state.desktopWindows.length}
+        style={{position: 'absolute', width: 0, height: 0}}
+      >
+        {
+          desktopWindow
+        }
+      </div>
+    );
 
     this.setState({
       desktopWindows
@@ -77,10 +85,16 @@ export default class Desktop extends Component {
 
   render() {
     return (
-      <FullViewport className="App">
+      <FullViewport className="Desktop">
         <ContextMenu>
+          {
+            // TODO: Remove hardcoded src
+          }
           <Background src={`http://localhost:3001/files?filePath=${this.state.wallpaperPaths[0]}`}>
             <Panel desktop={this} />
+
+            
+            
             {
               // <img src={logo} className="App-logo" alt="logo" />
             }
@@ -99,24 +113,14 @@ export default class Desktop extends Component {
                 <VideoPlayerWindow />
                 <WebampPlayer />
                 <HelloWorldWindow />
-                <Shape3DTesterWindow />
                 <SystemInformationWindow />
                 <WindowManager />
                 */
               }
-
-
-              <FullViewportHostConnection />
-
-              {
-                // <FileNavigator />
-              }
             </div>
 
-            <Center>
-              Hello
-            </Center>
-
+            <NoHostConnectionModal />
+            <Dock desktop={this} />
           </Background>
         </ContextMenu>
       </FullViewport>

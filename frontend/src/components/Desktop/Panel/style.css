@@ -5,13 +5,17 @@
   width: 100%;
   height: 22px;
   top: 0px;
-  overflow: hidden;
 }
 
 .DesktopPanel.Horizontal .DesktopPanelColumnLeft {
-  float: left;
-  margin-left: 10px;
-  margin-top: 2px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 99;
+}
+
+.DesktopPanel.Horizontal .DesktopPanelColumnLeft .ApplicationTitle {
+  font-weight: bold;
 }
 
 .DesktopPanel.Horizontal .DesktopPanelColumnCenter {

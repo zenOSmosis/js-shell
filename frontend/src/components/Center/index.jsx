@@ -1,9 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import './style.css';
 
-let Center;
-
-export default Center = (props = {}) => {
+const Center = (props = {}) => {
   const {children, className, ...propsRest} = props;
 
   return (
@@ -19,3 +17,5 @@ export default Center = (props = {}) => {
     </div>
   );
 };
+
+export default Center;

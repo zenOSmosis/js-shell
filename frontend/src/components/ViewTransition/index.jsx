@@ -37,57 +37,71 @@ class ViewTransition extends Component {
     return this._events.off(eventName, callback);
   }
 
-  animate() {
-    if (this._isInTransition) {
-      // console.debug('Ignoring stacked effect');
-      return;
-    }
-
-    if (!this.state.isTransitioning) {
-      this.setState({
-        isTransitioning: true
-      }, async () => {
-        try {
-          if (this._isInTransition) {
-            return;
-          }
-
-          // console.debug('Transition started');
-
-          const {effect, onTransitionStart, onTransitionEnd} = this.props;
-
-          this._isInTransition = true;
-
-          // Call start hook, if any
-          if (typeof onTransitionStart === 'function') {
-            onTransitionStart();
-          }
-          
-          await animate(this._base, effect);
-
-          // this._cuedOutView = null;
-          
-          this.setState({
-            isTransitioning: false
-          }, () => {
-            this._isInTransition = false;
-
-            this._events.emit('transitionend');
-
-            // Call end hook, if any
-            if (typeof onTransitionEnd === 'function') {
-              onTransitionEnd();
-            }
-
-            // console.debug('Transition finished');
-          });
-        } catch (exc) {
-          throw exc;
+  async animate(effect = null) {
+    return new Promise((resolve, reject) => {
+      try {
+        const {effect: propsEffect, onTransitionStart, onTransitionEnd} = this.props;
+        effect = effect || propsEffect;
+    
+        if (!effect) {
+          return;
         }
-      });
-    }
-
-    this._lastInView = this.props.inView;
+    
+        if (this._isInTransition) {
+          // console.debug('Ignoring stacked effect');
+          return;
+        }
+    
+        if (!this.state.isTransitioning) {
+          this.setState({
+            isTransitioning: true
+          }, async () => {
+            try {
+              if (this._isInTransition) {
+                return;
+              }
+    
+              // console.debug('Transition started');
+    
+              
+    
+              this._isInTransition = true;
+    
+              // Call start hook, if any
+              if (typeof onTransitionStart === 'function') {
+                onTransitionStart();
+              }
+              
+              await animate(this._base, effect);
+    
+              // this._cuedOutView = null;
+              
+              this.setState({
+                isTransitioning: false
+              }, () => {
+                this._isInTransition = false;
+    
+                this._events.emit('transitionend');
+    
+                // Call end hook, if any
+                if (typeof onTransitionEnd === 'function') {
+                  onTransitionEnd();
+                }
+    
+                // console.debug('Transition finished');
+                return resolve(true);
+              });
+            } catch (exc) {
+              throw exc;
+            }
+          });
+        }
+    
+        this._lastInView = this.props.inView;
+      } catch (exc) {
+        return reject(exc);
+      }
+    });
   }
 
   render() {

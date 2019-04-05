@@ -7,25 +7,23 @@ import Window from '../../Window';
  
 // import('./xterm/dist/xterm.css');
 
-{
-  /*
-  <!doctype html>
-  <html>
-    <head>
-      <link rel="stylesheet" href="" />
-      <script src="node_modules/xterm/dist/xterm.js"></script> 
-    </head>
-    <body>
-      <div id="terminal"></div>
-      <script>
-        var term = new Terminal();
-        term.open(document.getElementById('terminal'));
-        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
-      </script> 
-    </body>
-  </html>
-  */
-}
+/*
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="" />
+    <script src="node_modules/xterm/dist/xterm.js"></script> 
+  </head>
+  <body>
+    <div id="terminal"></div>
+    <script>
+      var term = new Terminal();
+      term.open(document.getElementById('terminal'));
+      term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+    </script> 
+  </body>
+</html>
+*/
 
 export default class XTerm extends Component {
   constructor(props) {

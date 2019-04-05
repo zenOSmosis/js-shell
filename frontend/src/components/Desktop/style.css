@@ -1,16 +1,29 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-size: 12px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   background-color: #282c34 !important;
+  color: #fff;
 
   overflow: hidden;
+}
+
+h1 {
+  font-size: 1.4rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: #fff;
+  padding: 8px;
+  margin: 8px;
 }
 
 html {
@@ -30,26 +43,42 @@ html {
 }
 
 *:not(input[type="radio"]) {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
+
+/*
 input,
 button {
-  background-color: #545864 !important;
-  color: #ccc !important;
+  background-color: #545864;
+  color: #fff;
   border: 1px #ccc solid;
+
+  padding: 0rem .4rem;
+  font-size: .8rem;
+}
+
+button {
+  font-size: .8rem !important;
+  border: 1px #ccc solid !important;
+  padding: .2rem .4rem !important;
+}
+
+button[role="menuitem"] {
+  padding: .4rem;
 }
 
 input:hover,
 button:hover {
-  color: #fff !important;
+  color: #fff;
 }
+*/
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -61,19 +90,32 @@ code {
   height: 100%;
 }
 
-.App {
+.Desktop {
   text-align: center;
   background-color: transparent;
   color: white;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
+/*
+.Desktop-logo {
+  animation: Desktop-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
 }
+*/
 
-.App-header {
+/*
+@keyframes Desktop-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+*/
+
+.Desktop-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,18 +124,11 @@ code {
   
 }
 
-.App-link {
+/*
+.Desktop-link {
   color: #61dafb;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+*/
 
 .label {
   font-weight: bold;

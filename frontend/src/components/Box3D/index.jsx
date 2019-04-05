@@ -1,3 +1,5 @@
+// @see https://3dtransforms.desandro.com/cube
+
 import React, {Component} from 'react';
 import './style.css';
 
@@ -32,6 +34,8 @@ export default class Box3D extends Component {
   */
 
   showSide(side) {
+    side = side.toUpperCase();
+
     var showClass = `show-${side}`;
     if (this._currentClass) {
       this._box.classList.remove(this._currentClass);
@@ -46,40 +50,15 @@ export default class Box3D extends Component {
         <div className="Box3DScene">
           <div
             ref={ c => this._box = c }
-            class="Box">
-            <div class="Box__Face Box__Face--Front">Front</div>
-            <div class="Box__Face Box__Face--Back">Back</div>
-            <div class="Box__Face Box__Face--Right">Right</div>
-            <div class="Box__Face Box__Face--Left">Left</div>
-            <div class="Box__Face Box__Face--Top">Top</div>
-            <div class="Box__Face Box__Face--Bottom">Bottom</div>
+            className="Box">
+            <div className="Box__Face Box__Face--FRONT">Front</div>
+            <div className="Box__Face Box__Face--BACK">Back</div>
+            <div className="Box__Face Box__Face--RIGHT">Right</div>
+            <div className="Box__Face Box__Face--LEFT">Left</div>
+            <div className="Box__Face Box__Face--TOP">Top</div>
+            <div className="Box__Face Box__Face--BOTTOM">Bottom</div>
           </div>
         </div>
-        {
-          /*
-           <p style={{whiteSpace: 'nowrap'}} class="radio-group">
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Front" checked /> Front
-            </label>
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Right" /> Right
-            </label>
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Back" /> Back
-            </label>
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Left" /> Left
-            </label>
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Top" /> Top
-            </label>
-            <label>
-              <input type="radio" name="rotate-cube-side" value="Bottom" />Bottom
-            </label>
-          </p>
-          */
-        }
-
       </div>
     );
   }

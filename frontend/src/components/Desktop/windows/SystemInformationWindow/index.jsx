@@ -1,11 +1,15 @@
+// TODO: Implement https://blueprintjs.com/docs/#core/components/hotkeys
+
 import React, { Component } from 'react';
-import { Button, ButtonGroup, ButtonToolbar } from 'reactstrap';
+// import Center from '../../../Center';
+import { Button, ButtonGroup} from '../../../ButtonGroup';
 import RenderObject from '../../../RenderObject';
 import Window from '../../Window';
 import { Grid, GridItem } from '../../../Grid';
 import socket from './../../../../utils/socket.io';
 import systemCommand from '../../../../utils/systemCommand';
 import Icon from '../../../Icon';
+import { SegmentedControl, SegmentedControlItem } from '../../../SegmentedControl';
 
 // speaker-test -c 2
 
@@ -22,7 +26,9 @@ export default class SystemInformationWindow extends Component {
     selectedMode: null,
     renderData: null,
     audioDevices: [],
-    audioHostAPIs: []
+    audioHostAPIs: [],
+
+    selected: 1
   };
 
   componentDidMount() {
@@ -65,6 +71,70 @@ export default class SystemInformationWindow extends Component {
   }
 
   render() {
+    return (
+      <Window
+        {...this.props}
+        title="System Information"
+        description="View system information"
+        toolbar={
+          <ButtonGroup size="small">
+            <Button>
+              Overview
+            </Button>
+            <Button>
+              Displays
+            </Button>
+            <Button>
+              Storage
+            </Button>
+            <Button>
+              Memory
+            </Button>
+            {
+              /*
+              <Button>
+                Processes
+              </Button>
+              */
+            }
+          </ButtonGroup>
+        }
+      >
+        <SegmentedControl>
+          <SegmentedControlItem>Host</SegmentedControlItem>
+          <SegmentedControlItem>Client</SegmentedControlItem>
+        </SegmentedControl>
+      </Window>
+    );
+  }
+
+  /*
+  renderItems() {
+    return [
+      this.renderItem(1, 'Overview', <Text><Label>About this Computer</Label></Text>),
+      this.renderItem(2, 'CPU', <Text>Content 2</Text>),
+      this.renderItem(3, 'Memory', <Text>Content 3</Text>)
+      
+    ];
+  }
+  */
+
+  /*
+  renderItem(key, title, content) {
+    return (
+      <SegmentedControlItem
+        key={key}
+        title={title}
+        selected={this.state.selected === key}
+        onSelect={() => this.setState({ selected: key })}
+      >
+        {content}
+      </SegmentedControlItem>
+    );
+  }
+  */
+
+  oldRender() {
     return (
       <Window
         {...this.props}

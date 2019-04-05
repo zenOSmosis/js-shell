@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import Desktop from '../Desktop';
 import {WindowLifecycleEvents, EVT_WINDOW_DID_ACTIVATE, EVT_WINDOW_TITLE_DID_SET} from './../../../components/Desktop/Window';
 import './style.css';
+import {Select, Option} from '../../Select';
+import Window from '../Window';
+import Button from '../../Button';
+import Menubar from '../Menubar';
+import {Icon, Menu, Dropdown} from 'antd';
+
 
 export default class Panel extends Component {
   state = {
@@ -20,12 +26,13 @@ export default class Panel extends Component {
       const masterLifecycleEvents = new WindowLifecycleEvents();
       masterLifecycleEvents.on(EVT_WINDOW_DID_ACTIVATE, (controlUIWindow) => {
         const controlUIWindowTitle = controlUIWindow.state.title;
-  
+
         this.setState({
           controlUIWindow,
           controlUIWindowTitle
         });
       });
+
       masterLifecycleEvents.on(EVT_WINDOW_TITLE_DID_SET, (controlUIWindow) => {
         const controlUIWindowTitle = controlUIWindow.state.title;
   
@@ -43,25 +50,39 @@ export default class Panel extends Component {
   render() {
     const {desktop, children, className, ...propsRest} = this.props;
 
+    const menu = (
+      <Menu>
+        <Menu.Item key="2">Debug</Menu.Item>
+        <Menu.Item key="3">Close</Menu.Item>
+      </Menu>
+    );
+    
+
     return (
       <div
         {...propsRest}
         className={`DesktopPanel Horizontal ${className ? className : ''}`}
       >
         <div className="DesktopPanelColumnLeft">
-          {
-            this.state.controlUIWindow &&
-            this.state.controlUIWindowTitle
-          }
+          <div className="ApplicationTitle">
+            <Menubar />
+            {
+              this.state.controlUIWindowTitle &&
+              <Dropdown overlay={menu} trigger={['click']}>
+                <span style={{ userSelect: 'none' }}>{this.state.controlUIWindowTitle}</span>
+              </Dropdown>
+            }
+          </div>
         </div>
 
         <div className="DesktopPanelColumnCenter">
-          <button onClick={evt => desktop.createWindow()}>+</button>
-          <button onClick={evt => desktop.createSystemInformationWindow()}>View System Information</button>
+
         </div>
 
         <div className="DesktopPanelColumnRight">
-          [right]
+          <button style={{backgroundColor: 'transparent', padding: 0, color: '#fff', border: 0}}>
+            <Icon type="menu-unfold" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
+          </button>
         </div>
       </div>
     );

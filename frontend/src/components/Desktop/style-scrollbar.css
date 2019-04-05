@@ -1,0 +1,30 @@
+
+/* Customize website's scrollbar like Mac OS
+Not supports in Firefox and IE.
+
+This essentially makes Chrome's scrollbar styling
+to look similar Firefox's.
+*/
+
+/* total width */
+*::-webkit-scrollbar {
+  width:8px;
+}
+
+/* background of the scrollbar except button or resizer */
+*::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0,.2);
+}
+
+/* scrollbar itself */
+*::-webkit-scrollbar-thumb {
+  background-color:#313131;
+  border-radius:16px;
+  border: 1px solid rgba(255,255,255,.4);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color:#3d3d3d;
+}
+
+/* set button(top and bottom of the scrollbar) */
+*::-webkit-scrollbar-button {display:none}
