@@ -1,6 +1,9 @@
-import React, {Component} from 'react';
-import Draggable from 'react-draggable';
+import React, { Component } from 'react';
+import Cover from '../../Cover';
+import BodyCoverContent from './BodyCoverContent';
+import Moveable from '../../Moveable';
 import ViewTransition from '../../ViewTransition';
+import WindowHeader from './WindowHeader';
 import $ from 'jquery';
 import './style.css';
 import {
@@ -20,9 +23,11 @@ import {
   EVT_WINDOW_WILL_HIDE,
   EVT_WINDOW_DID_HIDE,
   EVT_WINDOW_WILL_UNHIDE,
-  EVT_WINDOW_DID_UNHIDE
+  EVT_WINDOW_DID_UNHIDE,
+  EVT_WINDOW_WILL_RESIZE,
+  EVT_WINDOW_DID_RESIZE
 } from './windowEvents';
-import WindowResizableLayer from './WindowResizableLayer';
+import Resizable from '../../Resizable';
 
 // import * as MacOS from 'react-desktop/macOs';
 
@@ -54,10 +59,10 @@ export default class Window extends Component {
     this.isClosed = false;
 
     windowStack.push(this);
-    
+
     this.lifecycleEvents = new WindowLifecycleEvents(this);
 
-    this._startDate = new Date();
+    this.startDate = new Date();
 
     this.lifecycleEvents.broadcast = (() => {
       const oBroadcast = this.lifecycleEvents.broadcast;
@@ -67,7 +72,7 @@ export default class Window extends Component {
         if (typeof this.props[`on${eventName}`] === 'function') {
           this.props[`on${eventName}`](this);
         }
-        
+
         return oBroadcast.apply(this.lifecycleEvents, args);
       };
     })();
@@ -77,19 +82,24 @@ export default class Window extends Component {
 
   getUptime() {
     // TODO: Return time difference from start date
-    return this._startDate;
+    return this.startDate;
   }
 
+  /*
   _startInteractListening() {
     $(window).on('mousedown', this._onInteract);
     $(window).on('touchstart', this._onInteract);
   }
+  */
 
+  /*
   _stopInteractListening() {
     $(window).off('mousedown', this._onInteract);
     $(window).off('touchstart', this._onInteract);
   }
+  */
 
+  /*
   _onInteract = (evt) => {
     if (this.isClosed) {
       return;
@@ -98,12 +108,13 @@ export default class Window extends Component {
     const base = this._base._base;
 
     if (base === evt.target ||
-        $.contains(base, evt.target)) {
+      $.contains(base, evt.target)) {
       this.activate();
     } else {
-      this.deactivate(); 
+      this.deactivate();
     }
   };
+  */
 
   activate() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
@@ -144,7 +155,7 @@ export default class Window extends Component {
       return;
     }
 
-    this._startInteractListening();
+    // this._startInteractListening();
 
     this.setTitle(this.props.title);
 
@@ -167,7 +178,9 @@ export default class Window extends Component {
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
 
-    this._stopInteractListening();
+    if (this._stopInteractListening) {
+      this._stopInteractListening();
+    }
 
     // TODO: Rework base parsing
     const base = this._base._base;
@@ -199,7 +212,7 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_HIDE);
 
     // TODO: display: none
-    
+
     alert('hide');
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
@@ -258,16 +271,126 @@ export default class Window extends Component {
     await base.animate(effect);
   }
 
+  moveTo(posX, posY) {
+    this.moveable.moveTo(posX, posY);
+  }
+
+  /**
+   * Sets the outer window chrome (including resizable layer) width & height.
+   * 
+   * @param {number} width 
+   * @param {number} height 
+   */
+  setOuterSize(width, height) {
+    $(this.moveable).css({
+      width,
+      height
+    });
+
+    const $header = $(this.windowHeader);
+    const headerHeight = $header.outerHeight();
+
+    const bodyHeight = height - headerHeight;
+
+    console.debug({
+      headerHeight,
+      bodyHeight,
+      height
+    });
+
+    // this.setBodySize('100%', bodyHeight);
+  }
+
+  /**
+   * Sets the inner window body content width & height.
+   * 
+   * @param {number} width 
+   * @param {number} height 
+   */
+  setBodySize(width, height) {
+    this._callResize(() => {
+      $(this.subBody).css({
+        width: width,
+        height: height
+      });
+    });
+  }
+
+  /*
+  getCalculatedWindowSize() {
+
+  }
+  */
+
+  _callResize(resizeHandler) {
+    const { onWindowResize } = this.props;
+
+    // this.bodyCover.setIsVisible(true);
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
+
+    resizeHandler();
+
+    if (typeof onWindowResize === 'function') {
+      onWindowResize({
+        bodySize: this.getCalculatedBodySize()
+      });
+    }
+
+    // this.bodyCover.setIsVisible(false);
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
+  }
+
+  getCalculatedBodySize() {
+    const bodyCalcStyle = window.getComputedStyle(this.windowBody);
+
+    const width = parseInt(bodyCalcStyle.getPropertyValue('width'));
+    const height = parseInt(bodyCalcStyle.getPropertyValue('height'));
+
+    return {
+      width,
+      height
+    }
+  }
+
+  /**
+   * Called when the <Resizable /> layer has been resized.
+   */
+  _handleTouchResize = (resizeData) => {
+    setTimeout(() => {
+      console.debug('window resize data', resizeData);
+
+      const $windowBody = $(this.windowBody);
+
+      const bodyCalcSize = this.getCalculatedBodySize();
+      /*
+      const bodyCalcSize = {
+        width: $windowBody.width(),
+        height: $windowBody.height()
+      };
+      */
+      this.setBodySize(bodyCalcSize.width, bodyCalcSize.height);
+
+      // const {width, height, mainWidth, mainHeight} = resizeData;
+
+      // this.setOuterSize(width, height);
+    }, 20);
+
+  };
+
   render() {
-    let {children, className, initialWidth, initialHeight, toolbar, toolbarRight, subToolbar, bodyStyle, title: propsTitle, ...propsRest} = this.props;
+    let { children, className, description, initialWidth, initialHeight, toolbar, toolbarRight, subToolbar, bodyStyle, title: propsTitle, onWindowResize, ...propsRest } = this.props;
     const title = this.state.title || propsTitle;
     toolbar = toolbar || title;
 
-    bodyStyle = Object.assign({}, bodyStyle, {
-      // TODO: Refactor hardcoded styling
-      width: '100%',
-      height: 400
-    });
+    // TODO: Remove hardcoded position
+    /*
+    const pos = {
+      x: 50,
+      y: 50
+    };
+    */
 
     // Width & height of 0 on backing div is important for allowing windows to
     // move if two, or more windows, are created on the same coordinates
@@ -280,100 +403,118 @@ export default class Window extends Component {
 
     return (
       <ViewTransition
-        ref={ c => this._base = c }
+        ref={c => this._base = c}
         className={`${className ? className : ''}`}
         // Important to note that the width & height of the transition layer
         // is intentionally kept at 0 width / height
-        style={{position: 'absolute', width: 0, height: 0}}
+        style={{ position: 'absolute', width: 0, height: 0 }}
         effect={null}
       >
-        <Draggable
-          scale={1}
+        {
+          /*
+          <Draggable
+            scale={1}
+          >
+          */
+        }
+
+        <Moveable
+          ref={c => this.moveable = c}
+        // posX={pos.x}
+        // posY={pos.y}
         >
-        
-        <WindowResizableLayer>
-        <div
-          {...propsRest}
-          className={`Window ${this.state.isActive ? 'Active' : ''}`}
-        >
-            <div className="WindowHeader">
-              <div>
+
+          <Resizable
+            onResize={this._handleTouchResize}
+            moveableComponent={this.moveable}
+            // minWidth={}
+            // minHeight={}
+            // maxWidth={}
+            // maxHeight={}
+          >
+            <Cover>
+
+              <div
+                {...propsRest}
+                className={`Window ${this.state.isActive ? 'Active' : ''}`}
+              >
+                <WindowHeader
+                  ref={ c => this.windowHeader = c }
+                  desktopWindow={this}
+                  toolbar={toolbar}
+                  toolbarRight={toolbarRight}
+                  subToolbar={subToolbar}
+                />
+
                 {
-                  // TODO: Move styles to CSS declaration
+                  /*
+                  <MacOS.TitleBar
+                    // title={title}
+                    controls
+                    inset
+                    style={{padding: '0px', height: '24px'}} 
+                  >
+                    <MacOS.Toolbar style={{width: '100%', position: 'absolute', fontWeight: 'bold'}}>
+                      {
+                        toolbar
+                      }
+                    </MacOS.Toolbar>
+                  </MacOS.TitleBar>
+                  */
                 }
-                <div style={{width: '100%', textAlign: 'center', fontWeight: 'bold'}}>
+
+                {
+                  // TODO: Apply pixel size to window body
+                }
+                <div
+                  ref={c => this.windowBody = c}
+                  className="WindowBody"
+                >
+                  <Cover
+                    ref={c => this.subBody = c}
+                    style={bodyStyle}
+                  >
+                    {
+                      children
+                    }
+                  </Cover>
+
+                  <Cover
+                    ref={c => this.bodyCover = c}
+                    defaultIsVisible={false}
+                  >
+                    <BodyCoverContent />
+                  </Cover>
+                </div>
+
+                <div>
                   {
-                    toolbar
+                    /*
+                    [bottom]
+                    */
                   }
                 </div>
-                <div style={{position: 'absolute', left: 0, top: 0}} className="column left">
-                  <button 
-                    className="Dot Red"
-                    onClick={ (evt) => this.close() }
-                  ></button>
-                  <button
-                    className="Dot Yellow"
-                    onClick={ (evt) => this.toggleMinimize() }
-                  ></button>
-                  <button
-                    className="Dot Green"
-                    onClick={ (evt) => this.toggleMaximize() }
-                  ></button>
-                </div>
-                <div style={{position: 'absolute', right: 0, top: 0}} className="column right">
-                  {
-                    toolbarRight
-                  }
-                </div>
-              </div>
 
-              <div>
-                {
-                  subToolbar
-                }
               </div>
-            </div>
+            </Cover>
 
             {
-            /*
-            <MacOS.TitleBar
-              // title={title}
-              controls
-              inset
-              style={{padding: '0px', height: '24px'}} 
-            >
-              <MacOS.Toolbar style={{width: '100%', position: 'absolute', fontWeight: 'bold'}}>
-                {
-                  toolbar
-                }
-              </MacOS.Toolbar>
-            </MacOS.TitleBar>
-            */
+              /*
+              <Cover>
+                [ TOTAL WINDOW COVER ]
+              </Cover>
+              */
             }
-            
-            {
-              // TODO: Apply pixel size to window body
-            }
-            <div className="WindowBody"
-              style={bodyStyle}
-              // onMouseDown={(evt) => evt.stopPropagation()}
-            >
-              {
-                children
-              }
-            </div>
-            
-            <div>
-              {
-                /*
-                [bottom]
-                */
-              }
-            </div>
 
-          </div>
-          </WindowResizableLayer>
-        </Draggable>
+          </Resizable>
+        </Moveable>
+
+        {
+          /*
+          </Draggable>
+          */
+        }
+
       </ViewTransition>
     );
   }

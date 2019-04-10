@@ -34,6 +34,12 @@ export default class Carousel3D extends Component {
     this._theta = 360 / this.state.totalCells;
     const cellSize = this._isHorizontal ? this._cellWidth : this._cellHeight;
     this._radius = Math.round((cellSize / 2) / Math.tan(Math.PI / this.state.totalCells));
+
+    if (!this._cells) {
+      console.warn('Cells are not yet available');
+      return;
+    }
+
     for (var i = 0; i < this._cells.length; i++) {
       var cell = this._cells[i];
       if (i < this.state.totalCells) {
@@ -58,6 +64,11 @@ export default class Carousel3D extends Component {
   }
 
   _parse() {
+    if (!this._carousel) {
+      console.warn('Carousel is not yet available');
+      return;
+    }
+
     this._cells = this._carousel.querySelectorAll('.Carousel__Cell');
     this._selectedIndex = 0;
     this._cellWidth = this._carousel.offsetWidth;

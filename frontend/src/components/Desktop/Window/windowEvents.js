@@ -17,8 +17,8 @@ export const EVT_WINDOW_DID_ACTIVATE = 'windowdidactivate';
 // export const EVT_WINDOW_WILL_MOVE = 'window-will-move';
 // export const EVT_WINDOW_DID_MOVE = 'window-did-move';
 
-// export const EVT_WINDOW_WILL_RESIZE = 'window-will-resize';
-// export const EVT_WINDOW_DID_RESIZE = 'window-did-resize';
+export const EVT_WINDOW_WILL_RESIZE = 'window-will-resize';
+export const EVT_WINDOW_DID_RESIZE = 'window-did-resize';
 
 export const EVT_WINDOW_WILL_MINIMIZE = 'windowwillminimize';
 export const EVT_WINDOW_DID_MINIMIZE = 'windowdidminimize';
@@ -131,6 +131,14 @@ export class WindowLifecycleEvents extends Events {
           instance.windowDidUnhide(window);
         break;
 
+        case EVT_WINDOW_WILL_RESIZE:
+          instance.windowWillResize(window);
+        break;
+
+        case EVT_WINDOW_DID_RESIZE:
+          instance.windowDidResize(window);
+        break;
+
         default:
           throw new Error(`Unhandled broadcast event with name ${eventName}`);
       }
@@ -209,5 +217,13 @@ export class WindowLifecycleEvents extends Events {
 
   windowDidUnhide(window) {
     this.emit(EVT_WINDOW_DID_UNHIDE, window);
+  }
+
+  windowWillResize(window) {
+    this.emit(EVT_WINDOW_WILL_RESIZE, window);
+  }
+
+  windowDidResize(window) {
+    this.emit(EVT_WINDOW_DID_RESIZE, window);
   }
 }

@@ -1,3 +1,48 @@
 .Resizable {
-  
+  display: table;
+}
+
+.Resizable .TableRow {
+  display: table-row;
+}
+
+.Resizable .TableCell {
+  display: table-cell;
+  position: relative;
+}
+
+.Resizable .RSControl {
+  border: 3px transparent solid;
+}
+
+.Resizable .RSControl.Top {
+  cursor: n-resize;
+}
+
+.Resizable .RSControl.TopRight {
+  cursor: ne-resize;
+}
+
+.Resizable .RSControl.Right {
+  cursor: e-resize;
+}
+
+.Resizable .RSControl.BottomRight {
+  cursor: se-resize;
+}
+
+.Resizable .RSControl.Bottom {
+  cursor: s-resize;
+}
+
+.Resizable .RSControl.BottomLeft {
+  cursor: sw-resize;
+}
+
+.Resizable .RSControl.Left {
+  cursor: w-resize;
+}
+
+.Resizable .RSControl.TopLeft {
+  cursor: nw-resize;
 }

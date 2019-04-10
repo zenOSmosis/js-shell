@@ -6,7 +6,7 @@ const {SubMenu, ItemGroup: MenuItemGroup} = Menu;
 
 export default class ContextMenu extends Component {
   state = {
-    visible: false,
+    isVisible: false,
   };
 
   componentDidMount() {
@@ -22,9 +22,16 @@ export default class ContextMenu extends Component {
   }
 
   _handleContextMenu = (event) => {
+    let {isTrapping} = this.props;
+    isTrapping = (typeof isTrapping === 'undefined' ? true : isTrapping);
+
+    if (!isTrapping) {
+      return;
+    }
+
     event.preventDefault();
 
-    this.setState({ visible: true });
+    this.setState({ isVisible: true });
 
     const clickX = event.clientX;
     const clickY = event.clientY;
@@ -56,16 +63,16 @@ export default class ContextMenu extends Component {
   };
 
   _handleDocClick = (event) => {
-    const { visible } = this.state;
+    const { isVisible } = this.state;
     const wasOutside = !(event.target.contains === this._overlay);
 
-    if (wasOutside && visible) this.setState({ visible: false, });
+    if (wasOutside && isVisible) this.setState({ isVisible: false, });
   };
 
   _handleDocScroll = () => {
-    const { visible } = this.state;
+    const { isVisible } = this.state;
 
-    if (visible) this.setState({ visible: false, });
+    if (isVisible) this.setState({ isVisible: false, });
   };
 
   _handleClick = (e) => {
@@ -73,8 +80,8 @@ export default class ContextMenu extends Component {
   }
 
   render() {
-    const { children, className, ...propsRest } = this.props;
-    const { visible } = this.state;
+    const { children, className, isTrapping, ...propsRest } = this.props;
+    const { isVisible } = this.state;
 
     return (
       <div
@@ -85,7 +92,7 @@ export default class ContextMenu extends Component {
           children
         }
         {
-          visible &&
+          isVisible &&
           <div ref={ref => { this._overlay = ref }} className="ContextMenuOverlay">
             <Menu getPopupContainer={trigger => trigger.parentNode} onClick={this._handleClick} style={{ width: 256 }} mode="vertical">
               <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from '../../Window';
+import {Button, ButtonGroup} from '../../../ButtonGroup';
 
 export default class WindowManager extends Component {
   state = {
@@ -46,36 +47,42 @@ export default class WindowManager extends Component {
 
   render() {
     const {...propsRest} = this.props;
+    const {windowStack} = this.state;
 
     return (
       <Window
         {...propsRest}
         title="Window Manager"
-        about="Manages open windows"
+        description="Manages open windows"
       >
         {
-          this.state.windowStack.map((window, idx) => {
+          windowStack.map((window, idx) => {
             console.debug('to render', window);
             
             return (
               <div key={idx}>
-                <div
-                  style={{textAlign: 'left'}}
-                >
-                  <div>
-                    <button onClick={ (evt) => this.closeWindow(window) }>Close</button>
-                    <button
+                <div>
+                  <ButtonGroup>
+                    <Button onClick={ (evt) => this.closeWindow(window) }>Close</Button>
+                    <Button
                       onClick={ (evt) => window.minimize() }
-                    >Minimize</button>
-                    <button>Maximize</button>
-                    <button>Bring to Front</button>
-                  </div>
-                    {window.state.title} {JSON.stringify(window.getUptime())}
-                    {
-                      // TODO: Include clock for window uptime
-                    }
+                    >Minimize</Button>
+                    <Button>Maximize</Button>
+                    <Button>Bring to Front</Button>
+                  </ButtonGroup>
                 </div>
-                <hr />
+
+                <div>
+                  {window.state.title} {JSON.stringify(window.getUptime())}
+                  {
+                    // TODO: Include clock for window uptime
+                  }
+                </div>
+                
+                {
+                  idx < windowStack.length &&
+                  <hr />
+                }
               </div>
             )
           })

@@ -1,8 +1,6 @@
 .Window {
-  /* TODO: Change these values */
-  min-width: 400px;
-  min-height: 400px;
-
+  width: 100%;
+  height: 100%;
   background-color: rgba(0,0,0,.8);
   color: #fff;
   border: 1px rgb(112, 112, 112) solid;
@@ -75,49 +73,4 @@
   overflow: hidden;
   text-align: center;
   position: relative;
-}
-
-.WindowResizableLayer {
-  display: table;
-}
-
-.WindowResizableLayer .TableRow {
-  display: table-row;
-}
-
-.WindowResizableLayer .TableCell {
-  display: table-cell;
-  border: 1px transparent solid;
-}
-
-.WindowResizableLayer .RSControl.Top {
-  cursor: n-resize;
-}
-
-.WindowResizableLayer .RSControl.TopRight {
-  cursor: ne-resize;
-}
-
-.WindowResizableLayer .RSControl.Right {
-  cursor: e-resize;
-}
-
-.WindowResizableLayer .RSControl.BottomRight {
-  cursor: se-resize;
-}
-
-.WindowResizableLayer .RSControl.Bottom {
-  cursor: s-resize;
-}
-
-.WindowResizableLayer .RSControl.BottomLeft {
-  cursor: sw-resize;
-}
-
-.WindowResizableLayer .RSControl.Left {
-  cursor: w-resize;
-}
-
-.WindowResizableLayer .RSControl.TopLeft {
-  cursor: nw-resize;
 }

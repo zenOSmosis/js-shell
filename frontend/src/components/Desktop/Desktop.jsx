@@ -86,7 +86,9 @@ export default class Desktop extends Component {
   render() {
     return (
       <FullViewport className="Desktop">
-        <ContextMenu>
+        <ContextMenu
+          isTrapping={false}
+        >
           {
             // TODO: Remove hardcoded src
           }

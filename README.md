@@ -2,6 +2,15 @@
 
 A prototype, web-based program launcher, with GPU selector, for Linux.
 
+## Potential Usage Scenarios
+
+ - "See inside" a Docker container / remote server.
+ - Launch applications with custom environment (e.g. launch Linux applications attached to a GPU).
+ - Launch and control remote applications on a remote device.
+ - Control hardware / software configuration remotely.
+ - Use a computer remotely.
+ - Desktop application streaming.
+
 ## Current State
 
 Redundant & messy.
