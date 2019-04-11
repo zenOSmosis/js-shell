@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DesktopAppRunConfig from '../DesktopAppRunConfig';
 import Cover from '../../Cover';
 import BodyCoverContent from './BodyCoverContent';
 import Moveable from '../../Moveable';
@@ -155,9 +156,16 @@ export default class Window extends Component {
       return;
     }
 
-    // this._startInteractListening();
+    const {appConfig} = this.props;
+    if (appConfig) {
+      const title = appConfig.getTitle();
 
-    this.setTitle(this.props.title);
+      this.setTitle(title);
+    } else {
+      this.setTitle(this.props.title);
+    }
+
+    // this._startInteractListening();
 
     this.activate();
 
@@ -194,6 +202,10 @@ export default class Window extends Component {
   // TODO: Convert into 'metaProperty'
   // metaProperty will set / did set
   setTitle(title) {
+    if (!title) {
+      console.warn('Ignoring empty title');
+    }
+
     this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
     this.setState({
       title
@@ -380,9 +392,8 @@ export default class Window extends Component {
   };
 
   render() {
-    let { children, className, description, initialWidth, initialHeight, toolbar, toolbarRight, subToolbar, bodyStyle, title: propsTitle, onWindowResize, ...propsRest } = this.props;
-    const title = this.state.title || propsTitle;
-    toolbar = toolbar || title;
+    let {appConfig, children, className, description, initialWidth, initialHeight, toolbar, toolbarRight, subToolbar, bodyStyle, title: propsTitle, onWindowResize, ...propsRest} = this.props;
+    const {title} = this.state;
 
     // TODO: Remove hardcoded position
     /*
@@ -441,6 +452,7 @@ export default class Window extends Component {
                 <WindowHeader
                   ref={ c => this.windowHeader = c }
                   desktopWindow={this}
+                  title={title}
                   toolbar={toolbar}
                   toolbarRight={toolbarRight}
                   subToolbar={subToolbar}

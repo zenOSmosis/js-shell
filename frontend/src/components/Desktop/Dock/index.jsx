@@ -1,15 +1,22 @@
 import Desktop from '../Desktop';
 import React, { Component } from 'react';
+import ViewTransition from '../../ViewTransition';
+import {DesktopAppRunConfigLinkedState} from '../DesktopAppRunConfig';
 import Image from '../../Image';
 import { Tooltip } from 'antd';
-// import AppMenuWindow from '../windows/AppMenuWindow';
-import AppMenuWindow from '../windows/HelloWorldWindow';
-import Files from '../windows/Files';
-import Code from '../windows/Code';
-import WindowManager from '../windows/WindowManager';
 import './style.css';
 
 export default class Dock extends Component {
+  state = {
+    runConfigs: []
+  }
+
+  constructor() {
+    super();
+
+    this._runConfigLinkedState = new DesktopAppRunConfigLinkedState();
+  }
+
   componentDidMount() {
     const { desktop } = this.props;
     if (!(desktop instanceof Desktop)) {
@@ -17,10 +24,27 @@ export default class Dock extends Component {
     }
 
     this._desktop = desktop;
+
+    // TODO: Refactor
+    (() => {
+      const runConfigs = this._runConfigLinkedState.getRunConfigs();
+
+      console.debug('current run configs', runConfigs);
+
+      this.setState({
+        runConfigs
+      });
+
+      /*
+      runConfigs.forEach(runConfig => {
+        desktop.createWindow(runConfig._desktopWindows[0]);
+      });
+      */
+    })();
   }
 
   render() {
-    const { className, desktop, ...propsRest } = this.props;
+    const {className, desktop, ...propsRest} = this.props;
 
     return (
       <div
@@ -28,50 +52,32 @@ export default class Dock extends Component {
         className={`DesktopDock ${className ? className : ''}`}
       >
         <div className="DesktopDockItems">
-          <Tooltip autoAdjustOverflow={true} title="app 1">
-            <button
-              onClick={evt => desktop.createWindow(<AppMenuWindow />)}
-              style={{borderBottom: '5px blue solid'}}
-            >
-              <Image src="http://localhost:3001/icons?iconName=rocket-launch/rocket-launch.svg" height="40px" style={{ paddingLeft: 5, paddingRight: 5 }} />
-            </button>
-          </Tooltip>
+          {
+            this.state.runConfigs.map((runConfig, idx) => {
+              const {_defaultIconSrc} = runConfig;
 
-          <Tooltip autoAdjustOverflow={true} title="app 2">
-            <button
-              onClick={evt => desktop.createWindow(<Files />)}
-              style={{borderBottom: '5px transparent solid'}}
-            >
-              <Image src="http://localhost:3001/icons?iconName=folder/folder.svg" height="40px" style={{ paddingLeft: 5, paddingRight: 5 }} />
-            </button>
-          </Tooltip>
+              if (!_defaultIconSrc) {
+                return;
+              }
 
-          <Tooltip autoAdjustOverflow={true} title="app 3">
-            <button
-              onClick={evt => desktop.createSystemInformationWindow()}
-              style={{borderBottom: '5px transparent solid'}}
-            >
-              <Image src="http://localhost:3001/icons?iconName=control-panel/control-panel.svg" height="40px" style={{ paddingLeft: 5, paddingRight: 5 }} />
-            </button>
-          </Tooltip>
-
-          <Tooltip autoAdjustOverflow={true} title="app 4">
-            <button
-              onClick={evt => desktop.createWindow(<Code />)}
-              style={{borderBottom: '5px transparent solid'}}
-            >
-              <Image src="http://localhost:3001/icons?iconName=code/code.svg" height="40px" style={{ paddingLeft: 5, paddingRight: 5 }} />
-            </button>
-          </Tooltip>
-
-          <Tooltip autoAdjustOverflow={true} title="app 5">
-            <button
-              onClick={evt => desktop.createWindow(<WindowManager />)}
-              style={{borderBottom: '5px transparent solid'}}
-            >
-              <Image src="http://localhost:3001/icons?iconName=windows/windows.svg" height="40px" style={{ paddingLeft: 5, paddingRight: 5 }} />
-            </button>
-          </Tooltip>
+              // TODO: Convert to DockItem (or equiv.) class
+              return (
+                <ViewTransition
+                  key={idx}
+                  effect="wobble"
+                  style={{borderBottom: '5px blue solid', margin: '0px 5px'}}
+                >
+                  <Tooltip title={runConfig._defaultTitle}>
+                    <button
+                      onClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
+                    >
+                      <Image src={runConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
+                    </button>
+                  </Tooltip>
+                </ViewTransition>
+              );
+            })
+          }
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from '../../Window';
-import {Button, ButtonGroup} from '../../../ButtonGroup';
+import appConfig from './appConfig';
+import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from '../../components/Desktop/Window';
+import {Button, ButtonGroup} from '../../components/ButtonGroup';
 
 export default class WindowManager extends Component {
   state = {
@@ -52,8 +53,7 @@ export default class WindowManager extends Component {
     return (
       <Window
         {...propsRest}
-        title="Window Manager"
-        description="Manages open windows"
+        appConfig={appConfig}
       >
         {
           windowStack.map((window, idx) => {

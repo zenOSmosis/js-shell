@@ -46,6 +46,9 @@ export default class XTerm extends Component {
         {...this.props}
         title="XTerm"
       >
+        {
+          // TODO: Remove hardcoded value
+        }
         <iframe src="http://localhost:8080" style={{border: 0, width: 500, height: 400}}></iframe>
       </Window>
     );

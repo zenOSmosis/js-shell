@@ -11,13 +11,6 @@ export default class Cover extends Component {
     this.setIsVisible(defaultIsVisible);
   }
 
-  componentWillUpdate() {
-    /*
-    const {isVisible} = this.props;
-    this.setIsVisible(isVisible);
-    */
-  }
-
   setIsVisible(isVisible) {
     if (typeof isVisible === 'undefined') {
       let {defaultIsVisible} = this.props;
@@ -25,8 +18,6 @@ export default class Cover extends Component {
 
       isVisible = defaultIsVisible;
     }
-
-    console.debug('isVisible', isVisible);
     
     if (isVisible !== this.state.isVisible) {
       this.setState({
@@ -37,8 +28,6 @@ export default class Cover extends Component {
 
   render() {
     const {children, className, defaultIsVisible, ...propsRest} = this.props;
-    // const {isVisible} = this.state;
-
     const isVisible = this.state.isVisible;
 
     return (

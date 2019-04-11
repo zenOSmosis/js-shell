@@ -1,40 +1,84 @@
 import React, { Component } from 'react';
 import Panel from './Panel';
 // import logo from './logo.svg';
-import 'normalize.css/normalize.css';
-import 'bootstrap/dist/css/bootstrap.css';
-// import * as Blueprint from '../toolkits/Blueprint';
-import 'antd/dist/antd.css';
-import './style.css';
-import './style-scrollbar.css';
 import ContextMenu from './../../components/ContextMenu';
 import Dock from './Dock';
-import BackgroundSelectionWindow from './windows/BackgroundSelectionWindow';
-import SystemInformationWindow from './../../components/Desktop/windows/SystemInformationWindow';
 import FullViewport from './../../components/FullViewport';
 import Background from './../../components/Background';
 import Window from './../../components/Desktop/Window';
 import NoHostConnectionModal from './modals/NoHostConnectionModal';
+// import DesktopAppRunConfig from './DesktopAppRunConfig';
+import DesktopLinkedState, { EVT_BROADCAST_STATE_UPDATE } from '../../state/DesktopLinkedState';
 import socket from '../../utils/socket.io';
+import config from '../../config';
+import { notification } from 'antd';
+import 'normalize.css/normalize.css';
+// import 'bootstrap/dist/css/bootstrap.css'; // TODO: Remove bootstrap
+import 'antd/dist/antd.css';
+import './style.css';
+import './style-scrollbar.css';
+
+import defaultApps from '../../apps/defaultApps';
+console.debug('default apps', defaultApps);
 
 export default class Desktop extends Component {
   state = {
-    appMenuOpenCode: -1,
-    socketInfoOpenCode: -1,
-
     wallpaperPaths: [],
 
     controlUIWindow: null,
     controlUIWindowTitle: null,
 
-    desktopWindows: []
+    desktopWindows: [],
+
+    contextMenuIsTrapping: config.contextMenuIsTrapping
   };
+
+  constructor(props) {
+    super(props);
+
+    this._desktopLinkedState = new DesktopLinkedState();
+    this._desktopLinkedState.setState({
+      desktop: this
+    });
+  }
 
   componentDidMount() {
     this.fetchWallpaperPaths();
 
-    // this.createWindow(<Shape3DTesterWindow />);
-    this.createWindow(<BackgroundSelectionWindow />);
+    this._desktopLinkedState.on(EVT_BROADCAST_STATE_UPDATE, (updatedState) => {
+      const { contextMenuIsTrapping } = updatedState;
+
+      if (typeof contextMenuIsTrapping !== 'undefined') {
+        this.setState({
+          contextMenuIsTrapping
+        }, () => {
+          this.createNotification({
+            message: `Native context-menu trapping is ${contextMenuIsTrapping ? 'enabled' : 'disabled'}`,
+            // description: 'This is the description',
+            /*
+            onClick: () => {
+              alert('You clicked the notification');
+            }
+            */
+          })
+        });
+      }
+
+      const { lastNotification } = updatedState;
+      if (typeof lastNotification !== 'undefined') {
+        this.createNotification(lastNotification);
+      }
+    });
+  }
+
+  createNotification(options) {
+    const { message, description, onClick } = options;
+
+    notification.open({
+      message,
+      description,
+      onClick
+    });
   }
 
   fetchWallpaperPaths() {
@@ -47,9 +91,35 @@ export default class Desktop extends Component {
     });
   }
 
+  // TODO: Remove
+  /*
   onAppSelect = (app) => {
     console.debug(app);
   }
+  */
+
+  /*
+  importAppConfiguration(runConfig) {
+
+    const {icon, title, mainWindow} = processInfo;
+
+    const runConfig = new DesktopAppRunConfig(this);
+
+    if (icon) {
+      runConfig.setIcon(icon);
+    }
+
+    if (title) {
+      runConfig.setTitle(title);
+    }
+
+    if (mainWindow) {
+      runConfig.addWindow(mainWindow);
+    }
+
+    return runConfig;
+  }
+  */
 
   createWindow(props = {}) {
     let desktopWindow;
@@ -60,12 +130,12 @@ export default class Desktop extends Component {
       // TODO: Differentiate key
       desktopWindow = <Window key={props.title} {...props} />
     }
-    
+
     let { desktopWindows } = this.state;
     desktopWindows.push(
       <div
         key={this.state.desktopWindows.length}
-        style={{position: 'absolute', width: 0, height: 0}}
+        style={{ position: 'absolute', width: 0, height: 0 }}
       >
         {
           desktopWindow
@@ -78,46 +148,19 @@ export default class Desktop extends Component {
     });
   }
 
-  createSystemInformationWindow() {
-    let desktopWindow = <SystemInformationWindow />
-    this.createWindow(desktopWindow);
-  }
-
   render() {
     return (
       <FullViewport className="Desktop">
         <ContextMenu
-          isTrapping={false}
+          isTrapping={this.state.contextMenuIsTrapping}
         >
-          {
-            // TODO: Remove hardcoded src
-          }
-          <Background src={`http://localhost:3001/files?filePath=${this.state.wallpaperPaths[0]}`}>
+          <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
             <Panel desktop={this} />
-
-            
-            
-            {
-              // <img src={logo} className="App-logo" alt="logo" />
-            }
-
             <div>
               {
                 this.state.desktopWindows.map((desktopWindow) => {
                   return desktopWindow;
                 })
-              }
-              
-              {
-                /*
-                <XTermWindow />
-                <AppMenuWindow />
-                <VideoPlayerWindow />
-                <WebampPlayer />
-                <HelloWorldWindow />
-                <SystemInformationWindow />
-                <WindowManager />
-                */
               }
             </div>
 

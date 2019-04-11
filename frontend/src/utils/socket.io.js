@@ -1,6 +1,10 @@
 import io from 'socket.io-client';
-import {SOCKET_IO_URL} from './../config';
-var socket = io.connect(SOCKET_IO_URL);
+import config from './../config';
+
+// TODO: Wrap w/ LinkedState
+// TODO: Enable multiple connections
+
+var socket = io.connect(config.SOCKET_IO_URI);
 
 socket.on('connect', () => {
   console.debug('Socket.io connected', socket);

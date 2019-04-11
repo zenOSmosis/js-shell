@@ -13,7 +13,8 @@ export default class WindowHeader extends Component {
   }
 
   render() {
-    const {desktopWindow, className, toolbar, toolbarRight, subToolbar, ...propsRest} = this.props;
+    let {desktopWindow, className, title, toolbar, toolbarRight, subToolbar, ...propsRest} = this.props;
+    toolbar = toolbar || title;
 
     return (
       <div

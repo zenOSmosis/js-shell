@@ -1,11 +1,26 @@
-const config = {
-  SOCKET_IO_URL: ':3001',
+// Default dynamic app configuration
+// Note: Some of these values may be overridden by other parts of the program
 
-  DESKTOP_DEFAULT_BACKGROUND_URL: 'http://localhost:3001/files?filePath=/home/jeremy/Pictures/wallpapers/tree-hands.jpg',
+import parseURL from './utils/parseURL';
+const parsedWinURL = parseURL(window.href);
 
-  DEFAULT_APP_RUN_CONFIGURATIONS: [
-    
-  ]
+let config = {
+  HOST_PORT: 3001
 };
 
-module.exports = config;
+config = Object.assign(config, {
+  HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}:${config.HOST_PORT}`,
+});
+
+config = Object.assign(config, {
+  SOCKET_IO_URI: config.HOST_REST_URI,
+
+  HOST_ICON_URI_PREFIX: `${config.HOST_REST_URI}/icons?iconName=`,
+
+  // TODO: Replace hardcded path here
+  DESKTOP_DEFAULT_BACKGROUND_URI: `${config.HOST_REST_URI}/files?filePath=/home/jeremy/Pictures/wallpapers/tree-hands.jpg`,
+  
+  DESKTOP_CONTEXT_MENU_IS_TRAPPING: true
+});
+
+export default config;

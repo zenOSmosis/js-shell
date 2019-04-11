@@ -3,8 +3,7 @@ import Image from '../Image';
 import './style.css';
 
 const Icon = (props = {}) => {
-  let {name, description, src, className} = props;
-  description = description || name;
+  let {title, description, src, className, ...propsRest} = props;
 
   // TODO: Set default width / height, if not already set
 
@@ -12,12 +11,11 @@ const Icon = (props = {}) => {
     <button
       className={`Icon ${className ? className : ''}`}
       title={description}
-      {...props}
+      {...propsRest}
     >
       <Image
         className="Image"
-        {...props}
-        alt={name}
+        alt={description}
         title={description}
         src={src}
         width="100%"
@@ -25,7 +23,7 @@ const Icon = (props = {}) => {
       />
 
       <div className="Name">
-        {name}
+        {title}
       </div>
     </button>
   )

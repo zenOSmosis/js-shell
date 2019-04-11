@@ -1,0 +1,16 @@
+.DrawerSettings .Directional {
+  display: table;
+}
+
+.DrawerSettings .Directional .Button {
+  width: 70px;
+  height: 50px;
+}
+
+.DrawerSettings .Directional .Row {
+  display: table-row;
+}
+
+.DrawerSettings .Directional .Cell {
+  display: table-cell;
+}

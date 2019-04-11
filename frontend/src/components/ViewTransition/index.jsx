@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import EventEmitter from 'events';
 // @see https://github.com/daneden/animate.css
 import animate from '../../utils/animate';
+import './style.css';
 
 /**
  * Performs binary view effect between two views.
@@ -105,11 +106,13 @@ class ViewTransition extends Component {
   }
 
   render() {
-    const {children} = this.props;
+    const {children, className, effect, onTransitionStart, onTransitionEnd, ...propsRest} = this.props;
 
     return (
-      <div ref={ c => this._base = c }
-        {...this.props}
+      <div
+        ref={ c => this._base = c }
+        className={`ViewTransition ${className ? className : ''}`}
+        {...propsRest}
       >
         {
           children
