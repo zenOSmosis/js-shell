@@ -1,0 +1,10 @@
+.LabeledSwitch {
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0px 4px;
+}
+
+.LabeledSwitch .Label {
+  display: inline-block;
+}

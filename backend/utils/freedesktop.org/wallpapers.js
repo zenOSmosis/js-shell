@@ -1,5 +1,5 @@
 const config = require('../../config');
-const fetchFilePaths = require('../../utils/fetchFilePaths');
+const fetchRecursiveFilePaths = require('../../utils/fileSystem/fetchRecursiveFilePaths');
 
 const fetchWallpaperPaths = async (readDirectories = config.WALLPAPER_LOCATIONS) => {
   try {
@@ -8,7 +8,7 @@ const fetchWallpaperPaths = async (readDirectories = config.WALLPAPER_LOCATIONS)
     for (let i = 0; i < readDirectories.length; i++) {
       const dir = readDirectories[i];
   
-      const dirPaths = await fetchFilePaths(dir, config.WALLPAPER_FILE_EXTENSIONS);
+      const dirPaths = await fetchRecursiveFilePaths(dir, config.WALLPAPER_FILE_EXTENSIONS);
   
       dirPaths.forEach((dirPath) => {
         wallpaperPaths.push(dirPath);

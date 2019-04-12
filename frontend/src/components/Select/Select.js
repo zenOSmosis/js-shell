@@ -1,6 +1,6 @@
 import React from 'react';
 import {Select as AntdSelect} from 'antd';
-const {Option} = AntdSelect;
+const {Option, OptGroup} = AntdSelect;
 
 // @see https://ant.design/components/select/
 const Select = (props = {}) => {
@@ -23,5 +23,6 @@ const Select = (props = {}) => {
 
 export {
   Select,
-  Option
+  Option,
+  OptGroup
 };

@@ -17,6 +17,39 @@
    transform: scale(1);
 }
 
+
+.Window .WindowHeader {
+  min-height: 22px;
+  
+  position: relative;
+  padding: 2px 0px;
+  margin: 0px 0px 2px 0px;
+
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#46474b+0,2f2f31+100 */
+  background: #46474b; /* Old browsers */
+  background: -moz-linear-gradient(top, #46474b 0%, #2f2f31 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #46474b 0%,#2f2f31 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #46474b 0%,#2f2f31 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#46474b', endColorstr='#2f2f31',GradientType=0 ); /* IE6-9 */
+
+  -webkit-box-shadow: 10px 5px 6px -4px rgba(0,0,0,0.72);
+  -moz-box-shadow: 10px 5px 6px -4px rgba(0,0,0,0.72);
+  box-shadow: 10px 5px 6px -4px rgba(0,0,0,0.72);
+
+  overflow: visible;
+}
+
+
+/*
+.Window .WindowHeader .column {
+  float: left;
+}
+*/
+
+.Window .WindowHeader .SubToolbar {
+  margin-top: 4px;
+}
+
 /**
 * Active Window shading.
 *
@@ -26,21 +59,6 @@
   -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
-}
-
-.Window .WindowHeader .column {
-  float: left;
-}
-
-.Window .WindowHeader {
-  min-height: 22px;
-  background-color: black;
-  position: relative;
-  padding: .1rem 0px;
-}
-
-.Window.Active .WindowHeader {
-  background-color: rgba(0,0,0,.6);
 }
 
 /* Three dots */
@@ -54,6 +72,10 @@
 
   padding: 0px !important;
   border: 0px transparent solid !important;
+}
+
+.Window.Active .WindowHeader {
+  background-color: rgba(0,0,0,.6);
 }
 
 .Window.Active .WindowHeader .Dot.Red {
@@ -73,4 +95,6 @@
   overflow: hidden;
   text-align: center;
   position: relative;
+
+  background-color: #1b1f22;
 }

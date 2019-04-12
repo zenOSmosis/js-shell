@@ -1,14 +1,16 @@
+const handleSocketRoute = require('../../utils/handleSocketRoute');
 const {fetchFreedesktopApps} = require('../../../../utils/freedesktop.org/appUtils');
 
 const requestApps = async(options = {}, ack) => {
-  try {
-    const apps = await fetchFreedesktopApps();
+  return handleSocketRoute(async () => {
+    try {
+      const apps = await fetchFreedesktopApps();
 
-    ack(apps);
-  } catch (exc) {
-    // TODO: Pipe this up to ack
-    throw exc;
-  }
+      return apps;
+    } catch (exc) {
+      throw exc;
+    }
+  }, ack);
 };
 
 module.exports = requestApps;

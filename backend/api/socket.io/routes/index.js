@@ -1,9 +1,27 @@
+const ping = require('./ping');
+const fileSystem = require('./fileSystem');
+const error = require('./error');
 const apps = require('./apps');
 const appCategories = require('./appCategories');
 const systemCommand = require('./systemCommand');
 const portAudio = require('./portAudio');
 const wallpapers = require('./wallpapers');
 const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemInformation');
+const routes = require('./routes');
+
+const {
+  SOCKET_API_DEBUG_ERROR,
+  SOCKET_API_ROUTE_PING,
+  SOCKET_API_ROUTE_FILESYSTEM,
+  SOCKET_API_ROUTE_FETCH_APPS,
+  SOCKET_API_ROUTE_FETCH_APP_CATEGORIES,
+  SOCKET_API_ROUTE_SYSTEM_COMMAND,
+  SOCKET_API_ROUTE_FETCH_SYS_INFO,
+  SOCKET_API_ROUTE_FETCH_SYS_INFO_MODES,
+  SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES,
+  SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS,
+  SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS
+} = routes;
 
 /**
  * Initializes socket.io routes for the given socket connection.
@@ -16,29 +34,39 @@ const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemI
 const initSocket = (socket) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
+  // TODO: Remove this
   socket = _convertSocket(socket);
 
-  socket.on('fetch-apps', apps);
-  socket.on('fetch-app-categories', appCategories);
-  socket.on('system-command', systemCommand);
-  socket.on('fetch-sys-info', fetchSystemInformation);
-  socket.on('fetch-sys-info-modes', fetchSystemInformationModes);
+  socket.on(SOCKET_API_DEBUG_ERROR, error);
+  socket.on(SOCKET_API_ROUTE_PING, ping);
+  socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
+  socket.on(SOCKET_API_ROUTE_FETCH_APPS, apps);
+  socket.on(SOCKET_API_ROUTE_FETCH_APP_CATEGORIES, appCategories);
 
-  socket.on('port-audio:fetch-devices', portAudio.fetchDevices);
-  socket.on('port-audio:fetch-host-apis', portAudio.fetchHostAPIs);
+  socket.on(SOCKET_API_ROUTE_SYSTEM_COMMAND, systemCommand); // TODO: Convert
+  socket.on(SOCKET_API_ROUTE_FETCH_SYS_INFO, fetchSystemInformation);  // TODO: Convert
+  socket.on(SOCKET_API_ROUTE_FETCH_SYS_INFO_MODES, fetchSystemInformationModes);  // TODO: Convert
 
-  socket.on('wallpapers:fetch-wallpaper-paths', wallpapers.fetchWallpaperPaths);
-  
+  socket.on(SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES, portAudio.fetchDevices);  // TODO: Convert
+  socket.on(SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS, portAudio.fetchHostAPIs);  // TODO: Convert
+
+  socket.on(SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS, wallpapers.fetchWallpaperPaths);  // TODO: Convert
+
   console.log(`Initialized Socket.io routes for socket with id: ${socket.id}`);
 };
 
 /**
+ * TODO: REMOVE THIS
+ * 
  * Adds auto acknowledgement (and any other unifying features) to socket.
  * 
  * Auto-acknowledgement prevents errors from being thrown if the 'ack'
  * parameter is not set in any of the Socket.io routes.
  * 
- * @param {*} socket 
+ * TODO: Rename this
+ * 
+ * @param {object} socket
+ * @return {object} The converted socket.
  */
 const _convertSocket = (socket) => {
   const oSocketOn = socket.on;

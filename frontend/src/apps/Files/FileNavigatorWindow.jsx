@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import appConfig from './appConfig';
 import Window from '../../components/Desktop/Window';
+import Full from '../../components/Full';
 import { Layout, Sider, Content, Footer } from '../../components/Layout';
 import { ButtonGroup, Button } from '../../components/ButtonGroup';
 import DirectoryTree from './DirectoryTree';
@@ -30,11 +31,15 @@ export default class FileNavigator extends Component {
       >
         <Layout className="FileNavigator">
           <Layout>
-            <Sider className="LeftColumn" style={{ backgroundColor: 'rgba(255,255,255,.8)' }}>
-              <DirectoryTree />
+            <Sider className="LeftColumn">
+              <Full style={{overflow: 'auto'}}>
+                <DirectoryTree />
+              </Full>
             </Sider>
             <Content className="Main">
-              Nodes
+              <Full style={{overflow: 'auto'}}>
+                [ Nodes ]
+              </Full>
             </Content>
           </Layout>
           <Footer className="Footer">

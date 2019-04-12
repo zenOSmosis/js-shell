@@ -6,6 +6,7 @@ const systemCommand = (commandData, ack) => {
 
   const child = new LinuxGPUChildProcess(linuxGPUNumber, command, args);
 
+  // TODO: Revamp this
   child.on('spawn', () => {
     ack('Cool!  Spawned!');
   });

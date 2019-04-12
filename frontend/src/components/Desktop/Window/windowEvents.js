@@ -38,7 +38,14 @@ export const EVT_WINDOW_DID_HIDE = 'windowdidhide';
 export const EVT_WINDOW_WILL_UNHIDE = 'windowwillunhide';
 export const EVT_WINDOW_DID_UNHIDE = 'windowdidunhide';
 
+// export const EVT_WINDOW_WILL_FOCUS = 'windowwillfocus';
+// export const EVT_WINDOW_DID_FOCUS = 'windowdidfocus';
+// export const EVT_WINDOW_WILL_BLUR = 'windowwillblur';
+// export const EVT_WINDOW_DID_BLUR = 'windowdidblur'; 
+
 let windowMasterEventInstances = [];
+
+// TODO: Use LinkedState
 
 export class WindowLifecycleEvents extends Events {
   constructor(window = null) {

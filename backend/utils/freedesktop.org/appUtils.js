@@ -3,7 +3,7 @@
 
 const config = require('../../config');
 const fs = require('fs');
-const fetchFilePaths = require('../fetchFilePaths');
+const fetchRecursiveFilePaths = require('../fileSystem/fetchRecursiveFilePaths');
 const {fetchIconPath} = require('./iconUtils');
 
 const ERROR_MSG_NOT_FREEDESKTOP_FILE = 'Not a freedesktop entry file';
@@ -15,7 +15,7 @@ const fetchFreedesktopEntryPaths = async (readDirectories = config.FREEDESKTOP_A
     for (let i = 0; i < readDirectories.length; i++) {
       const dir = readDirectories[i];
   
-      const dirPaths = await fetchFilePaths(dir, config.FREEDESKTOP_FILE_EXTENSIONS);
+      const dirPaths = await fetchRecursiveFilePaths(dir, config.FREEDESKTOP_FILE_EXTENSIONS);
   
       dirPaths.forEach((dirPath) => {
         appDesktopPaths.push(dirPath);

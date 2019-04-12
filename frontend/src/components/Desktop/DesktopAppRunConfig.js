@@ -6,6 +6,8 @@ export {
   EVT_BROADCAST_STATE_UPDATE
 };
 
+// TODO: Determine fan-in/fan-out
+
 export class DesktopAppRunConfigLinkedState extends LinkedState {
   constructor() {
     super('desktop-app-run-configs', {
@@ -45,6 +47,7 @@ export class DesktopAppRunConfigLinkedState extends LinkedState {
  */
 export default class DesktopAppRunConfig extends EventEmitter {
   _defaultTitle = null;
+  _title = null;
   _desktopWindows = [];
   _defaultIconSrc = null;
 
@@ -70,10 +73,18 @@ export default class DesktopAppRunConfig extends EventEmitter {
   }
 
   setTitle(title) {
-    this._defaultTitle = title;
+    if (!this._defaultTitle) {
+      this._defaultTitle = title;
+    }
+
+    this._title = title;
   }
 
   getTitle() {
+    return this._title;
+  }
+
+  getDefaultTitle() {
     return this._defaultTitle;
   }
 

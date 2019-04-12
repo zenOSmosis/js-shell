@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import DesktopAppRunConfig from '../DesktopAppRunConfig';
+// import Gesture from '../../Gesture';
+// import DesktopAppRunConfig from '../DesktopAppRunConfig';
 import Cover from '../../Cover';
 import BodyCoverContent from './BodyCoverContent';
 import Moveable from '../../Moveable';
 import ViewTransition from '../../ViewTransition';
+import {ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT} from '../../../utils/animate';
 import WindowHeader from './WindowHeader';
 import $ from 'jquery';
 import './style.css';
@@ -29,14 +31,17 @@ import {
   EVT_WINDOW_DID_RESIZE
 } from './windowEvents';
 import Resizable from '../../Resizable';
+import config from '../../../config';
+const {DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT} = config;
 
 // import * as MacOS from 'react-desktop/macOs';
 
 // TODO: Enable auto-recomposition of window (contents / position) if screensize is changed
 
-const EFFECT_CREATE = 'fadeIn';
-const EFFECT_MINIMIZE = 'zoomOut';
+const EFFECT_CREATE =  ANIMATE_JACK_IN_THE_BOX;
+const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
+// TODO: Get rid of this
 let zStack = 9999;
 
 let windowStack = [];
@@ -81,8 +86,65 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_CREATED);
   }
 
+  componentDidUpdate() {
+    if (this.isClosed) {
+      return;
+    }
+
+    // TODO: Rework this
+    const base = this._base._base;
+
+    console.debug(this.state.zStack);
+
+    $(base).css({
+      zIndex: this.state.zStack
+    });
+  }
+
+  async componentDidMount() {
+    if (this.isClosed) {
+      return;
+    }
+
+    const { appConfig } = this.props;
+    if (appConfig) {
+      const title = appConfig.getTitle();
+
+      this.setTitle(title);
+    } else {
+      this.setTitle(this.props.title);
+    }
+
+    // this._startInteractListening();
+
+    await this.animate(EFFECT_CREATE);
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+
+    this.activate();
+  }
+
+  componentWillUnmount() {
+    this.close();
+  }
+
+  // TODO: Convert into 'metaProperty'
+  // metaProperty will set / did set
+  setTitle(title) {
+    if (!title) {
+      console.warn('Ignoring empty title');
+    }
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
+    this.setState({
+      title
+    }, () => {
+      this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
+    });
+  }
+
+  // TODO: Return time difference from start date
   getUptime() {
-    // TODO: Return time difference from start date
     return this.startDate;
   }
 
@@ -134,84 +196,6 @@ export default class Window extends Component {
         isActive: false
       });
     }
-  }
-
-  componentDidUpdate() {
-    if (this.isClosed) {
-      return;
-    }
-
-    // TODO: Rework this
-    const base = this._base._base;
-
-    console.debug(this.state.zStack);
-
-    $(base).css({
-      zIndex: this.state.zStack
-    });
-  }
-
-  async componentDidMount() {
-    if (this.isClosed) {
-      return;
-    }
-
-    const {appConfig} = this.props;
-    if (appConfig) {
-      const title = appConfig.getTitle();
-
-      this.setTitle(title);
-    } else {
-      this.setTitle(this.props.title);
-    }
-
-    // this._startInteractListening();
-
-    this.activate();
-
-    await this.animate(EFFECT_CREATE);
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
-  }
-
-  componentWillUnmount() {
-    this.close();
-  }
-
-  close() {
-    if (this.isClosed) {
-      console.warn('Window is already closed. Skipping close.');
-      return;
-    }
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
-
-    if (this._stopInteractListening) {
-      this._stopInteractListening();
-    }
-
-    // TODO: Rework base parsing
-    const base = this._base._base;
-    base.style.display = 'none';
-
-    this.isClosed = true;
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
-  }
-
-  // TODO: Convert into 'metaProperty'
-  // metaProperty will set / did set
-  setTitle(title) {
-    if (!title) {
-      console.warn('Ignoring empty title');
-    }
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
-    this.setState({
-      title
-    }, () => {
-      this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
-    });
   }
 
   toggleHide() {
@@ -267,6 +251,12 @@ export default class Window extends Component {
 
     alert('maximize');
 
+    // Lock:
+    // Upper panel buffer = 1
+    // Dock buffer = 1
+    // Height = Background height - (Dock height + Dock buffer) - Upper panel height ( + Upper panel buffer)
+    // Top = Upper panel height + (Upper panel buffer)
+
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MAXIMIZE);
   }
 
@@ -281,6 +271,10 @@ export default class Window extends Component {
     const base = this._base;
 
     await base.animate(effect);
+  }
+
+  getPosition() {
+    return this.moveable.getPosition();
   }
 
   moveTo(posX, posY) {
@@ -371,9 +365,9 @@ export default class Window extends Component {
    */
   _handleTouchResize = (resizeData) => {
     setTimeout(() => {
-      console.debug('window resize data', resizeData);
+      // console.debug('window resize data', resizeData);
 
-      const $windowBody = $(this.windowBody);
+      // const $windowBody = $(this.windowBody);
 
       const bodyCalcSize = this.getCalculatedBodySize();
       /*
@@ -392,8 +386,28 @@ export default class Window extends Component {
   };
 
   render() {
-    let {appConfig, children, className, description, initialWidth, initialHeight, toolbar, toolbarRight, subToolbar, bodyStyle, title: propsTitle, onWindowResize, ...propsRest} = this.props;
-    const {title} = this.state;
+    let {
+      appConfig,
+      children,
+      className,
+      description,
+      initialWidth,
+      initialHeight,
+      toolbar,
+      toolbarRight,
+      subToolbar,
+      bodyStyle,
+      title: propsTitle,
+      onWindowResize,
+      minWidth,
+      minHeight,
+      ...propsRest
+    } = this.props;
+
+    minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
+    minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
+
+    const { title } = this.state;
 
     // TODO: Remove hardcoded position
     /*
@@ -431,17 +445,17 @@ export default class Window extends Component {
 
         <Moveable
           ref={c => this.moveable = c}
-        // posX={pos.x}
-        // posY={pos.y}
+        // initialX={...}
+        // initialY={...}
         >
 
           <Resizable
             onResize={this._handleTouchResize}
             moveableComponent={this.moveable}
-            // minWidth={}
-            // minHeight={}
-            // maxWidth={}
-            // maxHeight={}
+            minWidth={minWidth}
+            minHeight={minHeight}
+          // maxWidth={}
+          // maxHeight={}
           >
             <Cover>
 
@@ -449,31 +463,19 @@ export default class Window extends Component {
                 {...propsRest}
                 className={`Window ${this.state.isActive ? 'Active' : ''}`}
               >
+
+                {
+                  // Note:  WindowHeader gesture is contained within the header
+                }
+
                 <WindowHeader
-                  ref={ c => this.windowHeader = c }
+                  ref={c => this.windowHeader = c}
                   desktopWindow={this}
                   title={title}
                   toolbar={toolbar}
                   toolbarRight={toolbarRight}
                   subToolbar={subToolbar}
                 />
-
-                {
-                  /*
-                  <MacOS.TitleBar
-                    // title={title}
-                    controls
-                    inset
-                    style={{padding: '0px', height: '24px'}} 
-                  >
-                    <MacOS.Toolbar style={{width: '100%', position: 'absolute', fontWeight: 'bold'}}>
-                      {
-                        toolbar
-                      }
-                    </MacOS.Toolbar>
-                  </MacOS.TitleBar>
-                  */
-                }
 
                 {
                   // TODO: Apply pixel size to window body
@@ -493,8 +495,13 @@ export default class Window extends Component {
 
                   <Cover
                     ref={c => this.bodyCover = c}
-                    defaultIsVisible={false}
+
+                    // TODO: Activate to true when window is inactive, being moved, or resized.
+                    isVisible={false}
                   >
+                    {
+                      // TODO: Remove this
+                    }
                     <BodyCoverContent />
                   </Cover>
                 </div>
@@ -529,5 +536,26 @@ export default class Window extends Component {
 
       </ViewTransition>
     );
+  }
+
+  close() {
+    if (this.isClosed) {
+      console.warn('Window is already closed. Skipping close.');
+      return;
+    }
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+
+    if (this._stopInteractListening) {
+      this._stopInteractListening();
+    }
+
+    // TODO: Rework base parsing
+    const base = this._base._base;
+    base.style.display = 'none';
+
+    this.isClosed = true;
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
   }
 }

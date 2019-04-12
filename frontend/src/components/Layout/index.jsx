@@ -1,8 +1,14 @@
 import React from 'react';
 import { Layout as AntdLayout } from 'antd';
+import { Row, Column } from '../RowColumn';
 // import {Layout as AntdLayout, Header as AntdHeader, Sider as AntdSider, Content as AntdContent, Footer as AntdFooter} from 'antd';
 import './style.css';
 const { Header: AntdHeader, Sider: AntdSider, Content: AntdContent, Footer: AntdFooter} = AntdLayout;
+
+export {
+  Row,
+  Column
+};
 
 export const Layout = (props) => {
   const {className, children, ...propsRest} = props;
@@ -35,12 +41,17 @@ export const Header = (props) => {
 };
 
 export const Sider = (props) => {
-  const {className, children, ...propsRest} = props;
+  let {className, width, children, ...propsRest} = props;
+
+  if (typeof width === 'undefined') {
+    width = 100;
+  }
 
   return (
     <AntdSider
-      className={`Layout Common ${className ? className : ''}`}
       {...propsRest}
+      width={width}
+      className={`Layout Common ${className ? className : ''}`}
     >
       {
         children
@@ -48,6 +59,9 @@ export const Sider = (props) => {
     </AntdSider>
   );
 };
+
+// Sider alias
+export const Aside = Sider;
 
 export const Content = (props) => {
   const {className, children, ...propsRest} = props;

@@ -1,3 +1,8 @@
+import 'antd/dist/antd.css';
+import './style-antd-overrides.css';
+import './style.css';
+import './style-scrollbar.css';
+
 import React, { Component } from 'react';
 import Panel from './Panel';
 // import logo from './logo.svg';
@@ -14,12 +19,11 @@ import config from '../../config';
 import { notification } from 'antd';
 import 'normalize.css/normalize.css';
 // import 'bootstrap/dist/css/bootstrap.css'; // TODO: Remove bootstrap
-import 'antd/dist/antd.css';
-import './style.css';
-import './style-scrollbar.css';
 
 import defaultApps from '../../apps/defaultApps';
 console.debug('default apps', defaultApps);
+
+// TODO: Change page title according to active window title
 
 export default class Desktop extends Component {
   state = {

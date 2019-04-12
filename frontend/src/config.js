@@ -20,7 +20,10 @@ config = Object.assign(config, {
   // TODO: Replace hardcded path here
   DESKTOP_DEFAULT_BACKGROUND_URI: `${config.HOST_REST_URI}/files?filePath=/home/jeremy/Pictures/wallpapers/tree-hands.jpg`,
   
-  DESKTOP_CONTEXT_MENU_IS_TRAPPING: true
+  DESKTOP_CONTEXT_MENU_IS_TRAPPING: true,
+
+  DESKTOP_WINDOW_MIN_WIDTH: 300,
+  DESKTOP_WINDOW_MIN_HEIGHT: 300
 });
 
 export default config;

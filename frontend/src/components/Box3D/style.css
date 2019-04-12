@@ -2,7 +2,7 @@
   width: 300px;
   height: 200px;
   margin: 80px;
-  perspective: 100px;
+  perspective: 200px;
   display: inline-block;
 }
 
@@ -12,7 +12,7 @@
   position: relative;
   transform-style: preserve-3d;
   transform: translateZ(-50px);
-  transition: transform 1s;
+  /* transition: transform 1s; */
 }
 
 .Box.show-FRONT  { transform: translateZ( -50px) rotateY(   0deg); }
@@ -26,17 +26,19 @@
 .Box__Face {
   position: absolute;
   border: 2px solid black;
-  font-size: 40px;
+  /* font-size: 40px; */
   font-weight: bold;
   color: white;
   text-align: center;
+
+  overflow: hidden;
 }
 
 .Box__Face--FRONT,
 .Box__Face--BACK {
   width: 300px;
   height: 200px;
-  line-height: 200px;
+  /* line-height: 200px; */
 }
 
 .Box__Face--RIGHT,
@@ -44,7 +46,7 @@
   width: 100px;
   height: 200px;
   left: 100px;
-  line-height: 200px;
+  /* line-height: 200px; */
 }
 
 .Box__Face--TOP,
@@ -52,7 +54,7 @@
   width: 300px;
   height: 100px;
   top: 50px;
-  line-height: 100px;
+  /* line-height: 100px; */
 }
 
 .Box__Face--FRONT  { background: hsla(  0, 100%, 50%, 0.7); }

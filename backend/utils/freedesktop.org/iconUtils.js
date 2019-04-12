@@ -4,7 +4,7 @@
 // TODO: Use current theme
 
 const path = require('path');
-const fetchFilePaths = require('../fetchFilePaths');
+const fetchRecursiveFilePaths = require('../fileSystem/fetchRecursiveFilePaths');
 
 const config = require('../../config');
 
@@ -15,7 +15,7 @@ const fetchAllParsedIconPaths = async (readDirectories = config.FREEDESKTOP_ICON
     for (let i = 0; i < readDirectories.length; i++) {
       const dir = readDirectories[i];
   
-      const dirPaths = await fetchFilePaths(dir, config.FREEDESKTOP_ICON_FILE_EXTENSIONS);
+      const dirPaths = await fetchRecursiveFilePaths(dir, config.FREEDESKTOP_ICON_FILE_EXTENSIONS);
   
       dirPaths.forEach((dirPath) => {
         parsedIconPaths.push(dirPath);

@@ -116,6 +116,7 @@ export default class DirectoryTree extends Component {
     });
     return (
       <Tree
+        style={{color: '#fff'}}
         className="draggable-tree"
         defaultExpandedKeys={this.state.expandedKeys}
         draggable

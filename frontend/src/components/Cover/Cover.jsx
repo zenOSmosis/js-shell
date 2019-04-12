@@ -1,44 +1,22 @@
 import React, {Component} from 'react';
+import Full from '../Full';
 import './style.css';
 
 export default class Cover extends Component {
-  state = {
-    isVisible: true
-  };
-
-  componentDidMount() {
-    const {defaultIsVisible} = this.props;
-    this.setIsVisible(defaultIsVisible);
-  }
-
-  setIsVisible(isVisible) {
-    if (typeof isVisible === 'undefined') {
-      let {defaultIsVisible} = this.props;
-      defaultIsVisible = (typeof defaultIsVisible === 'undefined' ? true : defaultIsVisible);
-
-      isVisible = defaultIsVisible;
-    }
-    
-    if (isVisible !== this.state.isVisible) {
-      this.setState({
-        isVisible
-      });
-    }
-  }
-
   render() {
-    const {children, className, defaultIsVisible, ...propsRest} = this.props;
-    const isVisible = this.state.isVisible;
-
+    const {children, className, isVisible: isVisibleProp, ...propsRest} = this.props;
+  
+    const isVisible = (typeof isVisibleProp === 'undefined' ? true : (isVisibleProp ? true : false));
+  
     return (
-      <div
+      <Full
         {...propsRest}
         className={`Cover ${!isVisible ? 'Hidden' : ''} ${className ? className : ''}`}
       >
         {
           children
         }
-      </div>
+      </Full>
     );
   }
 }

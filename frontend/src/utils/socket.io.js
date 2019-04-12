@@ -4,7 +4,7 @@ import config from './../config';
 // TODO: Wrap w/ LinkedState
 // TODO: Enable multiple connections
 
-var socket = io.connect(config.SOCKET_IO_URI);
+const socket = io.connect(config.SOCKET_IO_URI);
 
 socket.on('connect', () => {
   console.debug('Socket.io connected', socket);

@@ -4,6 +4,9 @@ import Gesture from '../Gesture';
 import $ from 'jquery';
 import './style.css';
 
+export const RESIZABLE_DEFAULT_MIN_WIDTH = 300;
+export const RESIZABLE_DEFAULT_MIN_HEIGHT = 300;
+
 const RESIZABLE_TOUCH = false;
 const RESIZABLE_MOUSE = true;
 
@@ -17,13 +20,34 @@ const RESIZE_DIRECTION_WEST = 'w';
 const RESIZE_DIRECTION_NORTHWEST = 'nw';
 
 export default class Resizable extends Component {
+  _minWidth = 0;
+  _minHeight = 0;
+
   componentDidMount() {
     this.$root = $(this.root);
     this.$main = $(this.main);
+
+    const {minWidth, minHeight} = this.props;
+    this.setMinWidthHeight(minWidth, minHeight);
+  }
+
+  componentDidUpdate() {
+    const {minWidth, minHeight} = this.props;
+    this.setMinWidthHeight(minWidth, minHeight);
+  }
+
+  setMinWidthHeight(minWidth, minHeight) {
+    this._minWidth = parseInt(minWidth) || RESIZABLE_DEFAULT_MIN_WIDTH;
+    this._minHeight = parseInt(minHeight) || RESIZABLE_DEFAULT_MIN_HEIGHT;
+
+    this.$main.css({
+      minWidth: this._minWidth,
+      minHeight: this._minHeight
+    });
   }
 
   handleTouchStart = (evt) => {
-    console.debug('touch start', evt);
+    // console.debug('touch start', evt);
 
     this.initialX = evt.initial[0];
     this.initialY = evt.initial[1];
@@ -38,7 +62,7 @@ export default class Resizable extends Component {
   }
 
   handleTouchEnd = (evt) => {
-    console.debug('touch stop', evt);
+    // console.debug('touch stop', evt);
   }
 
   handleTouchMove = (direction, evt) => {
@@ -152,12 +176,14 @@ export default class Resizable extends Component {
   };
   
   render() {
-    const {children, moveableComponent, onResize, ...propsRest} = this.props;
+    let {children, moveableComponent, minWidth, minHeight, style: contentStyle, onResize, ...propsRest} = this.props;
+    
+    
 
     return (
       <div
-        ref={ c => this.root = c }
         {...propsRest}
+        ref={ c => this.root = c }
         className="Resizable"
       >
         <div className="TableRow">
@@ -205,7 +231,7 @@ export default class Resizable extends Component {
           <div
             className="TableCell"
           >
-            <div style={{width: '100%', height: '100%'}} ref={ c => this.main = c}>
+            <div className="ResizableBody" style={contentStyle} ref={ c => this.main = c}>
               {
                 children
               }

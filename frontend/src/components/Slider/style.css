@@ -1,0 +1,11 @@
+.Slider {
+  display: inline-block;
+}
+
+.Slider.Horizontal {
+  width: 90%;
+}
+
+.Slider.Vertical {
+  height: 90%;
+}

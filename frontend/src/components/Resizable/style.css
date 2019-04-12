@@ -2,6 +2,11 @@
   display: table;
 }
 
+.Resizable .ResizableBody {
+  width: 100%;
+  height: 100%;
+}
+
 .Resizable .TableRow {
   display: table-row;
 }

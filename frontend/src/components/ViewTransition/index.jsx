@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import EventEmitter from 'events';
 // @see https://github.com/daneden/animate.css
-import animate from '../../utils/animate';
+import animate, {ANIMATIONS, ANIMATION_GROUPS} from '../../utils/animate';
 import './style.css';
 
 /**
@@ -123,3 +123,7 @@ class ViewTransition extends Component {
 }
 
 export default ViewTransition;
+export {
+  ANIMATIONS,
+  ANIMATION_GROUPS
+};

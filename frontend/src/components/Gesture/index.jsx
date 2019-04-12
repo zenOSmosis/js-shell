@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { withGesture } from 'react-with-gesture';
+import './style.css';
 
 // @see https://www.npmjs.com/package/react-with-gesture
 export default class Gesture extends Component {
   render() {
-    const { children, ref, touch, mouse, passive, onAction, onMove, onUp, onDown, ...propsRest } = this.props;
+    const { children, className, ref, touch, mouse, passive, onAction, onMove, onUp, onDown, ...propsRest } = this.props;
 
     const gestureConfig = {
       ref,
@@ -20,9 +21,8 @@ export default class Gesture extends Component {
     const Wrapper = () => {
       return (
         <div
-          {
-          ...propsRest
-          }
+          {...propsRest}
+          className={`Gesture ${className ? className : ''}`}
         >
           {
             children
