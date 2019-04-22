@@ -1,6 +1,6 @@
 import React from 'react';
 // import Center from '../../../components/Center';
-import {desktopLinkedState} from '../../../state/DesktopLinkedState';
+import createDesktopNotification from '../../../utils/desktop/createDesktopNotification';
 // import { Switch } from 'antd';
 
 const NotificationSettings = (props = {}) => {
@@ -11,15 +11,18 @@ const NotificationSettings = (props = {}) => {
     <div>
       [ Test Notification Settings ]
 
-      <button onClick={ (evt) => desktopLinkedState.setState({
-        lastNotification: {
-          message: 'I am a message',
-          description: 'I am a description',
-          onClick: null
-        }
+      <button onClick={ (evt) => createDesktopNotification({
+        message: 'I am a message',
+        description: 'I am a description',
+        onClick: null
       })}>Generate Notification</button>
 
-      Audio Notifications
+      Audio Notifications<br />
+
+      <hr />
+
+      - Notify when any new client connects<br />
+      - Notify when any connected client disconnects<br />
     </div>
   );
 };

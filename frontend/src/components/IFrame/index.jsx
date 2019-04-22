@@ -22,16 +22,57 @@ export default class IFrame extends Component {
       this._iframe.contentWindow.postMessage('hello');
     });
     */
+
+    // TODO: Set up binding for listening to messages received from window
   }
+
+  /*
+  componentWillUnmount() {
+    // TODO: Set up unbinding for listening to messages received from window
+  }
+  */
+
+  handleOnLoad(evt) {
+    const {onLoad} = this.props;
+    
+    if (typeof onLoad === 'function') {
+      const component = this;
+      const iFrame = this._iframe;
+      
+      onLoad(component, iFrame, evt);
+    }
+  }
+
+  sendMessage(message) {
+    try {
+      this._iframe.contentWindow.postMessage(message);
+    } catch (exc) {
+      alert('...');
+    }
+  }
+
+  /*
+  * Alias of this.sendMessage().
+  */
+  postMessage(...args) {
+    return this.sendMessage(...args);
+  }
+
+  /*
+  handleMessageReceive(message) {
+
+  }
+  */
   
   render() {
-    const {className, ...propsRest} = this.props;
+    const {className, onLoad, ...propsRest} = this.props;
 
     return (
       <iframe
         ref={ c => this._iframe = c }
         {...propsRest}
         className={`IFrame ${className ? className : ''}`}
+        onLoad={(evt) => this.handleOnLoad(evt)}
       ></iframe>
     );
   }

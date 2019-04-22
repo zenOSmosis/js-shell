@@ -26,10 +26,7 @@ const sendIcon = (req, res) => {
   }
 };
 
-// Params-based URL
-router.get('/iconName/:iconName', sendIcon);
-
-// Query-based URL
+router.get('/icons/:iconName', sendIcon);
 router.get('/', sendIcon);
 
 module.exports = router;

@@ -1,0 +1,8 @@
+.Menubar {
+  display: inline-block;
+}
+
+/* Sub-icons not showing in flyouts without this */
+.Menubar i {
+  color: #fff !important;
+}

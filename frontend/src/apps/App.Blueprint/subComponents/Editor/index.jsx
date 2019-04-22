@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Layout, Aside, Content, Footer } from '../../../components/Layout';
-import Box3D, { BOX3D_SIDES } from '../../../components/Box3D';
-import { Select, Option, OptGroup } from '../../../components/Select';
-import MonacoEditor from '../../../components/MonacoEditor';
+import { Layout, Aside, Content, Footer } from '../../../../components/Layout';
+import Box3D, { BOX3D_SIDES } from '../../../../components/Box3D';
+import { Select, Option, OptGroup } from '../../../../components/Select';
+import { Row, Column } from '../../../../components/RowColumn';
+import { Input } from 'antd';
+import MonacoEditor from '../../../../components/MonacoEditor';
 
 export default class Box3DEditor extends Component {
   state = {
     currentEditingSide: BOX3D_SIDES[0],
-
+    monacoLanguage: 'javascript',
     sideContents: {}
   };
 
@@ -77,32 +79,48 @@ export default class Box3DEditor extends Component {
             editorDidMount={this.editorDidMount}
           />
         </Content>
-        <Footer style={{ backgroundColor: '#007acc', textAlign: 'left', padding: '0px 5px' }}>
-          <div style={{ float: 'right' }}>
-            <Select size="small" defaultValue={currentEditingSide}>
-              {
-                BOX3D_SIDES.map((box3DSide, idx) => {
-                  return (
-                    <Option key={idx} value={box3DSide}>{box3DSide}</Option>
-                  );
-                })
-              }
-            </Select>
-          </div>
+        <Footer style={{ backgroundColor: '#007acc', textAlign: 'right' }}>
 
-          <div style={{ display: 'inline-block', textAlign: 'center' }}>
-            <Select
-              onChange={monacoLanguage => this.setState({ monacoLanguage })}
-              defaultValue={this.state.monacoLanguage}
-              size="small"
-              style={{ width: 120 }
-              }>
-              <Option value="html">HTML</Option>
-              <Option value="javascript">JavaScript</Option>
-              <Option value="css">CSS</Option>
-              <Option value="markdown">Markdown</Option>
-            </Select>
-          </div>
+              {
+                // TODO: Include ability to run SocketAPI calls
+              }
+              <div style={{display: 'inline-block', textOverflow: 'nowrap'}}>
+                <Input size="small" placeholder="Object Name" style={{maxWidth: 180, display: 'inline-block'}} />
+                <Select
+                  onChange={monacoLanguage => this.setState({ monacoLanguage })}
+                  defaultValue={this.state.monacoLanguage}
+                  size="small"
+                  style={{width: 120, display: 'inline-block'}}
+                >
+                    <Option value="environment">Environment</Option>
+                    <Option value="object">Object</Option>
+                    <Option value="speech">Speech</Option>
+                    <Option value="stream">Stream</Option>
+                    <Option value="api">API Call</Option>
+                
+                    <Option value="html">HTML</Option>
+                    <Option value="javascript">JavaScript</Option>
+                    <Option value="css">CSS</Option>
+                    <Option value="markdown">Markdown</Option>
+                </Select>
+              </div>
+
+            {
+              /*
+              <Column>
+              <Select size="small" defaultValue={currentEditingSide}>
+                {
+                  BOX3D_SIDES.map((box3DSide, idx) => {
+                    return (
+                      <Option key={idx} value={box3DSide}>{box3DSide}</Option>
+                    );
+                  })
+                }
+              </Select>
+            </Column>
+              */
+            }
+            
         </Footer>
       </Layout>
     );

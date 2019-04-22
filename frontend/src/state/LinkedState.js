@@ -4,14 +4,17 @@ const uuidv4 = require('uuid/v4');
 
 export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 
+// This emits when the current state scope has updated
+export const EVT_LINKED_STATE_UPDATE = 'update';
+
 // Master controller events
-export const EVT_BROADCAST_STATE_UPDATE = 'broadcast-state-update';
 export const EVT_ADDED_LINKED_STATE = 'added-linked-state';
 export const EVT_UPDATED_SHARED_STATE = 'updated-shared-state';
 
 // Switched to true after MasterLinkedStateControllerSingleton is instantiated
 let _mlscsIsInstantiated = false;
 
+// TODO: Wrap in a closure; remove _mlscsIsInstantiated variable
 class MasterLinkedStateControllerSingleton extends EventEmitter {
   _linkedStateInstances = [];
   _sharedStates = {};
@@ -66,6 +69,16 @@ class MasterLinkedStateControllerSingleton extends EventEmitter {
     }
   }
 
+  removeLinkedStateWithUUID(uuid) {
+    this._linkedStateInstances = this._linkedStateInstances.filter((linkedScope) => {
+      if (linkedScope._uuid === uuid) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
+
   setSharedState(linkedState, updatedStateWithMetadata) {
     const linkedScopeName = linkedState.getLinkedScopeName();
 
@@ -73,7 +86,7 @@ class MasterLinkedStateControllerSingleton extends EventEmitter {
 
     this._sharedStates[linkedScopeName] = Object.assign(this._sharedStates[linkedScopeName], updatedState);
 
-    this.broadcast(linkedState, EVT_BROADCAST_STATE_UPDATE, updatedState);
+    this.broadcast(linkedState, EVT_LINKED_STATE_UPDATE, updatedState);
 
     if (this._masterLinkedStateListener) {
       this._masterLinkedStateListener.broadcast(EVT_UPDATED_SHARED_STATE, {
@@ -202,6 +215,7 @@ export default class LinkedState extends EventEmitter {
       }
     });
 
+    // TODO: Send callback through mlscs
     if (typeof onSet === 'function') {
       onSet();
     }
@@ -224,8 +238,17 @@ export default class LinkedState extends EventEmitter {
   broadcast(eventName, ...args) {
     mlscs.broadcast(this, eventName, ...args);
   }
+
+  destroy() {
+    console.warn('TODO: Remove all event listeners', this);
+
+    mlscs.removeLinkedStateWithUUID(this._uuid);
+  }
 }
 
+/**
+ * Obtains an overview of all of the linked state instances.
+ */
 export class MasterLinkedStateListener extends LinkedState {
   constructor() {
     // TODO: Use constant
@@ -259,10 +282,4 @@ export class MasterLinkedStateListener extends LinkedState {
   getLinkedStateReferenceCount(linkedState) {
     return mlscs.getLinkedStateReferenceCount(linkedState);
   }
-};
-
-const masterLinkedStateListener = new MasterLinkedStateListener();
-
-export {
-  masterLinkedStateListener
 };

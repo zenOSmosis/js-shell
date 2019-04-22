@@ -1,33 +1,30 @@
 const handleSocketRoute = require('../../utils/handleSocketRoute');
-const fs = require('fs');
+// const fs = require('fs');
+const {ls, chdir, getPathSeparator} = require('../../../../utils/fileSystem');
 
 // TODO: Move to external exports file
+const FS_METHOD_GET_PATH_SEPARATOR = 'getPathSeparator';
 const FS_METHOD_LS = 'ls';
+const FS_METHOD_CHDIR = 'chdir';
 
 const fileSystem = async(query = {}, ack) => {
   // TODO: Extract logic to backend/utils directory so it can be tested on its own
   return await handleSocketRoute(async () => {
     try {
-      const {methodName, options} = query;
-  
-      const {dirName} = options;
-  
+      const {methodName, dirName} = query || {};
+    
       switch (methodName) {
+        case FS_METHOD_GET_PATH_SEPARATOR:
+          return getPathSeparator();
+        // break;
+
         case FS_METHOD_LS:
-          fs.readdir(dirName, (err, files) => {
-            if (err) {
-              throw err;
-            }
-  
-            return files;
-  
-            /*
-            files.forEach(file => {
-              console.log(file);
-            });
-            */
-          });
-        break;
+          return await ls(dirName);
+        // break;
+
+        case FS_METHOD_CHDIR:
+          return await chdir(dirName);
+        // break;
   
       }
     } catch (exc) {

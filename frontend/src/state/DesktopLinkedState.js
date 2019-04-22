@@ -1,8 +1,10 @@
 import config from '../config';
-import LinkedState, {EVT_BROADCAST_STATE_UPDATE} from './LinkedState';
+import hocConnect from './hocConnect';
+import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
 
 export {
-  EVT_BROADCAST_STATE_UPDATE
+  EVT_LINKED_STATE_UPDATE,
+  hocConnect
 };
 
 // TODO: Use UUID
@@ -11,6 +13,7 @@ const DESKTOP_LINKED_SCOPE_NAME = 'desktop-linked-scope';
 export default class DesktopLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_LINKED_SCOPE_NAME, {
+      desktopComponent: null,
       contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
       lastNotification: {
         message: null,
@@ -19,10 +22,10 @@ export default class DesktopLinkedState extends LinkedState {
       }
     });
   }
+
+  setContextMenuIsTrapping(contextMenuIsTrapping) {
+    this.setState({
+      contextMenuIsTrapping
+    });
+  }
 }
-
-const desktopLinkedState = new DesktopLinkedState();
-
-export {
-  desktopLinkedState
-};

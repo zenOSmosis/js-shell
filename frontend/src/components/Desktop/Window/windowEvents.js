@@ -11,8 +11,8 @@ export const EVT_WINDOW_TITLE_DID_SET = 'windowtitledidset';
 export const EVT_WINDOW_WILL_ACTIVATE = 'windowwillactivate';
 export const EVT_WINDOW_DID_ACTIVATE = 'windowdidactivate';
 
-// export const EVT_WINDOW_WILL_DEACTIVATE = 'window-will-deactivate';
-// export const EVT_WINDOW_DID_DEACTIVATE = 'window-did-deactivate';
+export const EVT_WINDOW_WILL_DEACTIVATE = 'window-will-deactivate';
+export const EVT_WINDOW_DID_DEACTIVATE = 'window-did-deactivate';
 
 // export const EVT_WINDOW_WILL_MOVE = 'window-will-move';
 // export const EVT_WINDOW_DID_MOVE = 'window-did-move';
@@ -88,6 +88,14 @@ export class WindowLifecycleEvents extends Events {
 
         case EVT_WINDOW_DID_ACTIVATE:
           instance.windowDidActivate(window);
+        break;
+
+        case EVT_WINDOW_WILL_DEACTIVATE:
+          instance.windowWillDeactivate(window);
+        break;
+
+        case EVT_WINDOW_DID_DEACTIVATE:
+          instance.windowDidDeactivate(window);
         break;
 
         case EVT_WINDOW_WILL_MINIMIZE:
@@ -176,6 +184,14 @@ export class WindowLifecycleEvents extends Events {
 
   windowDidActivate(window) {
     this.emit(EVT_WINDOW_DID_ACTIVATE, window);
+  }
+
+  windowWillDeactivate(window) {
+    this.emit(EVT_WINDOW_WILL_DEACTIVATE, window);
+  }
+
+  windowDidDeactivate(window) {
+    this.emit(EVT_WINDOW_DID_DEACTIVATE, window);
   }
 
   windowWillMinimize(window) {

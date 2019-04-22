@@ -21,17 +21,28 @@ const handleSocketRoute = async (serviceCall, ack) => {
 
     // Send acknowledgement to client
     ack(serviceResp);
-  } catch (error) {
-    const {message} = error;
+  } catch (err) {
+    // Send serialized error to ack
+    // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+    await (async () => {
+      let { message, fileName, lineNumber, columnNumber, name } = err;
 
-    const errMsg = message || error;
-    const errorStack = await fetchStackTrace.fromError(error);
+      const stack = await fetchStackTrace.fromError(err);
 
-    // Send error to client
-    ack({
-      error: errMsg,
-      errorStack
-    });
+      const serialzedErr = {
+        err: {
+          message,
+          name,
+          fileName,
+          lineNumber,
+          columnNumber,
+          stack,
+          code: serviceCall.toString()
+        }
+      };
+
+      ack(serialzedErr);
+    })();
   }
 };
 

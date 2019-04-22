@@ -17,6 +17,10 @@ export default class WindowHeader extends Component {
   }
 
   handleTouchStart = (evt) => {
+    console.debug('touch');
+
+    console.debug('touch start', evt);
+
     const {desktopWindow} = this.props;
   
     let {x: winPosX, y: winPosY} = desktopWindow.getPosition();
@@ -59,7 +63,9 @@ export default class WindowHeader extends Component {
       // TODO: Implement specifically for relevant browser
       // 2 - 3 works best on Chrome
       // 3 - 4 works best on Firefox
-      toolbar = <div style={{marginTop: 2}}>{title}</div>
+
+      // @see https://css-tricks.com/almanac/properties/t/text-overflow/
+      toolbar = <div style={{marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</div>
     }
     
     return (
@@ -75,6 +81,9 @@ export default class WindowHeader extends Component {
           onUp={(evt) => this.handleTouchEnd(evt)}
           // onMove={ evt => console.debug(evt) /* (evt) => desktopWindow.moveTo(evt.xy[0], evt.xy[1]) */}
         >
+          {
+            // Header content area is rendered in here
+          }
           <div>
             {
               // TODO: Dynamically pad depending on if Chrome or Firefox

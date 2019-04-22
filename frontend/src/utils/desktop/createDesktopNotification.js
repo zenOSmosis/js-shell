@@ -1,6 +1,8 @@
-import {desktopLinkedState} from '../state/DesktopLinkedState';
+import {desktopLinkedState} from './.common';
 
-const createDesktopNotification = (message, description, onClick) => {
+const createDesktopNotification = (notification) => {
+  const {message, description, onClick} = notification;
+
   desktopLinkedState.setState({
     lastNotification: {
       message,

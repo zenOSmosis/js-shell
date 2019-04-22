@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
 import Button from '../../../../components/Button';
-import LabeledSwitch from '../../../../components/LabeledSwitch';
+import LabeledSwitch, {Switch} from '../../../../components/LabeledSwitch';
 // import { SegmentedControl, SegmentedControlItem } from '../../../../components/SegmentedControl';
 import { Menu, MenuItem } from '../../../../components/Menu';
 import { Select, Option } from '../../../../components/Select';
 import { Layout, Content, Footer, Row, Column } from '../../../../components/Layout';
 import LoadingSpinner from '../../../../components/spinners/LoadingSpinner';
 import socketAPIRoutes from '../../../../utils/socketAPIRoutes';
-import socket from '../../../../utils/socket.io';
+import socket, {socketQuery, SocketLinkedState} from '../../../../utils/socket.io';
 import Cover from '../../../../components/Cover';
 import Center from '../../../../components/Center';
 import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from '../../../../components/JSONEditor';
+import hocConnect from '../../../../state/hocConnect';
 
-import { Input } from 'antd';
-const { TextArea } = Input;
+// import { Input } from 'antd';
+// const { TextArea } = Input;
 
 // TODO: Create separate components for Socket & REST connections
-export default class HostConnection extends Component {
+class HostConnection extends Component {
   state = {
     isQuerying: false,
     socketLatency: null,
     selectedSocketIOEventName: null,
-    socketIOEventData: {},
     socketResponse: {},
+    hasError: false,
     jsonEditorInputMode: JSONEDITOR_MODE_CODE // or tree
   };
+
+  _renderIdx = -1;
+
+  _requestData = {};
 
   constructor(props) {
     super(props);
@@ -35,29 +40,11 @@ export default class HostConnection extends Component {
 
     const { settingsWindow } = this.props;
 
-    this.updateSubToolbar();
+    this.renderSubToolbar();
   }
 
-  updateSubToolbar() {
-    const { settingsWindow } = this.props;
-    const { socketLatency } = this.state;
-
-    settingsWindow.setSubToolbar(
-      <Row>
-        <Column style={{ textAlign: 'left' }}>
-          <LabeledSwitch offLabel="Socket.io" onLabel="REST" />
-        </Column>
-        <Column style={{ textAlign: 'center' }}>
-          <div style={{ display: 'inline' }}>
-            Ping roundtrip latency: {socketLatency} seconds<br />
-            Last ping time: ... (ago)
-            </div>
-        </Column>
-        <Column style={{ textAlign: 'right' }}>
-
-        </Column>
-      </Row>
-    );
+  componentDidUpdate() {
+    this.renderSubToolbar();
   }
 
   toggleInputMode() {
@@ -81,9 +68,19 @@ export default class HostConnection extends Component {
       this.setState({
         socketLatency
       }, () => {
-        this.updateSubToolbar();
+        // this.renderSubToolbar();
       });
     });
+  }
+
+  toggleSocketConnection() {
+    const {isConnected} = this.props;
+
+    if (isConnected) {
+      socket.disconnect();
+    } else {
+      socket.connect();
+    }
   }
 
   selectSocketIOEventName(selectedSocketIOEventName) {
@@ -92,40 +89,80 @@ export default class HostConnection extends Component {
     });
   }
 
-  updateSocketIOEventData(socketIOEventData) {
-    this.setState({
-      socketIOEventData
-    });
-  }
-
-  sendRequest() {
-    const { selectedSocketIOEventName: eventName, socketIOEventData: eventData } = this.state;
+  socketQuery() {
+    const { selectedSocketIOEventName: eventName } = this.state;
+    const eventData = this._requestData;
 
     this.setState({
       isQuerying: true
-    }, () => {
-      // console.debug('emitting test event', eventName, eventData);
-      socket.emit(eventName, eventData, (socketResponse) => {
-        console.debug('socket response', socketResponse);
-
-        if (typeof socketResponse === 'string' ||
-          Array.isArray(socketResponse)) {
-          // Convert socketResposne to an object
-          socketResponse = Object.assign({}, {
-            socketResponse
-          });
-        }
-
+    }, async () => {
+      let _handleSocketResponse = (socketResponse, hasError = false) => {
         this.setState({
+          hasError,
           socketResponse,
           isQuerying: false
         });
-      });
+      };
+
+      try {
+        const socketResponse = await socketQuery(eventName, eventData);
+
+        console.debug('socket response', socketResponse);
+
+        _handleSocketResponse(socketResponse);
+      } catch (exc) {
+        _handleSocketResponse(exc, true);
+      }
     });
   }
 
+  renderSubToolbar() {
+    const { settingsWindow, isConnected } = this.props;
+    const { socketLatency } = this.state;
+
+    settingsWindow.setSubToolbar(
+      <Row>
+        <Column style={{ textAlign: 'left' }}>
+          <div style={{textAlign: 'center', display: 'inline-block'}}>
+            <Row>
+              <Column>
+                <LabeledSwitch offLabel="REST" onLabel="Socket.io" checked  />
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                Testing Server
+              </Column>
+            </Row>
+          </div>
+        </Column>
+        <Column style={{ textAlign: 'center' }}>
+          <div style={{ display: 'inline' }}>
+            Latency: {socketLatency} s<br />
+            Last ping time: ... (ago)
+            </div>
+        </Column>
+        <Column style={{ textAlign: 'right' }}>
+          <div style={{textAlign: 'center', display: 'inline-block'}}>
+            <div>
+              <Switch checked={isConnected} onChange={ (evt) => this.toggleSocketConnection() } />
+            </div>
+            <div>
+              Connection
+            </div>
+          </div> 
+        </Column>
+      </Row>
+    );
+  }
+
+
   render() {
+    this._renderIdx++;
+
     console.debug('socket api routes', socketAPIRoutes);
+
+    let socketId = this.props.socketId || 'N/A';
 
     // const { socketLatency } = this.state;
 
@@ -137,7 +174,6 @@ export default class HostConnection extends Component {
             <Content style={{ overflow: 'auto' }}>
               <div style={{ textAlign: 'left' }}>
                 <p>Emit event messages which correspond to socket API routes.</p>
-
 
                 <div>
                   {
@@ -184,7 +220,7 @@ export default class HostConnection extends Component {
                       {
                         // TODO: Replace newDate() with something more resistant to time change
                       }
-                      <div key={`input ${new Date()}`} style={{ height: '100%', backgroundColor: '#fff' }}>
+                      <div key={`input ${this._renderIdx}`} style={{ height: '100%', backgroundColor: '#fff' }}>
                         <JSONEditor
                           mode={this.state.jsonEditorInputMode} value={{}}
                           htmlElementProps={{
@@ -193,18 +229,14 @@ export default class HostConnection extends Component {
                               height: '100%'
                             }
                           }}
-                          onChange={evt => console.debug('json editor change', evt)}
+                          onChange={requestData => this._requestData = requestData}
                         />
                       </div>
                     </Column>
 
                     <Column style={{borderRadius: 4, margin: 4}}>
                       Response:<br />
-                      {
-                        // TODO: Replace newDate() with something more resistant to time change
-
-                      }
-                      <div key={`view ${new Date()}`} style={{ height: '100%', backgroundColor: '#fff' }}>
+                      <div key={`view ${this._renderIdx}`} style={{ height: '100%', backgroundColor: '#fff' }}>
                         <JSONEditor
                           htmlElementProps={{
                             style: {
@@ -228,11 +260,14 @@ export default class HostConnection extends Component {
             <Footer style={{ textAlign: 'left' }}>
               <Row>
                 <Column style={{ textAlign: 'left' }}>
-                  ``<Button onClick={(evt) => this.sendRequest()}>Send Request</Button>
+                  ``<Button onClick={(evt) => this.socketQuery()}>Send Request</Button>
                 </Column>
                 <Column>
                 </Column>
                 <Column>
+                  <div style={{position: 'fixed', bottom: 0}}>
+                    Socket id: {socketId}
+                  </div>
                 </Column>
               </Row>
             </Footer>
@@ -249,3 +284,5 @@ export default class HostConnection extends Component {
     );
   }
 }
+
+export default hocConnect(HostConnection, SocketLinkedState);

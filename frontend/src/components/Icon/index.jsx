@@ -1,17 +1,31 @@
 import React from 'react';
 import Image from '../Image';
+import textEllipsis from 'text-ellipsis';
+
 import './style.css';
 
 const Icon = (props = {}) => {
-  let {title, description, src, className, ...propsRest} = props;
+  let {title, width, height, style, maxTitleLength, description, src, className, ...propsRest} = props;
+
+  maxTitleLength = maxTitleLength || 10;
+
+  style = Object.assign(
+    style || {},
+    {
+      width,
+      height
+    }
+  );
+
 
   // TODO: Set default width / height, if not already set
 
   return (
     <button
+      {...propsRest}
       className={`Icon ${className ? className : ''}`}
       title={description}
-      {...propsRest}
+      style={style}
     >
       <Image
         className="Image"
@@ -23,7 +37,10 @@ const Icon = (props = {}) => {
       />
 
       <div className="Name">
-        {title}
+        {
+          // TODO: Make ellipsis length configurable 
+        }
+        {textEllipsis(title, maxTitleLength)}
       </div>
     </button>
   )

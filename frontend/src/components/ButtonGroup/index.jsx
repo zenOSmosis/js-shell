@@ -1,5 +1,7 @@
 import Button from '../Button';
-const {Group: ButtonGroup} = Button;
+
+import {Button as AntdButton} from 'antd';
+const {Group: ButtonGroup} = AntdButton;
 
 export {
   Button,

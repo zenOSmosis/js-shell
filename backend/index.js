@@ -1,5 +1,5 @@
-const expressServer = require('./utils/expressServer');
-const socketIO = require('./utils/socket.io-server');
+const expressServer = require('./servers/expressServer');
+const socketIO = require('./servers/socket.io-server');
 
 expressServer.start();
 socketIO.start();

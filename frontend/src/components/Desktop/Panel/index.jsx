@@ -18,9 +18,11 @@ export default class Panel extends Component {
   constructor(props) {
     super(props);
 
+    /*
     if (!(this.props.desktop instanceof Desktop)) {
       throw new Error(`'desktop' property must be passed and must be an instance of Desktop`);
     }
+    */
 
     this._masterLifecycleEvents = (() => {
       const masterLifecycleEvents = new WindowLifecycleEvents();
@@ -67,6 +69,8 @@ export default class Panel extends Component {
           <div className="ApplicationTitle">
             <Menubar />
             {
+              // TODO: Move this to Menubar
+
               this.state.controlUIWindowTitle &&
               <Dropdown overlay={menu} trigger={['click']}>
                 <span style={{ userSelect: 'none' }}>{this.state.controlUIWindowTitle}</span>

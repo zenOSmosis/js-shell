@@ -4,6 +4,7 @@ import Button from '../../components/Button';
 import Center from '../../components/Center';
 import Window from '../../components/Desktop/Window';
 import Icon from '../../components/Icon';
+import ConnectedClients from './subPanes/ConnectedClients';
 import DesktopSettings from './subPanes/DesktopSettings';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';
 import NotificationSettings from './subPanes/NotificationSettings';
@@ -11,15 +12,6 @@ import DesktopDrawer from './subPanes/DrawerSettings';
 import LinkedStateMonitor from './subPanes/LinkedStateMonitor';
 import HostConnection from './subPanes/HostConnection';
 import DrawerSettings from './subPanes/DrawerSettings';
-
-// TODO: Convert these to objects w/ attached views
-const SUBVIEW_NAME_MAIN = 'Settings & Utilities';
-const SUBVIEW_NAME_BACKGROUND_SETTINGS = 'Background Settings';
-const SUBVIEW_NAME_CONTEXT_MENU_SETTINGS = 'Context Menu Settings';
-const SUBVIEW_NAME_NOTIFICATION_SETTINGS = 'Notification Settings';
-const SUBVIEW_NAME_DESKTOP_DRAWER = 'Desktop Drawer';
-const SUBVIEW_NAME_LINKED_STATE_MONITOR = 'UI Linked States';
-const SUBVIEW_NAME_HOST_CONNECTION = 'Host Connection';
 
 class MainPane extends Component {
   componentDidMount() {
@@ -42,91 +34,17 @@ class MainPane extends Component {
 
           {
             subViews.map((subView, idx) => {
-              const {name} = subView;
+              const {title} = subView;
 
               return (
                 <div
                   key={idx}
                   style={{ width: 80, height: 80, display: 'inline-block' }}
                 >
-                  <Icon title={name} onClick={(evt) => settingsWindow.switchToSubViewNG(subView)} />
+                  <Icon title={title} onClick={(evt) => settingsWindow.switchToSubViewNG(subView)} />
                 </div>
               )
             })
-          }
-
-          {
-            /*
-          <h1>Desktop</h1>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Displays" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Windows" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Background" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_BACKGROUND_SETTINGS)} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Context Menu" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_CONTEXT_MENU_SETTINGS)} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Notifications" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_NOTIFICATION_SETTINGS)} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Drawer" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_DESKTOP_DRAWER)} />
-          </div>
-        </div>
-
-        <div>
-          <h1>Audio</h1>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Audio Devices" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Speech" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-        </div>
-
-        <div>
-          <h1>System</h1>
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Users &amp; Groups" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Storage" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Host Connection" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_HOST_CONNECTION)} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Processes" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="UI Linked States" onClick={(evt) => settingsWindow.switchToPane(SUBVIEW_NAME_LINKED_STATE_MONITOR)} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="UI Errors" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-
-          <div style={{ width: 80, height: 80, display: 'inline-block' }}>
-            <Icon title="Uptime" onClick={(evt) => settingsWindow.switchToPane('...')} />
-          </div>
-        </div>
-            */
           }
         </div>
       </Center>
@@ -142,28 +60,32 @@ export default class SettingsWindow extends Component {
 
   subViews = [
     {
-      name: 'Background',
+      title: 'Background',
       component: <DesktopSettings settingsWindow={this} />
     },
     {
-      name: 'Context Menu',
+      title: 'Context Menu',
       component: <ContextMenuSettings settingsWindow={this} />
     },
     {
-      name: 'Notifications',
+      title: 'Notifications',
       component: <NotificationSettings settingsWindow={this} />
     },
     {
-      name: 'Drawer',
+      title: 'Drawer',
       component: <DrawerSettings settingsWindow={this} />
     },
     {
-      name: 'Host Connection',
+      title: 'Host Connection',
       component: <HostConnection settingsWindow={this} />
     },
     {
-      name: 'Linked States',
+      title: 'Linked States',
       component: <LinkedStateMonitor settingsWindow={this} />
+    },
+    {
+      title: 'Connected Clients',
+      component: <ConnectedClients settingsWindow={this} />
     }
   ];
 
@@ -178,7 +100,10 @@ export default class SettingsWindow extends Component {
   }
 
   switchToSubViewNG(subPane = {}) {
-    let {component} = subPane;
+    let {component, title: subPaneTitle} = subPane;
+    
+    const title = (subPaneTitle ? subPaneTitle : appConfig.getDefaultTitle());
+
     if (!component) {
       component = <MainPane settingsWindow={this} subViews={this.subViews} />;
     }
@@ -187,7 +112,7 @@ export default class SettingsWindow extends Component {
       subPane: component,
       subToolbar: null,
     }, () => {
-      this.setTitle(subPane.name);
+      this.setTitle(title);
     });
   }
 

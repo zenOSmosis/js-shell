@@ -1,4 +1,4 @@
-// import HelloWorldApp from './HelloWorld';
+import HelloWorldApp from './HelloWorld';
 import FilesApp from './Files';
 import SettingsApp from './Settings';
 import AppBlueprint from './App.Blueprint';
@@ -8,7 +8,7 @@ import DocsApp from './Docs';
 import AboutApp from './About';
 
 const defaultApps = [
-  // HelloWorldApp,
+  HelloWorldApp,
   FilesApp,
   SettingsApp,
   AppBlueprint,

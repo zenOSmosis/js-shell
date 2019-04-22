@@ -13,7 +13,7 @@ import { Button, ButtonGroup } from '../../components/ButtonGroup';
 import { Switch, Icon, Input, Popover } from 'antd';
 import { Knob } from 'react-rotary-knob'; // @see https://www.npmjs.com/package/react-rotary-knob
 import animate, { ANIMATIONS } from '../../utils/animate';
-import Box3DEditor from './subComponents/Box3DEditor';
+import Editor from './subComponents/Editor';
 
 const { Search } = Input;
 
@@ -32,26 +32,6 @@ const SLIDER_ACTIONS = [
   SLIDER_ACTION_ZOOM
 ];
 */
-
-const bufferUIChange = (() => {
-  // let isRunning = false;
-  // let onPostTimeout = null;
-
-  let nativeTimeout = null;
-
-  return (onChange, msTimeout = 2) => {
-    if (nativeTimeout) {
-      clearTimeout(nativeTimeout);
-    }
-
-    nativeTimeout = setTimeout(() => {
-      if (typeof onChange === 'function') {
-        // window.requestAnimationFrame(onChange);
-        onChange();
-      }
-    }, msTimeout);
-  };
-})();
 
 export default class AppBlueprintBaseWindow extends Component {
   state = {
@@ -80,30 +60,22 @@ export default class AppBlueprintBaseWindow extends Component {
 
   // TODO: Rename
   handleHorizontalSliderChange = (horizontalSliderVal) => {
-    bufferUIChange(() => {
-      this._renderBox.rotate({ degY: horizontalSliderVal });
-    });
+    this._renderBox.rotate({ degY: horizontalSliderVal });
   }
 
   // TODO: Rename
   handleVerticalSliderChange = (verticalSliderVal) => {
-    bufferUIChange(() => {
-      this._renderBox.rotate({ degX: verticalSliderVal });
-    });
+    this._renderBox.rotate({ degX: verticalSliderVal });
   }
 
   // TODO: Rename
   handleZTranslationChange = (translateZ) => {
-    bufferUIChange(() => {
-      this._renderBox.rotate({ translateZ });
-    });
+    this._renderBox.rotate({ translateZ });
   }
 
   // TODO: Rename
   handlePerspectiveChange = (perspective) => {
-    bufferUIChange(() => {
-      this._renderBox.setPerspective(perspective);
-    });
+    this._renderBox.setPerspective(perspective);
   }
 
   render() {
@@ -198,7 +170,7 @@ export default class AppBlueprintBaseWindow extends Component {
             {
               // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
             }
-            <Box3DEditor
+            <Editor
               appBlueprintBaseWindow={this}
               box3D={this._renderBox}
               code={this.state.code}
@@ -242,6 +214,33 @@ export default class AppBlueprintBaseWindow extends Component {
                   </Content>
                   <Footer style={{ textAlign: 'center' }}>
                     <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                        <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
+                          <Option value="">Choose animation...</Option>
+                          <OptGroup label="OptGroup">
+                            {
+                              ANIMATIONS.map((animation, idx) => {
+                                return (
+                                  <Option key={idx} value={animation}>{animation}</Option>
+                                );
+                              })
+                            }
+                          </OptGroup>
+                        </Select>
+                        <Button size="small">Animate</Button>
+                      </div>
+                  </Footer>
+                </Layout>
+              </Content>
+            </Layout>
+          </Content>
+          {
+            // End of main content
+          }
+          <Aside width={40} style={{ height: '100%' }}>
+            {
+              // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
+            }
+                                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
                       <Knob
                         // tipFormatter={null}
                         min={-179}
@@ -312,27 +311,7 @@ export default class AppBlueprintBaseWindow extends Component {
                       /><br />
                       Scale Y
                     </div>
-
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
-                        <Option value="">Choose animation...</Option>
-                        <OptGroup label="OptGroup">
-                          {
-                            ANIMATIONS.map((animation, idx) => {
-                              return (
-                                <Option key={idx} value={animation}>{animation}</Option>
-                              );
-                            })
-                          }
-                        </OptGroup>
-                      </Select>
-                      <Button size="small">Animate</Button>
-                    </div>
-                  </Footer>
-                </Layout>
-              </Content>
-            </Layout>
-          </Content>
+          </Aside>
         </Layout>
       </Window>
     );

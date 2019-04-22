@@ -1,7 +1,7 @@
 const handleSocketRoute = require('../../utils/handleSocketRoute');
 const {fetchFreedesktopApps} = require('../../../../utils/freedesktop.org/appUtils');
 
-const requestApps = async(options = {}, ack) => {
+const requestXApps = async(options = {}, ack) => {
   return handleSocketRoute(async () => {
     try {
       const apps = await fetchFreedesktopApps();
@@ -13,4 +13,4 @@ const requestApps = async(options = {}, ack) => {
   }, ack);
 };
 
-module.exports = requestApps;
+module.exports = requestXApps;

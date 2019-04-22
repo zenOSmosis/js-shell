@@ -24,3 +24,7 @@ const LabeledSwitch = (props = {}) => {
 };
 
 export default LabeledSwitch;
+
+export {
+  Switch
+};

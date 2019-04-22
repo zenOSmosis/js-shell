@@ -6,6 +6,7 @@
   border: 1px rgb(112, 112, 112) solid;
   border-radius: 4px;
   overflow: hidden;
+  position: relative;
 
   display: flex;
   flex-direction: column;
@@ -17,6 +18,17 @@
    transform: scale(1);
 }
 
+/**
+* Active Window shading.
+*
+* @see https://www.cssmatic.com/box-shadow
+*/
+/* .Window.Active, */
+.WindowResizable.Active {
+  -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+}
 
 .Window .WindowHeader {
   min-height: 22px;
@@ -48,17 +60,6 @@
 
 .Window .WindowHeader .SubToolbar {
   margin-top: 4px;
-}
-
-/**
-* Active Window shading.
-*
-* @see https://www.cssmatic.com/box-shadow
-*/
-.Window.Active {
-  -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
-  -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
-  box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
 }
 
 /* Three dots */

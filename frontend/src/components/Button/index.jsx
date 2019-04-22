@@ -2,7 +2,7 @@ import React from 'react';
 import { Button as RSButton } from 'antd';
 
 const Button = (props = {}) => {
-  const {children, size: propsSize, ...propsRest} = props;
+  const {className, size: propsSize, ...propsRest} = props;
 
   const size = propsSize || 'small';
 
@@ -10,12 +10,9 @@ const Button = (props = {}) => {
     <RSButton
       {...propsRest}
       size={size}
-    >
-      {
-        children
-      }
-    </RSButton>
+      className={`Button ${className ? className : ''}`}
+    />
   );
 }
 
-export default RSButton;
+export default Button;

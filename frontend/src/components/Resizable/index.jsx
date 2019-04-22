@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Moveable from '../Moveable';
 import Gesture from '../Gesture';
 import $ from 'jquery';
+import bufferUIChange from '../../utils/bufferUIChange';
 import './style.css';
 
 export const RESIZABLE_DEFAULT_MIN_WIDTH = 300;
@@ -22,6 +23,15 @@ const RESIZE_DIRECTION_NORTHWEST = 'nw';
 export default class Resizable extends Component {
   _minWidth = 0;
   _minHeight = 0;
+  
+  _initialTouchX = 0;
+  _initialTouchY = 0;
+
+  _initialPosX = 0;
+  _initialPosY = 0;
+
+  _initialWidth = 0;
+  _initialHeight = 0;
 
   componentDidMount() {
     this.$root = $(this.root);
@@ -29,6 +39,11 @@ export default class Resizable extends Component {
 
     const {minWidth, minHeight} = this.props;
     this.setMinWidthHeight(minWidth, minHeight);
+
+    const {onBodyMount} = this.props;
+    if (typeof onBodyMount === 'function') {
+      onBodyMount(this.main);
+    }
   }
 
   componentDidUpdate() {
@@ -40,19 +55,29 @@ export default class Resizable extends Component {
     this._minWidth = parseInt(minWidth) || RESIZABLE_DEFAULT_MIN_WIDTH;
     this._minHeight = parseInt(minHeight) || RESIZABLE_DEFAULT_MIN_HEIGHT;
 
-    this.$main.css({
-      minWidth: this._minWidth,
-      minHeight: this._minHeight
+    bufferUIChange(() => {
+      this.$main.css({
+        minWidth: this._minWidth,
+        minHeight: this._minHeight
+      });
     });
   }
 
   handleTouchStart = (evt) => {
+    const {moveableComponent} = this.props;
     // console.debug('touch start', evt);
 
-    this.initialX = evt.initial[0];
-    this.initialY = evt.initial[1];
-    this.initialWidth = this.$main.innerWidth();
-    this.initialHeight = this.$main.innerHeight();
+    const {x: initialPosX, y: initialPosY} = moveableComponent.getPosition();
+
+    this._initialTouchX = evt.initial[0];
+    this._initialTouchY = evt.initial[1];
+
+    this._initialPosX = initialPosX;
+    this._initialPosY = initialPosY;
+
+    this._initialWidth = this.$main.innerWidth();
+    this._initialHeight = this.$main.innerHeight();
+
 
     /*
     this.$main.css({
@@ -61,11 +86,10 @@ export default class Resizable extends Component {
     */
   }
 
-  handleTouchEnd = (evt) => {
-    // console.debug('touch stop', evt);
-  }
-
+  // TODO: Use animation frame when resizing
   handleTouchMove = (direction, evt) => {
+    // TODO: Ignore evt target if not original
+
     const {onResize, moveableComponent} = this.props;
 
     if (!(moveableComponent instanceof Moveable)) {
@@ -81,6 +105,9 @@ export default class Resizable extends Component {
     const deltaX = evt.delta[0];
     const deltaY = evt.delta[1];
 
+    let newWidth;
+    let newHeight;
+
     /*
     console.debug({
       width,
@@ -90,59 +117,87 @@ export default class Resizable extends Component {
     });
     */
 
-    // TODO: Use animation frame when resizing
+    console.debug({
+      deltaX,
+      deltaY
+    });
+
+    const {x: posX, y: posY} = moveableComponent.getPosition();
+    
+    // NOTE: Using bufferUIChange here causes window jumpiness
 
     switch (direction) {
       case RESIZE_DIRECTION_NORTHWEST:
+        newWidth = this._initialWidth - deltaX;
+        newHeight = this._initialHeight - deltaY;
+
         $main.css({
-          width: this.initialWidth - deltaX,
-          height: this.initialHeight - deltaY
+          width: newWidth,
+          height: newHeight
         });
 
-        // TODO: Move container left equiv to deltaX
-        // TODO: Move container up equiv to deltaY
+        let newPos = {x: posX, y: posY};
+
+        if (newWidth > this._minWidth) {
+          // moveableComponent.moveTo(posX, this._initialPosY + deltaY);
+          newPos.x = this._initialPosX + deltaX;
+        }
+
+        if (newHeight > this._minHeight) {
+          // moveableComponent.moveTo(posX, this._initialPosY + deltaY);
+          newPos.y = this.initalPosY + deltaY;
+        }
+
+        // TODO: Determine if new position is the same before trying to move
+        moveableComponent.moveTo(newPos.x, newPos.y);
       break;
 
       case RESIZE_DIRECTION_NORTH:
+        newHeight = this._initialHeight - deltaY;
+
         $main.css({
-          height: this.initialHeight - deltaY
+          height: newHeight
         });
 
-        // TODO: Move container up equiv to deltaY
+        if (newHeight > this._minHeight) {
+          moveableComponent.moveTo(posX, this._initialPosY + deltaY);
+        }
       break;
 
       case RESIZE_DIRECTION_NORTHEAST:
         $main.css({
-          height: this.initialHeight - deltaY,
-          width: this.initialWidth + deltaX
+          height: this._initialHeight - deltaY,
+          width: this._initialWidth + deltaX
         });
 
-        // TODO: Move container up equiv to deltaY
+        if (deltaY < 0) {
+          moveableComponent.moveTo(posX, this._initialPosY + deltaY);
+        }
       break;
 
       case RESIZE_DIRECTION_EAST:
         $main.css({
-          width: this.initialWidth + deltaX
+          width: this._initialWidth + deltaX
         });
       break;
 
       case RESIZE_DIRECTION_SOUTHEAST:
         $main.css({
-          width: this.initialWidth + deltaX,
-          height: this.initialHeight + deltaY
+          width: this._initialWidth + deltaX,
+          height: this._initialHeight + deltaY
         });
       break;
 
       case RESIZE_DIRECTION_SOUTH:
         $main.css({
-          height: this.initialHeight + deltaY
+          height: this._initialHeight + deltaY
         });
       break;
 
       case RESIZE_DIRECTION_SOUTHWEST:
         $main.css({
-          width: this.initialWidth - deltaX,
-          height: this.initialHeight + deltaY
+          width: this._initialWidth - deltaX,
+          height: this._initialHeight + deltaY
         });
 
         // TODO: Move container left equiv to deltaX
@@ -150,7 +205,7 @@ export default class Resizable extends Component {
 
       case RESIZE_DIRECTION_WEST:
         $main.css({
-          width: this.initialWidth - deltaX
+          width: this._initialWidth - deltaX
         });
 
         // TODO: Move container left equiv to deltaX
@@ -174,17 +229,31 @@ export default class Resizable extends Component {
       })
     }
   };
+
+  handleTouchEnd = (evt) => {
+    // console.debug('touch stop', evt);
+  }
   
+  // TODO: Include ability to turn off Gesture layers
   render() {
-    let {children, moveableComponent, minWidth, minHeight, style: contentStyle, onResize, ...propsRest} = this.props;
-    
-    
+    let {
+        children,
+        bodyClassName,
+        className,
+        onBodyMount,
+        moveableComponent,
+        minWidth,
+        minHeight,
+        style: contentStyle,
+        onResize,
+        ...propsRest
+    } = this.props;
 
     return (
       <div
         {...propsRest}
         ref={ c => this.root = c }
-        className="Resizable"
+        className={`Resizable ${className ? className : ''}`}
       >
         <div className="TableRow">
           <Gesture
@@ -231,7 +300,7 @@ export default class Resizable extends Component {
           <div
             className="TableCell"
           >
-            <div className="ResizableBody" style={contentStyle} ref={ c => this.main = c}>
+            <div className={`ResizableBody ${bodyClassName ? bodyClassName : ''}`} style={contentStyle} ref={ c => this.main = c}>
               {
                 children
               }

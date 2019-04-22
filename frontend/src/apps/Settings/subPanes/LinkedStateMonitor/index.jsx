@@ -1,59 +1,13 @@
 import React, {Component} from 'react';
-import {MasterLinkedStateListener, EVT_UPDATED_SHARED_STATE} from '../../../../state/LinkedState';
+import {MasterLinkedStateListener, EVT_LINKED_STATE_UPDATE} from '../../../../state/LinkedState';
 import Button from '../../../../components/Button';
+import {Row, Column} from '../../../../components/RowColumn';
 // import fetchStackTrace from 'stacktrace-js';
 import {Tree} from 'antd';
+import JSONEditor from '../../../../components/JSONEditor';
+import {Select, Option} from '../../../../components/Select';
+import safeStringify from 'fast-safe-stringify';
 const {TreeNode} = Tree;
-
-const getUniqueLinkedStateInstances = (linkedStateInstances) => {
-  let classNames = [];
-  let instances = [];
-
-  linkedStateInstances.forEach((instance) => {
-    const testClassName = instance.getClassName();
-
-    if (!classNames.includes(testClassName)) {
-      classNames.push(testClassName);
-
-      instances.push(instance);
-    }
-  });
-
-  return instances;
-};
-
-const LinkedStateGroups = (props = {}) => {
-  const {masterLinkedStateListener, linkedStateInstances} = props;
-
-  const uniqueInstances = getUniqueLinkedStateInstances(linkedStateInstances);
-
-  return (
-    <div style={{backgroundColor: '#fff'}}>
-      <Tree
-        onSelect={ uuid => console.debug(masterLinkedStateListener.getLinkedStateInstanceWithUUID(uuid)) }
-      >
-        {
-          uniqueInstances.map((instance, idx) => {
-            console.debug('l instance', instance);
-            return (
-              <TreeNode key={idx} title={instance.getClassName()}>
-                {
-                  masterLinkedStateListener.getLinkedStateInstances(instance).map((subInstance, subIdx) => {
-                    return (
-                      <TreeNode key={subInstance.getUUID()} title={subInstance.getCreateDate().toString()}>
-
-                      </TreeNode>
-                    )
-                  })
-                }
-              </TreeNode>
-            )
-          })
-        }
-      </Tree>
-    </div>
-  );
-}
 
 export default class LinkedStateMonitor extends Component {
   state = {
@@ -77,11 +31,11 @@ export default class LinkedStateMonitor extends Component {
     this._masterLinkedStateListener = new MasterLinkedStateListener();
 
     this.getLinkedStateInstances();
-    this._masterLinkedStateListener.on(EVT_UPDATED_SHARED_STATE, this.handleUpdatedLinkedState);
+    this._masterLinkedStateListener.on(EVT_LINKED_STATE_UPDATE, this.handleUpdatedLinkedState);
   }
 
   componentWillUnmount() {
-    this._masterLinkedStateListener.off(EVT_UPDATED_SHARED_STATE, this.handleUpdatedLinkedState);
+    this._masterLinkedStateListener.off(EVT_LINKED_STATE_UPDATE, this.handleUpdatedLinkedState);
 
     this._masterLinkedStateListener = null;
   }
@@ -121,6 +75,7 @@ export default class LinkedStateMonitor extends Component {
           <li>In / Out</li>
           <li>Monitor linked states as they happen</li>
           <li>Is it possible to obtain the caller?</li>
+          <li>Event counts</li>
         </ul>
 
         <label>Enable Stack Tracing</label>
@@ -175,4 +130,63 @@ export default class LinkedStateMonitor extends Component {
       </div>
     );
   }
+}
+
+// TODO: ?
+const getUniqueLinkedStateInstances = (linkedStateInstances) => {
+  let classNames = [];
+  let instances = [];
+
+  linkedStateInstances.forEach((instance) => {
+    const testClassName = instance.getClassName();
+
+    if (!classNames.includes(testClassName)) {
+      classNames.push(testClassName);
+
+      instances.push(instance);
+    }
+  });
+
+  return instances;
+};
+
+const LinkedStateGroups = (props = {}) => {
+  const {masterLinkedStateListener, linkedStateInstances} = props;
+
+  const uniqueInstances = getUniqueLinkedStateInstances(linkedStateInstances);
+
+  return (
+    <div>
+        <Select defaultValue="">
+          <Option value="">Select a LinkedState instance</Option>
+          {
+            uniqueInstances.map((instance, idx) => {
+              return (
+                <Option key={idx} value={instance.getUUID()}>{
+                  instance.getClassName()
+                }</Option>
+              )
+            })
+          }
+        </Select>
+        {
+          uniqueInstances.map((instance, idx) => {
+            const safeValue = JSON.parse(safeStringify(instance));
+
+            console.debug('l instance', instance);
+            return (
+              <div key={idx}>
+                {
+                  instance.getClassName()
+                }
+
+                <div style={{height: 500}}>
+                  <JSONEditor value={safeValue} />
+                </div>
+              </div>
+            );
+          })
+        }
+    </div>
+  );
 }

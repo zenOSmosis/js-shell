@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
-import LinkedState, {EVT_BROADCAST_STATE_UPDATE} from '../../state/LinkedState';
+import LinkedState, {EVT_LINKED_STATE_UPDATE} from '../../state/LinkedState';
 // import Window from './Window';
 
 export {
-  EVT_BROADCAST_STATE_UPDATE
+  EVT_LINKED_STATE_UPDATE
 };
 
 // TODO: Determine fan-in/fan-out

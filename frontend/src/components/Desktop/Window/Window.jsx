@@ -17,6 +17,8 @@ import {
   EVT_WINDOW_TITLE_DID_SET,
   EVT_WINDOW_WILL_ACTIVATE,
   EVT_WINDOW_DID_ACTIVATE,
+  EVT_WINDOW_WILL_DEACTIVATE,
+  EVT_WINDOW_DID_DEACTIVATE,
   EVT_WINDOW_WILL_MINIMIZE,
   EVT_WINDOW_DID_MINIMIZE,
   EVT_WINDOW_WILL_MAXIMIZE,
@@ -42,7 +44,7 @@ const EFFECT_CREATE =  ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
 // TODO: Get rid of this
-let zStack = 9999;
+// let zStack = 9999;
 
 let windowStack = [];
 
@@ -55,8 +57,8 @@ export const getWindowStack = () => {
 export default class Window extends Component {
   state = {
     title: null,
-    isActive: false,
-    zStack: zStack + 1
+    // isActive: false,
+    // zStack: zStack + 1
   };
 
   constructor(props) {
@@ -86,6 +88,25 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_CREATED);
   }
 
+  async componentDidMount() {
+    if (this.isClosed) {
+      return;
+    }
+
+    // Set Window title either from props or from appConfig
+    const {appConfig, title: propsTitle} = this.props;
+    const title = (appConfig ? appConfig.getTitle() : propsTitle);
+    this.setTitle(title);
+
+    this._startInteractListening();
+
+    await this.animate(EFFECT_CREATE);
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+
+    this.activate();
+  }
+  
   componentDidUpdate() {
     if (this.isClosed) {
       return;
@@ -99,29 +120,6 @@ export default class Window extends Component {
     $(base).css({
       zIndex: this.state.zStack
     });
-  }
-
-  async componentDidMount() {
-    if (this.isClosed) {
-      return;
-    }
-
-    const { appConfig } = this.props;
-    if (appConfig) {
-      const title = appConfig.getTitle();
-
-      this.setTitle(title);
-    } else {
-      this.setTitle(this.props.title);
-    }
-
-    // this._startInteractListening();
-
-    await this.animate(EFFECT_CREATE);
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
-
-    this.activate();
   }
 
   componentWillUnmount() {
@@ -148,26 +146,23 @@ export default class Window extends Component {
     return this.startDate;
   }
 
-  /*
   _startInteractListening() {
     $(window).on('mousedown', this._onInteract);
     $(window).on('touchstart', this._onInteract);
   }
-  */
 
-  /*
+
   _stopInteractListening() {
     $(window).off('mousedown', this._onInteract);
     $(window).off('touchstart', this._onInteract);
   }
-  */
 
-  /*
   _onInteract = (evt) => {
     if (this.isClosed) {
       return;
     }
 
+    // TODO: Rework this
     const base = this._base._base;
 
     if (base === evt.target ||
@@ -177,31 +172,29 @@ export default class Window extends Component {
       this.deactivate();
     }
   };
-  */
 
   activate() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
-    this.setState({
-      isActive: true,
-      zStack: this.state.zStack + 1
-    }, () => {
-      this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
-    });
+    $(this._resizableBody).addClass('Active'); // Affects draw shadow
+    $(this._drawRef).addClass('Active'); // Affects window assets (e.g. dot colors)
+
+   this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   deactivate() {
-    if (this.state.isActive) {
-      this.setState({
-        isActive: false
-      });
-    }
+    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
+
+    $(this._resizableBody).removeClass('Active'); // Affects draw shadow
+    $(this._drawRef).removeClass('Active'); // Affects window assets (e.g. dot colors)
+
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
-  toggleHide() {
+  async toggleHide() {
     // TODO: Detect current window state and take appropriate action
 
-    this.hide();
+    return this.hide();
   }
 
   async hide() {
@@ -263,7 +256,7 @@ export default class Window extends Component {
   /**
    * Animates the entire window, incuding window chrome & content.
    * 
-   * @param {string} effect The effect name, within
+   * @param {string} effect The effect name, per
    * https://daneden.github.io/animate.css/
    */
   async animate(effect) {
@@ -450,10 +443,13 @@ export default class Window extends Component {
         >
 
           <Resizable
+            ref={ c => this._resizable = c }
             onResize={this._handleTouchResize}
             moveableComponent={this.moveable}
             minWidth={minWidth}
             minHeight={minHeight}
+            bodyClassName="WindowResizable"
+            onBodyMount={ c => this._resizableBody = c}
           // maxWidth={}
           // maxHeight={}
           >
@@ -461,7 +457,9 @@ export default class Window extends Component {
 
               <div
                 {...propsRest}
-                className={`Window ${this.state.isActive ? 'Active' : ''}`}
+                ref={ c => this._drawRef = c }
+                // className={`Window ${this.state.isActive ? 'Active' : ''}`}
+                className="Window"
               >
 
                 {
@@ -557,5 +555,7 @@ export default class Window extends Component {
     this.isClosed = true;
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
+
+    console.warn('TODO: Handle window close and detach event');
   }
 }

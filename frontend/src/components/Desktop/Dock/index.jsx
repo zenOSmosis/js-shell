@@ -19,9 +19,12 @@ export default class Dock extends Component {
 
   componentDidMount() {
     const { desktop } = this.props;
+
+    /*
     if (!(desktop instanceof Desktop)) {
       throw new Error('desktop must be an instance of Desktop');
     }
+    */
 
     this._desktop = desktop;
 
@@ -65,11 +68,12 @@ export default class Dock extends Component {
                 <ViewTransition
                   key={idx}
                   effect="wobble"
-                  style={{borderBottom: '5px blue solid', margin: '0px 5px'}}
+                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px'}}
                 >
                   <Tooltip title={runConfig._defaultTitle}>
                     <button
-                      onClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
+                      // "Launches" the run config
+                      onDoubleClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
                     >
                       <Image src={runConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>

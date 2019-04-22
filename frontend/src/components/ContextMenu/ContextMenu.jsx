@@ -94,8 +94,20 @@ export default class ContextMenu extends Component {
         {
           isVisible &&
           <div ref={ref => { this._overlay = ref }} className="ContextMenuOverlay">
-            <Menu getPopupContainer={trigger => trigger.parentNode} onClick={this._handleClick} style={{ width: 256 }} mode="vertical">
-              <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
+            <Menu
+                theme="dark"
+                getPopupContainer={trigger => trigger.parentNode}
+                onClick={this._handleClick}
+                style={{ width: 256 }}
+                mode="vertical"
+            >
+              <SubMenu
+                  key="sub1"
+                  title={
+                    <span>
+                        <Icon type="mail" /><span>Navigation One</span>
+                    </span>
+                  }>
                 <MenuItemGroup title="Item 1">
                   <Menu.Item key="1">Option 1</Menu.Item>
                   <Menu.Item key="2">Option 2</Menu.Item>

@@ -1,6 +1,7 @@
 // @see https://3dtransforms.desandro.com/cube
 
 import React, {Component} from 'react';
+import bufferUIChange from '../../utils/bufferUIChange';
 import './style.css';
 
 export const BOX3D_SIDE_FRONT = 'Front';
@@ -60,7 +61,7 @@ export default class Box3D extends Component {
   */
 
   setPerspective(perspective = 200) {
-    window.requestAnimationFrame(() => {
+    bufferUIChange(() => {
       this._boxScene.style.perspective = `${parseInt(perspective)}px`;
     });
   }
@@ -80,7 +81,8 @@ export default class Box3D extends Component {
       translateZ = this._translateZ;
     }
 
-    window.requestAnimationFrame(() => {
+    // Render
+    bufferUIChange(() => {
       this._box.style.transform = `rotateX(${degX}deg) rotateY(${degY}deg) translateZ(${translateZ}px)`;
     });
 

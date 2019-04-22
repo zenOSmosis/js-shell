@@ -17,7 +17,7 @@ const fetchRecursiveFilePaths = async (baseDirname, extensions = ['.desktop']) =
           let readFiles = rread(baseDirname);
 
           readFiles = readFiles.map((file) => {
-            return `${baseDirname}/${file}`;
+            return `${baseDirname}${path.sep}${file}`;
           });
 
           readFiles = readFiles.filter((file) => {

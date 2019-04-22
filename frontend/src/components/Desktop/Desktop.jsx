@@ -6,17 +6,18 @@ import './style-scrollbar.css';
 import React, { Component } from 'react';
 import Panel from './Panel';
 // import logo from './logo.svg';
-import ContextMenu from './../../components/ContextMenu';
+import ContextMenu from '../../components/ContextMenu';
+import Center from '../../components/Center';
 import Dock from './Dock';
-import FullViewport from './../../components/FullViewport';
-import Background from './../../components/Background';
-import Window from './../../components/Desktop/Window';
+import FullViewport from '../../components/FullViewport';
+import Background from '../../components/Background';
+import Window from '../../components/Desktop/Window';
 import NoHostConnectionModal from './modals/NoHostConnectionModal';
-// import DesktopAppRunConfig from './DesktopAppRunConfig';
-import DesktopLinkedState, { EVT_BROADCAST_STATE_UPDATE } from '../../state/DesktopLinkedState';
+// import DesktopAppRunConfig from 'DesktopAppRunConfig';
+import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE, hocConnect } from '../../state/DesktopLinkedState';
 import socket from '../../utils/socket.io';
 import config from '../../config';
-import { notification } from 'antd';
+import { notification as antdNotification } from 'antd';
 import 'normalize.css/normalize.css';
 // import 'bootstrap/dist/css/bootstrap.css'; // TODO: Remove bootstrap
 
@@ -25,7 +26,7 @@ console.debug('default apps', defaultApps);
 
 // TODO: Change page title according to active window title
 
-export default class Desktop extends Component {
+class Desktop extends Component {
   state = {
     wallpaperPaths: [],
 
@@ -40,18 +41,19 @@ export default class Desktop extends Component {
   constructor(props) {
     super(props);
 
-    this._desktopLinkedState = new DesktopLinkedState();
-    this._desktopLinkedState.setState({
-      desktop: this
-    });
+    // this._desktopLinkedState = new DesktopLinkedState();
   }
 
+  // TODO: Factor out logic into external handlers
   componentDidMount() {
+    // Wallpaper
     this.fetchWallpaperPaths();
 
-    this._desktopLinkedState.on(EVT_BROADCAST_STATE_UPDATE, (updatedState) => {
+    /*
+    // Desktop LinkedState handler
+    this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+      // Handle context menu
       const { contextMenuIsTrapping } = updatedState;
-
       if (typeof contextMenuIsTrapping !== 'undefined') {
         this.setState({
           contextMenuIsTrapping
@@ -59,26 +61,28 @@ export default class Desktop extends Component {
           this.createNotification({
             message: `Native context-menu trapping is ${contextMenuIsTrapping ? 'enabled' : 'disabled'}`,
             // description: 'This is the description',
-            /*
-            onClick: () => {
-              alert('You clicked the notification');
-            }
-            */
+            
+            // onClick: () => {
+            //   alert('You clicked the notification');
+           //  }
+            
           })
         });
       }
 
+      // Handle last notification
       const { lastNotification } = updatedState;
       if (typeof lastNotification !== 'undefined') {
         this.createNotification(lastNotification);
       }
     });
+    */
   }
 
-  createNotification(options) {
-    const { message, description, onClick } = options;
+  createNotification(notification) {
+    const { message, description, onClick } = notification;
 
-    notification.open({
+    antdNotification.open({
       message,
       description,
       onClick
@@ -153,20 +157,24 @@ export default class Desktop extends Component {
   }
 
   render() {
+    const {contextMenuIsTrapping} = this.props;
+
     return (
       <FullViewport className="Desktop">
         <ContextMenu
-          isTrapping={this.state.contextMenuIsTrapping}
+          isTrapping={contextMenuIsTrapping}
         >
           <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
             <Panel desktop={this} />
-            <div>
+            <Center>
               {
+                // TODO: Rework window handling
+
                 this.state.desktopWindows.map((desktopWindow) => {
                   return desktopWindow;
                 })
               }
-            </div>
+            </Center>
 
             <NoHostConnectionModal />
             <Dock desktop={this} />
@@ -176,3 +184,5 @@ export default class Desktop extends Component {
     );
   }
 }
+
+export default hocConnect(Desktop, new DesktopLinkedState);
