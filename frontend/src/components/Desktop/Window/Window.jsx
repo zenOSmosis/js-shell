@@ -5,8 +5,10 @@ import Cover from '../../Cover';
 import BodyCoverContent from './BodyCoverContent';
 import Moveable from '../../Moveable';
 import ViewTransition from '../../ViewTransition';
-import {ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT} from '../../../utils/animate';
+import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from '../../../utils/animate';
 import WindowHeader from './WindowHeader';
+import StackingContext from '../../StackingContext';
+import ContextMenu from '../../ContextMenu';
 import $ from 'jquery';
 import './style.css';
 import {
@@ -34,13 +36,13 @@ import {
 } from './windowEvents';
 import Resizable from '../../Resizable';
 import config from '../../../config';
-const {DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT} = config;
+const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 // import * as MacOS from 'react-desktop/macOs';
 
 // TODO: Enable auto-recomposition of window (contents / position) if screensize is changed
 
-const EFFECT_CREATE =  ANIMATE_JACK_IN_THE_BOX;
+const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
 // TODO: Get rid of this
@@ -68,9 +70,9 @@ export default class Window extends Component {
 
     windowStack.push(this);
 
-    this.lifecycleEvents = new WindowLifecycleEvents(this);
-
     this.startDate = new Date();
+
+    this.lifecycleEvents = new WindowLifecycleEvents(this);
 
     this.lifecycleEvents.broadcast = (() => {
       const oBroadcast = this.lifecycleEvents.broadcast;
@@ -94,7 +96,7 @@ export default class Window extends Component {
     }
 
     // Set Window title either from props or from appConfig
-    const {appConfig, title: propsTitle} = this.props;
+    const { appConfig, title: propsTitle } = this.props;
     const title = (appConfig ? appConfig.getTitle() : propsTitle);
     this.setTitle(title);
 
@@ -106,7 +108,7 @@ export default class Window extends Component {
 
     this.activate();
   }
-  
+
   componentDidUpdate() {
     if (this.isClosed) {
       return;
@@ -179,7 +181,7 @@ export default class Window extends Component {
     $(this._resizableBody).addClass('Active'); // Affects draw shadow
     $(this._drawRef).addClass('Active'); // Affects window assets (e.g. dot colors)
 
-   this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   deactivate() {
@@ -240,7 +242,7 @@ export default class Window extends Component {
   }
 
   async maximize() {
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
     alert('maximize');
 
@@ -441,78 +443,80 @@ export default class Window extends Component {
         // initialX={...}
         // initialY={...}
         >
+        <ContextMenu>
 
           <Resizable
-            ref={ c => this._resizable = c }
+            ref={c => this._resizable = c}
             onResize={this._handleTouchResize}
             moveableComponent={this.moveable}
             minWidth={minWidth}
             minHeight={minHeight}
             bodyClassName="WindowResizable"
-            onBodyMount={ c => this._resizableBody = c}
+            onBodyMount={c => this._resizableBody = c}
           // maxWidth={}
           // maxHeight={}
           >
             <Cover>
-
-              <div
-                {...propsRest}
-                ref={ c => this._drawRef = c }
-                // className={`Window ${this.state.isActive ? 'Active' : ''}`}
-                className="Window"
-              >
-
-                {
-                  // Note:  WindowHeader gesture is contained within the header
-                }
-
-                <WindowHeader
-                  ref={c => this.windowHeader = c}
-                  desktopWindow={this}
-                  title={title}
-                  toolbar={toolbar}
-                  toolbarRight={toolbarRight}
-                  subToolbar={subToolbar}
-                />
-
-                {
-                  // TODO: Apply pixel size to window body
-                }
-                <div
-                  ref={c => this.windowBody = c}
-                  className="WindowBody"
-                >
-                  <Cover
-                    ref={c => this.subBody = c}
-                    style={bodyStyle}
+              <StackingContext>
+                  <div
+                    {...propsRest}
+                    ref={c => this._drawRef = c}
+                    // className={`Window ${this.state.isActive ? 'Active' : ''}`}
+                    className="Window"
                   >
+
                     {
-                      children
+                      // Note:  WindowHeader gesture is contained within the header
                     }
-                  </Cover>
 
-                  <Cover
-                    ref={c => this.bodyCover = c}
+                    <WindowHeader
+                      ref={c => this.windowHeader = c}
+                      desktopWindow={this}
+                      title={title}
+                      toolbar={toolbar}
+                      toolbarRight={toolbarRight}
+                      subToolbar={subToolbar}
+                    />
 
-                    // TODO: Activate to true when window is inactive, being moved, or resized.
-                    isVisible={false}
-                  >
                     {
-                      // TODO: Remove this
+                      // TODO: Apply pixel size to window body
                     }
-                    <BodyCoverContent />
-                  </Cover>
-                </div>
+                    <div
+                      ref={c => this.windowBody = c}
+                      className="WindowBody"
+                    >
+                      <Cover
+                        ref={c => this.subBody = c}
+                        style={bodyStyle}
+                      >
+                        {
+                          children
+                        }
+                      </Cover>
 
-                <div>
-                  {
-                    /*
-                    [bottom]
-                    */
-                  }
-                </div>
+                      <Cover
+                        ref={c => this.bodyCover = c}
 
-              </div>
+                        // TODO: Activate to true when window is inactive, being moved, or resized.
+                        isVisible={false}
+                      >
+                        {
+                          // TODO: Remove this
+                        }
+                        <BodyCoverContent />
+                      </Cover>
+                    </div>
+
+                    <div>
+                      {
+                        /*
+                        [bottom]
+                        */
+                      }
+                    </div>
+
+                  </div>
+              </StackingContext>
             </Cover>
 
             {
@@ -524,6 +528,7 @@ export default class Window extends Component {
             }
 
           </Resizable>
+          </ContextMenu>
         </Moveable>
 
         {
@@ -542,7 +547,7 @@ export default class Window extends Component {
       return;
     }
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
 
     if (this._stopInteractListening) {
       this._stopInteractListening();
@@ -554,7 +559,7 @@ export default class Window extends Component {
 
     this.isClosed = true;
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close and detach event');
   }

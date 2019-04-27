@@ -8,9 +8,11 @@ import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
  * @see https://reactjs.org/docs/higher-order-components.html
  * 
  * @param {*} WrappedComponent 
- * @param {*} LinkedStateExtension 
+ * @param {*} LinkedStateExtension
+ * @param {Function} stateUpdateFilter [default = null] Applies this filtered
+ * value to the component props when the state is updated.
  */
-const hocConnect = (WrappedComponent, LinkedStateExtension) => {
+const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = null) => {
   // ...and returns another component...
   return class extends Component {
     constructor(props) {
@@ -25,21 +27,14 @@ const hocConnect = (WrappedComponent, LinkedStateExtension) => {
       if (!this._linkedStateInstance) {
         throw new Error('No LinkedStateExtension present');
       }
-
-      this.state = this._linkedStateInstance.getState();
-      
-      /*
-      this.state = {
-        data: selectData(DataSource, props)
-      };
-      */
     }
 
     componentDidMount() {
-      // ... that takes care of the subscription...
-      // DataSource.addChangeListener(this.handleChange);
-
       this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this.handleUpdatedState);
+
+      const state = this._linkedStateInstance.getState();
+      // Set the state, filtered if necessary
+      this.handleUpdatedState(state);
     }
 
     componentWillUnmount() {
@@ -49,7 +44,10 @@ const hocConnect = (WrappedComponent, LinkedStateExtension) => {
     }
 
     handleUpdatedState = (updatedState) => {
-      console.debug('Handling updated state', updatedState, WrappedComponent);
+      if (typeof stateUpdateFilter === 'function') {
+        // Overwrite updatedState w/ filter response
+        updatedState = stateUpdateFilter(updatedState) || {};
+      }
 
       this.setState(updatedState);
     }
@@ -62,6 +60,7 @@ const hocConnect = (WrappedComponent, LinkedStateExtension) => {
       return <WrappedComponent
         // data={this.state.data}
         {...passedProps}
+        // ref={ c => this._wrappedComponent = c }
       />;
     }
   };

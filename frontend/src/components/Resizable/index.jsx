@@ -117,10 +117,12 @@ export default class Resizable extends Component {
     });
     */
 
+    /*
     console.debug({
       deltaX,
       deltaY
     });
+    */
 
     const {x: posX, y: posY} = moveableComponent.getPosition();
     

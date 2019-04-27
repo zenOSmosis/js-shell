@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { withGesture } from 'react-with-gesture';
 import './style.css';
 
+// TODO: Consider swapping out w/ https://interactjs.io/
+// interact.js hoc example: https://github.com/beizhedenglong/reactablejs
+//
 // @see https://www.npmjs.com/package/react-with-gesture
 export default class Gesture extends Component {
   render() {

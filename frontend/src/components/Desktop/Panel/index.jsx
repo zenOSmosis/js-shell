@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Desktop from '../Desktop';
-import {WindowLifecycleEvents, EVT_WINDOW_DID_ACTIVATE, EVT_WINDOW_TITLE_DID_SET} from './../../../components/Desktop/Window';
+// import {WindowLifecycleEvents, EVT_WINDOW_DID_ACTIVATE, EVT_WINDOW_TITLE_DID_SET} from './../../../components/Desktop/Window';
 import './style.css';
 import {Select, Option} from '../../Select';
 import Window from '../Window';
@@ -24,6 +24,7 @@ export default class Panel extends Component {
     }
     */
 
+    /*
     this._masterLifecycleEvents = (() => {
       const masterLifecycleEvents = new WindowLifecycleEvents();
       masterLifecycleEvents.on(EVT_WINDOW_DID_ACTIVATE, (controlUIWindow) => {
@@ -45,19 +46,21 @@ export default class Panel extends Component {
 
       return masterLifecycleEvents;
     })();
-
+    */
 
   }
 
   render() {
     const {desktop, children, className, ...propsRest} = this.props;
 
+    /*
     const menu = (
       <Menu>
         <Menu.Item key="2">Debug</Menu.Item>
         <Menu.Item key="3">Close</Menu.Item>
       </Menu>
     );
+    */
     
 
     return (
@@ -71,10 +74,12 @@ export default class Panel extends Component {
             {
               // TODO: Move this to Menubar
 
+              /*
               this.state.controlUIWindowTitle &&
               <Dropdown overlay={menu} trigger={['click']}>
                 <span style={{ userSelect: 'none' }}>{this.state.controlUIWindowTitle}</span>
               </Dropdown>
+              */
             }
           </div>
         </div>

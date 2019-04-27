@@ -13,6 +13,7 @@ export default class Box3DEditor extends Component {
     sideContents: {}
   };
 
+  // Box3D side content
   setSideContent(side, content) {
     let {sideContents} = this.state;
 
@@ -24,6 +25,7 @@ export default class Box3DEditor extends Component {
     this.setState({sideContents});
   }
 
+  // Box3D side content
   getSideContent(side = undefined) {
     const {sideContents, currentEditingSide} = this.state;
 

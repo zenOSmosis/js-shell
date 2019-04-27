@@ -1,3 +1,4 @@
+import 'normalize.css/normalize.css';
 import 'antd/dist/antd.css';
 import './style-antd-overrides.css';
 import './style.css';
@@ -14,13 +15,10 @@ import Background from '../../components/Background';
 import Window from '../../components/Desktop/Window';
 import NoHostConnectionModal from './modals/NoHostConnectionModal';
 // import DesktopAppRunConfig from 'DesktopAppRunConfig';
-import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE, hocConnect } from '../../state/DesktopLinkedState';
+import DesktopLinkedState, { hocConnect } from '../../state/DesktopLinkedState';
 import socket from '../../utils/socket.io';
 import config from '../../config';
 import { notification as antdNotification } from 'antd';
-import 'normalize.css/normalize.css';
-// import 'bootstrap/dist/css/bootstrap.css'; // TODO: Remove bootstrap
-
 import defaultApps from '../../apps/defaultApps';
 console.debug('default apps', defaultApps);
 
@@ -38,10 +36,10 @@ class Desktop extends Component {
     contextMenuIsTrapping: config.contextMenuIsTrapping
   };
 
+  // _linkedState = new DesktopLinkedState();
+
   constructor(props) {
     super(props);
-
-    // this._desktopLinkedState = new DesktopLinkedState();
   }
 
   // TODO: Factor out logic into external handlers
@@ -50,31 +48,8 @@ class Desktop extends Component {
     this.fetchWallpaperPaths();
 
     /*
-    // Desktop LinkedState handler
-    this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-      // Handle context menu
-      const { contextMenuIsTrapping } = updatedState;
-      if (typeof contextMenuIsTrapping !== 'undefined') {
-        this.setState({
-          contextMenuIsTrapping
-        }, () => {
-          this.createNotification({
-            message: `Native context-menu trapping is ${contextMenuIsTrapping ? 'enabled' : 'disabled'}`,
-            // description: 'This is the description',
-            
-            // onClick: () => {
-            //   alert('You clicked the notification');
-           //  }
-            
-          })
-        });
-      }
-
-      // Handle last notification
-      const { lastNotification } = updatedState;
-      if (typeof lastNotification !== 'undefined') {
-        this.createNotification(lastNotification);
-      }
+    this._linkedState.setState({
+      desktopComponent: this
     });
     */
   }
@@ -99,36 +74,6 @@ class Desktop extends Component {
     });
   }
 
-  // TODO: Remove
-  /*
-  onAppSelect = (app) => {
-    console.debug(app);
-  }
-  */
-
-  /*
-  importAppConfiguration(runConfig) {
-
-    const {icon, title, mainWindow} = processInfo;
-
-    const runConfig = new DesktopAppRunConfig(this);
-
-    if (icon) {
-      runConfig.setIcon(icon);
-    }
-
-    if (title) {
-      runConfig.setTitle(title);
-    }
-
-    if (mainWindow) {
-      runConfig.addWindow(mainWindow);
-    }
-
-    return runConfig;
-  }
-  */
-
   createWindow(props = {}) {
     let desktopWindow;
 
@@ -142,7 +87,7 @@ class Desktop extends Component {
     let { desktopWindows } = this.state;
     desktopWindows.push(
       <div
-        key={this.state.desktopWindows.length}
+        key={desktopWindows.length}
         style={{ position: 'absolute', width: 0, height: 0 }}
       >
         {
@@ -157,25 +102,20 @@ class Desktop extends Component {
   }
 
   render() {
-    const {contextMenuIsTrapping} = this.props;
+    const {desktopWindows} = this.state;
 
     return (
       <FullViewport className="Desktop">
-        <ContextMenu
-          isTrapping={contextMenuIsTrapping}
-        >
+        <ContextMenu>
           <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
             <Panel desktop={this} />
-            <Center>
               {
                 // TODO: Rework window handling
-
-                this.state.desktopWindows.map((desktopWindow) => {
+                desktopWindows &&
+                desktopWindows.map((desktopWindow) => {
                   return desktopWindow;
                 })
               }
-            </Center>
-
             <NoHostConnectionModal />
             <Dock desktop={this} />
           </Background>
@@ -185,4 +125,6 @@ class Desktop extends Component {
   }
 }
 
-export default hocConnect(Desktop, new DesktopLinkedState);
+export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
+  console.debug('updated state', updatedState);
+});

@@ -1,27 +1,37 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
+import uuidv4 from 'uuid/v4';
+import DesktopLinkedState, { hocConnect } from '../../state/DesktopLinkedState';
 import './style.css';
 
 const {SubMenu, ItemGroup: MenuItemGroup} = Menu;
 
-export default class ContextMenu extends Component {
+class ContextMenu extends Component {
   state = {
     isVisible: false,
   };
 
+  _uuidv4 = null;
+
+  constructor(props) {
+    super(props);
+
+    this._uuidv4 = uuidv4();
+  }
+
   componentDidMount() {
-    document.addEventListener('contextmenu', this._handleContextMenu);
-    document.addEventListener('click', this._handleDocClick);
-    document.addEventListener('scroll', this._handleDocScroll);
+    this._root.addEventListener('contextmenu', this._handleContextMenu);
+    this._root.addEventListener('click', this._handleDocClick);
+    this._root.addEventListener('scroll', this._handleDocScroll);
   };
 
   componentWillUnmount() {
-    document.removeEventListener('contextmenu', this._handleContextMenu);
-    document.removeEventListener('click', this._handleDocClick);
-    document.removeEventListener('scroll', this._handleDocScroll);
+    this._root.removeEventListener('contextmenu', this._handleContextMenu);
+    this._root.removeEventListener('click', this._handleDocClick);
+    this._root.removeEventListener('scroll', this._handleDocScroll);
   }
 
-  _handleContextMenu = (event) => {
+  _handleContextMenu = (evt) => {
     let {isTrapping} = this.props;
     isTrapping = (typeof isTrapping === 'undefined' ? true : isTrapping);
 
@@ -29,12 +39,20 @@ export default class ContextMenu extends Component {
       return;
     }
 
-    event.preventDefault();
+    // TODO: Remove
+    console.debug('context menu uuidv4', this._uuidv4);
+
+    evt.stopPropagation();
+    evt.preventDefault();
 
     this.setState({ isVisible: true });
 
-    const clickX = event.clientX;
-    const clickY = event.clientY;
+    // TODO: Fix overlay positioning for moved windows, etc.
+    // Issue is that overlays draw way off when presented on window moved far
+    // east or south
+
+    const clickX = evt.clientX;
+    const clickY = evt.clientY;
     const screenW = window.innerWidth;
     const screenH = window.innerHeight;
     const rootW = this._overlay.offsetWidth;
@@ -62,9 +80,9 @@ export default class ContextMenu extends Component {
     }
   };
 
-  _handleDocClick = (event) => {
+  _handleDocClick = (evt) => {
     const { isVisible } = this.state;
-    const wasOutside = !(event.target.contains === this._overlay);
+    const wasOutside = !(evt.target.contains === this._overlay);
 
     if (wasOutside && isVisible) this.setState({ isVisible: false, });
   };
@@ -80,13 +98,23 @@ export default class ContextMenu extends Component {
   }
 
   render() {
-    const { children, className, isTrapping, ...propsRest } = this.props;
+    const {
+        children,
+        className,
+        isTrapping,
+        getPopupContainer: propsGetPopupContainer,
+        ...propsRest
+    } = this.props;
+    
     const { isVisible } = this.state;
+    
+    const getPopupContainer = propsGetPopupContainer || ((trigger) => trigger.parentNode);
 
     return (
       <div
         {...propsRest}
-        className={`ContextMenu ${className ? className : ''}`} 
+        ref={ c => this._root = c }
+        className={`ContextMenu ${className ? className : ''}`}
       >
         {
           children
@@ -96,7 +124,7 @@ export default class ContextMenu extends Component {
           <div ref={ref => { this._overlay = ref }} className="ContextMenuOverlay">
             <Menu
                 theme="dark"
-                getPopupContainer={trigger => trigger.parentNode}
+                getPopupContainer={ getPopupContainer }
                 onClick={this._handleClick}
                 style={{ width: 256 }}
                 mode="vertical"
@@ -138,3 +166,18 @@ export default class ContextMenu extends Component {
     );
   };
 }
+
+// Binds the context menu to DesktopLinkedState
+const ConnectedContextMenu = (() => {
+  return hocConnect(ContextMenu, DesktopLinkedState, (updatedState) => {
+    const {contextMenuIsTrapping: isTrapping} = updatedState;
+   
+    const filteredState = {
+      isTrapping
+    };
+
+    return filteredState;
+  });
+})();
+
+export default ConnectedContextMenu;

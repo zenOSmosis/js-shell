@@ -1,15 +1,23 @@
 import React from 'react';
+import './style.css';
 
-export const StackingContext = (props = {}) => {
-  const {children, ...propsRest} = props;
+const StackingContext = (props = {}) => {
+  const {
+    className,
+    children,
+    ...propsRest
+  } = props;
 
   return (
     <div
       {...propsRest}
+      className={`StackingContext ${className ? className : ''}`}
     >
       {
         children
-      }     
+      }
     </div>
   )
 };
+
+export default StackingContext;

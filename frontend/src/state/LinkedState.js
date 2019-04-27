@@ -1,11 +1,15 @@
 import EventEmitter from 'events';
 import { isNull } from 'util';
-const uuidv4 = require('uuid/v4');
+import uuidv4 from 'uuid/v4';
 
-export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
+// TODO: Split this file into multiple files and document
 
 // This emits when the current state scope has updated
+// TODO: Rename to EVT_UPDATE
 export const EVT_LINKED_STATE_UPDATE = 'update';
+
+// TODO: Renamed to id(...?)
+export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 
 // Master controller events
 export const EVT_ADDED_LINKED_STATE = 'added-linked-state';

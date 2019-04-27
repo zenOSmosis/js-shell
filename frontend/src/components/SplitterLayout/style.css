@@ -1,0 +1,17 @@
+.SplitterLayout .layout-splitter {
+  background-color: transparent;
+  border: 1px rgba(255,255,255,.2) solid;
+}
+
+.SplitterLayout .layout-splitter:hover {
+  background-color: transparent;
+  border: 1px rgba(255,255,255,.4) solid;
+}
+
+.SplitterLayout  > .layout-splitter {
+  width: 2px;
+}
+
+.SplitterLayout.splitter-layout-vertical > .layout-splitter {
+  height: 2px;
+}

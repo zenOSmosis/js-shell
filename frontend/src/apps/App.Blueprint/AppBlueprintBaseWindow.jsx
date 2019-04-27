@@ -1,3 +1,6 @@
+// Dev notes:
+// Path for VSCode icons:  file:///usr/share/code/resources/app/out/vs/workbench/browser/parts/editor/media
+
 import React, { Component } from 'react';
 import appConfig from './appConfig';
 import Box3D, { BOX3D_SIDES } from '../../components/Box3D';
@@ -6,14 +9,16 @@ import Cover from '../../components/Cover';
 import Center from '../../components/Center';
 import Window from '../../components/Desktop/Window';
 import GridBackground from '../../components/backgrounds/GridBackground';
-import { Layout, Aside, Content, Footer } from '../../components/Layout';
+import { Layout, Header, Aside, Content, Footer } from '../../components/Layout';
 import { Select, Option, OptGroup } from '../../components/Select';
 // import { HorizontalSlider, VerticalSlider } from '../../components/Slider';
 import { Button, ButtonGroup } from '../../components/ButtonGroup';
+import SplitterLayout from '../../components/SplitterLayout';
 import { Switch, Icon, Input, Popover } from 'antd';
 import { Knob } from 'react-rotary-knob'; // @see https://www.npmjs.com/package/react-rotary-knob
 import animate, { ANIMATIONS } from '../../utils/animate';
 import Editor from './subComponents/Editor';
+import SplitEditor from './subComponents/SplitEditor';
 
 const { Search } = Input;
 
@@ -80,6 +85,20 @@ export default class AppBlueprintBaseWindow extends Component {
 
   render() {
     const { ...propsRest } = this.props;
+
+    return (
+      <Window
+        {...propsRest}
+        appConfig={appConfig}
+      >
+        <SplitEditor />
+        
+      </Window>
+    )
+  }
+
+  OLDrender() {
+    const { ...propsRest } = this.props;
     const { code } = this.state;
 
     const monacoOptions = {
@@ -119,8 +138,8 @@ export default class AppBlueprintBaseWindow extends Component {
         }
         subToolbar={
           <div style={{ overflow: 'visible' }}>
-            <div style={{float: 'left', position: 'relative', height: '100%'}}>
-              <div style={{top: 2, position: 'absolute', whiteSpace: 'nowrap', display: 'inline-block'}}>
+            <div style={{ float: 'left', position: 'relative', height: '100%' }}>
+              <div style={{ top: 2, position: 'absolute', whiteSpace: 'nowrap', display: 'inline-block' }}>
                 code <Switch /> notes
               </div>
             </div>
@@ -166,6 +185,10 @@ export default class AppBlueprintBaseWindow extends Component {
             </Aside>
             */
           }
+          <Header style={{height: 20}}>
+            [ header ]
+          </Header>
+          <Layout>
           <Aside width={500} style={{ height: '100%' }}>
             {
               // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
@@ -214,20 +237,20 @@ export default class AppBlueprintBaseWindow extends Component {
                   </Content>
                   <Footer style={{ textAlign: 'center' }}>
                     <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                        <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
-                          <Option value="">Choose animation...</Option>
-                          <OptGroup label="OptGroup">
-                            {
-                              ANIMATIONS.map((animation, idx) => {
-                                return (
-                                  <Option key={idx} value={animation}>{animation}</Option>
-                                );
-                              })
-                            }
-                          </OptGroup>
-                        </Select>
-                        <Button size="small">Animate</Button>
-                      </div>
+                      <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
+                        <Option value="">Choose animation...</Option>
+                        <OptGroup label="OptGroup">
+                          {
+                            ANIMATIONS.map((animation, idx) => {
+                              return (
+                                <Option key={idx} value={animation}>{animation}</Option>
+                              );
+                            })
+                          }
+                        </OptGroup>
+                      </Select>
+                      <Button size="small">Animate</Button>
+                    </div>
                   </Footer>
                 </Layout>
               </Content>
@@ -236,82 +259,86 @@ export default class AppBlueprintBaseWindow extends Component {
           {
             // End of main content
           }
-          <Aside width={40} style={{ height: '100%' }}>
-            {
-              // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
-            }
-                                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={-179}
-                        max={179}
-                        defaultValue={this.state.verticalSliderVal}
-                        onChange={this.handleVerticalSliderChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      X axis
+          <Aside width={90} style={{ height: '100%' }}>
+            <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+              {
+                // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
+              }
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={-179}
+                  max={179}
+                  defaultValue={this.state.verticalSliderVal}
+                  onChange={this.handleVerticalSliderChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                X axis
                     </div>
 
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={-179}
-                        max={179}
-                        defaultValue={this.state.horizontalSliderVal}
-                        onChange={this.handleHorizontalSliderChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      Y axis
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={-179}
+                  max={179}
+                  defaultValue={this.state.horizontalSliderVal}
+                  onChange={this.handleHorizontalSliderChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                Y axis
                     </div>
 
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={0}
-                        max={100}
-                        defaultValue={100}
-                        onChange={this.handleZTranslationChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      Z axis
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={0}
+                  max={100}
+                  defaultValue={100}
+                  onChange={this.handleZTranslationChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                Z axis
                     </div>
 
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={0}
-                        max={2000}
-                        defaultValue={200}
-                        onChange={this.handlePerspectiveChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      Perspective
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={0}
+                  max={2000}
+                  defaultValue={200}
+                  onChange={this.handlePerspectiveChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                Perspective
                     </div>
 
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={0}
-                        max={2000}
-                        defaultValue={200}
-                        // onChange={this.handlePerspectiveChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      Scale X
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={0}
+                  max={2000}
+                  defaultValue={200}
+                  // onChange={this.handlePerspectiveChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                Scale X
                     </div>
 
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Knob
-                        // tipFormatter={null}
-                        min={0}
-                        max={2000}
-                        defaultValue={200}
-                        // onChange={this.handlePerspectiveChange}
-                        style={{ display: 'inline-block' }}
-                      /><br />
-                      Scale Y
+              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                <Knob
+                  // tipFormatter={null}
+                  min={0}
+                  max={2000}
+                  defaultValue={200}
+                  // onChange={this.handlePerspectiveChange}
+                  style={{ display: 'inline-block' }}
+                /><br />
+                Scale Y
                     </div>
+
+            </div>
           </Aside>
+          </Layout>
         </Layout>
       </Window>
     );

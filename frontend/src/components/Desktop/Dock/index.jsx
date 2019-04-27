@@ -67,7 +67,7 @@ export default class Dock extends Component {
               return (
                 <ViewTransition
                   key={idx}
-                  effect="wobble"
+                  effect="wobble" // TODO: Use variable
                   style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px'}}
                 >
                   <Tooltip title={runConfig._defaultTitle}>
