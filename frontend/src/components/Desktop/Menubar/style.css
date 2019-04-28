@@ -1,19 +1,19 @@
 ul.Menubar {
   display: inline-block;
   list-style-type: none;
-  margin: 0px;
+  margin: 1px 0px;
   padding: 0px;
   vertical-align: middle;
 }
 
 .Menubar > li {
   display: inline-block;
-  padding: 0px 5px;
+  padding: 0px 8px;
   white-space: nowrap;
   overflow: hidden
 }
 
-/* Sub-icons not showing in flyouts without this */
+/* Fixes flyout icons */
 .Menubar i {
-  color: #fff !important;
+  color: rgba(255,255,255,.8) !important;
 }

@@ -1,21 +1,7 @@
 import React, { Component } from 'react';
 import { Icon, Dropdown } from 'antd';
-import { Menu, MenuItem, SubMenu } from '../../Menu';
+import { Menu, MenuDivider, MenuItem, SubMenu } from '../../Menu';
 import './style.css';
-// const { SubMenu, Item: MenuItem } = Menu;
-
-/*
-export default class Menubar extends Component {
-  render() {
-    return (
-      <div style={{display: 'inline-block'}}>
-        <Icon type="deployment-unit" style={{margin: 0, padding: 0, verticalAlign: 'middle'}} />
-      </div>
-    );
-  }
-}
-*/
-
 
 export default class Menubar extends Component {
   state = {
@@ -36,72 +22,138 @@ export default class Menubar extends Component {
     let _PROTO_MENUS = [];
 
     _PROTO_MENUS.push({
-      title: 'First',
+      title: <Icon type="deployment-unit" />,
       menuComponent: (() => {
         return (
-          <Menu>
-            <MenuItem key="1">
-              <Icon type="pie-chart" />
-              <span>Option 1</span>
-            </MenuItem>
-            <MenuItem key="2">
-              <Icon type="desktop" />
-              <span>Option 2</span>
-            </MenuItem>
-            <MenuItem key="3">
-              <Icon type="inbox" />
-              <span>Option 3</span>
-            </MenuItem>
-            <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
-              <MenuItem key="5">Option 5</MenuItem>
-              <MenuItem key="6">Option 6</MenuItem>
-              <MenuItem key="7">Option 7</MenuItem>
-              <MenuItem key="8">Option 8</MenuItem>
+          <Menu mode="vertical">
+            <SubMenu
+              key="sub1"
+              title={
+                <div style={{display: 'inline-block'}}>
+                  <Icon type="desktop" />&nbsp;
+                  <span>System Information</span>
+                </div>                
+              }
+            >
+              <MenuItem key="sub1.1">Client</MenuItem>
+              <MenuItem key="sub1.2">Server</MenuItem>
             </SubMenu>
-            <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>Navigation Two</span></span>}>
-              <MenuItem key="9">Option 9</MenuItem>
-              <MenuItem key="10">Option 10</MenuItem>
-              <SubMenu key="sub3" title="Submenu">
-                <MenuItem key="11">Option 11</MenuItem>
-                <MenuItem key="12">Option 12</MenuItem>
-              </SubMenu>
+
+            <SubMenu
+              key="sub2"
+              title={
+                <div style={{display: 'inline-block'}}>
+                  <Icon type="setting" />&nbsp;
+                  <span>Settings / Utilities</span>
+                </div>
+              }
+            >
+              <MenuItem key="sub2.1">Background</MenuItem>
+              <MenuItem key="sub2.2">Context Menu</MenuItem>
+              <MenuItem key="sub2.3">Notifications</MenuItem>
+              <MenuItem key="sub2.4">Drawer</MenuItem>
+              <MenuItem key="sub2.5">Host Connection</MenuItem>
+              <MenuItem key="sub2.6">LinkedState Monitor</MenuItem>
+              <MenuItem key="sub2.7">Connected Devices</MenuItem>
             </SubMenu>
+
+            <MenuDivider />
+
+            <MenuItem key="4">
+              <Icon type="logout" />
+              <span>Log Off</span>
+            </MenuItem>
           </Menu>
         );
       })()
     });
 
     _PROTO_MENUS.push({
-      title: 'Second',
+      title: 'App',
+      titleStyle: {
+        fontWeight: 900,
+      },
       menuComponent: (() => {
         return (
           <Menu>
             <MenuItem key="1">
-              <Icon type="pie-chart" />
-              <span>Option 1</span>
+              <span>Close</span>
+            </MenuItem>
+          </Menu>
+        );
+      })()
+    });
+
+    _PROTO_MENUS.push({
+      title: 'File',
+      menuComponent: (() => {
+        return (
+          <Menu>
+            <MenuItem key="1">
+              <span>New</span>
             </MenuItem>
             <MenuItem key="2">
-              <Icon type="desktop" />
-              <span>Option 2</span>
+              <span>Open</span>
             </MenuItem>
             <MenuItem key="3">
-              <Icon type="inbox" />
-              <span>Option 3</span>
+              <span>Save</span>
             </MenuItem>
-            <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
-              <MenuItem key="5">Option 5</MenuItem>
-              <MenuItem key="6">Option 6</MenuItem>
-              <MenuItem key="7">Option 7</MenuItem>
-              <MenuItem key="8">Option 8</MenuItem>
-            </SubMenu>
-            <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>Navigation Two</span></span>}>
-              <MenuItem key="9">Option 9</MenuItem>
-              <MenuItem key="10">Option 10</MenuItem>
-              <SubMenu key="sub3" title="Submenu">
-                <MenuItem key="11">Option 11</MenuItem>
-                <MenuItem key="12">Option 12</MenuItem>
-              </SubMenu>
-            </SubMenu>
+            <MenuItem key="4">
+              <span>Save As</span>
+            </MenuItem>
+            <MenuItem key="5">
+              <span>Close</span>
+            </MenuItem>
+          </Menu>
+        );
+      })()
+    });
+
+    _PROTO_MENUS.push({
+      title: 'Edit',
+      menuComponent: (() => {
+        return (
+          <Menu>
+            <MenuItem key="1" disabled>
+              <Icon type="undo" />
+              <span>Undo</span>
+            </MenuItem>
+            <MenuItem key="2">
+              <Icon type="redo" />
+              <span>Redo</span>
+            </MenuItem>
+            <MenuItem key="3">
+              <Icon type="scissor" />
+              <span>Cut</span>
+            </MenuItem>
+            <MenuItem key="4">
+              <Icon type="copy" />
+              <span>Copy</span>
+            </MenuItem>
+            <MenuItem key="5">
+              <Icon type="snippets" />
+              <span>Paste</span>
+            </MenuItem>
+            <MenuItem key="6">
+              &nbsp;
+              <span>Select All</span>
+            </MenuItem>
+          </Menu>
+        );
+      })()
+    });
+
+    _PROTO_MENUS.push({
+      title: 'Window',
+      menuComponent: (() => {
+        return (
+          <Menu>
+            <MenuItem key="1">
+              <span>Minimize</span>
+            </MenuItem>
+            <MenuItem key="2">
+              <span>Maximize</span>
+            </MenuItem>
           </Menu>
         );
       })()
@@ -113,7 +165,17 @@ export default class Menubar extends Component {
           _PROTO_MENUS.map((menuData, idx) => {
             // TODO: Extract Menubar Menu component
 
-            const {menuComponent, title} = menuData;
+            const {menuComponent, title, titleStyle: propsTitleStyle} = menuData;
+
+            const titleStyle = Object.assign(
+              {
+                fontWeight: 500,
+                display: 'inline-block',
+                verticalAlign: 'middle'
+              },
+              propsTitleStyle
+            );
+
             return (
               <Dropdown
                 key={idx}
@@ -121,7 +183,7 @@ export default class Menubar extends Component {
                 trigger={['click']}
                 overlay={menuComponent}
               >
-                <li>
+                <li style={titleStyle}>
                 {
                   title
                 }

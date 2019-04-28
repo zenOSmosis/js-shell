@@ -65,7 +65,18 @@ export default class WindowHeader extends Component {
       // 3 - 4 works best on Firefox
 
       // @see https://css-tricks.com/almanac/properties/t/text-overflow/
-      toolbar = <div style={{marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</div>
+      toolbar = (
+        <div style={{
+          marginTop: 2,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          verticalAlign: 'middle'
+        }}>
+          {title}
+        </div>
+      );
     }
     
     return (
@@ -85,15 +96,19 @@ export default class WindowHeader extends Component {
             // Header content area is rendered in here
           }
           <div>
-            {
-              // TODO: Dynamically pad depending on if Chrome or Firefox
-            }
-            <Row style={{paddingBottom: 1}}>
+            <Row>
               {
                 // TODO: Move styles to CSS declaration
               }
               <Column style={{textAlign: 'left'}}>
-                <div style={{display: 'inline-block', paddingLeft: 2, overflow: 'hidden'}}>
+                <div style={{
+                    display: 'inline-block',
+                    verticalAlign: 'middle',
+                    whiteSpace: 'nowrap',
+                    paddingLeft: 2,
+                    overflow: 'hidden',
+                    position: 'relative',
+                  }}>
                   <button
                     className="Dot Red"
                     onClick={(evt) => desktopWindow.close()}

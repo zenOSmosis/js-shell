@@ -73,7 +73,8 @@ export default class Dock extends Component {
                   <Tooltip title={runConfig._defaultTitle}>
                     <button
                       // "Launches" the run config
-                      onDoubleClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
+                      // TODO: Implement real run config launching
+                      onClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
                     >
                       <Image src={runConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>

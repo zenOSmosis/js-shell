@@ -1,6 +1,10 @@
 import React from 'react';
 import {Menu as AntdMenu} from 'antd';
-const {Item: MenuItem, SubMenu} = AntdMenu;
+const {
+    Item: MenuItem,
+    Divider: MenuDivider,
+    SubMenu
+} = AntdMenu;
 
 export const MENU_THEME_DARK = 'dark';
 export const MENU_THEME_LIGHT = 'light';
@@ -24,5 +28,6 @@ const Menu = (props = {}) => {
 export {
   Menu,
   MenuItem,
+  MenuDivider,
   SubMenu
 };

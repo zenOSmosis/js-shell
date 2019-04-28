@@ -7,6 +7,8 @@
   border-radius: 4px;
   overflow: hidden;
   position: relative;
+  margin: 0px;
+  padding: 0px;
 
   display: flex;
   flex-direction: column;
@@ -51,7 +53,6 @@
   overflow: visible;
 }
 
-
 /*
 .Window .WindowHeader .column {
   float: left;
@@ -69,11 +70,11 @@
   background-color: #bbb !important;
   border-radius: 50% !important;
   display: inline-block !important;
-  margin: 5px 4px 0px 4px !important;
-
+  margin: 3px 4px 0px 4px !important;
   padding: 0px !important;
   border: 0px transparent solid !important;
-}
+  vertical-align: middle !important;
+}  
 
 .Window.Active .WindowHeader {
   background-color: rgba(0,0,0,.6);
