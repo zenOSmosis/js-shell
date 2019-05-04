@@ -1,3 +1,5 @@
+// TODO: Enable auto-recomposition of window (contents / position) if screensize is changed
+
 import React, { Component } from 'react';
 // import Gesture from '../../Gesture';
 import BodyCoverContent from './BodyCoverContent'; // TODO: Remove
@@ -14,32 +16,37 @@ import {
   WindowLifecycleEvents,
   EVT_WINDOW_CREATED,
   EVT_WINDOW_MOUNTED,
+  
   EVT_WINDOW_TITLE_WILL_SET,
   EVT_WINDOW_TITLE_DID_SET,
+
   EVT_WINDOW_WILL_ACTIVATE,
   EVT_WINDOW_DID_ACTIVATE,
+  
   EVT_WINDOW_WILL_DEACTIVATE,
   EVT_WINDOW_DID_DEACTIVATE,
+  
   EVT_WINDOW_WILL_MINIMIZE,
   EVT_WINDOW_DID_MINIMIZE,
+  
   EVT_WINDOW_WILL_MAXIMIZE,
   EVT_WINDOW_DID_MAXIMIZE,
+  
   EVT_WINDOW_WILL_CLOSE,
   EVT_WINDOW_DID_CLOSE,
+  
   EVT_WINDOW_WILL_HIDE,
   EVT_WINDOW_DID_HIDE,
+  
   EVT_WINDOW_WILL_UNHIDE,
   EVT_WINDOW_DID_UNHIDE,
+  
   EVT_WINDOW_WILL_RESIZE,
   EVT_WINDOW_DID_RESIZE
 } from './windowEvents';
 import config from 'config';
 import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
-
-// import * as MacOS from 'react-desktop/macOs';
-
-// TODO: Enable auto-recomposition of window (contents / position) if screensize is changed
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
@@ -189,7 +196,7 @@ export default class Window extends Component {
     $(this._resizableBody).removeClass('active'); // Affects draw shadow
     $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
   }
 
   async toggleHide() {
@@ -241,7 +248,7 @@ export default class Window extends Component {
   }
 
   async maximize() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
+    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
     alert('maximize');
 
@@ -546,7 +553,7 @@ export default class Window extends Component {
       return;
     }
 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
 
     if (this._stopInteractListening) {
       this._stopInteractListening();
@@ -558,7 +565,7 @@ export default class Window extends Component {
 
     this.isClosed = true;
 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
+    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close and detach event');
   }
