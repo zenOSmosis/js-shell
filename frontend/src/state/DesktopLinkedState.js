@@ -19,13 +19,33 @@ export default class DesktopLinkedState extends LinkedState {
         message: null,
         description: null,
         onClick: null
-      }
+      },
+
+      // Setting this will launch an application
+      lastLaunchAppConfig: null
     });
   }
 
+  launchAppConfig(appConfig) {
+    this.setState({
+      lastLaunchAppConfig: appConfig
+    });
+  }
+
+  /**
+   * Sets whether or not the desktop should trap the right-click context menu.
+   * 
+   * @param {boolean} contextMenuIsTrapping 
+   */
   setContextMenuIsTrapping(contextMenuIsTrapping) {
     this.setState({
       contextMenuIsTrapping
     });
+  }
+
+  getContextMenuIsTrapping() {
+    const {contextMenuIsTrapping} = this.getState();
+
+    return contextMenuIsTrapping;
   }
 }

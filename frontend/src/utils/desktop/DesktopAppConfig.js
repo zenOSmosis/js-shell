@@ -1,43 +1,8 @@
 import EventEmitter from 'events';
-import LinkedState, { EVT_LINKED_STATE_UPDATE } from '../state/LinkedState';
-
-export {
-  EVT_LINKED_STATE_UPDATE
-};
-
-// TODO: Determine fan-in/fan-out
-
-export class DesktopAppRunConfigLinkedState extends LinkedState {
-  constructor() {
-    // TODO: Use constant
-    super('desktop-app-run-configs', {
-      runConfigs: []
-    });
-  }
-
-  addRunConfig(runConfig) {
-    if (!(runConfig instanceof DesktopAppRunConfig)) {
-      throw new Error('runConfig must be instance of DesktopAppRunConfig');
-    }
-
-    const { runConfigs } = this.getState();
-
-    runConfigs.push(runConfig);
-
-    this.setState({
-      runConfigs
-    });
-  }
-
-  getRunConfigs() {
-    const { runConfigs } = this.getState();
-
-    return runConfigs;
-  }
-}
+import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
 
 /**
- * DesktopAppRunConfig controls components, such as the Dock, and places menus
+ * DesktopAppConfig controls components, such as the Dock, and places menus
  * in them.
  * 
  * In order to create a new Dock item, simply create a new process with
@@ -45,7 +10,7 @@ export class DesktopAppRunConfigLinkedState extends LinkedState {
  * 
  * TODO: Revise this documentation as needed.
  */
-export default class DesktopAppRunConfig extends EventEmitter {
+export default class DesktopAppConfig extends EventEmitter {
   _defaultTitle = null;
   _title = null;
   _desktopWindows = [];
@@ -68,8 +33,8 @@ export default class DesktopAppRunConfig extends EventEmitter {
       this.addWindow(mainWindow);
     }
 
-    const linkedState = new DesktopAppRunConfigLinkedState();
-    linkedState.addRunConfig(this);
+    const linkedState = new DesktopAppConfigLinkedState();
+    linkedState.addAppConfig(this);
   }
 
   setTitle(title) {
@@ -110,3 +75,6 @@ export default class DesktopAppRunConfig extends EventEmitter {
     return this._desktopWindows;
   }
 }
+
+
+

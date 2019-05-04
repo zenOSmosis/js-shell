@@ -1,20 +1,24 @@
 // import Desktop from '../Desktop';
 import React, { Component } from 'react';
 import ViewTransition from 'components/ViewTransition';
-import { DesktopAppRunConfigLinkedState } from 'utils/DesktopAppRunConfig';
 import Image from 'components/Image';
+import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
+import launchAppConfig from 'utils/desktop/launchAppConfig';
 import { Tooltip } from 'antd';
 import './style.css';
 
 export default class Dock extends Component {
   state = {
-    runConfigs: []
-  }
+    appConfigs: []
+  };
+
+  _desktop = null;
+  _appConfigLinkedState = null;
 
   constructor() {
     super();
 
-    this._runConfigLinkedState = new DesktopAppRunConfigLinkedState();
+    this._appConfigLinkedState = new DesktopAppConfigLinkedState();
   }
 
   componentDidMount() {
@@ -30,17 +34,17 @@ export default class Dock extends Component {
 
     // TODO: Refactor
     (() => {
-      const runConfigs = this._runConfigLinkedState.getRunConfigs();
+      const appConfigs = this._appConfigLinkedState.getAppConfigs();
 
-      console.debug('current run configs', runConfigs);
+      console.debug('current run configs', appConfigs);
 
       this.setState({
-        runConfigs
+        appConfigs
       });
 
       /*
-      runConfigs.forEach(runConfig => {
-        desktop.createWindow(runConfig._desktopWindows[0]);
+      appConfigs.forEach(appConfig => {
+        desktop.createWindow(appConfig._desktopWindows[0]);
       });
       */
     })();
@@ -48,6 +52,7 @@ export default class Dock extends Component {
 
   render() {
     const { className, desktop, ...propsRest } = this.props;
+    const { appConfigs } = this.state;
 
     return (
       <div
@@ -60,8 +65,8 @@ export default class Dock extends Component {
 
         <div className="zd-desktop-dock-items">
           {
-            this.state.runConfigs.map((runConfig, idx) => {
-              const { _defaultIconSrc } = runConfig;
+            appConfigs.map((appConfig, idx) => {
+              const { _defaultIconSrc } = appConfig;
 
               if (!_defaultIconSrc) {
                 return;
@@ -74,13 +79,13 @@ export default class Dock extends Component {
                   effect="wobble" // TODO: Use variable
                   style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px' }}
                 >
-                  <Tooltip title={runConfig._defaultTitle}>
+                  <Tooltip title={appConfig._defaultTitle}>
                     <button
                       // "Launches" the run config
                       // TODO: Implement real run config launching
-                      onClick={evt => desktop.createWindow(runConfig._desktopWindows[0])}
+                      onClick={evt => desktop.createWindow(appConfig._desktopWindows[0])}
                     >
-                      <Image src={runConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
+                      <Image src={appConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>
                   </Tooltip>
                 </ViewTransition>

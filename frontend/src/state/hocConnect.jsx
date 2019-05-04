@@ -16,6 +16,10 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
   // ...and returns another component...
   return class extends Component {
     constructor(props) {
+      if (!WrappedComponent) {
+        throw new Error('Missing WrappedComponent.  A React Component must be specified to be wrapped.');
+      }
+
       super(props);
 
       if (LinkedStateExtension.prototype) {

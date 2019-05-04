@@ -14,13 +14,11 @@ import FullViewport from 'components/FullViewport';
 import Background from 'components/Background';
 import Window from 'components/Desktop/Window';
 import NoHostConnectionModal from './modals/NoHostConnectionModal';
-// import DesktopAppRunConfig from 'DesktopAppRunConfig';
+// import DesktopAppConfig from 'DesktopAppConfig';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import socket from 'utils/socket.io';
 import config from 'config';
 import { notification as antdNotification } from 'antd';
-import defaultApps from '../../apps/defaultApps';
-console.debug('default apps', defaultApps);
 
 // TODO: Change page title according to active window title
 
@@ -54,6 +52,7 @@ class Desktop extends Component {
     */
   }
 
+  /*
   createNotification(notification) {
     const { message, description, onClick } = notification;
 
@@ -63,7 +62,9 @@ class Desktop extends Component {
       onClick
     });
   }
+  */
 
+  // TODO: Move to another module
   fetchWallpaperPaths() {
     socket.emit('wallpapers:fetch-wallpaper-paths', null, (wallpaperPaths) => {
       // console.debug('wallpaper paths', wallpaperPaths);
@@ -74,6 +75,7 @@ class Desktop extends Component {
     });
   }
 
+  // TODO: Move to another module
   createWindow(props = {}) {
     let desktopWindow;
 
@@ -108,6 +110,10 @@ class Desktop extends Component {
       <FullViewport className="zd-desktop">
         <ContextMenu>
           <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
+            
+            {
+              // Top Panel
+            }
             <Panel desktop={this} />
               {
                 // TODO: Rework window handling
@@ -116,8 +122,17 @@ class Desktop extends Component {
                   return desktopWindow;
                 })
               }
+            
+            {
+              // TODO: Rework
+            }
             <NoHostConnectionModal />
+
+            {
+              // Bottom Dock
+            }
             <Dock desktop={this} />
+
           </Background>
         </ContextMenu>
       </FullViewport>
