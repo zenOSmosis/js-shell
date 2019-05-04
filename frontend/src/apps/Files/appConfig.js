@@ -1,7 +1,7 @@
 import React from 'react';
-import DesktopAppRunConfig from '../../utils/DesktopAppRunConfig';
+import DesktopAppRunConfig from 'utils/DesktopAppRunConfig';
 import FilesWindow from './FilesWindow';
-import config from '../../config';
+import config from 'config';
 
 export default new DesktopAppRunConfig({
   title: 'Files',

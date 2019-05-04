@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import appConfig from './appConfig';
-import Button from '../../components/Button';
-import Center from '../../components/Center';
-import Window from '../../components/Desktop/Window';
-import Icon from '../../components/Icon';
+import Button from 'components/Button';
+import Center from 'components/Center';
+import Window from 'components/Desktop/Window';
+import Icon from 'components/Icon';
 import ConnectedClients from './subPanes/ConnectedClients';
 import DesktopSettings from './subPanes/DesktopSettings';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';

@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 // import Gesture from '../../Gesture';
-// import DesktopAppRunConfig from '../DesktopAppRunConfig';
-import Cover from '../../Cover';
-import BodyCoverContent from './BodyCoverContent';
-import Moveable from '../../Moveable';
-import ViewTransition from '../../ViewTransition';
-import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from '../../../utils/animate';
+import BodyCoverContent from './BodyCoverContent'; // TODO: Remove
+import ContextMenu from 'components/ContextMenu';
+import Cover from 'components/Cover';
+import Moveable from 'components/Moveable';
+import ViewTransition from 'components/ViewTransition';
+import Resizable from 'components/Resizable';
+import StackingContext from 'components/StackingContext';
+import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
 import WindowHeader from './WindowHeader';
-import StackingContext from '../../StackingContext';
-import ContextMenu from '../../ContextMenu';
 import $ from 'jquery';
-import './style.css';
 import {
   WindowLifecycleEvents,
   EVT_WINDOW_CREATED,
@@ -34,8 +33,8 @@ import {
   EVT_WINDOW_WILL_RESIZE,
   EVT_WINDOW_DID_RESIZE
 } from './windowEvents';
-import Resizable from '../../Resizable';
-import config from '../../../config';
+import config from 'config';
+import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 // import * as MacOS from 'react-desktop/macOs';

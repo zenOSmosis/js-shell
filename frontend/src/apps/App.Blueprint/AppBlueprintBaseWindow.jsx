@@ -3,20 +3,20 @@
 
 import React, { Component } from 'react';
 import appConfig from './appConfig';
-import Box3D, { BOX3D_SIDES } from '../../components/Box3D';
-import Cover from '../../components/Cover';
-// import Full from '../../components/Full';
-import Center from '../../components/Center';
-import Window from '../../components/Desktop/Window';
-import GridBackground from '../../components/backgrounds/GridBackground';
-import { Layout, Header, Aside, Content, Footer } from '../../components/Layout';
-import { Select, Option, OptGroup } from '../../components/Select';
-// import { HorizontalSlider, VerticalSlider } from '../../components/Slider';
-import { Button, ButtonGroup } from '../../components/ButtonGroup';
-import SplitterLayout from '../../components/SplitterLayout';
+import Box3D, { BOX3D_SIDES } from 'components/Box3D';
+import Cover from 'components/Cover';
+// import Full from 'components/Full';
+import Center from 'components/Center';
+import Window from 'components/Desktop/Window';
+import GridBackground from 'components/backgrounds/GridBackground';
+import { Layout, Header, Aside, Content, Footer } from 'components/Layout';
+import { Select, Option, OptGroup } from 'components/Select';
+// import { HorizontalSlider, VerticalSlider } from 'components/Slider';
+import { Button, ButtonGroup } from 'components/ButtonGroup';
+import SplitterLayout from 'components/SplitterLayout';
 import { Switch, Icon, Input, Popover } from 'antd';
 import { Knob } from 'react-rotary-knob'; // @see https://www.npmjs.com/package/react-rotary-knob
-import animate, { ANIMATIONS } from '../../utils/animate';
+import animate, { ANIMATIONS } from 'utils/animate';
 import Editor from './subComponents/Editor';
 import SplitEditor from './subComponents/SplitEditor';
 

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import appConfig from './appConfig';
-import Window from '../../components/Desktop/Window';
-import IFrame from '../../components/IFrame';
-import {Layout, Header, Content, Footer} from '../../components/Layout';
-import {ButtonGroup, Button} from '../../components/ButtonGroup';
+import Window from 'components/Desktop/Window';
+import IFrame from 'components/IFrame';
+import {Layout, Header, Content, Footer} from 'components/Layout';
+import {ButtonGroup, Button} from 'components/ButtonGroup';
 
 export default class DocsWindow extends Component {
   render() {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import EventEmitter from 'events';
 // @see https://github.com/daneden/animate.css
-import animate, {ANIMATIONS, ANIMATION_GROUPS} from '../../utils/animate';
+import animate, {ANIMATIONS, ANIMATION_GROUPS} from 'utils/animate';
 import './style.css';
 
 /**

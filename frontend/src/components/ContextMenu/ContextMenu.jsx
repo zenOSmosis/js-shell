@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
 import uuidv4 from 'uuid/v4';
-import DesktopLinkedState, { hocConnect } from '../../state/DesktopLinkedState';
+import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import './style.css';
 
 const {SubMenu, ItemGroup: MenuItemGroup} = Menu;

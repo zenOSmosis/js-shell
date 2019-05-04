@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Icon, Dropdown } from 'antd';
-import { Menu, MenuDivider, MenuItem, SubMenu } from '../../Menu';
+import { Menu, MenuDivider, MenuItem, SubMenu } from 'components/Menu';
 import './style.css';
 
 export default class Menubar extends Component {

@@ -12,4 +12,4 @@ module.exports = function override(config, env) {
     new MonacoWebpackPlugin()
   );
   return config;
-}
+};

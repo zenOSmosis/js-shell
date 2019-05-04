@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import bufferUIChange from '../../utils/bufferUIChange';
+import bufferUIChange from 'utils/bufferUIChange';
 import $ from 'jquery';
 
 export default class Moveable extends Component {

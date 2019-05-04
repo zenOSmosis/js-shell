@@ -1,26 +1,10 @@
+// TODO: Replace internal hardcoded values
+
 import React, {Component} from 'react';
 import {Grid, GridItem} from '../Grid';
-// import FullViewportPanel from '../FullViewportPanel';
-// import FullViewportAppLauncher from '../FullViewportAppLauncher';
 import Icon from '../Icon';
-import socket from './../../utils/socket.io';
-
-const parseURL = (url) => {
-  const parser = document.createElement('a');
-  parser.href = url;
-
-  /*
-  parser.protocol; // => "http:"
-  parser.hostname; // => "example.com"
-  parser.port;     // => "3000"
-  parser.pathname; // => "/pathname/"
-  parser.search;   // => "?search=test"
-  parser.hash;     // => "#hash"
-  parser.host;     // => "example.com:3000"
-  */
-
-  return parser;
-};
+import socket from 'utils/socket.io';
+import parseURL from 'utils/parseURL';
 
 export default class AppMenu extends Component {
   state = {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Window from './Window';
-import Gesture from '../../Gesture';
-import {Row, Column} from '../../Layout';
+import Gesture from 'components/Gesture';
+import {Row, Column} from 'components/Layout';
 
 export default class WindowHeader extends Component {
   _initialWindowPosition = {};

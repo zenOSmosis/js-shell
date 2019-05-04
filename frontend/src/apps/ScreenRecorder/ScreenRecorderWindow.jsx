@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import appConfig from './appConfig';
-import Cover from '../../components/Cover';
-import Window from '../../components/Desktop/Window';
-import IFrame from '../../components/IFrame';
-import config from '../../config';
+import Cover from 'components/Cover';
+import Window from 'components/Desktop/Window';
+import IFrame from 'components/IFrame';
+import config from 'config';
 const {HOST_REST_URI} = config;
 
 // TODO: Extract base from config

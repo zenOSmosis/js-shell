@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import Desktop from '../Desktop';
+// import Desktop from '../Desktop';
 // import {WindowLifecycleEvents, EVT_WINDOW_DID_ACTIVATE, EVT_WINDOW_TITLE_DID_SET} from './../../../components/Desktop/Window';
-import './style.css';
-import {Select, Option} from '../../Select';
-import Window from '../Window';
-import Button from '../../Button';
+// import Button from 'components/Button';
+// import {Select, Option} from 'components/Select';
+// import Window from '../Window';
 import Menubar from '../Menubar';
-import {Icon, Menu, Dropdown} from 'antd';
+import { Icon, /*Menu, Dropdown*/ } from 'antd';
+import './style.css';
 
 
 export default class Panel extends Component {

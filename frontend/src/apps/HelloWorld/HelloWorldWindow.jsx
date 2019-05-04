@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import appConfig from './appConfig';
-import Window from '../../components/Desktop/Window';
-import Center from '../../components/Center';
+import Window from 'components/Desktop/Window';
+import Center from 'components/Center';
 
 export default class HelloWorldWindow extends Component {
   render() {

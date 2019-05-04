@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import appConfig from './appConfig';
-import Window from '../../components/Desktop/Window';
-// import Center from '../../components/Center';
-// import Image from '../../components/Image';
-import IFrame from '../../components/IFrame';
-import config from '../../config';
+import Window from 'components/Desktop/Window';
+// import Center from 'components/Center';
+// import Image from 'components/Image';
+import IFrame from 'components/IFrame';
+import config from 'config';
 
 export default class AboutWindow extends Component {
   render() {

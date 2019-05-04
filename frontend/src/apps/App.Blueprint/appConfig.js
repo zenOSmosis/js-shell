@@ -1,7 +1,7 @@
 import React from 'react';
-import DesktopAppRunConfig from '../../utils/DesktopAppRunConfig';
+import DesktopAppRunConfig from 'utils/DesktopAppRunConfig';
 import AppBlueprintBaseWindow from './AppBlueprintBaseWindow';
-import config from '../../config';
+import config from 'config';
 
 export default new DesktopAppRunConfig({
   title: 'app.blueprint',

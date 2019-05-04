@@ -8,7 +8,7 @@ import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reac
 // import IntelLogo from '../../icons/brands/Intel-logo.svg';
 // import NvidiaLogo from '../../icons/brands/Nvidia-logo.svg';
 // import RocketStartUp from '../../icons/rocket-start-up/rocket-start-up.svg';
-import systemCommand from '../../utils/systemCommand';
+import systemCommand from 'utils/systemCommand';
 
 const parseURL = (url) => {
   const parser = document.createElement('a');

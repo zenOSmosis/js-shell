@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Moveable from '../Moveable';
 import Gesture from '../Gesture';
 import $ from 'jquery';
-import bufferUIChange from '../../utils/bufferUIChange';
+import bufferUIChange from 'utils/bufferUIChange';
 import './style.css';
 
 export const RESIZABLE_DEFAULT_MIN_WIDTH = 300;

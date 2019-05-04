@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import appConfig from './appConfig';
-import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from '../../components/Desktop/Window';
-import {Button, ButtonGroup} from '../../components/ButtonGroup';
+import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from 'components/Desktop/Window';
+import {Button, ButtonGroup} from 'components/ButtonGroup';
 
 export default class WindowManager extends Component {
   state = {

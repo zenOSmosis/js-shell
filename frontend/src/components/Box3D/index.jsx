@@ -1,7 +1,7 @@
 // @see https://3dtransforms.desandro.com/cube
 
 import React, {Component} from 'react';
-import bufferUIChange from '../../utils/bufferUIChange';
+import bufferUIChange from 'utils/bufferUIChange';
 import './style.css';
 
 export const BOX3D_SIDE_FRONT = 'Front';

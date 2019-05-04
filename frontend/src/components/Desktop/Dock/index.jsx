@@ -1,8 +1,8 @@
 // import Desktop from '../Desktop';
 import React, { Component } from 'react';
-import ViewTransition from '../../ViewTransition';
-import { DesktopAppRunConfigLinkedState } from '../../../utils/DesktopAppRunConfig';
-import Image from '../../Image';
+import ViewTransition from 'components/ViewTransition';
+import { DesktopAppRunConfigLinkedState } from 'utils/DesktopAppRunConfig';
+import Image from 'components/Image';
 import { Tooltip } from 'antd';
 import './style.css';
 
