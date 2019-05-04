@@ -1,53 +1,53 @@
-.Resizable {
+.zd-resizable {
   display: table;
 }
 
-.Resizable .ResizableBody {
+.zd-resizable .ResizableBody {
   width: 100%;
   height: 100%;
 }
 
-.Resizable .TableRow {
+.zd-resizable .zd-resizable-table-row {
   display: table-row;
 }
 
-.Resizable .TableCell {
+.zd-resizable .zd-resizable-table-cell {
   display: table-cell;
   position: relative;
 }
 
-.Resizable .RSControl {
+.zd-resizable .zd-resizable-control {
   border: 3px transparent solid;
 }
 
-.Resizable .RSControl.Top {
+.zd-resizable .zd-resizable-control.top {
   cursor: n-resize;
 }
 
-.Resizable .RSControl.TopRight {
+.zd-resizable .zd-resizable-control.top-right {
   cursor: ne-resize;
 }
 
-.Resizable .RSControl.Right {
+.zd-resizable .zd-resizable-control.right {
   cursor: e-resize;
 }
 
-.Resizable .RSControl.BottomRight {
+.zd-resizable .zd-resizable-control.bottom-right {
   cursor: se-resize;
 }
 
-.Resizable .RSControl.Bottom {
+.zd-resizable .zd-resizable-control.bottom {
   cursor: s-resize;
 }
 
-.Resizable .RSControl.BottomLeft {
+.zd-resizable .zd-resizable-control.bottom-left {
   cursor: sw-resize;
 }
 
-.Resizable .RSControl.Left {
+.zd-resizable .zd-resizable-control.left {
   cursor: w-resize;
 }
 
-.Resizable .RSControl.TopLeft {
+.zd-resizable .zd-resizable-control.top-left {
   cursor: nw-resize;
 }

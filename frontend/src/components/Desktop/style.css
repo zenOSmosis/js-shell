@@ -90,14 +90,14 @@ code {
   height: 100%;
 }
 
-.Desktop {
+.zd-desktop {
   text-align: center;
   background-color: transparent;
   color: white;
 }
 
 /*
-.Desktop-logo {
+.zd-desktop-logo {
   animation: Desktop-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
@@ -105,7 +105,7 @@ code {
 */
 
 /*
-@keyframes Desktop-logo-spin {
+@keyframes .zd-desktop-logo-spin {
   from {
     transform: rotate(0deg);
   }
@@ -115,7 +115,7 @@ code {
 }
 */
 
-.Desktop-header {
+.zd-desktop-header {
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,4 +1,4 @@
-.Cover {
+.zd-cover {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -7,6 +7,6 @@
   overflow: hidden;
 }
 
-.Cover.Hidden {
+.zd-cover.hidden {
   display: none;
 }

@@ -11,7 +11,7 @@ const StackingContext = (props = {}) => {
   return (
     <div
       {...propsRest}
-      className={`StackingContext ${className ? className : ''}`}
+      className={`zd-stacking-context ${className ? className : ''}`}
     >
       {
         children

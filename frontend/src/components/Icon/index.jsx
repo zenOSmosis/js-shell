@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from '../Image';
 import textEllipsis from 'text-ellipsis';
-
 import './style.css';
 
 const Icon = (props = {}) => {
@@ -23,12 +22,12 @@ const Icon = (props = {}) => {
   return (
     <button
       {...propsRest}
-      className={`Icon ${className ? className : ''}`}
+      className={`zd-icon ${className ? className : ''}`}
       title={description}
       style={style}
     >
       <Image
-        className="Image"
+        className="zd-icon-image"
         alt={description}
         title={description}
         src={src}
@@ -36,7 +35,7 @@ const Icon = (props = {}) => {
         height="100%"
       />
 
-      <div className="Name">
+      <div className="zd-icon-name">
         {
           // TODO: Make ellipsis length configurable 
         }

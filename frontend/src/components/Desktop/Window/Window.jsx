@@ -177,8 +177,8 @@ export default class Window extends Component {
   activate() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
-    $(this._resizableBody).addClass('Active'); // Affects draw shadow
-    $(this._drawRef).addClass('Active'); // Affects window assets (e.g. dot colors)
+    $(this._resizableBody).addClass('active'); // Affects draw shadow
+    $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
@@ -186,8 +186,8 @@ export default class Window extends Component {
   deactivate() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
 
-    $(this._resizableBody).removeClass('Active'); // Affects draw shadow
-    $(this._drawRef).removeClass('Active'); // Affects window assets (e.g. dot colors)
+    $(this._resizableBody).removeClass('active'); // Affects draw shadow
+    $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
@@ -450,7 +450,7 @@ export default class Window extends Component {
             moveableComponent={this.moveable}
             minWidth={minWidth}
             minHeight={minHeight}
-            bodyClassName="WindowResizable"
+            bodyClassName="zd-window-resizable"
             onBodyMount={c => this._resizableBody = c}
           // maxWidth={}
           // maxHeight={}
@@ -461,7 +461,7 @@ export default class Window extends Component {
                     {...propsRest}
                     ref={c => this._drawRef = c}
                     // className={`Window ${this.state.isActive ? 'Active' : ''}`}
-                    className="Window"
+                    className="zd-window"
                   >
 
                     {
@@ -482,7 +482,7 @@ export default class Window extends Component {
                     }
                     <div
                       ref={c => this.windowBody = c}
-                      className="WindowBody"
+                      className="zd-window-body"
                     >
                       <Cover
                         ref={c => this.subBody = c}

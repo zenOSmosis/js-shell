@@ -71,7 +71,7 @@ export default class IFrame extends Component {
       <iframe
         ref={ c => this._iframe = c }
         {...propsRest}
-        className={`IFrame ${className ? className : ''}`}
+        className={`zd-iframe ${className ? className : ''}`}
         onLoad={(evt) => this.handleOnLoad(evt)}
       ></iframe>
     );

@@ -105,7 +105,7 @@ class Desktop extends Component {
     const {desktopWindows} = this.state;
 
     return (
-      <FullViewport className="Desktop">
+      <FullViewport className="zd-desktop">
         <ContextMenu>
           <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
             <Panel desktop={this} />

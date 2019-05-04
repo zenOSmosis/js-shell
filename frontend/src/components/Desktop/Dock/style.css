@@ -1,4 +1,4 @@
-.DesktopDock {
+.zd-desktop-dock {
   position: absolute;
   bottom: 0px;
   width: 100%;
@@ -6,7 +6,7 @@
   text-align: center;
 }
 
-.DesktopDock .DesktopDockItems {
+.zd-desktop-dock .zd-desktop-dock-items {
   padding: 4px;
   display: inline-block;
   background-color: rgba(255,255,255,.4);
@@ -18,7 +18,7 @@
   height: 100%;
 }
 
-.DesktopDock .DesktopDockItems button {
+.zd-desktop-dock .zd-desktop-dock-items button {
   background-color: transparent;
   border: 0px;
 }

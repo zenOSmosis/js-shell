@@ -1,4 +1,4 @@
-.Row {
+.zd-row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.Column {
+.zd-column {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;

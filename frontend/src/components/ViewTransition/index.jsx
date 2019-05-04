@@ -111,7 +111,7 @@ class ViewTransition extends Component {
     return (
       <div
         ref={ c => this._base = c }
-        className={`ViewTransition ${className ? className : ''}`}
+        className={`zd-view-transition ${className ? className : ''}`}
         {...propsRest}
       >
         {

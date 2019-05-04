@@ -6,10 +6,10 @@ const Center = (props = {}) => {
 
   return (
     <div
-      className={`Center ${className ? className : ''}`}
+      className={`zd-center ${className ? className : ''}`}
       {...propsRest}
     >
-      <div className="CenterItem">
+      <div className="zd-center-item">
         {
           children
         }

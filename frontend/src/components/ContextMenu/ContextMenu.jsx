@@ -114,14 +114,14 @@ class ContextMenu extends Component {
       <div
         {...propsRest}
         ref={ c => this._root = c }
-        className={`ContextMenu ${className ? className : ''}`}
+        className={`zd-context-menu ${className ? className : ''}`}
       >
         {
           children
         }
         {
           isVisible &&
-          <div ref={ref => { this._overlay = ref }} className="ContextMenuOverlay">
+          <div ref={ref => { this._overlay = ref }} className="zd-context-menu-overlay">
             <Menu
                 theme="dark"
                 getPopupContainer={ getPopupContainer }

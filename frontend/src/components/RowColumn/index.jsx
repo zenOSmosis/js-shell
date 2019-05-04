@@ -9,7 +9,7 @@ const Row = (props = {}) => {
   return (
     <div
       {...propsRest}
-      className={`Row ${className ? className : ''}`}
+      className={`zd-row ${className ? className : ''}`}
     >
       {
         children
@@ -27,7 +27,7 @@ const Column = (props = {}) => {
   return (
     <div
       {...propsRest}
-      className={`Column ${className ? className : ''}`}
+      className={`zd-column ${className ? className : ''}`}
     >
       {
         children

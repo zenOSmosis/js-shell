@@ -160,7 +160,7 @@ export default class Menubar extends Component {
     });
 
     return (
-      <ul className="Menubar">
+      <ul className="zd-menubar">
         {
           _PROTO_MENUS.map((menuData, idx) => {
             // TODO: Extract Menubar Menu component

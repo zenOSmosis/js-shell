@@ -9,7 +9,7 @@ const HorizontalSlider = (props = {}) => {
   return (
     <AntdSlider
       {...propsRest}
-      className={`Slider Horizontal ${className ? className : ''}`}
+      className={`zd-slider horizontal ${className ? className : ''}`}
     />
   );
 };
@@ -20,7 +20,7 @@ const VerticalSlider = (props = {}) => {
   return (
     <AntdSlider
       {...propsRest}
-      className={`Slider Vertical ${className ? className : ''}`}
+      className={`zd-slider vertical ${className ? className : ''}`}
       vertical
     />
   );

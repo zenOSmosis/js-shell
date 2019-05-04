@@ -17,6 +17,9 @@ export default class FullViewport extends Component {
     this._onPostRender();
   }
 
+  /**
+   * Automatically called after rendering.
+   */
   _onPostRender = () => {
     const $base = $(this._base);
 
@@ -37,7 +40,7 @@ export default class FullViewport extends Component {
           ref={ c => this._base = c }
           {...propsRest}
           className={
-            `FullViewport
+            `zd-full-viewport
             ${className ? className : ''}
           `}
         >

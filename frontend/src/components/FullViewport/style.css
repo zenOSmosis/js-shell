@@ -1,4 +1,4 @@
-.FullViewport {
+.zd-full-viewport {
   position: absolute;
   overflow: auto;
   top: 0px;
@@ -9,14 +9,14 @@
   /* TODO: Use CSS window here  */
 }
 
-.FullViewport {
+.zd-full-viewport {
   overflow: hidden;
 }
 
-.FullViewport.ScrollOverflowX {
+.zd-full-viewport.scroll-overflow-x {
   overflow-x: scroll;
 }
 
-.FullViewport.ScrollOverflowY {
+.zd-full-viewport.scroll-overflow-y {
   overflow-y: scroll;
 }

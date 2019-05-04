@@ -1,9 +1,9 @@
-.Layout.Core {
+.zd-layout.core {
   width: 100%;
   height: 100%;
 }
 
-.Layout.Common {
+.zd-layout.common {
   font-size: 1em;
   padding: 0px;
   margin: 0px;

@@ -9,7 +9,7 @@ const SplitterLayout = (props = {}) => {
   return (
     <ReactSplitterLayout
       {...propsRest}
-      customClassName="SplitterLayout"
+      customClassName="zd-splitter-layout"
     />
   )
 }

@@ -1,10 +1,10 @@
-.LabeledSwitch {
+.zd-labeled-switch {
   white-space: nowrap;
   display: inline-block;
   vertical-align: middle;
   margin: 0px 4px;
 }
 
-.LabeledSwitch .Label {
+.zd-labeled-switch .label {
   display: inline-block;
 }

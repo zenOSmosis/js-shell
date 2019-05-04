@@ -7,7 +7,7 @@ const Full = (props = {}) => {
   return (
     <div
       {...propsRest}
-      className={`Full ${className ? className : ''}`}
+      className={`zd-full ${className ? className : ''}`}
     >
       {
         children

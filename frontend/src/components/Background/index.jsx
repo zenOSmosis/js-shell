@@ -16,7 +16,7 @@ export default class Background extends Component {
     return (
       <Full
         {...propsRest}
-        className={`Background ${className ? className : ''}`}
+        className={`zd-background ${className ? className : ''}`}
         style={style}
       >
         <Cover>

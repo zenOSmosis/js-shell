@@ -66,9 +66,9 @@ export default class Panel extends Component {
     return (
       <div
         {...propsRest}
-        className={`DesktopPanel Horizontal ${className ? className : ''}`}
+        className={`zd-desktop-panel horizontal ${className ? className : ''}`}
       >
-        <div className="DesktopPanelColumnLeft">
+        <div className="zd-desktop-panel-column-left">
           <div className="ApplicationTitle">
             <Menubar />
             {
@@ -84,11 +84,11 @@ export default class Panel extends Component {
           </div>
         </div>
 
-        <div className="DesktopPanelColumnCenter">
+        <div className="zd-desktop-panel-column-center">
 
         </div>
 
-        <div className="DesktopPanelColumnRight">
+        <div className="zd-desktop-panel-column-right">
           <button style={{backgroundColor: 'transparent', padding: 0, color: '#fff', border: 0}}>
             <Icon type="menu-unfold" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
           </button>

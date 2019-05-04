@@ -10,7 +10,7 @@ export default class GridBackground extends Component {
     return (
       <Background
         {...propsRest}
-        className={`GridBackground ${className ? className : ''}`}
+        className={`zd-grid-background ${className ? className : ''}`}
         style={style}
       >
         {

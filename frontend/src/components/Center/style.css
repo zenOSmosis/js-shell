@@ -1,20 +1,10 @@
-/*
-.Center {
-}
-*/
-
-/*
-.Center > div {
-}
-*/
-
-.Center {
+.zd-center {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
-.CenterItem {
+.zd-center-item {
   margin: 0;
   position: absolute;
   top: 50%;

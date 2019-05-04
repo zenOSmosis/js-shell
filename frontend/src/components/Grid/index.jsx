@@ -45,9 +45,9 @@ class Grid extends Component {
     return (
       <div
         {...this.props}
-        className={`gridComponent ${className ? className : ''}`}>
+        className={`zd-grid ${className ? className : ''}`}>
         <div className="flex">
-          <div className="itemsWrapper">
+          <div className="items-wrapper">
             {
               children.map((gridItem) => {
                 idx++;

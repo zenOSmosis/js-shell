@@ -1,4 +1,4 @@
-.gridComponent .flex {
+.zd-grid .flex {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,7 +7,7 @@
   height: 100%;
 }
 
-.gridComponent .flex .itemsWrapper .item {
+.zd-grid .flex .items-wrapper .item {
   display: inline-block;
   text-align: center;
 }

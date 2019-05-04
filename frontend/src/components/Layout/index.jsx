@@ -15,7 +15,7 @@ export const Layout = (props) => {
 
   return (
     <AntdLayout
-      className={`Layout Core Common ${className ? className : ''}`}
+      className={`zd-layout core common ${className ? className : ''}`}
       {...propsRest}
     >
       {
@@ -30,7 +30,7 @@ export const Header = (props) => {
 
   return (
     <AntdHeader
-      className={`Layout Common ${className ? className : ''}`}
+      className={`zd-layout common ${className ? className : ''}`}
       {...propsRest}
     >
       {
@@ -51,7 +51,7 @@ export const Sider = (props) => {
     <AntdSider
       {...propsRest}
       width={width}
-      className={`Layout Common ${className ? className : ''}`}
+      className={`zd-layout common ${className ? className : ''}`}
     >
       {
         children
@@ -68,7 +68,7 @@ export const Content = (props) => {
 
   return (
     <AntdContent
-      className={`Layout Common ${className ? className : ''}`}
+      className={`zd-layout common ${className ? className : ''}`}
       {...propsRest}
     >
       {
@@ -83,7 +83,7 @@ export const Footer = (props) => {
 
   return (
     <AntdFooter
-      className={`Layout Common ${className ? className : ''}`}
+      className={`zd-layout common ${className ? className : ''}`}
       {...propsRest}
     >
       {

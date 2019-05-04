@@ -52,9 +52,13 @@ export default class Dock extends Component {
     return (
       <div
         {...propsRest}
-        className={`DesktopDock ${className ? className : ''}`}
+        className={`zd-desktop-dock ${className ? className : ''}`}
       >
-        <div className="DesktopDockItems">
+        {
+          // TODO: Convert items to a UL
+        }
+
+        <div className="zd-desktop-dock-items">
           {
             this.state.runConfigs.map((runConfig, idx) => {
               const { _defaultIconSrc } = runConfig;

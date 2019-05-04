@@ -82,7 +82,7 @@ export default class WindowHeader extends Component {
     return (
       <div
         {...propsRest}
-        className={`WindowHeader ${className ? className : ''}`}
+        className={`zd-window-header ${className ? className : ''}`}
       >
         <Gesture
           touch={true}
@@ -110,15 +110,15 @@ export default class WindowHeader extends Component {
                     position: 'relative',
                   }}>
                   <button
-                    className="Dot Red"
+                    className="zd-dot red"
                     onClick={(evt) => desktopWindow.close()}
                   ></button>
                   <button
-                    className="Dot Yellow"
+                    className="zd-dot yellow"
                     onClick={(evt) => desktopWindow.toggleMinimize()}
                   ></button>
                   <button
-                    className="Dot Green"
+                    className="zd-dot green"
                     onClick={(evt) => desktopWindow.toggleMaximize()}
                   ></button>
                 </div>
@@ -142,7 +142,7 @@ export default class WindowHeader extends Component {
 
           {
             subToolbar &&
-            <div className="SubToolbar">
+            <div className="zd-sub-toolbar">
               {
                 subToolbar
               }

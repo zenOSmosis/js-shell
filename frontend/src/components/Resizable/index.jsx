@@ -255,11 +255,11 @@ export default class Resizable extends Component {
       <div
         {...propsRest}
         ref={ c => this.root = c }
-        className={`Resizable ${className ? className : ''}`}
+        className={`zd-resizable ${className ? className : ''}`}
       >
-        <div className="TableRow">
+        <div className="zd-resizable-table-row">
           <Gesture
-            className="TableCell RSControl TopLeft"
+            className="zd-resizable-table-cell zd-resizable-control top-left"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_NORTHWEST, evt)}
@@ -268,7 +268,7 @@ export default class Resizable extends Component {
           >
           </Gesture>
           <Gesture
-            className="TableCell RSControl Top"
+            className="zd-resizable-table-cell zd-resizable-control top"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_NORTH, evt)}
@@ -277,7 +277,7 @@ export default class Resizable extends Component {
           >
           </Gesture>
           <Gesture
-            className="TableCell RSControl TopRight"
+            className="zd-resizable-table-cell zd-resizable-control top-right"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_NORTHEAST, evt)}
@@ -286,9 +286,9 @@ export default class Resizable extends Component {
           >
           </Gesture>
         </div>
-        <div className="TableRow">
+        <div className="zd-resizable-table-row">
           <Gesture
-            className="TableCell RSControl Left"
+            className="zd-resizable-table-cell zd-resizable-control left"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_WEST, evt)}
@@ -297,10 +297,10 @@ export default class Resizable extends Component {
           >
           </Gesture>
           {
-            // Note: Main does not get RSControl class
+            // Note: Main does not get zd-resizable-control class
           }
           <div
-            className="TableCell"
+            className="zd-resizable-table-cell"
           >
             <div className={`ResizableBody ${bodyClassName ? bodyClassName : ''}`} style={contentStyle} ref={ c => this.main = c}>
               {
@@ -309,7 +309,7 @@ export default class Resizable extends Component {
             </div>
           </div>
           <Gesture
-            className="TableCell RSControl Right"
+            className="zd-resizable-table-cell zd-resizable-control right"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_EAST, evt)}
@@ -318,9 +318,9 @@ export default class Resizable extends Component {
           >
           </Gesture>
         </div>
-        <div className="TableRow">
+        <div className="zd-resizable-table-row">
           <Gesture
-            className="TableCell RSControl BottomLeft"
+            className="zd-resizable-table-cell zd-resizable-control bottom-left"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_SOUTHWEST, evt)}
@@ -329,7 +329,7 @@ export default class Resizable extends Component {
           >
           </Gesture>
           <Gesture
-            className="TableCell RSControl Bottom"
+            className="zd-resizable-table-cell zd-resizable-control bottom"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_SOUTH, evt)}
@@ -338,7 +338,7 @@ export default class Resizable extends Component {
           >
           </Gesture>
           <Gesture
-            className="TableCell RSControl BottomRight"
+            className="zd-resizable-table-cell zd-resizable-control bottom-right"
             touch={RESIZABLE_TOUCH}
             mouse={RESIZABLE_MOUSE}
             onMove={(evt) => this.handleTouchMove(RESIZE_DIRECTION_SOUTHEAST, evt)}

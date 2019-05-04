@@ -1,11 +1,11 @@
-.Slider {
+.zd-slider {
   display: inline-block;
 }
 
-.Slider.Horizontal {
+.zd-slider.horizontal {
   width: 90%;
 }
 
-.Slider.Vertical {
+.zd-slider.vertical {
   height: 90%;
 }

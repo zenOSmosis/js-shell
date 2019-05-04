@@ -1,4 +1,4 @@
-.Window {
+.zd-window {
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,.8);
@@ -21,18 +21,18 @@
 }
 
 /**
-* Active Window shading.
+* Active zd-window shading.
 *
 * @see https://www.cssmatic.com/box-shadow
 */
-/* .Window.Active, */
-.WindowResizable.Active {
+/* .zd-window.Active, */
+.zd-window-resizable.active {
   -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
 }
 
-.Window .WindowHeader {
+.zd-window .zd-window-header {
   min-height: 22px;
   
   position: relative;
@@ -54,17 +54,17 @@
 }
 
 /*
-.Window .WindowHeader .column {
+.zd-window .zd-window-header .column {
   float: left;
 }
 */
 
-.Window .WindowHeader .SubToolbar {
+.zd-window .zd-window-header .zd-sub-toolbar {
   margin-top: 4px;
 }
 
 /* Three dots */
-.Window .WindowHeader .Dot {
+.zd-window .zd-window-header .zd-dot {
   height: 12px !important;
   width: 12px !important;
   background-color: #bbb !important;
@@ -76,23 +76,23 @@
   vertical-align: middle !important;
 }  
 
-.Window.Active .WindowHeader {
+.zd-window.active .zd-window-header {
   background-color: rgba(0,0,0,.6);
 }
 
-.Window.Active .WindowHeader .Dot.Red {
+.zd-window.active .zd-window-header .zd-dot.red {
   background-color: #ED594A !important;
 }
 
-.Window.Active .WindowHeader .Dot.Yellow {
+.zd-window.active .zd-window-header .zd-dot.yellow {
   background-color: #FDD800 !important;
 }
 
-.Window.Active .WindowHeader .Dot.Green {
+.zd-window.active .zd-window-header .zd-dot.green {
   background-color: #5AC05A !important;
 }
 
-.Window .WindowBody {
+.zd-window .zd-window-body {
   flex: auto;
   overflow: hidden;
   text-align: center;

@@ -1,4 +1,4 @@
-.DesktopPanel {
+.zd-desktop-panel {
   position: relative;
   background-color: #000;
   color: #fff;
@@ -7,25 +7,25 @@
   top: 0px;
 }
 
-.DesktopPanel.Horizontal .DesktopPanelColumnLeft {
+.zd-desktop-panel.horizontal .zd-desktop-panel-column-left {
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 99;
 }
 
-.DesktopPanel.Horizontal .DesktopPanelColumnLeft .ApplicationTitle {
+.zd-desktop-panel.horizontal .zd-desktop-panel-column-left .zd-application-title {
   font-weight: bold;
 }
 
-.DesktopPanel.Horizontal .DesktopPanelColumnCenter {
+.zd-desktop-panel.horizontal .zd-desktop-panel-column-center {
   position: absolute;
   top: 0px;
   left: 0px;
   width: 100%;
 }
 
-.DesktopPanel.Horizontal .DesktopPanelColumnRight {
+.zd-desktop-panel.horizontal .zd-desktop-panel-column-right {
   float: right;
   margin-left: 10px;
   margin-top: 2px;

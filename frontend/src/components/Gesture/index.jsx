@@ -25,7 +25,7 @@ export default class Gesture extends Component {
       return (
         <div
           {...propsRest}
-          className={`Gesture ${className ? className : ''}`}
+          className={`zd-gesture ${className ? className : ''}`}
         >
           {
             children
