@@ -1,5 +1,5 @@
 import React from 'react';
-import DesktopAppRunConfig from '../../components/Desktop/DesktopAppRunConfig';
+import DesktopAppRunConfig from '../../utils/DesktopAppRunConfig';
 import AppBlueprintBaseWindow from './AppBlueprintBaseWindow';
 import config from '../../config';
 

@@ -1,7 +1,7 @@
-import Desktop from '../Desktop';
+// import Desktop from '../Desktop';
 import React, { Component } from 'react';
 import ViewTransition from '../../ViewTransition';
-import {DesktopAppRunConfigLinkedState} from '../DesktopAppRunConfig';
+import { DesktopAppRunConfigLinkedState } from '../../../utils/DesktopAppRunConfig';
 import Image from '../../Image';
 import { Tooltip } from 'antd';
 import './style.css';
@@ -47,7 +47,7 @@ export default class Dock extends Component {
   }
 
   render() {
-    const {className, desktop, ...propsRest} = this.props;
+    const { className, desktop, ...propsRest } = this.props;
 
     return (
       <div
@@ -57,7 +57,7 @@ export default class Dock extends Component {
         <div className="DesktopDockItems">
           {
             this.state.runConfigs.map((runConfig, idx) => {
-              const {_defaultIconSrc} = runConfig;
+              const { _defaultIconSrc } = runConfig;
 
               if (!_defaultIconSrc) {
                 return;
@@ -68,13 +68,13 @@ export default class Dock extends Component {
                 <ViewTransition
                   key={idx}
                   effect="wobble" // TODO: Use variable
-                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px'}}
+                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px' }}
                 >
                   <Tooltip title={runConfig._defaultTitle}>
                     <button
                       // "Launches" the run config
                       // TODO: Implement real run config launching
-                      onClick={ evt => desktop.createWindow(runConfig._desktopWindows[0])}
+                      onClick={evt => desktop.createWindow(runConfig._desktopWindows[0])}
                     >
                       <Image src={runConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>

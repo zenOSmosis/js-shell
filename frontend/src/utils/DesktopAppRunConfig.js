@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
-import LinkedState, {EVT_LINKED_STATE_UPDATE} from '../../state/LinkedState';
-// import Window from './Window';
+import LinkedState, { EVT_LINKED_STATE_UPDATE } from '../state/LinkedState';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -10,6 +9,7 @@ export {
 
 export class DesktopAppRunConfigLinkedState extends LinkedState {
   constructor() {
+    // TODO: Use constant
     super('desktop-app-run-configs', {
       runConfigs: []
     });
@@ -20,7 +20,7 @@ export class DesktopAppRunConfigLinkedState extends LinkedState {
       throw new Error('runConfig must be instance of DesktopAppRunConfig');
     }
 
-    const {runConfigs} = this.getState();
+    const { runConfigs } = this.getState();
 
     runConfigs.push(runConfig);
 
@@ -30,7 +30,7 @@ export class DesktopAppRunConfigLinkedState extends LinkedState {
   }
 
   getRunConfigs() {
-    const {runConfigs} = this.getState();
+    const { runConfigs } = this.getState();
 
     return runConfigs;
   }
@@ -54,7 +54,7 @@ export default class DesktopAppRunConfig extends EventEmitter {
   constructor(runProps) {
     super();
 
-    const {title, iconSrc, mainWindow} = runProps;
+    const { title, iconSrc, mainWindow } = runProps;
 
     if (title) {
       this.setTitle(title);

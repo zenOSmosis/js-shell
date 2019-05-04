@@ -1,5 +1,5 @@
 import React from 'react';
-import DesktopAppRunConfig from '../../components/Desktop/DesktopAppRunConfig';
+import DesktopAppRunConfig from '../../utils/DesktopAppRunConfig';
 import HelloWorldWindow from './HelloWorldWindow';
 import config from '../../config';
 
