@@ -19,7 +19,7 @@ import {
   EVT_WINDOW_DID_UNHIDE,
   EVT_WINDOW_WILL_RESIZE,
   EVT_WINDOW_DID_RESIZE
-} from './windowEvents';
+} from './windowLifecycleEvents';
 
 export default Window;
 

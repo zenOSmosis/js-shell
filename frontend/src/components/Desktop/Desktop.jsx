@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import Panel from './Panel';
 // import logo from './logo.svg';
 import ContextMenu from 'components/ContextMenu';
-import Center from 'components/Center';
+// import Center from 'components/Center';
 import Dock from './Dock';
 import FullViewport from 'components/FullViewport';
 import Background from 'components/Background';
