@@ -1,7 +1,7 @@
 // Note, currently the mere inclusion of this registers all of the default apps
 import defaultApps from 'apps/defaultApps';
 
-import registerHostConnectionHandler from 'utils/desktop/registerHostConnectionHandler';
+import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
 import React from 'react';
 import ReactDOM from 'react-dom';
 // TODO: Use a copy of this file, instead
@@ -22,7 +22,7 @@ const startup = () => {
   } else {
     console.debug('Starting client system');
 
-    registerHostConnectionHandler();
+    registerCommonDesktopEventsHandler();
   
     console.debug('default apps', defaultApps);
   
