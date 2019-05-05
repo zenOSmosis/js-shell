@@ -22,6 +22,8 @@ const startup = () => {
   } else {
     console.debug('Starting client system');
 
+    console.warn('TODO: Implement Local Storage');
+
     registerCommonDesktopEventsHandler();
   
     console.debug('default apps', defaultApps);
