@@ -1,6 +1,6 @@
 import socket from './socket.io';
 
-const socketQuery = (eventName, requestData) => {
+const socketQuery = (eventName, requestData = null) => {
   return new Promise((resolve, reject) => {
     socket.emit(eventName, requestData, (resp) => {
       if (!resp) {

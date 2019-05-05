@@ -7,6 +7,12 @@
   top: 0px;
 }
 
+.zd-desktop-panel.horizontal {
+  -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+  box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
+}
+
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-left {
   position: absolute;
   top: 0px;
@@ -16,13 +22,6 @@
 
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-left .zd-application-title {
   font-weight: bold;
-}
-
-.zd-desktop-panel.horizontal .zd-desktop-panel-column-center {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
 }
 
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-right {

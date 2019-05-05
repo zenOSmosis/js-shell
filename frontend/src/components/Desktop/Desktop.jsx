@@ -12,7 +12,7 @@ import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from 'components/Background';
 import NoHostConnectionModal from './modals/NoHostConnectionModal'; // TODO: Remove
-import socket from 'utils/socket.io';
+import fetchWallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
 import config from 'config';
 
 // TODO: Change page title according to active window title
@@ -39,14 +39,16 @@ export default class Desktop extends Component {
   }
 
   // TODO: Move to another module
-  fetchWallpaperPaths() {
-    socket.emit('wallpapers:fetch-wallpaper-paths', null, (wallpaperPaths) => {
-      // console.debug('wallpaper paths', wallpaperPaths);
+  async fetchWallpaperPaths() {
+    try {
+      const wallpaperPaths = await fetchWallpaperPaths();
 
       this.setState({
         wallpaperPaths
       });
-    });
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   render() {

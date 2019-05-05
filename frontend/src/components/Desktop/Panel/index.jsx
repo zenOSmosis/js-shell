@@ -84,10 +84,6 @@ export default class Panel extends Component {
           </div>
         </div>
 
-        <div className="zd-desktop-panel-column-center">
-
-        </div>
-
         <div className="zd-desktop-panel-column-right">
           <button style={{backgroundColor: 'transparent', padding: 0, color: '#fff', border: 0}}>
             <Icon type="menu-unfold" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
