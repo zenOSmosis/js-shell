@@ -1,3 +1,6 @@
+// Here for reference only...
+
+/*
 import React, { Component } from 'react';
 import Carousel3D from '../../../components/Carousel3D';
 import { ButtonGroup, Button } from '../../../components/ButtonGroup';
@@ -60,3 +63,4 @@ export default class DesktopSettings extends Component {
     );
   }
 }
+*/

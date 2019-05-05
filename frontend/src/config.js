@@ -1,6 +1,8 @@
 // Default dynamic app configuration
 // Note: Some of these values may be overridden by other parts of the program
 
+import getRequestURI from './utils/fileSystem/getRequestURI';
+
 import parseURL from './utils/parseURL';
 const parsedWinURL = parseURL(window.href);
 
@@ -18,7 +20,7 @@ config = Object.assign(config, {
   HOST_ICON_URI_PREFIX: `${config.HOST_REST_URI}/icons?iconName=`,
 
   // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URI: `${config.HOST_REST_URI}/files?filePath=/home/jeremy/Pictures/wallpapers/tree-hands.jpg`,
+  DESKTOP_DEFAULT_BACKGROUND_URI: '/home/jeremy/Pictures/wallpapers/tree-hands.jpg',
   
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: true,
 

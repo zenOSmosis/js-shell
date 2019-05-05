@@ -52,6 +52,9 @@ html {
   box-sizing: border-box !important;
 }
 
+button {
+  color: #000
+}
 
 /*
 input,

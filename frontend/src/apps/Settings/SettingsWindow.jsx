@@ -5,7 +5,7 @@ import Center from 'components/Center';
 import Window from 'components/Desktop/Window';
 import Icon from 'components/Icon';
 import ConnectedClients from './subPanes/ConnectedClients';
-import DesktopSettings from './subPanes/DesktopSettings';
+import DesktopBackground from './subPanes/DesktopBackground';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';
 import NotificationSettings from './subPanes/NotificationSettings';
 import DesktopDrawer from './subPanes/DrawerSettings';
@@ -61,7 +61,7 @@ export default class SettingsWindow extends Component {
   subViews = [
     {
       title: 'Background',
-      component: <DesktopSettings settingsWindow={this} />
+      component: <DesktopBackground settingsWindow={this} />
     },
     {
       title: 'Context Menu',

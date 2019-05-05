@@ -10,7 +10,7 @@ import Dock from './Dock';
 import WindowsLayer from './WindowsLayer';
 import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
-import Background from 'components/Background';
+import Background from './Background';
 import NoHostConnectionModal from './modals/NoHostConnectionModal'; // TODO: Remove
 import fetchWallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
 import config from 'config';
@@ -55,7 +55,7 @@ export default class Desktop extends Component {
     return (
       <FullViewport className="zd-desktop">
         <ContextMenu>
-          <Background src={config.DESKTOP_DEFAULT_BACKGROUND_URI}>
+          <Background>
             
             {
               // Top Panel

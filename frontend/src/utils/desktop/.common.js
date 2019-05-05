@@ -1,8 +1,4 @@
-import DesktopLinkedState from '../../state/DesktopLinkedState';
-
-// A common instance of DesktopLinkedState for internal usage within desktop
-// utils
-const desktopLinkedState = new DesktopLinkedState();
+import { commonDesktopLinkedState as desktopLinkedState } from '../../state/DesktopLinkedState';
 
 export {
   desktopLinkedState

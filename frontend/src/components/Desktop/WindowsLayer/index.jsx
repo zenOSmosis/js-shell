@@ -15,8 +15,14 @@ class WindowsLayer extends Component {
     return (
       <Center>
         {
-          openedWindows.map((window) => {           
-            return window;
+          openedWindows.map((window, idx) => {           
+            return (
+              <div style={{position: 'absolute'}} key={idx}>
+                {
+                  window
+                }
+              </div>
+            );
           })
         }
       </Center>

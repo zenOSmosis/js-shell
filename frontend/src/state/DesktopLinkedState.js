@@ -22,13 +22,21 @@ export default class DesktopLinkedState extends LinkedState {
       },
 
       // Setting this will launch an application
-      lastLaunchAppConfig: null
+      lastLaunchAppConfig: null,
+
+      backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI
     });
   }
 
   launchAppConfig(appConfig) {
     this.setState({
       lastLaunchAppConfig: appConfig
+    });
+  }
+
+  setBackgroundURI(backgroundURI) {
+    this.setState({
+      backgroundURI
     });
   }
 
@@ -49,3 +57,8 @@ export default class DesktopLinkedState extends LinkedState {
     return contextMenuIsTrapping;
   }
 }
+
+const commonDesktopLinkedState = new DesktopLinkedState();
+export {
+  commonDesktopLinkedState
+};
