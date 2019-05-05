@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { desktopLinkedState } from './.common';
 import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
 
 /**
@@ -49,6 +50,9 @@ export default class DesktopAppConfig extends EventEmitter {
     return this._title;
   }
 
+  /**
+   * Retrieves the original title, before any modifications.
+   */
   getDefaultTitle() {
     return this._defaultTitle;
   }
@@ -71,8 +75,16 @@ export default class DesktopAppConfig extends EventEmitter {
     this._desktopWindows.push(desktopWindow);
   }
 
+  getMainWindow() {
+    return this._desktopWindows[0];
+  }
+
   getWindows() {
     return this._desktopWindows;
+  }
+
+  launch() {
+    desktopLinkedState.launchAppConfig(this);
   }
 }
 

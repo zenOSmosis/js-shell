@@ -57,7 +57,7 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
     }
 
     render() {
-      const passedProps = Object.assign({}, this.props, this.state);
+      const passedProps = Object.assign({}, this.state, this.props);
 
       // ... and renders the wrapped component with the fresh data!
       // Notice that we pass through any additional props

@@ -133,8 +133,6 @@ export default class Window extends Component {
     this.close();
   }
 
-  // TODO: Convert into 'metaProperty'
-  // metaProperty will set / did set
   setTitle(title) {
     if (!title) {
       console.warn('Ignoring empty title');

@@ -66,9 +66,12 @@ export default class Dock extends Component {
         <div className="zd-desktop-dock-items">
           {
             appConfigs.map((appConfig, idx) => {
-              const { _defaultIconSrc } = appConfig;
+              const iconSrc = appConfig.getIconSrc();
+              const title = appConfig.getTitle();
+              // const mainWindow = appConfig.getMainWindow();
 
-              if (!_defaultIconSrc) {
+              // TODO: Also check if the app should ride in the Dock
+              if (!iconSrc) {
                 return;
               }
 
@@ -79,13 +82,14 @@ export default class Dock extends Component {
                   effect="wobble" // TODO: Use variable
                   style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px' }}
                 >
-                  <Tooltip title={appConfig._defaultTitle}>
+                  <Tooltip title={title}>
                     <button
                       // "Launches" the run config
                       // TODO: Implement real run config launching
-                      onClick={evt => desktop.createWindow(appConfig._desktopWindows[0])}
+                      // onClick={evt => desktop.createWindow(appConfig._desktopWindows[0])}
+                      onClick={ evt => appConfig.launch() }
                     >
-                      <Image src={appConfig._defaultIconSrc} height="40px" style={{ padding: '0px 2px' }} />
+                      <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>
                   </Tooltip>
                 </ViewTransition>

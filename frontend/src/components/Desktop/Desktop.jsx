@@ -6,35 +6,21 @@ import './style-scrollbar.css';
 
 import React, { Component } from 'react';
 import Panel from './Panel';
-// import logo from './logo.svg';
-import ContextMenu from 'components/ContextMenu';
-// import Center from 'components/Center';
 import Dock from './Dock';
+import WindowsLayer from './WindowsLayer';
+import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from 'components/Background';
-import Window from 'components/Desktop/Window';
-import NoHostConnectionModal from './modals/NoHostConnectionModal';
-// import DesktopAppConfig from 'DesktopAppConfig';
-import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import NoHostConnectionModal from './modals/NoHostConnectionModal'; // TODO: Remove
 import socket from 'utils/socket.io';
 import config from 'config';
-import { notification as antdNotification } from 'antd';
 
 // TODO: Change page title according to active window title
 
-class Desktop extends Component {
+export default class Desktop extends Component {
   state = {
-    wallpaperPaths: [],
-
-    controlUIWindow: null,
-    controlUIWindowTitle: null,
-
-    desktopWindows: [],
-
-    contextMenuIsTrapping: config.contextMenuIsTrapping
+    wallpaperPaths: []
   };
-
-  // _linkedState = new DesktopLinkedState();
 
   constructor(props) {
     super(props);
@@ -52,18 +38,6 @@ class Desktop extends Component {
     */
   }
 
-  /*
-  createNotification(notification) {
-    const { message, description, onClick } = notification;
-
-    antdNotification.open({
-      message,
-      description,
-      onClick
-    });
-  }
-  */
-
   // TODO: Move to another module
   fetchWallpaperPaths() {
     socket.emit('wallpapers:fetch-wallpaper-paths', null, (wallpaperPaths) => {
@@ -75,37 +49,7 @@ class Desktop extends Component {
     });
   }
 
-  // TODO: Move to another module
-  createWindow(props = {}) {
-    let desktopWindow;
-
-    if (typeof props.$$typeof !== 'undefined') {
-      desktopWindow = props;
-    } else {
-      // TODO: Differentiate key
-      desktopWindow = <Window key={props.title} {...props} />
-    }
-
-    let { desktopWindows } = this.state;
-    desktopWindows.push(
-      <div
-        key={desktopWindows.length}
-        style={{ position: 'absolute', width: 0, height: 0 }}
-      >
-        {
-          desktopWindow
-        }
-      </div>
-    );
-
-    this.setState({
-      desktopWindows
-    });
-  }
-
   render() {
-    const {desktopWindows} = this.state;
-
     return (
       <FullViewport className="zd-desktop">
         <ContextMenu>
@@ -115,13 +59,16 @@ class Desktop extends Component {
               // Top Panel
             }
             <Panel desktop={this} />
-              {
-                // TODO: Rework window handling
-                desktopWindows &&
-                desktopWindows.map((desktopWindow) => {
-                  return desktopWindow;
-                })
-              }
+
+            {
+              // TODO: Implement NotificationsLayer
+            }
+
+            {
+              // TODO: Implement DrawersLayer
+            }
+
+            <WindowsLayer />
             
             {
               // TODO: Rework
@@ -139,7 +86,3 @@ class Desktop extends Component {
     );
   }
 }
-
-export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
-  console.debug('updated state', updatedState);
-});

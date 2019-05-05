@@ -1,4 +1,6 @@
 /**
+ * TODO: This may need performance improvements
+ * 
  * Adds a short-term buffer between rapid GUI changes in order to free CPU time
  * and prevent the UI from periodically locking up.
  *
@@ -9,6 +11,8 @@
 const bufferUIChange = (() => {
   // const DESIRED_FPS = 90;
   // const BUFFER_MS = parseInt(1000 / DESIRED_FPS);
+  //
+  // TODO: Make able to be set externally
   const BUFFER_MS = 5;
 
   class UIChangeStack {
