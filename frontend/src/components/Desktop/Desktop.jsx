@@ -7,11 +7,11 @@ import './style-scrollbar.css';
 import React, { Component } from 'react';
 import Panel from './Panel';
 import Dock from './Dock';
+import Notifications from './Notifications';
 import WindowsLayer from './WindowsLayer';
 import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from './Background';
-import NoHostConnectionModal from './modals/NoHostConnectionModal'; // TODO: Remove
 import fetchWallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
 import config from 'config';
 
@@ -62,20 +62,13 @@ export default class Desktop extends Component {
             }
             <Panel desktop={this} />
 
-            {
-              // TODO: Implement NotificationsLayer
-            }
+            <Notifications />
 
             {
               // TODO: Implement DrawersLayer
             }
 
             <WindowsLayer />
-            
-            {
-              // TODO: Rework
-            }
-            <NoHostConnectionModal />
 
             {
               // Bottom Dock

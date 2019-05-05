@@ -13,7 +13,6 @@ const DESKTOP_LINKED_SCOPE_NAME = `desktop-linked-state-${uuidv4()}`;
 export default class DesktopLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_LINKED_SCOPE_NAME, {
-      desktopComponent: null,
       contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
       lastNotification: {
         message: null,
