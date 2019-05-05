@@ -13,7 +13,6 @@ import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from './Background';
 import fetchWallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
-import config from 'config';
 
 // TODO: Change page title according to active window title
 
@@ -65,7 +64,19 @@ export default class Desktop extends Component {
             <Notifications />
 
             {
-              // TODO: Implement DrawersLayer
+              // TODO: Implement DrawersLayer as a separate component
+              // @see https://ant.design/components/drawer/
+              /*
+              <Drawer
+                mask={false}
+                bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                onContextMenu={ (evt) => alert('context') }
+                placement="right"
+                visible={true}
+              >
+                Well, hello
+              </Drawer>
+              */
             }
 
             <WindowsLayer />
