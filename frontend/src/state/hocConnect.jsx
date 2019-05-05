@@ -53,7 +53,9 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
         updatedState = stateUpdateFilter(updatedState) || {};
       }
 
-      this.setState(updatedState);
+      if (updatedState) {
+        this.setState(updatedState);
+      }
     }
 
     render() {
