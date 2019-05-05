@@ -1,2 +1,2 @@
-import startup from 'utils/system/startup';
+import startup from 'utils/clientSystem/startup';
 startup();
