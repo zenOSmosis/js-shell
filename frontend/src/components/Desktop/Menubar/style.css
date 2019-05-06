@@ -6,11 +6,15 @@ ul.zd-menubar {
   vertical-align: middle;
 }
 
-.zd-menubar > li {
+.zd-menubar > li.zd-menubar-title {
   display: inline-block;
   padding: 0px 8px;
   white-space: nowrap;
   overflow: hidden
+}
+
+.zd-menubar > li.zd-menubar-title.active {
+  background-color: #3482F5;
 }
 
 /* Fixes flyout icons */

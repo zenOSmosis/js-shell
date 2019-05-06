@@ -48,7 +48,7 @@ These are prioritized by importance.
 - [TODO] Dual desktop
 - [TODO] Use logger (e.g. Winston)
 - [TODO] Sniffing environment variables of a currently opened program.
-- Implement 3D transition library.
+- [TODO] Implement 3D transition library.
 - [TODO] Audio mixing (Ubuntu: amixer / pactl / pacmd; https://unix.stackexchange.com/questions/21089/how-to-use-command-line-to-change-volume)
 - [TODO] Multimedia controls & viewing
 - [TODO] Client microphone capture / server audio redirection.

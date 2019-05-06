@@ -30,12 +30,23 @@ const startup = () => {
   
     // Launch React interface
     (() => {
+      // Rendering directly to document.body is not ideal because it may cause
+      // issues w/ Google Font Loader or third party browser extensions
+      // @see https://github.com/facebook/create-react-app/issues/1568
       ReactDOM.render(<App />, document.getElementById('root'));
   
       // If you want your app to work offline and load faster, you can change
       // unregister() to register() below. Note this comes with some pitfalls.
       // Learn more about service workers: https://bit.ly/CRA-PWA
       serviceWorker.register();
+    })();
+    
+    // Confirm before trying to unload
+    // TODO: Move to shutdown routine
+    (() => {
+      window.onbeforeunload = () => {
+        return 'Are you sure you wish to shut down?';
+      };
     })();
   
     hasStarted = true;
