@@ -10,6 +10,8 @@ import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
  * an icon.
  * 
  * TODO: Revise this documentation as needed.
+ * 
+ * TODO: If not using events here, don't extend event emitter.
  */
 export default class DesktopAppConfig extends EventEmitter {
   _defaultTitle = null;
@@ -76,15 +78,14 @@ export default class DesktopAppConfig extends EventEmitter {
   }
 
   getMainWindow() {
-    return this._desktopWindows[0];
+    if (this._desktopWindows &&
+        this._desktopWindows[0]) {
+      return this._desktopWindows[0];
+    }
   }
 
   getWindows() {
     return this._desktopWindows;
-  }
-
-  launch() {
-    desktopLinkedState.launchAppConfig(this);
   }
 }
 

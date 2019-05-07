@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ViewTransition from 'components/ViewTransition';
 import Image from 'components/Image';
 import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
-import launchAppConfig from 'utils/desktop/launchAppConfig';
+import launchAppWithConfig from 'utils/desktop/launchAppWithConfig';
 import { Tooltip } from 'antd';
 import './style.css';
 
@@ -87,7 +87,7 @@ export default class Dock extends Component {
                       // "Launches" the run config
                       // TODO: Implement real run config launching
                       // onClick={evt => desktop.createWindow(appConfig._desktopWindows[0])}
-                      onClick={ evt => appConfig.launch() }
+                      onClick={ evt => launchAppWithConfig(appConfig) }
                     >
                       <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>
