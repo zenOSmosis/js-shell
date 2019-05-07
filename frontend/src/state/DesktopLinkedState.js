@@ -20,10 +20,20 @@ export default class DesktopLinkedState extends LinkedState {
         onClick: null
       },
 
-      // Setting this will launch an application
-      lastLaunchAppConfig: null,
+      // A list of running apps
+      launchedAppConfigs: [],
 
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI
+    });
+  }
+
+  registerLaunchedAppConfig(appConfig) {
+    const {launchedAppConfigs} = this.getState();
+
+    launchedAppConfigs.push(appConfig);
+
+    this.setState({
+      launchedAppConfigs
     });
   }
 

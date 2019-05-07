@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 import ViewTransition from 'components/ViewTransition';
 import Image from 'components/Image';
-import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
-import launchAppWithConfig from 'utils/desktop/launchAppWithConfig';
+import AppConfigLinkedState from 'state/AppConfigLinkedState';
 import { Tooltip } from 'antd';
 import './style.css';
 
@@ -18,7 +17,7 @@ export default class Dock extends Component {
   constructor() {
     super();
 
-    this._appConfigLinkedState = new DesktopAppConfigLinkedState();
+    this._appConfigLinkedState = new AppConfigLinkedState();
   }
 
   componentDidMount() {
@@ -48,6 +47,17 @@ export default class Dock extends Component {
       });
       */
     })();
+  }
+
+  handleDockItemClick(appConfig) {
+    const isRunning = appConfig.getIsRunning();
+
+    if (!isRunning) {
+      appConfig.launch();
+    } else {
+      // TODO: If app is already launched, bring it to the front
+      console.warn('TODO: Implement bring to front');
+    }
   }
 
   render() {
@@ -84,10 +94,7 @@ export default class Dock extends Component {
                 >
                   <Tooltip title={title}>
                     <button
-                      // "Launches" the run config
-                      // TODO: Implement real run config launching
-                      // onClick={evt => desktop.createWindow(appConfig._desktopWindows[0])}
-                      onClick={ evt => launchAppWithConfig(appConfig) }
+                      onClick={ evt => this.handleDockItemClick(appConfig) }
                     >
                       <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>

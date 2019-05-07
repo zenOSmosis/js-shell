@@ -5,7 +5,7 @@ import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 /**
  * Render area for all desktop windows.
  */
-class WindowsLayer extends Component {
+class WindowDrawLayer extends Component {
   render() {
     let {openedWindows} = this.props;
     if (!openedWindows) {
@@ -30,22 +30,22 @@ class WindowsLayer extends Component {
   }
 }
 
-let openedWindows = [];
+export default hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
+  const {launchedAppConfigs} = updatedState;
 
-export default hocConnect(WindowsLayer, DesktopLinkedState, (updatedState) => {
-  const {lastLaunchAppConfig} = updatedState;
+  if (launchedAppConfigs) {
+    let openedWindows = [];
 
-  if (lastLaunchAppConfig) {
-    // TODO: Move openedWindow handling to DesktopLinkedState
+    launchedAppConfigs.forEach((appConfig) => {
+      const mainWindow = appConfig.getMainWindow();
 
-    const mainWindow = lastLaunchAppConfig.getMainWindow();
+      if (mainWindow) {
+        openedWindows.push(mainWindow);
+      }
+    });
 
-    if (mainWindow) {
-      openedWindows.push(mainWindow);
-
-      return {
-        openedWindows
-      };
-    }
+    return {
+      openedWindows
+    };
   }
 });

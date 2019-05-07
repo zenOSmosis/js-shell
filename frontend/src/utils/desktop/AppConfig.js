@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
 import { desktopLinkedState } from './.common';
-import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
+import AppConfigLinkedState from 'state/AppConfigLinkedState';
 
 /**
- * DesktopAppConfig controls components, such as the Dock, and places menus
+ * AppConfig controls components, such as the Dock, and places menus
  * in them.
  * 
  * In order to create a new Dock item, simply create a new process with
@@ -13,11 +13,12 @@ import DesktopAppConfigLinkedState from 'state/DesktopAppConfigLinkedState';
  * 
  * TODO: If not using events here, don't extend event emitter.
  */
-export default class DesktopAppConfig extends EventEmitter {
+export default class AppConfig extends EventEmitter {
   _defaultTitle = null;
   _title = null;
   _desktopWindows = [];
   _defaultIconSrc = null;
+  _isRunning = false;
 
   constructor(runProps) {
     super();
@@ -36,8 +37,8 @@ export default class DesktopAppConfig extends EventEmitter {
       this.addWindow(mainWindow);
     }
 
-    const linkedState = new DesktopAppConfigLinkedState();
-    linkedState.addAppConfig(this);
+    const appConfigLinkedState = new AppConfigLinkedState();
+    appConfigLinkedState.addAppConfig(this);
   }
 
   setTitle(title) {
@@ -86,6 +87,20 @@ export default class DesktopAppConfig extends EventEmitter {
 
   getWindows() {
     return this._desktopWindows;
+  }
+
+  getIsRunning() {
+    return this._isRunning;
+  }
+
+  launch() {
+    if (this._isRunning) {
+      console.warn('App is already running');
+      return;
+    }
+    this._isRunning = true;
+
+    desktopLinkedState.registerLaunchedAppConfig(this);
   }
 }
 

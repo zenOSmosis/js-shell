@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
-import WindowsLayer from './WindowsLayer';
+import WindowDrawLayer from './WindowDrawLayer';
 import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from './Background';
@@ -79,7 +79,7 @@ export default class Desktop extends Component {
               */
             }
 
-            <WindowsLayer />
+            <WindowDrawLayer />
 
             {
               // Bottom Dock
