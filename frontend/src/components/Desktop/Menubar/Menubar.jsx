@@ -11,7 +11,7 @@ const _PROTO_MENUS = (() => {
     title: <Icon type="deployment-unit" />,
     menuComponent: (() => {
       return (
-        <Menu mode="vertical">
+        <Menu>
           <SubMenu
             key="sub1"
             title={
@@ -174,35 +174,37 @@ export default class Menubar extends Component {
   */
 
   render() {
+    const {activeIdx} = this.state;
+
     return (
       <ul className="zd-menubar">
         {
           _PROTO_MENUS.map((menuData, idx) => {
             // TODO: Extract Menubar Menu component
 
-            const { menuComponent, title, titleStyle: propsTitleStyle } = menuData;
-
-            const titleStyle = Object.assign(
-              {
-                fontWeight: 500,
-                display: 'inline-block',
-                verticalAlign: 'middle'
-              },
-              propsTitleStyle
-            );
+            const { menuComponent, title: menuTitle, titleStyle: menuTitleStyle } = menuData;
 
             return (
               <Dropdown
                 key={idx}
                 getPopupContainer={trigger => trigger.parentNode}
                 trigger={['click']}
-                overlay={menuComponent}
-                // TODO: When visible, 
+                overlay={
+                  // Override passed Menu container, using only the children of it
+                  <Menu
+                    mode="vertical"
+                    // Close dropdown when clicking on menu item
+                    onClick={ (evt) => this.handleVisibleChange(idx, false) }>
+                    {
+                      menuComponent.props.children
+                    }
+                  </Menu>
+                }
                 onVisibleChange={(isVisible) => this.handleVisibleChange(idx, isVisible)}
               >
-                <li style={titleStyle} className={`zd-menubar-title ${this.state.activeIdx === idx ? 'active' : ''}`}>
+                <li style={menuTitleStyle} className={`zd-menubar-title ${activeIdx === idx ? 'active' : ''}`}>
                   {
-                    title
+                    menuTitle
                   }
                 </li>
               </Dropdown>
