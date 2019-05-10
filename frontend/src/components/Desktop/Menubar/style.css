@@ -10,7 +10,10 @@ ul.zd-menubar {
   display: inline-block;
   padding: 0px 8px;
   white-space: nowrap;
-  overflow: hidden
+  overflow: hidden;
+
+  font-weight: 500px;
+  vertical-align: middle;
 }
 
 .zd-menubar > li.zd-menubar-title.active {

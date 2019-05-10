@@ -13,6 +13,7 @@ import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import Background from './Background';
 import fetchWallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 // TODO: Change page title according to active window title
 
@@ -52,43 +53,45 @@ export default class Desktop extends Component {
 
   render() {
     return (
-      <FullViewport className="zd-desktop">
-        <ContextMenu>
-          <Background>
-            
-            {
-              // Top Panel
-            }
-            <Panel desktop={this} />
+      <Router>
+        <FullViewport className="zd-desktop">
+          <ContextMenu>
+            <Background>
 
-            <Notifications />
+              {
+                // Top Panel
+              }
+              <Panel desktop={this} />
 
-            {
-              // TODO: Implement DrawersLayer as a separate component
-              // @see https://ant.design/components/drawer/
-              /*
-              <Drawer
-                mask={false}
-                bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                onContextMenu={ (evt) => alert('context') }
-                placement="right"
-                visible={true}
-              >
-                Well, hello
-              </Drawer>
-              */
-            }
+              <Notifications />
 
-            <WindowDrawLayer />
+              {
+                // TODO: Implement DrawersLayer as a separate component
+                // @see https://ant.design/components/drawer/
+                /*
+                <Drawer
+                  mask={false}
+                  bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                  onContextMenu={ (evt) => alert('context') }
+                  placement="right"
+                  visible={true}
+                >
+                  Well, hello
+                </Drawer>
+                */
+              }
 
-            {
-              // Bottom Dock
-            }
-            <Dock desktop={this} />
+              <WindowDrawLayer />
 
-          </Background>
-        </ContextMenu>
-      </FullViewport>
+              {
+                // Bottom Dock
+              }
+              <Dock desktop={this} />
+
+            </Background>
+          </ContextMenu>
+        </FullViewport>
+      </Router>
     );
   }
 }
