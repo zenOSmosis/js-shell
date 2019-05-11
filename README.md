@@ -79,7 +79,14 @@ To be able to detect S.M.A.R.T. status on Linux you need to install smartmontool
 
 ## Technologies Utilized
 
+### Desktop Environment
+
 - JavaScript (specifically, Node.js 10+)
+
+### Server Environment
+
+- Ubuntu
+- Docker
 
 ## Motto
 

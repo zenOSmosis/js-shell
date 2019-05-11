@@ -97,7 +97,7 @@ export default class Box3D extends Component {
 
     const totalSides = BOX3D_SIDES.length
     
-    for (const i = 0; i < totalSides; i++) {
+    for (let i = 0; i < totalSides; i++) {
       const testSide = BOX3D_SIDES[i];
       const testSideLowerCase = testSide.toLowerCase();
 

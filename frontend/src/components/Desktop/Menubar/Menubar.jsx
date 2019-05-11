@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Icon, Dropdown } from 'antd';
 import { Menu, MenuDivider, MenuItem, SubMenu } from 'components/Menu';
+import redirectTo from 'utils/desktop/redirectTo';
 import './style.css';
 
 // TODO: Refactor accordingly
@@ -45,7 +46,14 @@ const _PROTO_MENUS = (() => {
 
           <MenuDivider />
 
-          <MenuItem key="4">
+          {
+            // TODO: Use path constant
+          }
+          <MenuItem key="4" onClick={ evt => redirectTo('/lock')}>
+            <Icon type="lock" />
+            <span>Lock</span>
+          </MenuItem>
+          <MenuItem key="5" onClick={ evt => redirectTo('/logoff')}>
             <Icon type="logout" />
             <span>Log Off</span>
           </MenuItem>

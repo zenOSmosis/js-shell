@@ -1,25 +1,23 @@
 import React, {Component} from 'react';
 import Center from 'components/Center';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
-// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { Router, withRouter } from 'react-router';
+
+let _isInstantiated = false;
 
 /**
  * Render area for all desktop windows.
+ * 
+ * Note: This should be treated as a singleton, having only one instance.
  */
 class WindowDrawLayer extends Component {
-  componentDidMount() {
-    console.warn('TODO: Implement DOM router integration w/ windows');
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      this.onRouteChanged();
+  constructor(props = {}) {
+    if (_isInstantiated) {
+      throw new Error('WindowDrawLayer is already instantiated');
     }
-  }
 
-  onRouteChanged() {
-    console.debug('ROUTE CHANGED', this.props.location);
+    super(props);
+
+    _isInstantiated = true;
   }
 
   render() {
@@ -27,7 +25,7 @@ class WindowDrawLayer extends Component {
     if (!launchedAppConfigs) {
       launchedAppConfigs = [];
     }
-
+  
     return (
       <Center>
         {
@@ -42,12 +40,12 @@ class WindowDrawLayer extends Component {
           })
         }
       </Center>
-    )
+    );
   }
 }
 
 // @see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/withRouter.md
-export default withRouter(hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
+export default hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
   const {launchedAppConfigs} = updatedState;
 
   if (launchedAppConfigs) {
@@ -55,4 +53,4 @@ export default withRouter(hocConnect(WindowDrawLayer, DesktopLinkedState, (updat
       launchedAppConfigs
     };
   }
-}));
+});

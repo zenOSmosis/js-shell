@@ -1,4 +1,6 @@
 import config from '../config';
+// import Window from 'components/Desktop/Window';
+import AppConfig from '../utils/desktop/AppConfig';
 import hocConnect from './hocConnect';
 import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
 import uuidv4 from 'uuid/v4';
@@ -20,6 +22,12 @@ export default class DesktopLinkedState extends LinkedState {
         onClick: null
       },
 
+      // The most recent active Desktop window
+      activeWindow: null,
+
+      // URL redirect location
+      redirectLocation: '/',
+
       // A list of running apps
       launchedAppConfigs: [],
 
@@ -27,6 +35,11 @@ export default class DesktopLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * Registers a launched Desktop app.
+   *
+   * @param {AppConfig} appConfig 
+   */
   registerLaunchedAppConfig(appConfig) {
     const {launchedAppConfigs} = this.getState();
 
@@ -37,12 +50,27 @@ export default class DesktopLinkedState extends LinkedState {
     });
   }
 
-  launchAppConfig(appConfig) {
-    this.setState({
-      lastLaunchAppConfig: appConfig
-    });
+  /**
+   * Sets the currently active Desktop window.
+   *
+   * @param {object} activeWindow TODO: Use Window property.  It currently
+   * conflicts w/ DOM Window. 
+   */
+  setActiveWindow(activeWindow) {
+    const {activeWindow: prevActiveWindow} = this.getState();
+
+    if (!Object.is(activeWindow, prevActiveWindow)) {
+      this.setState({
+        activeWindow
+      });
+    }
   }
 
+  /**
+   * Sets the Desktop's background URI.
+   *
+   * @param {string} backgroundURI 
+   */
   setBackgroundURI(backgroundURI) {
     this.setState({
       backgroundURI
@@ -50,7 +78,7 @@ export default class DesktopLinkedState extends LinkedState {
   }
 
   /**
-   * Sets whether or not the desktop should trap the right-click context menu.
+   * Sets whether or not the Desktop should trap the right-click context menu.
    * 
    * @param {boolean} contextMenuIsTrapping 
    */
@@ -60,6 +88,11 @@ export default class DesktopLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * Retrieves whether or not the Desktop is trapping the right-click context menu.
+   * 
+   * @return {boolean}
+   */
   getContextMenuIsTrapping() {
     const {contextMenuIsTrapping} = this.getState();
 

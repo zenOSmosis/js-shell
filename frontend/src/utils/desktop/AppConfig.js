@@ -53,10 +53,6 @@ export default class AppConfig extends EventEmitter {
     return this._title;
   }
 
-  getURLPath() {
-    return this.getTitle().split(' ').join('-');
-  }
-
   /**
    * Retrieves the original title, before any modifications.
    */

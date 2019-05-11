@@ -1,7 +1,10 @@
-// TODO: Enable auto-recomposition of window (contents / position) if screensize is changed
+// Note: Window is not currently set as a HOC component due to it conflicting
+// with current window actions (e.g. moving, etc)
+
+// TODO: Enable resize / reposition of window (size / position) if screensize is changed
 
 import React, { Component } from 'react';
-// import Gesture from '../../Gesture';
+// import Gesture from 'commponents/Gesture';
 import ContextMenu from 'components/ContextMenu';
 import Cover from 'components/Cover';
 import Moveable from 'components/Moveable';
@@ -9,6 +12,7 @@ import ViewTransition from 'components/ViewTransition';
 import Resizable from 'components/Resizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
+import { commonDesktopLinkedState } from 'state/DesktopLinkedState';
 import WindowHeader from './Header';
 import $ from 'jquery';
 import {
@@ -55,6 +59,7 @@ const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
 let windowStack = [];
 
+// TODO: Refactor elsewhere
 export const getWindowStack = () => {
   return windowStack.filter((window) => {
     return !(window.isClosed);
@@ -77,41 +82,52 @@ export default class Window extends Component {
 
     this.startDate = new Date();
 
-    this.lifecycleEvents = new WindowLifecycleEvents(this);
+    this.lifecycleEvents = (() => {
+      const lifecycleEvents = new WindowLifecycleEvents(this);
 
-    this.lifecycleEvents.broadcast = (() => {
-      const oBroadcast = this.lifecycleEvents.broadcast;
+      // Override default broadcast handler
+      lifecycleEvents.broadcast = (() => {
+        const oBroadcast = lifecycleEvents.broadcast;
+  
+        return (...args) => {
+          const eventName = args[0];
+          if (typeof this.props[`on${eventName}`] === 'function') {
+            this.props[`on${eventName}`](this);
+          }
+  
+          return oBroadcast.apply(this.lifecycleEvents, args);
+        };
+      })();
 
-      return (...args) => {
-        const eventName = args[0];
-        if (typeof this.props[`on${eventName}`] === 'function') {
-          this.props[`on${eventName}`](this);
-        }
-
-        return oBroadcast.apply(this.lifecycleEvents, args);
-      };
+      return lifecycleEvents;
     })();
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_CREATED);
   }
 
   async componentDidMount() {
-    if (this.isClosed) {
-      return;
+    try {
+      if (this.isClosed) {
+        return;
+      }
+      
+      // Set Window title either from props or from appConfig
+      // TODO: Remove appConfig here; use passed props
+      const { appConfig, title: propsTitle } = this.props;
+      const title = (appConfig ? appConfig.getTitle() : propsTitle);
+      this.setTitle(title);
+
+      // Listen for touch / mouse
+      this._startInteractListening();
+
+      this.activate();
+
+      await this.animate(EFFECT_CREATE);
+
+      this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+    } catch (exc) {
+      throw exc;
     }
-
-    // Set Window title either from props or from appConfig
-    const { appConfig, title: propsTitle } = this.props;
-    const title = (appConfig ? appConfig.getTitle() : propsTitle);
-    this.setTitle(title);
-
-    this._startInteractListening();
-
-    await this.animate(EFFECT_CREATE);
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
-
-    this.activate();
   }
 
   componentDidUpdate() {
@@ -136,6 +152,7 @@ export default class Window extends Component {
   setTitle(title) {
     if (!title) {
       console.warn('Ignoring empty title');
+      return;
     }
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
@@ -144,6 +161,12 @@ export default class Window extends Component {
     }, () => {
       this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
     });
+  }
+
+  getTitle() {
+    const {title} = this.state;
+
+    return title;
   }
 
   // TODO: Return time difference from start date
@@ -179,17 +202,25 @@ export default class Window extends Component {
   };
 
   activate() {
+    // TODO: Include checking to determine if already active
+
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
+    // TODO: Use constant for active
     $(this._resizableBody).addClass('active'); // Affects draw shadow
     $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
+
+    commonDesktopLinkedState.setActiveWindow(this);
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   deactivate() {
+    // TODO: Include checking to determine if already inactive
+
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
 
+    // TODO: Use constant for active
     $(this._resizableBody).removeClass('active'); // Affects draw shadow
     $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
 
@@ -217,6 +248,7 @@ export default class Window extends Component {
 
     // TODO: display: block
 
+    // TODO: Handle appropriately
     alert('unhide');
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
@@ -247,6 +279,7 @@ export default class Window extends Component {
   async maximize() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
+    // TODO: Handle appropriately
     alert('maximize');
 
     // Lock:
@@ -265,10 +298,14 @@ export default class Window extends Component {
    * https://daneden.github.io/animate.css/
    */
   async animate(effect) {
-    // TODO: Rework base parsing
-    const base = this._base;
+    try {
+      // TODO: Rework base parsing
+      const base = this._base;
 
-    await base.animate(effect);
+      await base.animate(effect); 
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   getPosition() {
@@ -320,12 +357,6 @@ export default class Window extends Component {
     });
   }
 
-  /*
-  getCalculatedWindowSize() {
-
-  }
-  */
-
   _callResize(resizeHandler) {
     const { onWindowResize } = this.props;
 
@@ -345,6 +376,12 @@ export default class Window extends Component {
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
   }
+
+  /*
+  getCalculatedWindowSize() {
+
+  }
+  */
 
   getCalculatedBodySize() {
     const bodyCalcStyle = window.getComputedStyle(this.windowBody);
@@ -559,6 +596,7 @@ export default class Window extends Component {
     }
 
     // TODO: Rework base parsing
+    // TODO: Remove element from DOM, completely
     const base = this._base._base;
     base.style.display = 'none';
 

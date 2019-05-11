@@ -99,7 +99,7 @@ export default class Resizable extends Component {
     direction = direction.toLowerCase();
 
     // console.debug(`TODO: resize in direction: ${direction}`, evt);
-    const $root = $(this.root);
+    // const $root = $(this.root);
     const $main = $(this.main);
 
     const deltaX = evt.delta[0];

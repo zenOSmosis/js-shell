@@ -51,9 +51,13 @@ export class WindowLifecycleEvents extends Events {
   constructor(window = null) {
     super();
 
+    /*
+    // TODO: Can we make this work w/ a hocConnect'ed window?
     if (window && !(window instanceof Window)) {
       throw new Error('window argument must be an instance of Window');
     }
+    */
+
     this.window = window;
 
     windowMasterEventInstances.push(this);
@@ -161,9 +165,12 @@ export class WindowLifecycleEvents extends Events {
   }
 
   emit(eventName, window) {
+    /*
+    // TODO: Can we make this work w/ a hocConnect'ed window?
     if (!(window instanceof Window)) {
       throw new Error('Window is not of proper type');
     }
+    */
 
     return super.emit.apply(this, [eventName, window]);
   }

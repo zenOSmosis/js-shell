@@ -10,10 +10,13 @@ export default class WindowHeader extends Component {
   constructor(props) {
     super(props);
 
-    const {desktopWindow} = this.props;
+    // const {desktopWindow} = this.props;
+    /*
+    // TODO: Can we make this work w/ a hocConnect'ed window?
     if (!(desktopWindow instanceof Window)) {
       throw new Error('desktopWindow must be instance of Window');
     }
+    */
   }
 
   handleTouchStart = (evt) => {

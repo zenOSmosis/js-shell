@@ -96,7 +96,7 @@ export default class SettingsWindow extends Component {
   }
 
   setTitle(title) {
-    this._desktopWindow.setTitle(title);
+    appConfig.setTitle(title);
   }
 
   switchToSubViewNG(subPane = {}) {

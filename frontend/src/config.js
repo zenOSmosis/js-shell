@@ -1,7 +1,7 @@
 // Default dynamic app configuration
 // Note: Some of these values may be overridden by other parts of the program
 
-import getRequestURI from './utils/fileSystem/getRequestURI';
+// import getRequestURI from './utils/fileSystem/getRequestURI';
 
 import parseURL from './utils/parseURL';
 const parsedWinURL = parseURL(window.href);
