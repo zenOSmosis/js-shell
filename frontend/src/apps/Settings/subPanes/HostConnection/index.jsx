@@ -217,12 +217,15 @@ class HostConnection extends Component {
                       <div key={`input ${this._renderIdx}`} style={{ height: '100%', backgroundColor: '#fff' }}>
                         <JSONEditor
                           mode={this.state.jsonEditorInputMode} value={{}}
+
+                          // TODO: Move to JSONEditor
                           htmlElementProps={{
                             style: {
                               width: '100%',
                               height: '100%'
                             }
                           }}
+                          
                           onChange={requestData => this._requestData = requestData}
                         />
                       </div>
