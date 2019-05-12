@@ -39,7 +39,11 @@ export default class DesktopBackground extends Component {
                 key={idx}
                 onClick={ (evt) => commonDesktopLinkedState.setBackgroundURI(wallpaperPath) }
               >
-                <img src={imageURI} style={{width: 150, height: 150}} />
+                <img
+                  src={imageURI}
+                  alt="" // Presentational image
+                  style={{width: 150, height: 150}}
+                />
               </button>
             );
           })

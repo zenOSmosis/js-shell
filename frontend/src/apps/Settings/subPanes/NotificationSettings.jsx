@@ -1,6 +1,6 @@
 import React from 'react';
-// import Center from '../../../components/Center';
-import createDesktopNotification from '../../../utils/desktop/createDesktopNotification';
+// import Center from 'components/Center';
+import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 // import { Switch } from 'antd';
 
 const NotificationSettings = (props = {}) => {

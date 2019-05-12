@@ -1,9 +1,9 @@
-import React  from 'react';
+import React from 'react';
 
 // TODO: Incorporate react-svg for better SVG manipulation
 // @see https://www.npmjs.com/package/react-svg
 
-export default Image = (props = {}) => {
+const Image = (props = {}) => {
   let {alt, title, src} = props;
   alt = alt || '';
   title = title || alt;
@@ -17,3 +17,5 @@ export default Image = (props = {}) => {
     />
   );
 };
+
+export default Image;

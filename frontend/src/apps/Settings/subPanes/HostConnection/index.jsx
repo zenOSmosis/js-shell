@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import Button from '../../../../components/Button';
-import LabeledSwitch, {Switch} from '../../../../components/LabeledSwitch';
-// import { SegmentedControl, SegmentedControlItem } from '../../../../components/SegmentedControl';
-import { Menu, MenuItem } from '../../../../components/Menu';
-import { Select, Option } from '../../../../components/Select';
-import { Layout, Content, Footer, Row, Column } from '../../../../components/Layout';
-import LoadingSpinner from '../../../../components/spinners/LoadingSpinner';
-import socketAPIRoutes from '../../../../utils/socketAPIRoutes';
-import socket, {socketQuery, SocketLinkedState} from '../../../../utils/socket.io';
-import Cover from '../../../../components/Cover';
-import Center from '../../../../components/Center';
-import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from '../../../../components/JSONEditor';
-import hocConnect from '../../../../state/hocConnect';
+import Button from 'components/Button';
+import LabeledSwitch, {Switch} from 'components/LabeledSwitch';
+// import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
+// import { Menu, MenuItem } from 'components/Menu';
+import { Select, Option } from 'components/Select';
+import { Layout, Content, Footer, Row, Column } from 'components/Layout';
+import LoadingSpinner from 'components/spinners/LoadingSpinner';
+import Cover from 'components/Cover';
+import Center from 'components/Center';
+import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from 'components/JSONEditor';
+import socketAPIRoutes from 'utils/socketAPIRoutes';
+import socket, {socketQuery, SocketLinkedState} from 'utils/socket.io';
+import hocConnect from 'state/hocConnect';
 
 // import { Input } from 'antd';
 // const { TextArea } = Input;
@@ -31,14 +31,8 @@ class HostConnection extends Component {
 
   _requestData = {};
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.ping();
-
-    const { settingsWindow } = this.props;
 
     this.renderSubToolbar();
   }

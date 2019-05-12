@@ -33,13 +33,13 @@ export default class TabbedPane extends Component {
                     style={{
                       border: 0,
                       padding: 0,
-                      padding: 0,
                       margin: 0,
                       backgroundColor: 'transparent'
                     }}
                   >
                     <img
                       src={SplitEditorHorizontalIcon}
+                      alt="Horizontal split"
                       style={{width: '1rem', height: '1rem'}}
                     />
                   </button>
@@ -50,12 +50,15 @@ export default class TabbedPane extends Component {
                     style={{
                       border: 0,
                       padding: 0,
-                      padding: 0,
                       margin: 0,
                       backgroundColor: 'transparent'
                     }
                   }>
-                    <img src={SplitEditorVerticalIcon} style={{width: '1rem', height: '1rem'}} />
+                    <img
+                      src={SplitEditorVerticalIcon}
+                      alt="Vertical split"
+                      style={{width: '1rem', height: '1rem'}}
+                    />
                   </button>
                 </Aside>
               }

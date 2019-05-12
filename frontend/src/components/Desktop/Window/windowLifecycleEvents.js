@@ -1,5 +1,5 @@
 import Events from 'events';
-import Window from './Window';
+// import Window from './Window';
 
 // Lifecycle events
 export const EVT_WINDOW_CREATED = 'windowcreated';

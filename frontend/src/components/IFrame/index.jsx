@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
+import uuidv4 from 'uuid/v4';
 import './style.css';
 
 export default class IFrame extends Component {
+  _title = null;
+
+  constructor(props = {}) {
+    super(props);
+
+    this._title = uuidv4();
+  }
+
   componentDidMount() {
     // TODO: Copy all document.head styles into iframe
 
@@ -71,6 +80,7 @@ export default class IFrame extends Component {
       <iframe
         ref={ c => this._iframe = c }
         {...propsRest}
+        title={this._title}
         className={`zd-iframe ${className ? className : ''}`}
         onLoad={(evt) => this.handleOnLoad(evt)}
       ></iframe>

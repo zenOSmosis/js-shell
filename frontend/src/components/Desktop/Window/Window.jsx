@@ -138,8 +138,7 @@ export default class Window extends Component {
     // TODO: Rework this
     const base = this._base._base;
 
-    console.debug(this.state.zStack);
-
+    // TODO: Rework this
     $(base).css({
       zIndex: this.state.zStack
     });

@@ -82,7 +82,7 @@ export default class Dock extends Component {
 
               // TODO: Also check if the app should ride in the Dock
               if (!iconSrc) {
-                return;
+                return null;
               }
 
               // TODO: Convert to DockItem (or equiv.) class

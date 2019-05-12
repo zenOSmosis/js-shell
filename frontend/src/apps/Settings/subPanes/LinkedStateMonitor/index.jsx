@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {MasterLinkedStateListener, EVT_LINKED_STATE_UPDATE} from '../../../../state/LinkedState';
-import Button from '../../../../components/Button';
-import {Row, Column} from '../../../../components/RowColumn';
+import React, { Component } from 'react';
+import JSONEditor from 'components/JSONEditor';
+import { Select, Option } from 'components/Select';
+import Button from 'components/Button';
+// import {Row, Column} from 'components/RowColumn';
+import { MasterLinkedStateListener, EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 // import fetchStackTrace from 'stacktrace-js';
-import {Tree} from 'antd';
-import JSONEditor from '../../../../components/JSONEditor';
-import {Select, Option} from '../../../../components/Select';
+// import { Tree } from 'antd';
 import safeStringify from 'fast-safe-stringify';
-const {TreeNode} = Tree;
+// const { TreeNode } = Tree;
 
 export default class LinkedStateMonitor extends Component {
   state = {
@@ -17,12 +17,12 @@ export default class LinkedStateMonitor extends Component {
 
   handleUpdatedLinkedState = (data) => {
     // console.debug('updated state', data);
-    const {linkedStateUpdates} = this.state;
+    const { linkedStateUpdates } = this.state;
 
     // Add state data to beginning of array
     linkedStateUpdates.unshift(data);
 
-    this.setState({linkedStateUpdates});
+    this.setState({ linkedStateUpdates });
 
     // console.debug(data);
   }
@@ -43,7 +43,7 @@ export default class LinkedStateMonitor extends Component {
   getLinkedStateInstances() {
     const linkedStateInstances = this._masterLinkedStateListener.getLinkedStateInstances();
 
-    this.setState({linkedStateInstances}, () => {
+    this.setState({ linkedStateInstances }, () => {
       console.debug('linked state instances', linkedStateInstances);
     });
 
@@ -70,7 +70,7 @@ export default class LinkedStateMonitor extends Component {
 
   render() {
     return (
-      <div style={{textAlign: 'left', overflow: 'auto', width: '100%', height: '100%'}}>
+      <div style={{ textAlign: 'left', overflow: 'auto', width: '100%', height: '100%' }}>
         <ul>
           <li>In / Out</li>
           <li>Monitor linked states as they happen</li>
@@ -79,9 +79,9 @@ export default class LinkedStateMonitor extends Component {
         </ul>
 
         <label>Enable Stack Tracing</label>
-      
-        <Button onClick={ evt => console.debug(this._masterLinkedStateListener.getLinkedStateInstances()) }>Fetch linked state instances</Button>
-      
+
+        <Button onClick={evt => console.debug(this._masterLinkedStateListener.getLinkedStateInstances())}>Fetch linked state instances</Button>
+
         <LinkedStateGroups masterLinkedStateListener={this._masterLinkedStateListener} linkedStateInstances={this.state.linkedStateInstances} />
 
         <hr />
@@ -113,7 +113,7 @@ export default class LinkedStateMonitor extends Component {
         {
           this.state.linkedStateUpdates.map((linkedStateUpdate, idx) => {
             return (
-              <div key={idx} onClick={ (evt) => this.fetchUpdateStackTrace(linkedStateUpdate) }>
+              <div key={idx} onClick={(evt) => this.fetchUpdateStackTrace(linkedStateUpdate)}>
                 {
                   linkedStateUpdate.linkedState._linkedScopeName
                 }
@@ -121,7 +121,7 @@ export default class LinkedStateMonitor extends Component {
                 {
                   JSON.stringify(linkedStateUpdate.updatedState)
                 }
-                
+
                 <hr />
               </div>
             );
@@ -151,42 +151,42 @@ const getUniqueLinkedStateInstances = (linkedStateInstances) => {
 };
 
 const LinkedStateGroups = (props = {}) => {
-  const {masterLinkedStateListener, linkedStateInstances} = props;
+  const { /*masterLinkedStateListener,*/ linkedStateInstances } = props;
 
   const uniqueInstances = getUniqueLinkedStateInstances(linkedStateInstances);
 
   return (
     <div>
-        <Select defaultValue="">
-          <Option value="">Select a LinkedState instance</Option>
-          {
-            uniqueInstances.map((instance, idx) => {
-              return (
-                <Option key={idx} value={instance.getUUID()}>{
-                  instance.getClassName()
-                }</Option>
-              )
-            })
-          }
-        </Select>
+      <Select defaultValue="">
+        <Option value="">Select a LinkedState instance</Option>
         {
           uniqueInstances.map((instance, idx) => {
-            const safeValue = JSON.parse(safeStringify(instance));
-
-            console.debug('l instance', instance);
             return (
-              <div key={idx}>
-                {
-                  instance.getClassName()
-                }
-
-                <div style={{height: 500}}>
-                  <JSONEditor value={safeValue} />
-                </div>
-              </div>
-            );
+              <Option key={idx} value={instance.getUUID()}>{
+                instance.getClassName()
+              }</Option>
+            )
           })
         }
+      </Select>
+      {
+        uniqueInstances.map((instance, idx) => {
+          const safeValue = JSON.parse(safeStringify(instance));
+
+          console.debug('LinkedState instance', instance);
+          return (
+            <div key={idx}>
+              {
+                instance.getClassName()
+              }
+
+              <div style={{ height: 500 }}>
+                <JSONEditor value={safeValue} />
+              </div>
+            </div>
+          );
+        })
+      }
     </div>
   );
 }
