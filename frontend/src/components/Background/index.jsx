@@ -5,20 +5,17 @@ import './style.css';
 
 export default class Background extends Component {
   render() {
-    let {children, src, className, style, ...propsRest} = this.props;
-
-    if (src) {
-      style = Object.assign({}, style, {
-        backgroundImage: `url("${src}")`
-      });
-    }
+    let {children, src, className, ...propsRest} = this.props;
 
     return (
       <Full
         {...propsRest}
         className={`zd-background ${className ? className : ''}`}
-        style={style}
       >
+        <Cover className="zd-background-cover">
+          <img className="zd-background-image" alt="" src={src} />
+        </Cover>
+        
         <Cover>
           {
             children

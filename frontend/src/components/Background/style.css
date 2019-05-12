@@ -5,3 +5,13 @@
 
   background-size: cover;
 }
+
+.zd-background-cover .zd-background-image {
+  width: 100%;
+  height: 100%;
+
+  /*
+  * @see https://alligator.io/css/cropping-images-object-fit/
+  */
+  object-fit: cover;
+}
