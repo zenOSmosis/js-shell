@@ -15,7 +15,10 @@ const DESKTOP_LINKED_SCOPE_NAME = `desktop-linked-state-${uuidv4()}`;
 export default class DesktopLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_LINKED_SCOPE_NAME, {
+      // Whether, or not, the Desktop should capture right-click context menu
       contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
+      
+      // Setting this will generate a new Desktop Notification
       lastNotification: {
         message: null,
         description: null,
@@ -28,9 +31,10 @@ export default class DesktopLinkedState extends LinkedState {
       // URL redirect location
       redirectLocation: '/',
 
-      // A list of running apps
+      // A list of currently running apps
       launchedAppConfigs: [],
 
+      // The background image location of the Desktop
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI
     });
   }
