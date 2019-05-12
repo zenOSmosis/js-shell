@@ -244,7 +244,9 @@ export default class LinkedState extends EventEmitter {
   }
 
   destroy() {
-    console.warn('TODO: Remove all event listeners', this);
+    // Remove all event listeners
+    // @see https://nodejs.org/api/events.html#events_emitter_removealllisteners_eventname
+    this.removeAllListeners();
 
     mlscs.removeLinkedStateWithUUID(this._uuid);
   }
