@@ -269,11 +269,11 @@ export class MasterLinkedStateListener extends LinkedState {
     const linkedStateInstances = this.getLinkedStateInstances();
 
     const linkedState = linkedStateInstances.reduce((a, b) => {
-      if (a && a.getUUID() == uuid) {
+      if (a && a.getUUID() === uuid) {
         return a;
       }
 
-      if (b && b.getUUID() == uuid) {
+      if (b && b.getUUID() === uuid) {
         return b;
       }
 

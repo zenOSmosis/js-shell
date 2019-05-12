@@ -15,8 +15,8 @@ export default class Panel extends Component {
     controlUIWindowTitle: null,
   };
 
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //  super(props);
 
     /*
     if (!(this.props.desktop instanceof Desktop)) {
@@ -25,6 +25,7 @@ export default class Panel extends Component {
     */
 
     /*
+    // Active window menu
     this._masterLifecycleEvents = (() => {
       const masterLifecycleEvents = new WindowLifecycleEvents();
       masterLifecycleEvents.on(EVT_WINDOW_DID_ACTIVATE, (controlUIWindow) => {
@@ -48,7 +49,7 @@ export default class Panel extends Component {
     })();
     */
 
-  }
+  // }
 
   render() {
     const {desktop, children, className, ...propsRest} = this.props;

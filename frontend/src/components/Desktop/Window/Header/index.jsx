@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Window from '../Window';
+// import Window from '../Window';
 import Gesture from 'components/Gesture';
 import {Row, Column} from 'components/Layout';
 
@@ -7,17 +7,17 @@ export default class WindowHeader extends Component {
   _initialWindowPosition = {};
   _initialTouchPosition = {};
 
+  /*
   constructor(props) {
     super(props);
 
     // const {desktopWindow} = this.props;
-    /*
     // TODO: Can we make this work w/ a hocConnect'ed window?
     if (!(desktopWindow instanceof Window)) {
       throw new Error('desktopWindow must be instance of Window');
     }
-    */
   }
+  */
 
   handleTouchStart = (evt) => {
     console.debug('touch');

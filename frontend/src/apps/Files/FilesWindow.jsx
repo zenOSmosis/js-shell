@@ -9,7 +9,7 @@ import { ButtonGroup, Button } from 'components/ButtonGroup';
 import {Row, Column} from 'components/RowColumn';
 // import DirectoryTree from './subComponents/DirectoryTree';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
-import {Menu, MenuItem} from 'components/Menu';
+// import {Menu, MenuItem} from 'components/Menu';
 import {chdir} from 'utils/fileSystem';
 import {Input, Icon as AntdIcon} from 'antd';
 import config from 'config';

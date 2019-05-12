@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
+import React, { Component } from 'react';
+import { EVT_LINKED_STATE_UPDATE } from './LinkedState';
 
 /**
  * Connects LinkedState to a React component's lifecycle.
@@ -43,7 +43,7 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
 
     componentWillUnmount() {
       this._linkedStateInstance.off(EVT_LINKED_STATE_UPDATE, this.handleUpdatedState);
-      
+
       this._linkedStateInstance.destroy();
     }
 
@@ -66,7 +66,7 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
       return <WrappedComponent
         // data={this.state.data}
         {...passedProps}
-        // ref={ c => this._wrappedComponent = c }
+      // ref={ c => this._wrappedComponent = c }
       />;
     }
   };

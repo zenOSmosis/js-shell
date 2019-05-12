@@ -1,4 +1,3 @@
-import config from '../config';
 import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
 
 export {

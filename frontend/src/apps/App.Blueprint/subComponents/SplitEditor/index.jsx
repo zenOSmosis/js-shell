@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import Editor from '../Editor';
+// import Editor from '../Editor';
 import TabbedPane from './TabbedPane';
-import Full from '../../../../components/Full';
-import SplitterLayout from '../../../../components/SplitterLayout';
+import Full from 'components/Full';
+import SplitterLayout from 'components/SplitterLayout';
 
 export default class SplitEditor extends Component {
   state = {

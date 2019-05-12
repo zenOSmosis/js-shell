@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import Full from '../../../../components/Full';
-import { Layout, Header, Content, Aside } from '../../../../components/Layout';
-import { Button } from '../../../../components/Button';
+import Full from 'components/Full';
+import { Layout, Header, Content, Aside } from 'components/Layout';
+import { Button } from 'components/Button';
 import { Icon as AntdIcon } from 'antd';
-import SplitEditorHorizontalIcon from '../../../../icons/vscode/split-editor-horizontal-inverse.svg';
-import SplitEditorVerticalIcon from '../../../../icons/vscode/split-editor-vertical-inverse.svg';
+import SplitEditorHorizontalIcon from 'icons/vscode/split-editor-horizontal-inverse.svg';
+import SplitEditorVerticalIcon from 'icons/vscode/split-editor-vertical-inverse.svg';
 // TODO: Remove; prototyping
-import MonacoEditor from '../../../../components/MonacoEditor';
+import MonacoEditor from 'components/MonacoEditor';
 
 export default class TabbedPane extends Component {
   render() {
-    const {hasOrientationControls, splitEditor} = this.props;
+    const {/*hasOrientationControls,*/ splitEditor} = this.props;
 
     return (
       <Full>

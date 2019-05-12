@@ -1,15 +1,9 @@
 import React from 'react';
-import Center from '../../../../components/Center';
-import Button from '../../../../components/Button';
-import DesktopLinkedState from '../../../../state/DesktopLinkedState';
-// import { Switch } from 'antd';
+import Center from 'components/Center';
+import Button from 'components/Button';
 import './style.css';
 
 const DrawerSettings = (props = {}) => {
-  const desktopLinkedState = new DesktopLinkedState();
-  // const currState = desktopLinkedState.getState();
-  // const {contextMenuIsTrapping} = currState;
-
   return (
     <Center>
       <div className="DrawerSettings">

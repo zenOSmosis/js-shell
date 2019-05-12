@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Aside, Content, Footer } from '../../../../components/Layout';
-import Box3D, { BOX3D_SIDES } from '../../../../components/Box3D';
-import { Select, Option, OptGroup } from '../../../../components/Select';
-import { Row, Column } from '../../../../components/RowColumn';
+import { Layout, /*Aside,*/ Content, Footer } from '../../../../components/Layout';
+import /*Box3D,*/ { BOX3D_SIDES } from '../../../../components/Box3D';
+import { Select, Option, /*OptGroup*/ } from '../../../../components/Select';
+// import { Row, Column } from '../../../../components/RowColumn';
 import { Input } from 'antd';
 import MonacoEditor from '../../../../components/MonacoEditor';
 

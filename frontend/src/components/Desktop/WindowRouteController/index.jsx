@@ -33,6 +33,7 @@ const {setWindowRouteKey, getWindowRouteKey} = (() => {
       if (Object.is(b.window, window)) {
         return b;
       }
+      return undefined;
     });
   
     console.debug('all keymaps:', _windowRouteKeymaps);

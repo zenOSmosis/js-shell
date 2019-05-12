@@ -19,10 +19,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // TODO: Change page title according to active window title
 
 export default class Desktop extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Router>

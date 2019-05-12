@@ -8,7 +8,7 @@ import ConnectedClients from './subPanes/ConnectedClients';
 import DesktopBackground from './subPanes/DesktopBackground';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';
 import NotificationSettings from './subPanes/NotificationSettings';
-import DesktopDrawer from './subPanes/DrawerSettings';
+// import DesktopDrawer from './subPanes/DrawerSettings';
 import LinkedStateMonitor from './subPanes/LinkedStateMonitor';
 import HostConnection from './subPanes/HostConnection';
 import DrawerSettings from './subPanes/DrawerSettings';
