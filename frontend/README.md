@@ -1,3 +1,13 @@
+# Shell (Desktop Environment [or mobile])
+
+## Window URL Routing
+
+Each window is bound to the URL history of the browser, enabling previously active windows to be reactivated if the back button is pressed.
+
+Under the hood, React Router controls this.
+
+-----
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
