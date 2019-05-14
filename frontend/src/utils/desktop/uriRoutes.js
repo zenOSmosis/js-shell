@@ -29,6 +29,7 @@ const addURIRouteHash = (routeHash, onNavigateTo) => {
   });
 };
 
+/*
 const getActionWithURIRouteHash = (routeHash) => {
   const totalHashMaps = uriRouteHashMaps.length;
 
@@ -40,6 +41,7 @@ const getActionWithURIRouteHash = (routeHash) => {
     }
   }
 };
+*/
 
 /*
 const removeURIRouteHash = (routeHash) => {
