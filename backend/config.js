@@ -1,6 +1,9 @@
-const config = {
+const hostConfig = {
+  HTTP_LISTEN_PORT: 3001,
+  FRONTEND_PROXY_URI: 'http://127.0.0.1:3000',
+
   TERMINAL_COMMAND: 'xterm',
-  
+
   // Freedesktop.org app parsing
   // @see https://www.freedesktop.org
   FREEDESKTOP_FILE_EXTENSIONS: ['.desktop'],
@@ -37,4 +40,4 @@ const config = {
   ]
 };
 
-module.exports = config;
+module.exports = hostConfig;

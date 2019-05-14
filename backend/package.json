@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "fs-readdir-recursive": "^1.1.0",
+    "http-proxy": "^1.17.0",
     "naudiodon": "^2.0.3",
     "socket.io": "^2.2.0",
     "stacktrace-js": "^2.0.0",

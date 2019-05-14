@@ -3,10 +3,3 @@ const socketIO = require('./servers/socket.io-server');
 
 expressServer.start();
 socketIO.start();
-
-/*
-console.log({
-  expressServer,
-  socketIO
-});
-*/

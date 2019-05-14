@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const http = require('http').Server(app);
+const httpProxy = require('http-proxy');
 const expressRoutes = require('../api/express/routes');
-
-// TODO: Move this to a central config
-const HTTP_LISTEN_PORT = 3001;
+const config = require('../config');
+const {FRONTEND_PROXY_URI, HTTP_LISTEN_PORT} = config;
 
 const PATH_PUBLIC = path.resolve(__dirname, '../public');
 
@@ -16,8 +16,20 @@ const PATH_PUBLIC = path.resolve(__dirname, '../public');
   // here
   app.use(express.static(PATH_PUBLIC));
 
-  // Programmatic, API routes
+  // Express API routes
   app.use('/', expressRoutes);
+
+  // React Frontend Proxy
+  (() => {
+    const idmProxy = httpProxy.createProxyServer();
+    const idmProxyWS = httpProxy.createProxyServer({ws: true});
+    app.get('/*', (req, res) => {
+      idmProxy.web(req, res, {target: FRONTEND_PROXY_URI});
+    });
+    app.all('/sockjs-node/*', (req, res) => {
+      idmProxyWS.web(req, res, {target: FRONTEND_PROXY_URI});
+    });
+  })();
 })();
 
 const start = () => {

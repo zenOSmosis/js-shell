@@ -107,7 +107,7 @@ class WindowRouteController extends Component {
         const {title} = activeWindow.state;
 
         // Set browser URI bar
-        redirectTo(titleToURI(title));
+        redirectTo(`/app/${titleToURI(title)}`);
         
         setBrowserTitle(title);
       }, 0);
