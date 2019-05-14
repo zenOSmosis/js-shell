@@ -2,6 +2,8 @@
 import defaultApps from 'apps/defaultApps';
 
 import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
+import { initURIRouteHandler } from 'utils/desktop/uriRoutes';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 // TODO: Use a copy of this file, instead
@@ -24,8 +26,12 @@ const startup = () => {
 
     console.warn('TODO: Implement Local Storage');
 
+    // Binds common Desktop events (e.g. Socket connect / disconnect; context menu; etc.)
     registerCommonDesktopEventsHandler();
-  
+    
+    // Listens for URI route updates and takes actions depending on what's been registered
+    initURIRouteHandler();
+
     console.debug('default apps', defaultApps);
   
     // Launch React interface

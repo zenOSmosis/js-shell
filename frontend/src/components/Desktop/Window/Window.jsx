@@ -12,9 +12,10 @@ import ViewTransition from 'components/ViewTransition';
 import Resizable from 'components/Resizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
-import { commonDesktopLinkedState } from 'state/DesktopLinkedState';
+import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE, commonDesktopLinkedState } from 'state/DesktopLinkedState';
 import WindowHeader from './Header';
 import $ from 'jquery';
+import uuidv4 from 'uuid/v4';
 import {
   WindowLifecycleEvents,
   EVT_WINDOW_CREATED,
@@ -57,6 +58,7 @@ const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 // TODO: Get rid of this
 // let zStack = 9999;
 
+
 let windowStack = [];
 
 // TODO: Refactor elsewhere
@@ -66,6 +68,26 @@ export const getWindowStack = () => {
   });
 }
 
+// Handle deactivation of non-active windows
+// Only a single window can be "active" at a time (that is, the focused window)
+(() => {
+  commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+    const {activeWindow} = updatedState;
+
+    if (typeof activeWindow !== 'undefined') {
+      const windowStack = getWindowStack();
+
+      windowStack.forEach((window) => {
+        const isActive = Object.is(activeWindow, window);
+
+        if (!isActive) {
+          window.deactivate();
+        }
+      });
+    }
+  });
+})();
+
 export default class Window extends Component {
   state = {
     title: null,
@@ -73,8 +95,13 @@ export default class Window extends Component {
     // zStack: zStack + 1
   };
 
+  _uuid = null;
+  _isActive = false;
+
   constructor(props) {
     super(props);
+
+    this._uuid = uuidv4();
 
     this.isClosed = false;
 
@@ -168,9 +195,8 @@ export default class Window extends Component {
     return title;
   }
 
-  // TODO: Return time difference from start date
-  getUptime() {
-    return this.startDate;
+  getUUID() {
+    return this._uuid;
   }
 
   _startInteractListening() {
@@ -192,16 +218,18 @@ export default class Window extends Component {
     // TODO: Rework this
     const base = this._base._base;
 
+    // Activate window if touched
     if (base === evt.target ||
       $.contains(base, evt.target)) {
       this.activate();
-    } else {
-      this.deactivate();
     }
   };
 
   activate() {
-    // TODO: Include checking to determine if already active
+    // Check if window is already activated
+    if (this._isActive) {
+      return false;
+    }
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
@@ -210,18 +238,22 @@ export default class Window extends Component {
     $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
 
     commonDesktopLinkedState.setActiveWindow(this);
+    this._isActive = true;
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   deactivate() {
-    // TODO: Include checking to determine if already inactive
+    if (!this._isActive) {
+      return false;
+    }
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
 
     // TODO: Use constant for active
     $(this._resizableBody).removeClass('active'); // Affects draw shadow
     $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
+    this._isActive = false;
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
   }

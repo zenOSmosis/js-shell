@@ -8,45 +8,42 @@ import titleToURI from 'utils/desktop/titleToURI';
 /**
  * Window / URI mapping
  */
-const {setWindowRouteKey, getWindowRouteKey} = (() => {
+const {setWindowRouteKey, getWindowWithRouteKey} = (() => {
   console.warn('TODO: Fix window / URI pairing');
 
   let _windowRouteKeymaps = [];
+  
   const setWindowRouteKey = (window, routeKey) => {
-    const existing = getWindowRouteKey(window);
-    if (!existing) {
-      _windowRouteKeymaps.push({
-        window,
-        routeKey
-      });
+    // Ensure routeKey doesn't already point to an existing window
+    const existing = getWindowWithRouteKey(routeKey);
+    if (existing) {
+      console.warn('Window already exists with route key', routeKey);
+      return;
     }
-  };
-  const getWindowRouteKey = (window) => {
+
+    _windowRouteKeymaps.push({
+      window,
+      routeKey
+    });
+  }
+
+  const getWindowWithRouteKey = (routeKey) => {
     if (!_windowRouteKeymaps.length) {
       return;
     }
-    
-    const keyMap = _windowRouteKeymaps.reduce((a, b) => {
-      if (Object.is(a.window, window)) {
-        return a;
+
+    for (let i = 0; i < _windowRouteKeymaps.length; i++) {
+      const keyMap = _windowRouteKeymaps[i];
+      
+      if (keyMap.routeKey === routeKey) {
+        return keyMap.window;
       }
-      if (Object.is(b.window, window)) {
-        return b;
-      }
-      return undefined;
-    });
-  
-    console.debug('all keymaps:', _windowRouteKeymaps);
-  
-    if (keyMap) {
-      const {routeKey} = keyMap;
-      return routeKey;
     }
   };
 
   return {
     setWindowRouteKey,
-    getWindowRouteKey
+    getWindowWithRouteKey
   };
 })();
 
@@ -80,7 +77,13 @@ class WindowRouteController extends Component {
   componentDidMount() {
     this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, this._handleDesktopLinkedStateUpdate);
 
-    this.handleRouteUpdate();
+    this.handleLocationChange();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.handleLocationChange();
+    }
   }
 
   componentWillUnmount() {
@@ -100,45 +103,45 @@ class WindowRouteController extends Component {
       // TODO: Consider reworking when the active window's title has been set
       // in order to minimize the risk of this happening
       setTimeout(() => {
-        // TODO: Listen to a LinkedState, instead of this
+        // TODO: Listen to a LinkedState, instead of activeWindow.state
         const {title} = activeWindow.state;
 
         // Set browser URI bar
         redirectTo(titleToURI(title));
         
         setBrowserTitle(title);
-
-        console.debug('Active window route key', getWindowRouteKey(activeWindow));
       }, 0);
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      this.handleRouteUpdate();
-    }
-  }
-
-  handleRouteUpdate() {
+  /**
+   * Automatically executed when the browser's URL changes.
+   */
+  handleLocationChange() {
     const {location} = this.props;
 
     if (location) {
+      // TODO: Remove
       console.debug('ROUTE CHANGED', location, this.props.history);
       
       const {key: routeKey} = location;
 
       if (this._activeWindow) {
-        setWindowRouteKey(this._activeWindow, routeKey);
+        // Determine if current location hash points to currently active window
+        const winWithRouteKey = getWindowWithRouteKey(routeKey);
+
+        if (winWithRouteKey) {
+          // If it points to a different window, activate that window
+          if (!Object.is(this._activeWindow, winWithRouteKey)) {
+            winWithRouteKey.activate();
+          }
+        } else {
+          // If it doesn't point to a window, register current location hash to currently active window
+          setWindowRouteKey(this._activeWindow, routeKey);
+        }
+
+        // console.debug('Win with route key', routeKey, getWindowWithRouteKey(routeKey));
       }
-    }
-  }
-
-  _handleDesktopLinkedStateUpdate = (updatedState) => {
-    console.warn('TODO: Handle WindowRouteController DesktopLinkedState update');
-
-    const {activeWindow} = updatedState;
-    if (activeWindow) {
-      this.handleActiveWindowUpdate(activeWindow);
     }
   }
 
@@ -147,6 +150,16 @@ class WindowRouteController extends Component {
     return (
       <div style={{display: 'none'}}></div>
     );
+  }
+
+  /**
+   * "Privatized" as it uses an arrow function.
+   */
+  _handleDesktopLinkedStateUpdate = (updatedState) => {
+    const {activeWindow} = updatedState;
+    if (activeWindow) {
+      this.handleActiveWindowUpdate(activeWindow);
+    }
   }
 }
 

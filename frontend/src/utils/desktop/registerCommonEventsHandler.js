@@ -2,21 +2,7 @@ import socket from 'utils/socket.io';
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 import { EVT_LINKED_STATE_UPDATE, commonDesktopLinkedState } from 'state/DesktopLinkedState';
 
-const onConnect = () => {
-  createDesktopNotification({
-    message: 'Connected to host',
-    description: 'A Socket.io connection has been established to the host machine'
-  });
-};
-
-const onDisconnect = () => {
-  createDesktopNotification({
-    message: 'Disconnected from host',
-    description: 'The Socket.io connection has been dropped from the host machine'
-  });
-};
-
-let isRegistered = false;
+let _isRegistered = false;
 
 /**
  * Common Desktop event handling.
@@ -25,15 +11,17 @@ let isRegistered = false;
  * State, etc.
  */
 const registerCommonEventsHandler = () => {
-  if (isRegistered) {
+  if (_isRegistered) {
     console.warn('Desktop Common Events Handler has already been registered');
     return;
   }
 
+  console.debug('Registering Common Desktop Events handling');
+
   // Socket.io events
   (() => {
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);  
+    socket.on('connect', onSocketConnect);
+    socket.on('disconnect', onSocketDisconnect);  
   })();
 
   // DesktopLinkedState events
@@ -57,10 +45,33 @@ const registerCommonEventsHandler = () => {
           }
         }
       })();
+
+      // URI location switching
+      (() => {
+        const { redirectLocation } = updatedState;
+
+        if (typeof redirectLocation !== 'undefined') {
+          console.warn('TODO: Handle redirect location!!!!', redirectLocation);
+        }
+      })();
     });
   })();
 
-  isRegistered = true;
+  _isRegistered = true;
+};
+
+const onSocketConnect = () => {
+  createDesktopNotification({
+    message: 'Connected to host',
+    description: 'A Socket.io connection has been established to the host machine'
+  });
+};
+
+const onSocketDisconnect = () => {
+  createDesktopNotification({
+    message: 'Disconnected from host',
+    description: 'The Socket.io connection has been dropped from the host machine'
+  });
 };
 
 export default registerCommonEventsHandler;

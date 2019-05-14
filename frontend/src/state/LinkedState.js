@@ -205,12 +205,13 @@ export default class LinkedState extends EventEmitter {
   }
 
   /**
-   * Sets a common state across all shared linked state instances.
+   * Sets a common state across all shared LinkedState instances.
    * 
-   * @param {*} updatedState 
-   * @param {*} onSet
+   * @param {object} updatedState 
+   * @param {function} onSet [default = null] Optional callback to be
+   * performed after state has been updated
    */
-  setState(updatedState = {}, onSet) {
+  setState(updatedState = {}, onSet = null) {
     mlscs.setSharedState(this, {
       updatedState,
       meta: {

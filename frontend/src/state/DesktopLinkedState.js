@@ -70,6 +70,12 @@ export default class DesktopLinkedState extends LinkedState {
     }
   }
 
+  getActiveWindow() {
+    const {activeWindow} = this.getState();
+
+    return activeWindow;
+  }
+
   /**
    * Sets the Desktop's background URI.
    *
