@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon, Dropdown } from 'antd';
 import { Menu, MenuDivider, MenuItem, SubMenu } from 'components/Menu';
 import redirectTo from 'utils/desktop/redirectTo';
+import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import './style.css';
 
 // TODO: Refactor accordingly
@@ -156,7 +157,7 @@ const _PROTO_MENUS = (() => {
   return _PROTO_MENUS;
 })();
 
-export default class Menubar extends Component {
+class Menubar extends Component {
   state = {
     activeIdx: null
   };
@@ -223,3 +224,11 @@ export default class Menubar extends Component {
     );
   }
 }
+
+export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
+  const {activeWindow} = updatedState;
+
+  if (activeWindow) {
+    console.warn('TODO: Handle Menubar app update for active window', activeWindow);
+  }
+});
