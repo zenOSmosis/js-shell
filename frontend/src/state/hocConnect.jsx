@@ -37,7 +37,8 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
       this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this.handleUpdatedState);
 
       const state = this._linkedStateInstance.getState();
-      // Set the state, filtered if necessary
+
+      // Set initial state
       this.handleUpdatedState(state);
     }
 
@@ -64,9 +65,7 @@ const hocConnect = (WrappedComponent, LinkedStateExtension, stateUpdateFilter = 
       // ... and renders the wrapped component with the fresh data!
       // Notice that we pass through any additional props
       return <WrappedComponent
-        // data={this.state.data}
         {...passedProps}
-      // ref={ c => this._wrappedComponent = c }
       />;
     }
   };
