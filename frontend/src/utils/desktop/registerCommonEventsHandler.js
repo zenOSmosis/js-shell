@@ -45,15 +45,6 @@ const registerCommonEventsHandler = () => {
           }
         }
       })();
-
-      // URI location switching
-      (() => {
-        const { redirectLocation } = updatedState;
-
-        if (typeof redirectLocation !== 'undefined') {
-          console.warn('TODO: Handle redirect location!!!!', redirectLocation);
-        }
-      })();
     });
   })();
 

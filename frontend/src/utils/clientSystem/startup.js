@@ -2,7 +2,6 @@
 import defaultApps from 'apps/defaultApps';
 
 import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
-import { initURIRouteHandler } from 'utils/desktop/uriRoutes';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -28,9 +27,6 @@ const startup = () => {
 
     // Binds common Desktop events (e.g. Socket connect / disconnect; context menu; etc.)
     registerCommonDesktopEventsHandler();
-    
-    // Listens for URI route updates and takes actions depending on what's been registered
-    initURIRouteHandler();
 
     console.debug('default apps', defaultApps);
   
