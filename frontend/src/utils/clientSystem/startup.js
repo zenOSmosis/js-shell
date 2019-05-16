@@ -18,7 +18,7 @@ let hasStarted = false;
  */
 const startup = () => {
   if (hasStarted) {
-    console.warn('System has already started');
+    console.warn('Client system has already started');
     return;
   } else {
     console.debug('Starting client system');

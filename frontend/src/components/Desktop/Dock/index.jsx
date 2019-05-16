@@ -1,53 +1,14 @@
-// import Desktop from '../Desktop';
 import React, { Component } from 'react';
 import ViewTransition from 'components/ViewTransition';
 import Image from 'components/Image';
-import AppConfigLinkedState from 'state/AppConfigLinkedState';
 import { Tooltip } from 'antd';
+import hocConnect from 'state/hocConnect';
+import AppConfigLinkedState from 'state/AppConfigLinkedState';
+// import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
 
-export default class Dock extends Component {
-  state = {
-    appConfigs: []
-  };
-
-  _desktop = null;
+class Dock extends Component {
   _appConfigLinkedState = null;
-
-  constructor() {
-    super();
-
-    this._appConfigLinkedState = new AppConfigLinkedState();
-  }
-
-  componentDidMount() {
-    const { desktop } = this.props;
-
-    /*
-    if (!(desktop instanceof Desktop)) {
-      throw new Error('desktop must be an instance of Desktop');
-    }
-    */
-
-    this._desktop = desktop;
-
-    // TODO: Refactor
-    (() => {
-      const appConfigs = this._appConfigLinkedState.getAppConfigs();
-
-      console.debug('current run configs', appConfigs);
-
-      this.setState({
-        appConfigs
-      });
-
-      /*
-      appConfigs.forEach(appConfig => {
-        desktop.createWindow(appConfig._desktopWindows[0]);
-      });
-      */
-    })();
-  }
 
   handleDockItemClick(appConfig) {
     const isRunning = appConfig.getIsRunning();
@@ -61,8 +22,9 @@ export default class Dock extends Component {
   }
 
   render() {
-    const { className, desktop, ...propsRest } = this.props;
-    const { appConfigs } = this.state;
+    const { className, appConfigs: propsAppConfigs, ...propsRest } = this.props;
+
+    const appConfigs = propsAppConfigs || [];
 
     return (
       <div
@@ -108,3 +70,13 @@ export default class Dock extends Component {
     );
   }
 }
+
+export default hocConnect(Dock, AppConfigLinkedState, (updatedState) => {
+  const {appConfigs} = updatedState;
+
+  if (appConfigs) {
+    return {
+      appConfigs
+    };
+  }
+});

@@ -30,7 +30,7 @@ export default class Desktop extends Component {
               {
                 // Top Panel
               }
-              <Panel desktop={this} />
+              <Panel />
 
               <Notifications />
 
@@ -63,7 +63,7 @@ export default class Desktop extends Component {
               {
                 // Bottom Dock
               }
-              <Dock desktop={this} />
+              <Dock />
 
             </Background>
           </ContextMenu>
