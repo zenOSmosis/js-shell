@@ -1,5 +1,6 @@
 const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'request-disconnect';
 const SOCKET_API_ROUTE_ECHO = 'echo';
+const SOCKET_API_ROUTE_ENV = 'env';
 const SOCKET_API_ROUTE_DEBUG_ERROR = 'debug:error';
 const SOCKET_API_ROUTE_PING = 'host:ping'; // ping is a reserved Socket.io word
 const SOCKET_API_ROUTE_FILESYSTEM = 'fileSystem';
@@ -17,6 +18,7 @@ const SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS = 'wallpapers:fetch-wall
 module.exports = {
   SOCKET_API_ROUTE_REQUEST_DISCONNECT,
   SOCKET_API_ROUTE_ECHO,
+  SOCKET_API_ROUTE_ENV,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,

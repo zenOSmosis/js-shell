@@ -1,3 +1,5 @@
+require('./process.js');
+
 const expressServer = require('./servers/expressServer');
 const socketIO = require('./servers/socket.io-server');
 

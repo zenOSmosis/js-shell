@@ -1,4 +1,5 @@
 const echo = require('./echo');
+const env = require('./env');
 const ping = require('./ping');
 const fileSystem = require('./fileSystem');
 const systemTime = require('./systemTime');
@@ -13,6 +14,7 @@ const routes = require('./routes');
 
 const {
   SOCKET_API_ROUTE_ECHO,
+  SOCKET_API_ROUTE_ENV,
   SOCKET_API_ROUTE_REQUEST_DISCONNECT,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
@@ -43,6 +45,7 @@ const initSocket = (socket) => {
   // socket = _convertSocket(socket);
 
   socket.on(SOCKET_API_ROUTE_ECHO, echo);
+  socket.on(SOCKET_API_ROUTE_ENV, env);
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);

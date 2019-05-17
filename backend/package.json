@@ -4,7 +4,7 @@
   "description": "A web-based program launcher, with GPU selector, for Linux.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon index.js -L",
     "test": "jest backend/tests"
   },
   "author": "Jeremy Harris (zenOSmosis)",

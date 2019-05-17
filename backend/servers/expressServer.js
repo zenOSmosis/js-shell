@@ -33,7 +33,7 @@ const PATH_PUBLIC = path.resolve(__dirname, '../public');
 })();
 
 const start = () => {
-  console.log(`Starting Express Server on *:${HTTP_LISTEN_PORT}`)
+  console.log(`Starting Express Server on *:${HTTP_LISTEN_PORT}`);
 
   http.listen(HTTP_LISTEN_PORT, () => {
     console.log(`Express Server listening on *:${HTTP_LISTEN_PORT}`);
