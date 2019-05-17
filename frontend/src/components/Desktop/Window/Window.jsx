@@ -12,7 +12,7 @@ import ViewTransition from 'components/ViewTransition';
 import Resizable from 'components/Resizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
-import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE, commonDesktopLinkedState } from 'state/DesktopLinkedState';
+import /* DesktopLinkedState, */ { EVT_LINKED_STATE_UPDATE, commonDesktopLinkedState } from 'state/DesktopLinkedState';
 import WindowHeader from './Header';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';

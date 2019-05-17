@@ -237,8 +237,8 @@ export default class LinkedState extends EventEmitter {
   /**
    * Broadcasts an events across all shared linked state instances.
    * 
-   * @param {*} updatedState 
-   * @param {*} onSet 
+   * @param {string} eventName 
+   * @param {any} args
    */
   broadcast(eventName, ...args) {
     mlscs.broadcast(this, eventName, ...args);
