@@ -92,7 +92,7 @@
   background-color: #5AC05A !important;
 }
 
-.zd-window .zd-window-body {
+.zd-window .zd-window-body-wrapper {
   flex: auto;
   overflow: hidden;
   text-align: center;

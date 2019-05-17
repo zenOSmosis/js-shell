@@ -381,7 +381,7 @@ export default class Window extends Component {
    */
   setBodySize(width, height) {
     this._callResize(() => {
-      $(this.subBody).css({
+      $(this.windowBody).css({
         width: width,
         height: height
       });
@@ -415,7 +415,7 @@ export default class Window extends Component {
   */
 
   getCalculatedBodySize() {
-    const bodyCalcStyle = window.getComputedStyle(this.windowBody);
+    const bodyCalcStyle = window.getComputedStyle(this.windowBodyWrapper);
 
     const width = parseInt(bodyCalcStyle.getPropertyValue('width'));
     const height = parseInt(bodyCalcStyle.getPropertyValue('height'));
@@ -433,13 +433,13 @@ export default class Window extends Component {
     setTimeout(() => {
       // console.debug('window resize data', resizeData);
 
-      // const $windowBody = $(this.windowBody);
+      // const $windowBodyWrapper = $(this.windowBodyWrapper);
 
       const bodyCalcSize = this.getCalculatedBodySize();
       /*
       const bodyCalcSize = {
-        width: $windowBody.width(),
-        height: $windowBody.height()
+        width: $windowBodyWrapper.width(),
+        height: $windowBodyWrapper.height()
       };
       */
       this.setBodySize(bodyCalcSize.width, bodyCalcSize.height);
@@ -553,11 +553,12 @@ export default class Window extends Component {
                       // TODO: Apply pixel size to window body
                     }
                     <div
-                      ref={c => this.windowBody = c}
-                      className="zd-window-body"
+                      ref={c => this.windowBodyWrapper = c}
+                      className="zd-window-body-wrapper"
                     >
                       <Cover
-                        ref={c => this.subBody = c}
+                        ref={c => this.windowBody = c}
+                        className="zd-window-body"
                         style={bodyStyle}
                       >
                         {
