@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Scrollable from 'components/Scrollable';
 import socketQuery, { socketAPIRoutes } from 'utils/socketQuery';
 
 export default class Environment extends Component {
@@ -26,7 +27,7 @@ export default class Environment extends Component {
     const { remoteEnv } = this.state;
 
     return (
-      <div style={{ textAlign: 'left' }}>
+      <Scrollable style={{ textAlign: 'left' }}>
         <div>
           <div>Local</div>
           {
@@ -52,7 +53,7 @@ export default class Environment extends Component {
             })
           }
         </div>
-      </div>
+      </Scrollable>
     );
   }
 }
