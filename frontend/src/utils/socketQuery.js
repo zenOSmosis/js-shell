@@ -1,4 +1,5 @@
 import socket from './socket.io';
+import socketAPIRoutes from './socketAPIRoutes';
 
 const socketQuery = (eventName, requestData = null) => {
   return new Promise((resolve, reject) => {
@@ -24,3 +25,6 @@ const socketQuery = (eventName, requestData = null) => {
 };
 
 export default socketQuery;
+export {
+  socketAPIRoutes
+};
