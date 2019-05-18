@@ -1,4 +1,8 @@
 const hostConfig = {
+  EXPRESS_CUSTOM_RESPONSE_HEADERS: {
+    ['X-Powered-By']: 'zenOSmosis'
+  },
+
   HTTP_LISTEN_PORT: 3001,
   FRONTEND_PROXY_URI: 'http://127.0.0.1:3000',
 
