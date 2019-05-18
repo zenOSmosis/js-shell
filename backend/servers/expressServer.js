@@ -1,4 +1,6 @@
 const express = require('express');
+const session = require('express-session');
+const requestIp = require('request-ip');
 const app = express();
 const path = require('path');
 const http = require('http').Server(app);
@@ -17,6 +19,36 @@ app.all('*', (req, res, next) => {
   }
   next();
 });
+
+// Session management
+// @see https://www.npmjs.com/package/express-session
+(() => {
+  // Number of proxies Express is behind
+  // app.set('trust proxy', 1) // trust first proxy
+  
+  app.use(session({
+    secret: 'keyboard cat', // TODO: Use centralized config
+    // store: // TODO: Handle store; currently defaults to MemoryStore
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false // TODO: Set to true if using secure session
+    }
+  }), (req, res, next) => {
+    console.log(req.session);
+    next();
+  });
+})();
+
+// Middleware for obtaining client's real IP address
+// @see https://stackfame.com/get-ip-address-node
+(() => {
+  // you can override which attirbute the ip will be set on by
+  // passing in an options object with an attributeName
+  app.use(requestIp.mw({ 
+    attributeName : 'clientIP'
+  }));
+})();
 
 // Static routes
 // Note: The React frontend Shell application's public files are not located

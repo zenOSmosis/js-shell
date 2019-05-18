@@ -1,6 +1,9 @@
 const {Router} = require('express');
 const router = new Router();
 
+const client = require('./client');
+router.use('/client', client);
+
 const desktopApps = require('./desktopApps');
 router.use('/desktopApps', desktopApps);
 
