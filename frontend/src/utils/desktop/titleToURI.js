@@ -5,7 +5,7 @@
  * 
  * @param {string} title 
  */
-const titleToURI = (title) => {
+const titleToURI = (title) => {  
   return title.split(' ').join('-');
 };
 

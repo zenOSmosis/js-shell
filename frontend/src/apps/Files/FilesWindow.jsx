@@ -138,7 +138,7 @@ export default class FilesWindow extends Component {
                 }
                 <div>
                   <div>
-                    Block Devices
+                    Block Devicessss
                   </div>
                   <Tree>
                     <TreeNode

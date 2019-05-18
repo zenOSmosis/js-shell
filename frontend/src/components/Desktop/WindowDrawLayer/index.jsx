@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Center from 'components/Center';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 
+import {hot} from 'react-hot-loader';
+
 let _isInstantiated = false;
 
 /**
@@ -12,7 +14,8 @@ let _isInstantiated = false;
 class WindowDrawLayer extends Component {
   constructor(props = {}) {
     if (_isInstantiated) {
-      throw new Error('WindowDrawLayer is already instantiated');
+      console.warn('WindowDrawLayer is already instantiated');
+      return;
     }
 
     super(props);
@@ -45,7 +48,7 @@ class WindowDrawLayer extends Component {
 }
 
 // @see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/withRouter.md
-export default hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
+const ConnectedComponent = hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
   const {launchedAppConfigs} = updatedState;
 
   if (launchedAppConfigs) {
@@ -54,3 +57,5 @@ export default hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) =>
     };
   }
 });
+
+export default hot(module)(ConnectedComponent);

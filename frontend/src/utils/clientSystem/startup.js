@@ -45,12 +45,14 @@ const startup = () => {
     
     // Confirm before trying to unload
     // TODO: Move to shutdown routine
+    /*
     (() => {
       window.onbeforeunload = () => {
         return 'Are you sure you wish to shut down?';
       };
     })();
-  
+    */
+ 
     hasStarted = true;
   }
 };
