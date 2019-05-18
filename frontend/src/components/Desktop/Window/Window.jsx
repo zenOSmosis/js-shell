@@ -616,6 +616,8 @@ export default class Window extends Component {
   }
 
   close() {
+    const {appConfig} = this.props;
+
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
       return;
@@ -627,15 +629,14 @@ export default class Window extends Component {
       this._stopInteractListening();
     }
 
-    // TODO: Rework base parsing
-    // TODO: Remove element from DOM, completely
-    const base = this._base._base;
-    base.style.display = 'none';
-
     this.isClosed = true;
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
-    console.warn('TODO: Handle window close and detach event');
+    console.warn('TODO: Handle window close event detach', {
+      appConfig
+    });
+
+    appConfig.close();
   }
 }

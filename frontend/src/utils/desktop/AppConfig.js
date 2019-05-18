@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { desktopLinkedState } from './.common';
 import AppConfigLinkedState from 'state/AppConfigLinkedState';
+import uuidv4 from 'uuid/v4';
 
 /**
  * AppConfig controls components, such as the Dock, and places menus
@@ -19,9 +20,12 @@ export default class AppConfig extends EventEmitter {
   _desktopWindows = [];
   _defaultIconSrc = null;
   _isRunning = false;
+  _uuid = null;
 
   constructor(runProps) {
     super();
+
+    this._uuid = uuidv4();
 
     const { title, iconSrc, mainWindow } = runProps;
 
@@ -51,6 +55,14 @@ export default class AppConfig extends EventEmitter {
 
   getTitle() {
     return this._title;
+  }
+
+  /**
+   * Note, this UUID is set dynamically during run-time and will not be
+   * consistent across sessions or native reloads.
+   */
+  getUUID() {
+    return this._uuid;
   }
 
   /**
@@ -98,11 +110,20 @@ export default class AppConfig extends EventEmitter {
       console.warn('App is already running');
       return;
     }
+
     this._isRunning = true;
 
     desktopLinkedState.registerLaunchedAppConfig(this);
   }
+
+  close() {
+    if (!this._isRunning) {
+      console.warn('App is not already running');
+      return;
+    }
+    
+    this._isRunning = false;
+
+    desktopLinkedState.unregisterLaunchedAppConfig(this);
+  }
 }
-
-
-
