@@ -1,13 +1,50 @@
 import React, { Component } from 'react';
+import LinkedStateComponent from 'state/LinkedStateComponent';
 import { Menu, MenuItem, MenuItemGroup, SubMenu } from 'components/Menu';
 import { Icon } from 'antd';
 import uuidv4 from 'uuid/v4';
-import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
+
+// Binds the context menu to DesktopLinkedState
+export default class LinkedStateContextMenu extends LinkedStateComponent {
+  state = {
+    isTrapping: false
+  };
+
+  constructor() {
+    super(DesktopLinkedState);
+  }
+
+  linkedStateUpdateFilter(updatedState) {
+    const {contextMenuIsTrapping: isTrapping} = updatedState;
+
+    let filteredState = {};
+
+    if (typeof isTrapping !== 'undefined') {
+      filteredState = {
+        isTrapping
+      };
+    }
+    
+    if (filteredState) {
+      return filteredState;
+    }
+  }
+
+
+  render() {
+    const {isTrapping} = this.state;
+    
+    return (
+      <ContextMenu isTrapping={isTrapping} />
+    )
+  }
+}
 
 class ContextMenu extends Component {
   state = {
-    isVisible: false,
+    isVisible: false
   };
 
   _uuidv4 = null;
@@ -99,8 +136,8 @@ class ContextMenu extends Component {
   render() {
     const {
         children,
-        className,
         isTrapping,
+        className,
         ...propsRest
     } = this.props;
     
@@ -118,6 +155,9 @@ class ContextMenu extends Component {
         {
           isVisible &&
           <div ref={ref => { this._overlay = ref }} className="zd-context-menu-overlay">
+            {
+              // TODO: Replace hardcoded menu
+            }
             <Menu
                 onClick={this._handleClick}
                 // style={{ width: 256 }}
@@ -160,18 +200,3 @@ class ContextMenu extends Component {
     );
   };
 }
-
-// Binds the context menu to DesktopLinkedState
-const ConnectedContextMenu = (() => {
-  return hocConnect(ContextMenu, DesktopLinkedState, (updatedState) => {
-    const {contextMenuIsTrapping: isTrapping} = updatedState;
-   
-    const filteredState = {
-      isTrapping
-    };
-
-    return filteredState;
-  });
-})();
-
-export default ConnectedContextMenu;
