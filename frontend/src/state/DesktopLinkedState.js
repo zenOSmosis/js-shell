@@ -41,6 +41,9 @@ export default class DesktopLinkedState extends LinkedState {
 
   /**
    * Registers a launched Desktop app.
+   * 
+   * Note, technically, this launches an app, however it's best to call
+   * appConfig.launch().
    *
    * @param {AppConfig} appConfig 
    */
@@ -48,6 +51,30 @@ export default class DesktopLinkedState extends LinkedState {
     const {launchedAppConfigs} = this.getState();
 
     launchedAppConfigs.push(appConfig);
+
+    this.setState({
+      launchedAppConfigs
+    });
+  }
+
+  /**
+   * Unregisters a launched Desktop app.
+   * 
+   * Note, technically, this closes an app, however it's best to call
+   * appConfig.launch().
+   * 
+   * @param {*} appConfig 
+   */
+  unregisterLaunchedAppConfig(appConfig) {
+    let {launchedAppConfigs} = this.getState();
+
+    const appConfigUUID = appConfig.getUUID();
+
+    launchedAppConfigs = launchedAppConfigs.filter((appConfig) => {
+      const testUUID = appConfig.getUUID();
+
+      return appConfigUUID !== testUUID;
+    });
 
     this.setState({
       launchedAppConfigs
