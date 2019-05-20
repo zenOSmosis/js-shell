@@ -1,6 +1,6 @@
 import config from '../config';
 // import Window from 'components/Desktop/Window';
-// import AppConfig from '../utils/desktop/AppConfig';
+// import App from '../utils/desktop/createApp';
 import hocConnect from './hocConnect';
 import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
 import uuidv4 from 'uuid/v4';
@@ -32,7 +32,7 @@ export default class DesktopLinkedState extends LinkedState {
       redirectLocation: '/',
 
       // A list of currently running apps
-      launchedAppConfigs: [],
+      launchedApps: [],
 
       // The background image location of the Desktop
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI
@@ -43,17 +43,17 @@ export default class DesktopLinkedState extends LinkedState {
    * Registers a launched Desktop app.
    * 
    * Note, technically, this launches an app, however it's best to call
-   * appConfig.launch().
+   * app.launch().
    *
-   * @param {AppConfig} appConfig 
+   * @param {App} app 
    */
-  registerLaunchedAppConfig(appConfig) {
-    const {launchedAppConfigs} = this.getState();
+  registerLaunchedApp(app) {
+    const {launchedApps} = this.getState();
 
-    launchedAppConfigs.push(appConfig);
+    launchedApps.push(app);
 
     this.setState({
-      launchedAppConfigs
+      launchedApps
     });
   }
 
@@ -61,23 +61,23 @@ export default class DesktopLinkedState extends LinkedState {
    * Unregisters a launched Desktop app.
    * 
    * Note, technically, this closes an app, however it's best to call
-   * appConfig.launch().
+   * app.launch().
    * 
-   * @param {*} appConfig 
+   * @param {*} app 
    */
-  unregisterLaunchedAppConfig(appConfig) {
-    let {launchedAppConfigs} = this.getState();
+  unregisterLaunchedApp(app) {
+    let {launchedApps} = this.getState();
 
-    const appConfigUUID = appConfig.getUUID();
+    const appUUID = app.getUUID();
 
-    launchedAppConfigs = launchedAppConfigs.filter((appConfig) => {
-      const testUUID = appConfig.getUUID();
+    launchedApps = launchedApps.filter((testApp) => {
+      const testUUID = testApp.getUUID();
 
-      return appConfigUUID !== testUUID;
+      return appUUID !== testUUID;
     });
 
     this.setState({
-      launchedAppConfigs
+      launchedApps
     });
   }
 

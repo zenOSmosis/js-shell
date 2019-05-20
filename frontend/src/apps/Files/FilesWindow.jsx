@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Window from 'components/Desktop/Window';
 import Full from 'components/Full';
 import Icon from 'components/Icon';
@@ -50,7 +50,7 @@ export default class FilesWindow extends Component {
 
   openPath(pathName) {
     console.debug('rendering path name', pathName);
-    // appConfig.addWindow(<Window title="Test Window" />);
+    // app.addWindow(<Window title="Test Window" />);
     this.setState({
       renderFilePath: pathName
     });
@@ -107,7 +107,7 @@ export default class FilesWindow extends Component {
 
     return (
       <Window
-        appConfig={appConfig}
+        app={app}
         // title={this.state.pathName}
         title={this.state.pathName}
         toolbarRight={
@@ -130,9 +130,9 @@ export default class FilesWindow extends Component {
         }
       >
         <Layout className="FileNavigator">
+        yo
           <Layout>
             {
-              /*
               <Sider className="LeftColumn">
                 <Full style={{overflow: 'auto'}}>
                   {
@@ -155,7 +155,6 @@ export default class FilesWindow extends Component {
                   </div>
                 </Full>
               </Sider>
-              */
             }
             <Content className="Main">
               <Full style={{overflow: 'auto', textAlign: 'left'}}>

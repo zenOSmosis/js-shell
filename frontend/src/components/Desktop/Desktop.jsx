@@ -5,15 +5,15 @@ import './style.css';
 import './style-scrollbar.css';
 
 import React, { Component } from 'react';
-// import Panel from './Panel';
+import Panel from './Panel';
 import Dock from './Dock';
-// import Notifications from './Notifications';
+import Notifications from './Notifications';
 import WindowDrawLayer from './WindowDrawLayer';
-// import WindowRouteController from './WindowRouteController';
 import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 // import URIRedirector from './URIRedirector';
+// import AppRouteController from './AppRouteController';
 // import { BrowserRouter as Router } from 'react-router-dom';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
@@ -22,34 +22,22 @@ import DesktopBackground from './DesktopBackground';
 export default class Desktop extends Component {
   render() {
     return (
-
-      // <div>
-
-      // <URIRedirector />
-
       <FullViewport className="zd-desktop">
-        
-          <ContextMenu>
-        
-            
-              <DesktopBackground>
-            
-            
-          
-          
+
+        {
+          // <URIRedirector /> 
+        }
+
+        <ContextMenu>
+
+          <DesktopBackground>
+
             {
               // Top Panel
             }
+            <Panel />
 
-            {
-              // <Panel />
-            }
-
-            {
-              // <Notifications />
-            }
-            
-            
+            <Notifications />
 
             {
               // TODO: Implement DrawersLayer as a separate component
@@ -69,37 +57,25 @@ export default class Desktop extends Component {
 
             {
               // Binds windows to URI location; sets page title
+              // <AppRouteController />
             }
-            {
-              // <WindowRouteController />
-            }
-            
-            
+
+
             {
               // Renders windows
             }
             <WindowDrawLayer />
-            
-            
 
             {
               // Bottom Dock
             }
 
-            
             <Dock />
-            
 
-            
-            
-              </DesktopBackground>
-            
-              
-            
+          </DesktopBackground>
 
-            
-              </ContextMenu>
-            
+        </ContextMenu>
+
       </FullViewport>
     );
   }

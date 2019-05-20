@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Window from 'components/Desktop/Window';
 import IFrame from 'components/IFrame';
 import { Layout, Header, Content } from 'components/Layout';
@@ -14,7 +14,7 @@ export default class DocsWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
       >
         <Layout>
           <Header style={{ padding: 0, margin: 0, minHeight: 0, height: 0, overflow: 'visible' }}>

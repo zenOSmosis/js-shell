@@ -74,8 +74,8 @@ class MasterLinkedStateControllerSingleton extends EventEmitter {
       });
     }
 
+    // TODO: Debug if this is necessary (refer to initialDefaultState above)
     if (isOriginalInstance) {
-      console.debug('aabbcc', initialDefaultState);
       linkedState.setState(initialDefaultState);
     }
   }

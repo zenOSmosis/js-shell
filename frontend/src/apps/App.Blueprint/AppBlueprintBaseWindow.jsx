@@ -2,7 +2,7 @@
 // Path for VSCode icons:  file:///usr/share/code/resources/app/out/vs/workbench/browser/parts/editor/media
 
 import React, { Component } from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Box3D, { BOX3D_SIDES } from 'components/Box3D';
 import Cover from 'components/Cover';
 // import Full from 'components/Full';
@@ -89,7 +89,7 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
       >
         <SplitEditor />
         
@@ -121,7 +121,7 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
         toolbarRight={
           <Popover
             // overlayStyle={{color: '#000'}}

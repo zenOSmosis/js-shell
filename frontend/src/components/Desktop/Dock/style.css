@@ -16,6 +16,11 @@
   min-width: 25px;
   max-width: 90%;
   height: 100%;
+  max-width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 
 .zd-desktop-dock .zd-desktop-dock-items button {

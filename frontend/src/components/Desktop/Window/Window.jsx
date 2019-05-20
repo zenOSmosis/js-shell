@@ -58,7 +58,6 @@ const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 // TODO: Get rid of this
 // let zStack = 9999;
 
-
 let windowStack = [];
 
 // TODO: Refactor elsewhere
@@ -138,11 +137,17 @@ export default class Window extends Component {
         return;
       }
       
-      // Set Window title either from props or from appConfig
-      // TODO: Remove appConfig here; use passed props
-      const { appConfig, title: propsTitle } = this.props;
-      const title = (appConfig ? appConfig.getTitle() : propsTitle);
-      this.setTitle(title);
+      const { app } = this.props;
+      if (app) {
+        app.setRealWindow(this);
+      }
+      
+      // Set Window title either from props or from app
+      // TODO: Remove app here; use passed props
+      // const { app, title: propsTitle } = this.props;
+      // const title = (app ? app.getTitle() : propsTitle);
+      // this.setTitle(title);
+      this.autosetTitle();
 
       // Listen for touch / mouse
       this._startInteractListening();
@@ -162,6 +167,8 @@ export default class Window extends Component {
       return;
     }
 
+    this.autosetTitle();
+
     // TODO: Rework this
     const base = this._base._base;
 
@@ -175,9 +182,27 @@ export default class Window extends Component {
     this.close();
   }
 
+  /**
+   * Automatically sets title based on props or app.
+   */
+  autosetTitle() {
+    const { title: existingTitle } = this.state;
+    const { app, title: propsTitle } = this.props;
+    const newTitle = (app ? app.getTitle() : propsTitle);
+    if (newTitle !== existingTitle) {
+      this.setTitle(newTitle);
+    }
+  }
+
   setTitle(title) {
     if (!title) {
       console.warn('Ignoring empty title');
+      return;
+    }
+
+    const {title: existingTitle} = this.state;
+    if (title === existingTitle) {
+      console.warn('Title has not changed');
       return;
     }
 
@@ -279,7 +304,7 @@ export default class Window extends Component {
 
     // TODO: display: block
 
-    // TODO: Handle appropriately
+    // TODO: Handle accordingly
     alert('unhide');
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
@@ -310,7 +335,7 @@ export default class Window extends Component {
   async maximize() {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
-    // TODO: Handle appropriately
+    // TODO: Handle accordingly
     alert('maximize');
 
     // Lock:
@@ -350,9 +375,10 @@ export default class Window extends Component {
   /**
    * Sets the outer window chrome (including resizable layer) width & height.
    * 
-   * @param {number} width 
-   * @param {number} height 
+   * @param {number | string} width 
+   * @param {number | string} height 
    */
+  /*
   setOuterSize(width, height) {
     $(this.moveable).css({
       width,
@@ -372,36 +398,25 @@ export default class Window extends Component {
 
     // this.setBodySize('100%', bodyHeight);
   }
+  */
 
   /**
    * Sets the inner window body content width & height.
    * 
-   * @param {number} width 
-   * @param {number} height 
+   * @param {number | string} width 
+   * @param {number | string} height 
    */
   setBodySize(width, height) {
-    this._callResize(() => {
-      $(this.windowBody).css({
-        width: width,
-        height: height
-      });
-    });
-  }
-
-  _callResize(resizeHandler) {
-    const { onWindowResize } = this.props;
+    // const { onWindowResize } = this.props;
 
     // this.bodyCover.setIsVisible(true);
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
-
-    resizeHandler();
-
-    if (typeof onWindowResize === 'function') {
-      onWindowResize({
-        bodySize: this.getCalculatedBodySize()
-      });
-    }
+    
+    $(this.windowBody).css({
+      width: width,
+      height: height
+    });
 
     // this.bodyCover.setIsVisible(false);
 
@@ -429,7 +444,7 @@ export default class Window extends Component {
   /**
    * Called when the <Resizable /> layer has been resized.
    */
-  _handleTouchResize = (resizeData) => {
+  _handleResize = (resizeData) => {
     setTimeout(() => {
       // console.debug('window resize data', resizeData);
 
@@ -453,7 +468,7 @@ export default class Window extends Component {
 
   render() {
     let {
-      appConfig,
+      app,
       children,
       className,
       description,
@@ -464,7 +479,7 @@ export default class Window extends Component {
       subToolbar,
       bodyStyle,
       title: propsTitle,
-      onWindowResize,
+      // onWindowResize,
       minWidth,
       minHeight,
       ...propsRest
@@ -501,14 +516,6 @@ export default class Window extends Component {
         style={{ position: 'absolute', width: 0, height: 0 }}
         effect={null}
       >
-        {
-          /*
-          <Draggable
-            scale={1}
-          >
-          */
-        }
-
         <Moveable
           ref={c => this.moveable = c}
         // initialX={...}
@@ -518,7 +525,7 @@ export default class Window extends Component {
 
           <Resizable
             ref={c => this._resizable = c}
-            onResize={this._handleTouchResize}
+            onResize={this._handleResize}
             moveableComponent={this.moveable}
             minWidth={minWidth}
             minHeight={minHeight}
@@ -581,14 +588,6 @@ export default class Window extends Component {
                       </Cover>
                     </div>
 
-                    <div>
-                      {
-                        /*
-                        [bottom]
-                        */
-                      }
-                    </div>
-
                   </div>
               </StackingContext>
             </Cover>
@@ -604,19 +603,12 @@ export default class Window extends Component {
           </Resizable>
           </ContextMenu>
         </Moveable>
-
-        {
-          /*
-          </Draggable>
-          */
-        }
-
       </ViewTransition>
     );
   }
 
   close() {
-    const {appConfig} = this.props;
+    const {app} = this.props;
 
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
@@ -634,9 +626,9 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close event detach', {
-      appConfig
+      app
     });
 
-    appConfig.close();
+    app.close();
   }
 }

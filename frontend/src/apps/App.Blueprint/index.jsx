@@ -1,3 +1,3 @@
-import appConfig from './appConfig';
+import app from './app';
 
-export default appConfig;
+export default app;

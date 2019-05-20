@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Button from 'components/Button';
 import Center from 'components/Center';
 import Window from 'components/Desktop/Window';
 import Icon from 'components/Icon';
+import {Grid, GridItem} from 'components/Grid';
 import ConnectedClients from './subPanes/ConnectedClients';
 import DesktopBackground from './subPanes/DesktopBackground';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';
@@ -30,24 +31,22 @@ class MainPane extends Component {
 
     return (
       <Center style={{overflow: 'auto'}}>
-        <div>
-          <h1>NG</h1>
-
+        <Grid>
           {
             subViews.map((subView, idx) => {
               const {title} = subView;
 
               return (
-                <div
+                <GridItem
                   key={idx}
-                  style={{ width: 80, height: 80, display: 'inline-block' }}
+                  style={{ width: 100, height: 100 }}
                 >
                   <Icon title={title} onClick={(evt) => settingsWindow.switchToSubViewNG(subView)} />
-                </div>
+                </GridItem>
               )
             })
           }
-        </div>
+        </Grid>
       </Center>
     );
   }
@@ -101,13 +100,13 @@ export default class SettingsWindow extends Component {
   }
 
   setTitle(title) {
-    appConfig.setTitle(title);
+    app.setTitle(title);
   }
 
   switchToSubViewNG(subPane = {}) {
     let {component, title: subPaneTitle} = subPane;
     
-    const title = (subPaneTitle ? subPaneTitle : appConfig.getDefaultTitle());
+    const title = (subPaneTitle ? subPaneTitle : app.getDefaultTitle());
 
     if (!component) {
       component = <MainPane settingsWindow={this} subViews={this.subViews} />;
@@ -133,7 +132,7 @@ export default class SettingsWindow extends Component {
       <Window
         ref={c => this._desktopWindow = c}
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
         toolbarRight={
           <Button onClick={ (evt) => this.switchToSubViewNG() } size="small">#</Button>
         }

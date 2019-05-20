@@ -3,16 +3,16 @@ import ViewTransition from 'components/ViewTransition';
 import Image from 'components/Image';
 import { Tooltip } from 'antd';
 import hocConnect from 'state/hocConnect';
-import AppConfigLinkedState from 'state/AppConfigLinkedState';
-// import DesktopLinkedState from 'state/DesktopLinkedState';
+import AppLinkedState from 'state/AppLinkedState';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
 
 class Dock extends Component {
-  handleDockItemClick(appConfig) {
-    const isRunning = appConfig.getIsRunning();
+  handleDockItemClick(app) {
+    const isRunning = app.getIsRunning();
 
     if (!isRunning) {
-      appConfig.launch();
+      app.launch();
     } else {
       // TODO: If app is already launched, bring it to the front
       console.warn('TODO: Implement bring to front');
@@ -20,9 +20,9 @@ class Dock extends Component {
   }
 
   render() {
-    const { className, appConfigs: propsAppConfigs, ...propsRest } = this.props;
+    const { className, apps: propsApps, ...propsRest } = this.props;
 
-    const appConfigs = propsAppConfigs || [];
+    const apps = propsApps || [];
 
     return (
       <div
@@ -35,10 +35,10 @@ class Dock extends Component {
 
         <div className="zd-desktop-dock-items">
           {
-            appConfigs.map((appConfig, idx) => {
-              const iconSrc = appConfig.getIconSrc();
-              const title = appConfig.getTitle();
-              // const mainWindow = appConfig.getMainWindow();
+            apps.map((app, idx) => {
+              const iconSrc = app.getIconSrc();
+              const title = app.getTitle();
+              // const mainWindow = app.getMainWindow();
 
               // TODO: Also check if the app should ride in the Dock
               if (!iconSrc) {
@@ -54,7 +54,7 @@ class Dock extends Component {
                 >
                   <Tooltip title={title}>
                     <button
-                      onClick={ evt => this.handleDockItemClick(appConfig) }
+                      onClick={ evt => this.handleDockItemClick(app) }
                     >
                       <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>
@@ -69,12 +69,16 @@ class Dock extends Component {
   }
 }
 
-export default hocConnect(Dock, AppConfigLinkedState, (updatedState) => {
-  const {appConfigs} = updatedState;
+const appLinkeStateConnectedDock = hocConnect(Dock, AppLinkedState, (updatedState) => {
+  const {apps} = updatedState;
 
-  if (appConfigs) {
+  if (apps) {
     return {
-      appConfigs
+      apps
     };
   }
+});
+
+export default hocConnect(appLinkeStateConnectedDock, DesktopLinkedState, (updatedState) => {
+  console.warn('TODO: Handle DesktopLinkedState binding', updatedState);
 });

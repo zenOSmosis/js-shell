@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Cover from 'components/Cover';
 import Window from 'components/Desktop/Window';
 import IFrame from 'components/IFrame';
@@ -15,7 +15,7 @@ export default class ScreenRecorderWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
       >
         <Cover>
           {

@@ -1,3 +1,5 @@
+// TODO: Consider removing dependency on React Router (use history instead)
+
 import React, { Component } from 'react';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
 import { withRouter } from 'react-router';
@@ -6,14 +8,14 @@ import setBrowserTitle from 'utils/desktop/setBrowserTitle';
 import titleToURI from 'utils/desktop/titleToURI';
 
 /**
- * Window / URI mapping
+ * Window / URI mapping.
  */
-const {setWindowRouteKey, getWindowWithRouteKey} = (() => {
+const {setAppRouteKey, getWindowWithRouteKey} = (() => {
   console.warn('TODO: Fix window / URI pairing');
 
-  let _windowRouteKeymaps = [];
+  let _appRouteKeymaps = [];
   
-  const setWindowRouteKey = (window, routeKey) => {
+  const setAppRouteKey = (window, routeKey) => {
     // Ensure routeKey doesn't already point to an existing window
     const existing = getWindowWithRouteKey(routeKey);
     if (existing) {
@@ -21,19 +23,19 @@ const {setWindowRouteKey, getWindowWithRouteKey} = (() => {
       return;
     }
 
-    _windowRouteKeymaps.push({
+    _appRouteKeymaps.push({
       window,
       routeKey
     });
   }
 
   const getWindowWithRouteKey = (routeKey) => {
-    if (!_windowRouteKeymaps.length) {
+    if (!_appRouteKeymaps.length) {
       return;
     }
 
-    for (let i = 0; i < _windowRouteKeymaps.length; i++) {
-      const keyMap = _windowRouteKeymaps[i];
+    for (let i = 0; i < _appRouteKeymaps.length; i++) {
+      const keyMap = _appRouteKeymaps[i];
       
       if (keyMap.routeKey === routeKey) {
         return keyMap.window;
@@ -42,7 +44,7 @@ const {setWindowRouteKey, getWindowWithRouteKey} = (() => {
   };
 
   return {
-    setWindowRouteKey,
+    setAppRouteKey,
     getWindowWithRouteKey
   };
 })();
@@ -59,7 +61,7 @@ let _isInstantiated = false;
  * 
  * Note: This should be treated as a singleton, having only one instance.
  */
-class WindowRouteController extends Component {
+class AppRouteController extends Component {
   _activeWindow = null;
 
   constructor(props = {}) {
@@ -137,7 +139,7 @@ class WindowRouteController extends Component {
           }
         } else {
           // If it doesn't point to a window, register current location hash to currently active window
-          setWindowRouteKey(this._activeWindow, routeKey);
+          setAppRouteKey(this._activeWindow, routeKey);
         }
 
         // console.debug('Win with route key', routeKey, getWindowWithRouteKey(routeKey));
@@ -163,4 +165,4 @@ class WindowRouteController extends Component {
   }
 }
 
-export default withRouter(WindowRouteController);
+export default withRouter(AppRouteController);

@@ -9,11 +9,9 @@ const Center = (props = {}) => {
       className={`zd-center ${className ? className : ''}`}
       {...propsRest}
     >
-      <div className="zd-center-item">
-        {
-          children
-        }
-      </div>
+      {
+        children
+      }
     </div>
   );
 };

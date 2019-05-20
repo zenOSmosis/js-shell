@@ -1,11 +1,11 @@
 // Note, currently the mere inclusion of this registers all of the default apps
-import 'apps/defaultApps';
+import /*apps from*/ 'apps/defaultApps';
 import React, { Component } from 'react';
 import Center from 'components/Center';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
 
-console.warn('TODO: Fix imported apps location');
+// console.warn('TODO: Fix imported apps location', apps);
 
 /**
  * Render area for all desktop windows.
@@ -14,33 +14,39 @@ console.warn('TODO: Fix imported apps location');
  */
  class WindowDrawLayer extends Component {
   state = {
-    launchedAppConfigs: []
+    launchedApps: []
   };
 
   linkedStateUpdateFilter(updatedState) {
-    const {launchedAppConfigs} = updatedState;
+    const {launchedApps} = updatedState;
 
-    if (launchedAppConfigs) {
+    if (launchedApps) {
       return {
-        launchedAppConfigs
+        launchedApps
       };
     }
   }
 
   render() {
-    let {launchedAppConfigs} = this.props;
-    if (!launchedAppConfigs) {
-      launchedAppConfigs = [];
+    // TODO: Base this off of open windows, instead of apps
+    let {launchedApps} = this.props;
+    if (!launchedApps) {
+      launchedApps = [];
     }
   
     return (
       <Center>
         {
-          launchedAppConfigs.map((appConfig, idx) => {           
+          launchedApps.map((app) => {
+            const uuid = app.getUUID();
+            
             return (
-              <div style={{position: 'absolute'}} key={idx}>
+              // Note: For the key, using UUID instead of idx is very important
+              // because they can be re-rendered at different indexes when they
+              // update.  HMR also depends on this.
+              <div style={{position: 'absolute'}} key={uuid}>
                 {
-                  appConfig.getMainWindow()
+                  app.getMainWindow()
                 }
               </div>
             );
@@ -53,11 +59,11 @@ console.warn('TODO: Fix imported apps location');
 
 // @see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/withRouter.md
 export default hocConnect(WindowDrawLayer, DesktopLinkedState, (updatedState) => {
-  const {launchedAppConfigs} = updatedState;
+  const {launchedApps} = updatedState;
 
-  if (launchedAppConfigs) {
+  if (launchedApps) {
     return {
-      launchedAppConfigs
+      launchedApps
     };
   }
 });

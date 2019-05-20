@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import appConfig from './appConfig';
+import app from './app';
 import Window, {WindowLifecycleEvents, getWindowStack, EVT_WINDOW_CREATED, EVT_WINDOW_WILL_MINIMIZE, EVT_WINDOW_DID_CLOSE} from 'components/Desktop/Window';
 import {Button, ButtonGroup} from 'components/ButtonGroup';
 
@@ -53,7 +53,7 @@ export default class WindowManager extends Component {
     return (
       <Window
         {...propsRest}
-        appConfig={appConfig}
+        app={app}
       >
         {
           windowStack.map((window, idx) => {

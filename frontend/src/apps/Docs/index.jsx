@@ -1,3 +1,3 @@
-import appConfig from './appConfig.js';
+import app from './app.js';
 
-export default appConfig;
+export default app;
