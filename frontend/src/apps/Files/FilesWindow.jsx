@@ -131,28 +131,32 @@ export default class FilesWindow extends Component {
       >
         <Layout className="FileNavigator">
           <Layout>
-            <Sider className="LeftColumn">
-              <Full style={{overflow: 'auto'}}>
-                {
-                  // <DirectoryTree />
-                }
-                <div>
+            {
+              /*
+              <Sider className="LeftColumn">
+                <Full style={{overflow: 'auto'}}>
+                  {
+                    // <DirectoryTree />
+                  }
                   <div>
-                    Block Devicessss
+                    <div>
+                      Block Devices
+                    </div>
+                    <Tree>
+                      <TreeNode
+                        title={
+                          <div>
+                            Samsung<br />
+                            ... | ...
+                          </div>
+                        }
+                      />
+                    </Tree>
                   </div>
-                  <Tree>
-                    <TreeNode
-                      title={
-                        <div>
-                          Samsung<br />
-                          ... | ...
-                        </div>
-                      }
-                    />
-                  </Tree>
-                </div>
-              </Full>
-            </Sider>
+                </Full>
+              </Sider>
+              */
+            }
             <Content className="Main">
               <Full style={{overflow: 'auto', textAlign: 'left'}}>
                 {

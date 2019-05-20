@@ -7,6 +7,8 @@ import uuidv4 from 'uuid/v4';
 // This emits when the current state scope has updated
 // TODO: Rename to EVT_UPDATE
 export const EVT_LINKED_STATE_UPDATE = 'update';
+// export const EVT_LINKED_STATE_WILL_UPDATE = 'will-update';
+// export const EVT_LINKED_STATE_DID_UPDATE = 'did-update';
 
 // TODO: Renamed to id(...?)
 export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
@@ -70,6 +72,11 @@ class MasterLinkedStateControllerSingleton extends EventEmitter {
         _rawDate: new Date(),
         _rawCallStack: new Error()
       });
+    }
+
+    if (isOriginalInstance) {
+      console.debug('aabbcc', initialDefaultState);
+      linkedState.setState(initialDefaultState);
     }
   }
 
@@ -181,8 +188,8 @@ export default class LinkedState extends EventEmitter {
    * MasterLinkedStateControllerSingleton, and not directly set within this
    * class.
    * 
-   * @param {*} isOriginalInstance 
-   * @param {*} masterLinkedStateControllerSingleton 
+   * @param {boolean} isOriginalInstance 
+   * @param {MasterLinkedStateControllerSingleton} masterLinkedStateControllerSingleton 
    */
   setIsOriginalInstance(isOriginalInstance, masterLinkedStateControllerSingleton) {
     if (!(masterLinkedStateControllerSingleton instanceof MasterLinkedStateControllerSingleton)) {
@@ -212,6 +219,10 @@ export default class LinkedState extends EventEmitter {
    * performed after state has been updated
    */
   setState(updatedState = {}, onSet = null) {
+    // const prevState = this.getState();
+
+    // this.emit(EVT_LINKED_STATE_WILL_UPDATE, prevState);
+
     mlscs.setSharedState(this, {
       updatedState,
       meta: {
@@ -224,6 +235,8 @@ export default class LinkedState extends EventEmitter {
     if (typeof onSet === 'function') {
       onSet();
     }
+
+    // this.emit(EVT_LINKED_STATE_DID_UPDATE, prevState);
   }
 
   /**

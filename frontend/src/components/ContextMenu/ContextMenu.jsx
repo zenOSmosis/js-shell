@@ -1,46 +1,10 @@
 import React, { Component } from 'react';
-import LinkedStateComponent from 'state/LinkedStateComponent';
 import { Menu, MenuItem, MenuItemGroup, SubMenu } from 'components/Menu';
 import { Icon } from 'antd';
 import uuidv4 from 'uuid/v4';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
-
-// Binds the context menu to DesktopLinkedState
-export default class LinkedStateContextMenu extends LinkedStateComponent {
-  state = {
-    isTrapping: false
-  };
-
-  constructor() {
-    super(DesktopLinkedState);
-  }
-
-  linkedStateUpdateFilter(updatedState) {
-    const {contextMenuIsTrapping: isTrapping} = updatedState;
-
-    let filteredState = {};
-
-    if (typeof isTrapping !== 'undefined') {
-      filteredState = {
-        isTrapping
-      };
-    }
-    
-    if (filteredState) {
-      return filteredState;
-    }
-  }
-
-
-  render() {
-    const {isTrapping} = this.state;
-    
-    return (
-      <ContextMenu isTrapping={isTrapping} />
-    )
-  }
-}
+import hocConnect from '../../state/hocConnect';
 
 class ContextMenu extends Component {
   state = {
@@ -200,3 +164,19 @@ class ContextMenu extends Component {
     );
   };
 }
+
+export default hocConnect(ContextMenu, DesktopLinkedState, (updatedState) => {
+  const {contextMenuIsTrapping: isTrapping} = updatedState;
+
+  let filteredState = {};
+
+  if (typeof isTrapping !== 'undefined') {
+    filteredState = {
+      isTrapping
+    };
+  }
+  
+  if (filteredState) {
+    return filteredState;
+  }
+});

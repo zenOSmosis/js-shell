@@ -16,7 +16,7 @@ const registerCommonEventsHandler = () => {
     return;
   }
 
-  console.debug('Registering Common Desktop Events handling');
+  // console.debug('Registering Common Desktop Events handling');
 
   // Socket.io events
   (() => {
@@ -27,7 +27,7 @@ const registerCommonEventsHandler = () => {
   // DesktopLinkedState events
   (() => {
     commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-      console.debug('Common Desktop Linked State update', updatedState);
+      // console.debug('Common Desktop Linked State update', updatedState);
 
       // Context Menu
       (() => {

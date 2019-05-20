@@ -1,6 +1,3 @@
-// Note, currently the mere inclusion of this registers all of the default apps
-import defaultApps from 'apps/defaultApps';
-
 import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
 
 import React from 'react';
@@ -27,15 +24,15 @@ const startup = () => {
 
     // Binds common Desktop events (e.g. Socket connect / disconnect; context menu; etc.)
     registerCommonDesktopEventsHandler();
-
-    console.debug('default apps', defaultApps);
   
     // Launch React interface
     (() => {
+      const rootEl = document.getElementById('root');
+
       // Rendering directly to document.body is not ideal because it may cause
       // issues w/ Google Font Loader or third party browser extensions
       // @see https://github.com/facebook/create-react-app/issues/1568
-      ReactDOM.render(<App />, document.getElementById('root'));
+      ReactDOM.render(<App />, rootEl);
   
       // If you want your app to work offline and load faster, you can change
       // unregister() to register() below. Note this comes with some pitfalls.

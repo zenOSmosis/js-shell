@@ -8,8 +8,6 @@ import AppConfigLinkedState from 'state/AppConfigLinkedState';
 import './style.css';
 
 class Dock extends Component {
-  _appConfigLinkedState = null;
-
   handleDockItemClick(appConfig) {
     const isRunning = appConfig.getIsRunning();
 
