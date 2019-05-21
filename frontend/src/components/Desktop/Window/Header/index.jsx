@@ -20,9 +20,9 @@ export default class WindowHeader extends Component {
   */
 
   handleTouchStart = (evt) => {
-    console.debug('touch');
+    // console.debug('touch');
 
-    console.debug('touch start', evt);
+    // console.debug('touch start', evt);
 
     const {desktopWindow} = this.props;
   
@@ -56,14 +56,14 @@ export default class WindowHeader extends Component {
 
   // TODO: Handle touch end (if necessary)
   handleTouchEnd = (evt) => {
-    console.debug('touch end', evt);
+    // console.debug('touch end', evt);
   }
 
   render() {
     let {desktopWindow, className, title, toolbar, toolbarRight, subToolbar, ...propsRest} = this.props;
     
     if (!toolbar) {
-      // TODO: Implement specifically for relevant browser
+      // TODO: Implement marginTop specifically for relevant browser
       // 2 - 3 works best on Chrome
       // 3 - 4 works best on Firefox
 
@@ -77,7 +77,7 @@ export default class WindowHeader extends Component {
           display: 'inline-block',
           verticalAlign: 'middle'
         }}>
-          {title}
+          {(title ? title : <span>&nbsp;</span>)}
         </div>
       );
     }

@@ -1,3 +1,5 @@
+// TODO: Enable optional debugger:  https://github.com/redsunsoft/react-render-visualizer
+
 // Note: Window is not currently set as a HOC component due to it conflicting
 // with current window actions (e.g. moving, etc)
 
@@ -6,6 +8,7 @@
 import React, { Component } from 'react';
 // import Gesture from 'commponents/Gesture';
 import ContextMenu from 'components/ContextMenu';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Cover from 'components/Cover';
 import Moveable from 'components/Moveable';
 import ViewTransition from 'components/ViewTransition';
@@ -485,6 +488,8 @@ export default class Window extends Component {
       ...propsRest
     } = this.props;
 
+    children = app.getContentOverride() || children;
+
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
 
@@ -568,9 +573,12 @@ export default class Window extends Component {
                         className="zd-window-body"
                         style={bodyStyle}
                       >
-                        {
-                          children
-                        }
+                        <ErrorBoundary>
+                          {
+                            // The window body
+                            children
+                          }
+                        </ErrorBoundary>
                       </Cover>
 
                       {

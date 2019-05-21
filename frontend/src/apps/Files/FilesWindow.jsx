@@ -130,9 +130,9 @@ export default class FilesWindow extends Component {
         }
       >
         <Layout className="FileNavigator">
-        yo
           <Layout>
             {
+              /*
               <Sider className="LeftColumn">
                 <Full style={{overflow: 'auto'}}>
                   {
@@ -155,6 +155,7 @@ export default class FilesWindow extends Component {
                   </div>
                 </Full>
               </Sider>
+              */
             }
             <Content className="Main">
               <Full style={{overflow: 'auto', textAlign: 'left'}}>

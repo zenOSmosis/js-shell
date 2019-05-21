@@ -17,6 +17,8 @@ if (module.hot) {
 }
 */
 
+export const EVT_CONTENT_UPDATE = 'content-update';
+
 /**
  * App controls components, such as the Dock, and places menus
  * in them.
@@ -37,6 +39,7 @@ class App extends EventEmitter {
   _isRunning = false;
   _uuid = null;
   _allowMultipleWindows = false;
+  _contentOverride = null;
 
   constructor(runProps) {
     super();
@@ -100,6 +103,16 @@ class App extends EventEmitter {
     return this._defaultIconSrc;
   }
 
+  setContent(content) {
+    this._contentOverride = content;
+
+    this.emit(EVT_CONTENT_UPDATE, content);
+  }
+
+  getContentOverride() {
+    return this._contentOverride;
+  }
+
   /**
    * Note: DesktopWindow is likely not a Window instance, and only uses it
    * via composition.
@@ -116,6 +129,14 @@ class App extends EventEmitter {
     */
 
     this._desktopWindows.push(desktopWindow);
+  }
+
+  setMainWindow(desktopWindow) {
+    if (this._desktopWindows.length) {
+      throw new Error('MainWindow is already set');
+    }
+
+    this.addWindow(desktopWindow);
   }
 
   getMainWindow() {
@@ -170,6 +191,12 @@ class App extends EventEmitter {
     this._isRunning = false;
 
     desktopLinkedState.unregisterLaunchedApp(this);
+  }
+
+  destroy() {
+    this.close();
+
+    commonAppLinkedState.removeApp(this);
   }
 }
 

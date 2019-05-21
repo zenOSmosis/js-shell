@@ -40,6 +40,16 @@ export default class AppLinkedState extends LinkedState {
     });
   }
 
+  removeApp(app) {
+    const apps = this.getState().apps.filter(testApp => {
+      return !Object.is(app, testApp);
+    });
+
+    this.setState({
+      apps
+    });
+  }
+
   getApps() {
     const { apps } = this.getState();
 

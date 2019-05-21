@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import app from './app';
 import Button from 'components/Button';
 import Center from 'components/Center';
+import Full from 'components/Full';
 import Window from 'components/Desktop/Window';
 import Icon from 'components/Icon';
 import {Grid, GridItem} from 'components/Grid';
@@ -142,9 +143,11 @@ export default class SettingsWindow extends Component {
           // TODO: Keep main settings in background and use transition to switch to subPane
         }
 
-        {
-          this.state.subPane
-        }
+        <Full idx={this.subViews.indexOf(this.state.subPane)}>
+          {
+            this.state.subPane
+          }
+        </Full>
       </Window>
     );
   }

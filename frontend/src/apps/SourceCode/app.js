@@ -4,7 +4,7 @@ import AppBlueprintBaseWindow from './AppBlueprintBaseWindow';
 import config from 'config';
 
 export default createApp({
-  title: 'app.blueprint',
+  title: 'SourceCode',
   mainWindow: <AppBlueprintBaseWindow />,
   iconSrc: `${config.HOST_ICON_URI_PREFIX}blueprint/blueprint.svg`
 });
