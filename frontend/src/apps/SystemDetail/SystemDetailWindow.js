@@ -1,11 +1,33 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import app from './app';
 import Window from 'components/Desktop/Window';
 import Scrollable from 'components/Scrollable';
+import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
+import { Layout, Header, Content, Footer } from 'components/Layout';
 import socketQuery, { socketAPIRoutes } from 'utils/socketQuery';
+import SocketLinkedState from 'state/SocketLinkedState';
+import hocConnect from 'state/hocConnect';
+
+export default class SystemDetailWindow extends Component {
+  render() {
+    const { ...propsRest } = this.props;
+    return (
+      <Window
+        {...propsRest}
+        app={app}
+      >
+        <ConnectedEnvironment />
+      </Window>
+    );
+  }
+}
+
+const MODE_CLIENT = 'client';
+const MODE_HOST = 'host';
 
 class Environment extends Component {
   state = {
+    mode: MODE_CLIENT,
     remoteEnv: {}
   };
 
@@ -25,51 +47,93 @@ class Environment extends Component {
     }
   }
 
+  setMode(mode) {
+    this.setState({
+      mode
+    });
+  }
+
   render() {
-    const { remoteEnv } = this.state;
+    const { mode, remoteEnv } = this.state;
+
+    let { clientIP, connectionStatus } = this.props;
+    clientIP = clientIP || 'N/A';
 
     return (
-      <Scrollable style={{ textAlign: 'left' }}>
-        <div>
-          <div>Local</div>
-          {
-            Object.keys(process.env).map((envKey, idx) => {
-              return (
-                <div key={idx}>
-                  {envKey}: {process.env[envKey]}
-                </div>
-              )
-            })
-          }
-        </div>
+      <Layout>
+        <Header>
+          <SegmentedControl>
+            <SegmentedControlItem
+              active={mode === MODE_CLIENT}
+              onClick={(evt) => this.setMode(MODE_CLIENT)}
+            >
+              Client
+            </SegmentedControlItem>
+            <SegmentedControlItem
+              active={mode === MODE_HOST}
+              onClick={(evt) => this.setMode(MODE_HOST)}
+            >
+              Host
+            </SegmentedControlItem>
+          </SegmentedControl>
+        </Header>
 
-        <div>
-          <div>Remote</div>
-          {
-            Object.keys(remoteEnv).map((envKey, idx) => {
-              return (
-                <div key={idx}>
-                  {envKey}: {remoteEnv[envKey]}
-                </div>
-              )
-            })
-          }
-        </div>
-      </Scrollable>
+        <Content>
+          <Scrollable style={{ textAlign: 'left' }}>
+            {
+              this.state.mode === MODE_CLIENT &&
+              <div>
+                {
+                  Object.keys(process.env).map((envKey, idx) => {
+                    return (
+                      <div key={idx}>
+                        {envKey}: {process.env[envKey]}
+                      </div>
+                    )
+                  })
+                }
+              </div>
+            }
+
+            {
+              this.state.mode === MODE_HOST &&
+              <div>
+                {
+                  Object.keys(remoteEnv).map((envKey, idx) => {
+                    return (
+                      <div key={idx}>
+                        {envKey}: {remoteEnv[envKey]}
+                      </div>
+                    )
+                  })
+                }
+              </div>
+            }
+
+          </Scrollable>
+        </Content>
+        <Footer>
+          client uptime / host uptime / Client IP: {clientIP} / {connectionStatus}
+        </Footer>
+      </Layout>
     );
   }
 }
 
-export default class SystemDetailWindow extends Component {
-  render() {
-    const {...propsRest} = this.props;
-    return (
-      <Window
-        {...propsRest}
-        app={app}
-      >
-        <Environment />
-      </Window>
-    );
+const ConnectedEnvironment = hocConnect(Environment, SocketLinkedState, (updatedState) => {
+  const {clientIP, connectionStatus} = updatedState;
+
+  let filteredState = {};
+
+  if (typeof clientIP !== 'undefined') {
+    filteredState.clientIP = clientIP;
+  };
+
+  if (typeof connectionStatus !== 'undefined') {
+    filteredState.connectionStatus = connectionStatus;
   }
-}
+
+  if (Object.keys(filteredState).length) {
+    return filteredState;
+  }
+});

@@ -1,16 +1,18 @@
 import React from 'react';
 import { Button as RSButton } from 'antd';
+import './style.css';
 
 const Button = (props = {}) => {
-  const {className, size: propsSize, ...propsRest} = props;
+  const {className, active: propsActive, size: propsSize, ...propsRest} = props;
 
   const size = propsSize || 'small';
+  const active = (propsActive ? true : false);
 
   return (
     <RSButton
       {...propsRest}
       size={size}
-      className={`Button ${className ? className : ''}`}
+      className={`zd-button ${active ? 'active': ''} ${className ? className : ''}`}
     />
   );
 }
