@@ -1,5 +1,7 @@
+import React from 'react';
 import { JsonEditor as JSONEditor } from 'jsoneditor-react';
 import 'jsoneditor-react/es/editor.min.css';
+import './style.css';
 
 export const JSONEDITOR_MODE_TREE = 'tree';
 export const JSONEDITOR_MODE_VIEW = 'view'; // Read-only
@@ -15,4 +17,12 @@ export const JSONEDITOR_MODES = [
   JSONEDITOR_MODE_TEXT
 ];
 
-export default JSONEditor;
+const WrappedEditor = (props = {}) => {
+  return (
+    <div className="zd-json-editor">
+      <JSONEditor {...props} />
+    </div>
+  );
+};
+
+export default WrappedEditor;
