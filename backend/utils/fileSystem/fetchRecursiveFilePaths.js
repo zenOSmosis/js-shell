@@ -9,7 +9,7 @@ const rread = require('fs-readdir-recursive');
  * @return {Promise<string[]>} An array of absolute file paths which point to
  * the queried files.
  */
-const fetchRecursiveFilePaths = async (baseDirname, extensions = ['.desktop']) => {
+const fetchRecursiveFilePaths = async (baseDirname, extensions = []) => {
   try {
     const filePaths = await (() => {
       return new Promise((resolve, reject) => {

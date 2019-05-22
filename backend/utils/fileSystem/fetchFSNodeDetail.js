@@ -1,8 +1,8 @@
 const nodeJSPath = require('path');
 const stat = require('./stat');
+const getPathSeparator = require('./getPathSeparator');
 
-// TODO: Can this be obtained from Node?
-const DIRECTORY_SEPARATOR = nodeJSPath.sep;
+const pathSeparator = getPathSeparator();
 
 const fetchFSNodeDetail = async (pathName) => {
   try {
@@ -10,10 +10,10 @@ const fetchFSNodeDetail = async (pathName) => {
       nodeJSPath.parse(pathName),
       {
         constituents:
-            pathName.trim() === DIRECTORY_SEPARATOR ?
+            pathName.trim() === pathSeparator ?
                 [''] // Root directory
                 :
-                pathName.split(DIRECTORY_SEPARATOR)
+                pathName.split(pathSeparator)
       }
     );
     const stats = await stat(pathName);
