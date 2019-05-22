@@ -1,4 +1,4 @@
-import { commonDesktopLinkedState } from './.common';
+import { commonDesktopLinkedState } from 'state/commonLinkedStates';
 
 const setContextMenuIsTrapping = (isTrapping) => {
   commonDesktopLinkedState.setContextMenuIsTrapping(isTrapping);

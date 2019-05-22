@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { commonDesktopLinkedState, commonAppLinkedState } from '../.common';
+import { commonDesktopLinkedState, commonAppLinkedState } from 'state/commonLinkedStates';
 import Window from 'components/Desktop/Window';
 // import AppLinkedState from 'state/AppLinkedState';
 import uuidv4 from 'uuid/v4';

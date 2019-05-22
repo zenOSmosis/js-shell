@@ -1,4 +1,4 @@
-import { commonDesktopLinkedState } from './.common';
+import { commonDesktopLinkedState } from 'state/commonLinkedStates';
 
 const createDesktopNotification = (message, description, onClick = null) => {
   if (typeof message === 'object') {

@@ -1,4 +1,4 @@
-import { commonAppLinkedState } from '../.common';
+import { commonAppLinkedState } from 'state/commonLinkedStates';
 import createDesktopNotification from '../createDesktopNotification';
 import App from './App';
 

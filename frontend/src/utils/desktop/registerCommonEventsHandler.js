@@ -1,5 +1,5 @@
 import socket from 'utils/socket.io';
-import { commonDesktopLinkedState, EVT_LINKED_STATE_UPDATE } from './.common';
+import { commonDesktopLinkedState, EVT_LINKED_STATE_UPDATE } from 'state/commonLinkedStates';
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 
 let _isRegistered = false;

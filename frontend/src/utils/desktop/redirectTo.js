@@ -1,4 +1,4 @@
-import { commonDesktopLinkedState } from './.common';
+import { commonDesktopLinkedState } from 'state/commonLinkedStates';
 
 /**
  * Redirects to a URI path registered within the app.
