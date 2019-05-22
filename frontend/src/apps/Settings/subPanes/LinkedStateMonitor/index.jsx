@@ -100,7 +100,7 @@ export default class LinkedStateMonitor extends Component {
                 |
                 Ref count: {this._masterLinkedStateListener.getLinkedStateReferenceCount(linkedStateInstance)}
                 |
-                Original instance?: {linkedStateInstance.getIsOriginalInstance() ? 'Yes' : 'No'} 
+                Original instance?: {linkedStateInstance.getIsScopeOriginalInstance() ? 'Yes' : 'No'} 
                 |
                 Create date: {linkedStateInstance.getCreateDate().toString()}
                 <hr />
