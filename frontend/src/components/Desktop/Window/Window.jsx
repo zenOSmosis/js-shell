@@ -15,7 +15,7 @@ import ViewTransition from 'components/ViewTransition';
 import Resizable from 'components/Resizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
-import /* DesktopLinkedState, */ { EVT_LINKED_STATE_UPDATE, commonDesktopLinkedState } from 'state/DesktopLinkedState';
+import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
 import WindowHeader from './Header';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
@@ -54,6 +54,8 @@ import {
 import config from 'config';
 import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
+
+const commonDesktopLinkedState = new DesktopLinkedState();
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;

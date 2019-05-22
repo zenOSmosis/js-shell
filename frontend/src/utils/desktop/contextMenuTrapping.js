@@ -1,11 +1,11 @@
-import {desktopLinkedState} from './.common';
+import { commonDesktopLinkedState } from './.common';
 
 const setContextMenuIsTrapping = (isTrapping) => {
-  desktopLinkedState.setContextMenuIsTrapping(isTrapping);
+  commonDesktopLinkedState.setContextMenuIsTrapping(isTrapping);
 };
 
 const getContextMenuIsTrapping = () => {
-  const {contextMenuIsTrapping} = desktopLinkedState.getState();
+  const { contextMenuIsTrapping } = commonDesktopLinkedState.getState();
 
   return contextMenuIsTrapping;
 };

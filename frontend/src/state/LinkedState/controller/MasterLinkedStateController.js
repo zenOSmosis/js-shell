@@ -84,7 +84,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     this._linkedStateInstances = this._linkedStateInstances.filter((linkedState) => {
       const linkedStateUUID = linkedState.getUUID();
 
-      return (linkedStateUUID === uuid);
+      return (linkedStateUUID !== uuid);
     });
   }
 

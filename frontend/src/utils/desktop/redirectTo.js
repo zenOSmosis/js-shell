@@ -1,4 +1,4 @@
-import { desktopLinkedState } from './.common';
+import { commonDesktopLinkedState } from './.common';
 
 /**
  * Redirects to a URI path registered within the app.
@@ -10,7 +10,7 @@ import { desktopLinkedState } from './.common';
  * @param {string} redirectLocation [default = '/']
  */
 const redirectTo = (redirectLocation = '/') => {
-  desktopLinkedState.setState({
+  commonDesktopLinkedState.setState({
     redirectLocation
   });
 };

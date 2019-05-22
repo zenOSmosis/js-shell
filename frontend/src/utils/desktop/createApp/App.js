@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { desktopLinkedState, commonAppLinkedState } from '../.common';
+import { commonDesktopLinkedState, commonAppLinkedState } from '../.common';
 import Window from 'components/Desktop/Window';
 // import AppLinkedState from 'state/AppLinkedState';
 import uuidv4 from 'uuid/v4';
@@ -159,7 +159,7 @@ export default class App extends EventEmitter {
 
     this._isRunning = true;
 
-    desktopLinkedState.registerLaunchedApp(this);
+    commonDesktopLinkedState.registerLaunchedApp(this);
   }
 
   close() {
@@ -170,7 +170,7 @@ export default class App extends EventEmitter {
     
     this._isRunning = false;
 
-    desktopLinkedState.unregisterLaunchedApp(this);
+    commonDesktopLinkedState.unregisterLaunchedApp(this);
   }
 
   destroy() {

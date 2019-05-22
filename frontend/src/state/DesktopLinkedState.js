@@ -136,8 +136,3 @@ export default class DesktopLinkedState extends LinkedState {
     return contextMenuIsTrapping;
   }
 }
-
-const commonDesktopLinkedState = new DesktopLinkedState();
-export {
-  commonDesktopLinkedState
-};

@@ -1,4 +1,4 @@
-import {desktopLinkedState} from './.common';
+import { commonDesktopLinkedState } from './.common';
 
 const createDesktopNotification = (message, description, onClick = null) => {
   if (typeof message === 'object') {
@@ -7,7 +7,7 @@ const createDesktopNotification = (message, description, onClick = null) => {
     message = message.message;
   }
 
-  desktopLinkedState.setState({
+  commonDesktopLinkedState.setState({
     lastNotification: {
       message,
       description,
