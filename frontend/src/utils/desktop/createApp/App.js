@@ -1,23 +1,12 @@
 import EventEmitter from 'events';
-import { desktopLinkedState, commonAppLinkedState } from './.common';
+import { desktopLinkedState, commonAppLinkedState } from '../.common';
 import Window from 'components/Desktop/Window';
 // import AppLinkedState from 'state/AppLinkedState';
 import uuidv4 from 'uuid/v4';
-import createDesktopNotification from './createDesktopNotification';
-// import ReactDOM from 'react-dom';
-// import StackTrace from 'stacktrace-js';
-
-/*
-if (module.hot) {
-  // @see https://webpack.js.org/api/hot-module-replacement/#addstatushandler
-  module.hot.addStatusHandler(status => {
-    // React to the current status...
-    console.warn('TODO: Handle module.hot status update:', status);
-  });
-}
-*/
 
 export const EVT_CONTENT_UPDATE = 'content-update';
+export const EVT_TITLE_UPDATE = 'title-update';
+export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
 
 /**
  * App controls components, such as the Dock, and places menus
@@ -30,10 +19,10 @@ export const EVT_CONTENT_UPDATE = 'content-update';
  * 
  * TODO: If not using events here, don't extend event emitter.
  */
-class App extends EventEmitter {
+export default class App extends EventEmitter {
   _defaultTitle = null;
   _title = null;
-  _desktopWindows = [];
+  _windows = [];
   _realWindow = null;
   _defaultIconSrc = null;
   _isRunning = false;
@@ -64,7 +53,7 @@ class App extends EventEmitter {
     }
 
     if (mainWindow) {
-      this.addWindow(mainWindow);
+      this.setMainWindow(mainWindow);
     }
   }
 
@@ -82,6 +71,8 @@ class App extends EventEmitter {
     }
 
     this._title = title;
+
+    this.emit(EVT_TITLE_UPDATE, title);
   }
 
   getTitle() {
@@ -97,6 +88,8 @@ class App extends EventEmitter {
 
   setIconSrc(iconSrc) {
     this._defaultIconSrc = iconSrc;
+
+    this.emit(EVT_ICON_SRC_UPDATE, iconSrc);
   }
 
   getIconSrc() {
@@ -113,41 +106,28 @@ class App extends EventEmitter {
     return this._contentOverride;
   }
 
-  /**
-   * Note: DesktopWindow is likely not a Window instance, and only uses it
-   * via composition.
-   * 
-   * TODO: Rename to setMainWindow
-   * 
-   * @param {*} desktopWindow 
-   */
-  addWindow(desktopWindow) {
-    /*
-    if (!(desktopWindow instanceof Window)) {
-      throw new Error('desktopWindow must be a Window instance');
-    }
-    */
-
-    this._desktopWindows.push(desktopWindow);
-  }
-
   setMainWindow(desktopWindow) {
-    if (this._desktopWindows.length) {
+    if (this._windows.length) {
       throw new Error('MainWindow is already set');
     }
 
-    this.addWindow(desktopWindow);
+    this._windows.push(desktopWindow);
   }
 
+  /**
+   * Note, may retrieve a Window composite, and not the actual window.
+   * 
+   * @see this.getRealWindow() to obtain a reference to the actual underlying window.
+   */
   getMainWindow() {
-    if (this._desktopWindows &&
-        this._desktopWindows[0]) {
-      return this._desktopWindows[0];
+    if (this._windows &&
+        this._windows[0]) {
+      return this._windows[0];
     }
   }
 
   getWindows() {
-    return this._desktopWindows;
+    return this._windows;
   }
 
   getIsRunning() {
@@ -199,65 +179,3 @@ class App extends EventEmitter {
     commonAppLinkedState.removeApp(this);
   }
 }
-
-const getWindowFilename = (appWindow) => {
-  if (!appWindow) {
-    return;
-  }
-
-  const {_source: appSource} = appWindow;
-  if (!appSource) {
-    return;
-  }
-
-  const {fileName: appFilename} = appSource;
-
-  return appFilename;
-};
-
-// Note, currently this checks by looking at getMainWindow, and then
-// backtracking to the window's filename.  This would be more robust by not
-// requiring a window to be set.
-const getExistingHMRApp = (app) => {
-  if (!module.hot) {
-    return;
-  }
-
-  const apps = commonAppLinkedState.getApps();
-
-  const appMainWindow = app.getMainWindow();
-  const appFilename = getWindowFilename(appMainWindow);
-  if (!appFilename) {
-    return;
-  }
-
-  for (let i = 0; i < apps.length; i++) {
-    const testApp = apps[i];
-    const testAppMainWindow = testApp.getMainWindow();
-    const testAppFilename = getWindowFilename(testAppMainWindow);
-
-    if (appFilename === testAppFilename) {
-      return testApp;
-    }
-  }
-
-  return;
-};
-
-const createApp = (appProps) => {
-  const newApp = new App(appProps);
-  const existingApp = getExistingHMRApp(newApp);
-
-   // Don't re-add if app is already existing
-  if (!existingApp) {
-    commonAppLinkedState.addApp(newApp);
-  }
-
-  if (existingApp) {
-    createDesktopNotification(`"${existingApp.getTitle()}" app source code updated`);
-  }
-
-  return existingApp || newApp;
-};
-
-export default createApp;
