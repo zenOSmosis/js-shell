@@ -11,7 +11,21 @@ import { EVT_LINKED_STATE_UPDATE } from '../LinkedState';
  * @param {Function} stateUpdateFilter [default = null] Applies this filtered
  * value to the component props when the state is updated.
  */
-const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null) => {
+const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null, onConstruct = null) => {
+  // Enables ref to be obtained from stateful components, ignoring ref if not.
+  // (e.g. if WrappedComponent extends React.Component the ref can be referenced here)
+  const RefForwardedComponent = React.forwardRef((props, ref) => {
+    if (WrappedComponent.prototype.render) {
+      return (
+        <WrappedComponent ref={ref} {...props} />
+      );
+    } else {
+      return (
+        <WrappedComponent {...props} />
+      );
+    }
+  });
+
   // ...and returns another component...
   return class extends Component {
     state = {};
@@ -34,7 +48,7 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null) => 
         }
 
         this._linkedStateInstance = new LinkedState();
-  
+
         if (!this._linkedStateInstance) {
           throw new Error('No LinkedState present');
         }
@@ -42,9 +56,16 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null) => 
         this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
 
         const state = this._linkedStateInstance.getState();
-  
+
         // Set initial state
         this._handleLinkedStateUpdate(state);
+
+        if (typeof onConstruct === 'function') {
+          onConstruct({
+            component: this._wrappedComponent,
+            linkedState: this._linkedStateInstance
+          });
+        }
       })();
     }
 
@@ -63,7 +84,8 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null) => 
 
       // ... and renders the wrapped component with the fresh data!
       // Notice that we pass through any additional props
-      return <WrappedComponent
+      return <RefForwardedComponent
+        ref={c => this._wrappedComponent = c}
         {...passedProps}
       />;
     }
