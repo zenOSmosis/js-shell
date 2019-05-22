@@ -55,7 +55,8 @@ import config from 'config';
 import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
-const commonDesktopLinkedState = new DesktopLinkedState();
+// Note, currently is unable to share state/commonLinkedStates usage
+const desktopLinkedState = new DesktopLinkedState();
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
@@ -75,17 +76,17 @@ export const getWindowStack = () => {
 // Handle deactivation of non-active windows
 // Only a single window can be "active" at a time (that is, the focused window)
 (() => {
-  commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+  desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
     const {activeWindow} = updatedState;
 
     if (typeof activeWindow !== 'undefined') {
       const windowStack = getWindowStack();
 
-      windowStack.forEach((window) => {
-        const isActive = Object.is(activeWindow, window);
+      windowStack.forEach((desktopWindow) => {
+        const isActive = Object.is(activeWindow, desktopWindow);
 
         if (!isActive) {
-          window.deactivate();
+          desktopWindow.deactivate();
         }
       });
     }
@@ -267,7 +268,7 @@ export default class Window extends Component {
     $(this._resizableBody).addClass('active'); // Affects draw shadow
     $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
 
-    commonDesktopLinkedState.setActiveWindow(this);
+    desktopLinkedState.setActiveWindow(this);
     this._isActive = true;
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
