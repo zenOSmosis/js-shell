@@ -29,10 +29,21 @@ export default class LinkedState extends EventEmitter {
     mlscs.addLinkedState(this, initialDefaultState);
   }
 
+  /**
+   * Retrieves this particular instance's UUID.  Note, this UUID is different
+   * on each reference to this LinkedState scope.
+   * 
+   * @return {string}
+   */
   getUUID() {
     return this._uuid;
   }
 
+  /**
+   * Retrieves this class' name (e.g. "LinkedState").
+   * 
+   * @return {string}
+   */
   getClassName() {
     const { constructor } = this;
     const { name: className } = constructor;
@@ -41,14 +52,17 @@ export default class LinkedState extends EventEmitter {
   }
 
   /**
-   * This method is only inteneded to be utilized by the
-   * MasterLinkedStateController, and not directly set within this
-   * class.
+   * Internal, utility method which is internally called by
+   * MasterLinkedStateControllerSingleton.
+   * 
+   * Note, this should not be directly called from this class.
    * 
    * @param {boolean} isScopeOriginalInstance 
    * @param {MasterLinkedStateControllerSingleton} mlscs 
+   * @throws {Error} An exception is thrown if not called from
+   * MasterLinkedStateControllerSingleton
    */
-  setIsScopeOriginalInstance(isScopeOriginalInstance, mlscs) {
+  mlscs_setIsScopeOriginalInstance(isScopeOriginalInstance, mlscs) {
     // Block usage from anything except MasterLinkedStateController
     if (!(mlscs instanceof MasterLinkedStateControllerSingleton)) {
       throw new Error('masterLinkedStateControllerSingleton is not an instance of MasterLinkedStateControllerSingleton');
@@ -57,14 +71,25 @@ export default class LinkedState extends EventEmitter {
     this._isScopeOriginalInstance = isScopeOriginalInstance;
   }
 
+  /**
+   * Returns boolean true if this LinkedState instance is the original in its scope.
+   * 
+   * @return {boolean}
+   */
   getIsScopeOriginalInstance() {
     return this._isScopeOriginalInstance;
   }
 
+  /**
+   * @return {string}
+   */
   getLinkedScopeName() {
     return this._linkedScopeName;
   }
 
+  /**
+   * @return {Date}
+   */
   getCreateDate() {
     return this._rawCreateDate;
   }
@@ -115,6 +140,10 @@ export default class LinkedState extends EventEmitter {
     mlscs.broadcast(this, eventName, ...args);
   }
 
+  /**
+   * Destroys this LinkedState instance, but not other LinkedState instances
+   * within the same scope.
+   */
   destroy() {
     // Remove all event listeners
     // @see https://nodejs.org/api/events.html#events_emitter_removealllisteners_eventname

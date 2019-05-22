@@ -64,7 +64,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
       isScopeOriginalInstance = false;
     }
 
-    linkedState.setIsScopeOriginalInstance(isScopeOriginalInstance, this);
+    linkedState.mlscs_setIsScopeOriginalInstance(isScopeOriginalInstance, this);
 
     if (this._masterLinkedStateListener) {
       this._masterLinkedStateListener.broadcast(EVT_ADDED_LINKED_STATE, {
