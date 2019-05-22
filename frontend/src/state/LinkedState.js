@@ -2,10 +2,11 @@ import EventEmitter from 'events';
 import { isNull } from 'util';
 import uuidv4 from 'uuid/v4';
 
-// TODO: Split this file into multiple files and document
+// TODO: Split this file into multiple files and document them
+
+// TODO: Add linked list for state history?
 
 // This emits when the current state scope has updated
-// TODO: Rename to EVT_UPDATE
 export const EVT_LINKED_STATE_UPDATE = 'update';
 // export const EVT_LINKED_STATE_WILL_UPDATE = 'will-update';
 // export const EVT_LINKED_STATE_DID_UPDATE = 'did-update';
@@ -70,7 +71,7 @@ class MasterLinkedStateControllerSingleton extends EventEmitter {
       this._masterLinkedStateListener.broadcast(EVT_ADDED_LINKED_STATE, {
         linkedState,
         _rawDate: new Date(),
-        _rawCallStack: new Error()
+        _rawCallStack: new Error().stack
       });
     }
 
