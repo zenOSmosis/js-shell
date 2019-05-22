@@ -214,7 +214,7 @@ class HostConnection extends Component {
                       {
                         // TODO: Replace newDate() with something more resistant to time change
                       }
-                      <div key={`input ${this._renderIdx}`} style={{ height: '100%', backgroundColor: '#fff' }}>
+                      <div key={`input ${this._renderIdx}`} style={{ height: '100%' }}>
                         <JSONEditor
                           mode={this.state.jsonEditorInputMode} value={{}}
 
@@ -233,7 +233,7 @@ class HostConnection extends Component {
 
                     <Column style={{borderRadius: 4, margin: 4}}>
                       Response:<br />
-                      <div key={`view ${this._renderIdx}`} style={{ height: '100%', backgroundColor: '#fff' }}>
+                      <div key={`view ${this._renderIdx}`} style={{ height: '100%' }}>
                         <JSONEditor
                           htmlElementProps={{
                             style: {
@@ -257,7 +257,7 @@ class HostConnection extends Component {
             <Footer style={{ textAlign: 'left' }}>
               <Row>
                 <Column style={{ textAlign: 'left' }}>
-                  ``<Button onClick={(evt) => this.socketQuery()}>Send Request</Button>
+                  <Button onClick={(evt) => this.socketQuery()}>Send Request</Button>
                 </Column>
                 <Column>
                 </Column>
