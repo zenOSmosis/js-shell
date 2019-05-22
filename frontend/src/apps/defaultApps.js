@@ -1,4 +1,3 @@
-// import HelloWorldApp from './HelloWorld';
 import FilesApp from './Files';
 import SettingsApp from './Settings';
 import SourceCode from './SourceCode';
@@ -7,9 +6,9 @@ import SystemDetail from './SystemDetail';
 // import ScreenRecorder from './ScreenRecorder';
 // import DocsApp from './Docs';
 // import AboutApp from './About';
+import HelloWorldApp from './HelloWorld';
 
 const defaultApps = [
-  // HelloWorldApp,
   FilesApp,
   SettingsApp,
   SourceCode,
@@ -17,7 +16,8 @@ const defaultApps = [
   // WindowManagerApp,
   // ScreenRecorder,
   // DocsApp,
-  // AboutApp
+  // AboutApp,
+  HelloWorldApp
 ];
 
 export default defaultApps;
