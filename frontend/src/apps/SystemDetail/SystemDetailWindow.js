@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import app from './app';
+import Window from 'components/Desktop/Window';
 import Scrollable from 'components/Scrollable';
 import socketQuery, { socketAPIRoutes } from 'utils/socketQuery';
 
-export default class Environment extends Component {
+class Environment extends Component {
   state = {
     remoteEnv: {}
   };
@@ -54,6 +56,20 @@ export default class Environment extends Component {
           }
         </div>
       </Scrollable>
+    );
+  }
+}
+
+export default class SystemDetailWindow extends Component {
+  render() {
+    const {...propsRest} = this.props;
+    return (
+      <Window
+        {...propsRest}
+        app={app}
+      >
+        <Environment />
+      </Window>
     );
   }
 }

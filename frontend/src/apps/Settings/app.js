@@ -4,7 +4,7 @@ import SettingsWindow from './SettingsWindow';
 import config from 'config';
 
 export default createApp({
-  title: 'Settings & Utilities',
+  title: 'Settings',
   mainWindow: <SettingsWindow />,
   iconSrc: `${config.HOST_ICON_URI_PREFIX}settings/settings.svg`
 });

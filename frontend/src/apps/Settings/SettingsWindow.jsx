@@ -10,7 +10,6 @@ import ConnectedClients from './subPanes/ConnectedClients';
 import DesktopBackground from './subPanes/DesktopBackground';
 import ContextMenuSettings from './subPanes/ContextMenuSettings';
 import NotificationSettings from './subPanes/NotificationSettings';
-import Environment from './subPanes/Environment';
 // import DesktopDrawer from './subPanes/DrawerSettings';
 import LinkedStateMonitor from './subPanes/LinkedStateMonitor';
 import HostConnection from './subPanes/HostConnection';
@@ -87,10 +86,6 @@ export default class SettingsWindow extends Component {
     {
       title: 'Connected Clients',
       component: <ConnectedClients settingsWindow={this} />
-    },
-    {
-      title: 'Environment',
-      component: <Environment settingsWindow={this} />
     }
   ];
 

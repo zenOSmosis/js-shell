@@ -2,6 +2,7 @@
 import FilesApp from './Files';
 import SettingsApp from './Settings';
 import SourceCode from './SourceCode';
+import SystemDetail from './SystemDetail';
 // import WindowManagerApp from './WindowManager';
 // import ScreenRecorder from './ScreenRecorder';
 // import DocsApp from './Docs';
@@ -12,6 +13,7 @@ const defaultApps = [
   FilesApp,
   SettingsApp,
   SourceCode,
+  SystemDetail,
   // WindowManagerApp,
   // ScreenRecorder,
   // DocsApp,
