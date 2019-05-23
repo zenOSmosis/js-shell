@@ -69,7 +69,7 @@ class Dock extends Component {
   }
 }
 
-const appLinkeStateConnectedDock = hocConnect(Dock, AppLinkedState, (updatedState) => {
+export default /*const appLinkeStateConnectedDock =*/ hocConnect(Dock, AppLinkedState, (updatedState) => {
   const {apps} = updatedState;
 
   if (apps) {
@@ -79,6 +79,8 @@ const appLinkeStateConnectedDock = hocConnect(Dock, AppLinkedState, (updatedStat
   }
 });
 
+/*
 export default hocConnect(appLinkeStateConnectedDock, DesktopLinkedState, (updatedState) => {
-  console.warn('TODO: Handle DesktopLinkedState binding', updatedState);
+  console.warn('TODO: Handle Dock DesktopLinkedState binding', updatedState);
 });
+*/

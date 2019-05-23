@@ -32,6 +32,7 @@ export default class DesktopLinkedState extends LinkedState {
       redirectLocation: '/',
 
       // A list of currently running apps
+      // TODO: Remove this from this list; use a new Process/LinkedState, or etc.
       launchedApps: [],
 
       // The background image location of the Desktop
