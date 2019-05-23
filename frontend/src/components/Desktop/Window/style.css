@@ -1,7 +1,6 @@
 .zd-window {
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,.8);
   color: #fff;
   border: 1px rgb(112, 112, 112) solid;
   border-radius: 4px;
@@ -37,7 +36,7 @@
   
   position: relative;
   padding: 2px 0px;
-  margin: 0px 0px 2px 0px;
+  margin: 0px;
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#46474b+0,2f2f31+100 */
   background: #46474b; /* Old browsers */
@@ -96,7 +95,20 @@
   flex: auto;
   overflow: hidden;
   text-align: center;
-  position: relative;
+  position: relative;  
+}
 
-  background-color: #1b1f22;
+/*
+.zd-window .zd-window-body {
+  filter: blur(4px) grayscale(100%);
+}
+*/
+
+.zd-window .zd-window-body-background {
+  background-color: rgba(20,20,20,.85);
+  filter: blur(20px) grayscale(100%);
+}
+
+.zd-window.active .zd-window-body-background {
+  filter: blur(4px);
 }

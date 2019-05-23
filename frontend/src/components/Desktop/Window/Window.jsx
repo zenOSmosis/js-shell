@@ -243,7 +243,7 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
     // TODO: Use constant for active
-    $(this._resizableBody).addClass('active'); // Affects draw shadow
+    $(this._resizableBody).addClass('active'); // Affects outer draw shadow
     $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
 
     desktopLinkedState.setActiveWindow(this);
@@ -260,7 +260,7 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
 
     // TODO: Use constant for active
-    $(this._resizableBody).removeClass('active'); // Affects draw shadow
+    $(this._resizableBody).removeClass('active'); // Affects outer draw shadow
     $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
     this._isActive = false;
 
@@ -544,6 +544,10 @@ export default class Window extends Component {
                       ref={c => this.windowBodyWrapper = c}
                       className="zd-window-body-wrapper"
                     >
+                      <Cover className="zd-window-body-background">
+                        
+                      </Cover>
+
                       <Cover
                         ref={c => this.windowBody = c}
                         className="zd-window-body"
