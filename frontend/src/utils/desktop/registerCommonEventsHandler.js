@@ -1,5 +1,4 @@
-import socket from 'utils/socket.io';
-import { commonDesktopLinkedState, EVT_LINKED_STATE_UPDATE } from 'state/commonLinkedStates';
+import { commonDesktopLinkedState, commonSocketLinkedState, EVT_LINKED_STATE_UPDATE } from 'state/commonLinkedStates';
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 
 let _isRegistered = false;
@@ -16,16 +15,22 @@ const registerCommonEventsHandler = () => {
     return;
   }
 
-  // console.debug('Registering Common Desktop Events handling');
-
-  // Socket.io events
   (() => {
-    socket.on('connect', onSocketConnect);
-    socket.on('disconnect', onSocketDisconnect);  
-  })();
+    // Socket
+    commonSocketLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+      // Socket connection
+        const { connectionStatus } = updatedState;
+        
+        if (typeof connectionStatus !== 'undefined') {
+          console.warn('TODO: Update notification to be pretty');
+          createDesktopNotification({
+            message: 'Socket.io connection status update',
+            description: connectionStatus
+          });
+        }
+    });
 
-  // DesktopLinkedState events
-  (() => {
+    // Desktop
     commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
       // console.debug('Common Desktop Linked State update', updatedState);
 
@@ -49,20 +54,6 @@ const registerCommonEventsHandler = () => {
   })();
 
   _isRegistered = true;
-};
-
-const onSocketConnect = () => {
-  createDesktopNotification({
-    message: 'Connected to host',
-    description: 'A Socket.io connection has been established to the host machine'
-  });
-};
-
-const onSocketDisconnect = () => {
-  createDesktopNotification({
-    message: 'Disconnected from host',
-    description: 'The Socket.io connection has been dropped from the host machine'
-  });
 };
 
 export default registerCommonEventsHandler;
