@@ -1,23 +1,52 @@
 import React, {Component} from 'react';
 import Full from 'components/Full';
-import { Layout, Header, Content, Aside } from 'components/Layout';
+import { Layout, Header, Content, Aside, Footer } from 'components/Layout';
 import { Button } from 'components/Button';
 import { Icon as AntdIcon } from 'antd';
 import SplitEditorHorizontalIcon from 'icons/vscode/split-editor-horizontal-inverse.svg';
 import SplitEditorVerticalIcon from 'icons/vscode/split-editor-vertical-inverse.svg';
 // TODO: Remove; prototyping
 import MonacoEditor from 'components/MonacoEditor';
+import asyncEval from '../../utils/asyncEval';
 import AppContainer from '../AppContainer';
 import createApp from 'utils/desktop/createApp';
 import config from 'config';
+
+// TODO: Remove
+// For editor context
+import page from 'page';
 
 export default class TabbedPane extends Component {
   state = {
     editor: null
   };
 
+  _connectedApp = null;
+
   componentDidMount() {
     console.warn('TODO: Provide editor context');
+
+    /*
+    this._connectedApp = createApp({
+      title: 'Proto app',
+      // mainWindow: ,
+      iconSrc: `${config.HOST_ICON_URI_PREFIX}blueprint/blueprint.svg`,
+      // Proto method
+      render: (props) => {
+        const app = this._connectedApp;
+        const rawCode = this.getEditorValue();
+
+        return (
+          <AppContainer
+            app={app}
+            rawCode={rawCode}
+          />
+        );
+      }
+     });
+
+     this._connectedApp.launch();
+     */
   }
 
   getEditorValue() {
@@ -26,23 +55,37 @@ export default class TabbedPane extends Component {
     return editor.getValue();
   }
 
-  eval() {
-    const editorValue = this.getEditorValue();
+  async eval() {
+    try {
+      const editorValue = this.getEditorValue();
 
-    const newApp = createApp({
-      title: 'Proto app',
-      // mainWindow: ,
-      iconSrc: `${config.HOST_ICON_URI_PREFIX}blueprint/blueprint.svg`
-    });
+      const res = await asyncEval(
+        Object.assign(
+          {},
+          window,
+          {
+            page
+          }
+        ),
+        editorValue);
 
+      if (res) {
+        console.warn('TODO: Handle res?', res);
+      }
+    } catch (exc) {
+      console.error(exc);
+    }
+
+    /*
     newApp.setMainWindow(
       <AppContainer
         app={newApp}
         rawCode={editorValue}
       />
     );
+    */
 
-    newApp.launch();
+    // newApp.launch();
 
     /*
     const context = {
@@ -72,9 +115,13 @@ export default class TabbedPane extends Component {
               <Content>
                 <Button
                   style={{border: 0, padding: 0, borderRadius: 0}}
-                  onClick={ evt => this.eval() }
+                  onClick={ evt => alert('file tab') }
                 >
-                  <AntdIcon type="caret-right" />Run
+                  <AntdIcon type="file" /><span style={{fontStyle: 'italic'}}>Untitled</span>
+
+                  <Button onClick={ evt => alert('close')} >
+                    x
+                  </Button>
                 </Button>
               </Content>
               {
@@ -121,6 +168,22 @@ export default class TabbedPane extends Component {
             <Content>
               <MonacoEditor editorDidMount={ editor => this._setEditor(editor) } key="monaco-1" />
             </Content>
+            <Footer style={{textAlign: 'left'}}>
+              Target:               
+              <div style={{display: 'inline-block'}}>
+                  <select>
+                    <option>Main Thread</option>
+                    <option>Worker Thread</option>
+                    <option>IFrame</option>
+                  </select>
+              </div>
+              <Button
+                style={{border: 0, padding: 0, borderRadius: 0}}
+                onClick={ evt => this.eval() }
+              >
+                <AntdIcon type="caret-right" />Run
+              </Button>
+            </Footer>
           </Layout>
         </Layout>
       </Full>

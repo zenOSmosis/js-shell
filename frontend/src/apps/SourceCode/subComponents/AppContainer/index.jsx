@@ -22,19 +22,18 @@ export default class AppContainer extends Component {
   eval() {
     const {rawCode, app} = this.props;
 
+    /*
     app.console = {
       log: (msg = null) => {
         console.log(msg);
 
         app.setContent(<JSONEditor value={msg} />);
       }
-    }
+    };
+    */
 
-    const evalInContext = () => {
-      console.warn('TODO: Create container app to run this in. Load babel dynamically');
-      
-      eval(`
-        const setTitle = (...args) => { this.setTitle(...args) };
+    /*
+    * const setTitle = (...args) => { this.setTitle(...args) };
         const setContent = (...args) => { this.setContent(...args) };
 
         const console = this.console;
@@ -47,7 +46,14 @@ export default class AppContainer extends Component {
         }
 
         // End bootstrap
+    */
 
+    app.page = page;
+
+    const evalInContext = () => {
+      console.warn('TODO: Create container app to run this in. Load babel dynamically');
+      
+      eval(`
         (async () => {
           try {
             const resp = await (async () => {
