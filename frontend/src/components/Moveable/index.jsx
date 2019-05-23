@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import bufferUIChange from 'utils/bufferUIChange';
 import $ from 'jquery';
 
 export default class Moveable extends Component {
@@ -17,7 +16,7 @@ export default class Moveable extends Component {
     this._posX = parseInt(posX) || 0;
     this._posY = parseInt(posY) || 0;
 
-    bufferUIChange(() => {
+    window.requestAnimationFrame(() => {
       this._$root.css({
         transform: `translate3d(${this._posX}px, ${this._posY}px, 0)`
       });

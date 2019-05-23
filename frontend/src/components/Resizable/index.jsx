@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Moveable from '../Moveable';
 import Gesture from '../Gesture';
 import $ from 'jquery';
-import bufferUIChange from 'utils/bufferUIChange';
 import './style.css';
 
 export const RESIZABLE_DEFAULT_MIN_WIDTH = 300;
@@ -55,7 +54,7 @@ export default class Resizable extends Component {
     this._minWidth = parseInt(minWidth) || RESIZABLE_DEFAULT_MIN_WIDTH;
     this._minHeight = parseInt(minHeight) || RESIZABLE_DEFAULT_MIN_HEIGHT;
 
-    bufferUIChange(() => {
+    window.requestAnimationFrame(() => {
       this.$main.css({
         minWidth: this._minWidth,
         minHeight: this._minHeight
