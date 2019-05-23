@@ -4,6 +4,7 @@ import config from '../config';
 import hocConnect from './hocConnect';
 import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
 import uuidv4 from 'uuid/v4';
+import $ from 'jquery';
 
 export {
   EVT_LINKED_STATE_UPDATE,
@@ -36,7 +37,9 @@ export default class DesktopLinkedState extends LinkedState {
       launchedApps: [],
 
       // The background image location of the Desktop
-      backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI
+      backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
+
+      isFocused: false
     });
   }
 
@@ -137,3 +140,31 @@ export default class DesktopLinkedState extends LinkedState {
     return contextMenuIsTrapping;
   }
 }
+
+(() => {
+  const desktopLinkedState = new DesktopLinkedState();
+
+  $(window).on('blur focus', function(e) {
+    let prevType = $(this).data('prevType');
+
+    let isFocused = true;
+
+    if (prevType != e.type) {   //  reduce double fire issues
+        switch (e.type) {
+            case "blur":
+              isFocused = false;
+            break;
+            
+            case "focus":
+              isFocused = true;
+            break;
+        }
+    }
+
+    $(this).data("prevType", e.type);
+
+    desktopLinkedState.setState({
+      isFocused
+    });
+  });
+})();
