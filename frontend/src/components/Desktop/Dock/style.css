@@ -1,9 +1,13 @@
 .zd-desktop-dock {
   position: absolute;
   bottom: 0px;
-  width: 100%;
   height: 52px;
   text-align: center;
+  margin: 0px auto;
+
+  /* Enables clicking beside the Dock being passed to container */
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .zd-desktop-dock .zd-desktop-dock-items {
