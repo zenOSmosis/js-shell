@@ -39,7 +39,7 @@ export default class DesktopLinkedState extends LinkedState {
       // The background image location of the Desktop
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
-      isFocused: false
+      isFocused: true
     });
   }
 

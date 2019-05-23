@@ -12,6 +12,15 @@ body {
   overflow: hidden;
 }
 
+body.blur,
+body:not(.blur) {
+  transition: filter .4s;
+}
+
+body.blur {
+  filter: grayscale(100%);
+}
+
 h1 {
   font-size: 1.4rem;
 }
@@ -102,6 +111,12 @@ code {
   text-align: center;
   background-color: transparent;
   color: white;
+
+  filter: blur(20) grayscale(80%);
+}
+
+.zd-desktop:not(.focused) {
+  filter: blur(20) grayscale(80%);
 }
 
 /*

@@ -17,14 +17,38 @@ import DesktopBackground from './DesktopBackground';
 // import { BrowserRouter as Router } from 'react-router-dom';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
-// import DesktopLinkedState from 'state/DesktopLinkedState';
+import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 
-export default class Desktop extends Component {
+import $ from 'jquery';
+
+class Desktop extends Component {
+  componentDidMount() {
+    this._handleFocusUpdate();
+  }
+
+  componentDidUpdate() {
+    this._handleFocusUpdate();
+  }
+
+  _handleFocusUpdate = () => {
+    const {isFocused} = this.props;
+
+    if (typeof isFocused !== 'undefined') {
+      const $body = $(window.document.body);
+
+      if (!isFocused) {
+        $body.addClass('blur');
+      } else {
+        $body.removeClass('blur');
+      }
+    }
+  }
+  
   render() {
     return (
       <div ref={c => this._el = c}>
 
-        <FullViewport className="zd-desktop">
+        <FullViewport>
 
           {
             // <URIRedirector /> 
@@ -88,3 +112,17 @@ export default class Desktop extends Component {
     );
   }
 }
+
+export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
+  const {isFocused} = updatedState;
+
+  let filteredState = {};
+
+  if (typeof isFocused !== 'undefined') {
+    filteredState.isFocused = isFocused;
+  }
+
+  if (Object.keys(filteredState).length) {
+    return filteredState;
+  }
+});
