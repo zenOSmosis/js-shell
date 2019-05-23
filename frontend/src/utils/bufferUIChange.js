@@ -1,6 +1,8 @@
+// TODO: Add support for these
+// const DESIRED_FPS = 90;
+// const BUFFER_MS = parseInt(1000 / DESIRED_FPS);
+
 /**
- * TODO: This may need performance improvements
- * 
  * Adds a short-term buffer between rapid GUI changes in order to free CPU time
  * and prevent the UI from periodically locking up.
  *
@@ -9,9 +11,6 @@
  * will be executed within that stack.
  */
 const bufferUIChange = (() => {
-  // const DESIRED_FPS = 90;
-  // const BUFFER_MS = parseInt(1000 / DESIRED_FPS);
-  //
   // TODO: Make able to be set externally
   const BUFFER_MS = 5;
 
@@ -34,29 +33,37 @@ const bufferUIChange = (() => {
         return true;
       });
 
+      // Add new frame to stack
       this._changeFrames.push(onChange);
 
       clearTimeout(this._nativeTimeout);
 
       this._nativeTimeout = setTimeout(() => {
-        this.execChangeFrames();
+        this.render();
       }, BUFFER_MS);
     }
 
     /**
      * Runs all change frames, then clears the stack.
      */
-    execChangeFrames() {
-      window.requestAnimationFrame(() => {
-        let totalChangeFrames = this._changeFrames.length;
+    render() {
+      // Create local buffer
+      const changeFrames = this._changeFrames;
+      
+      // Empty class buffer
+      this.clearChangeFrames();
 
-        // Execute each change frame
-        for (let i = 0; i < totalChangeFrames; i++) {
-          this._changeFrames[i]();
-        }
+      const totalChangeFrames = changeFrames.length;
 
-        this.clearChangeFrames();
-      });
+      if (totalChangeFrames) {
+        // Run
+        window.requestAnimationFrame(() => {
+          // Execute each change frame
+          for (let i = 0; i < totalChangeFrames; i++) {
+            changeFrames[i]();
+          }
+        }); 
+      }
     }
 
     /**
