@@ -125,7 +125,7 @@ export default class Resizable extends Component {
 
     const {x: posX, y: posY} = moveableComponent.getPosition();
     
-    // NOTE: Using bufferUIChange here causes window jumpiness
+    // NOTE: Using bufferAnimateFrame here causes window jumpiness
 
     switch (direction) {
       case RESIZE_DIRECTION_NORTHWEST:

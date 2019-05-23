@@ -6,24 +6,24 @@
  * Adds a short-term buffer between rapid GUI changes in order to free CPU time
  * and prevent the UI from periodically locking up.
  *
- * Note:  Some frames may be skipped if duplicate onChange signatures are
+ * Note:  Some frames may be skipped if duplicate animationFrame signatures are
  * passed within the BUFFER_MS time period.  If so, the last frame passed
  * will be executed within that stack.
  */
-const bufferUIChange = (() => {
+const bufferAnimateFrame = (() => {
   // TODO: Make able to be set externally
   const BUFFER_MS = 5;
 
   class UIChangeStack {
-    _changeFrames = [];
+    _animationFrames = [];
 
     _nativeTimeout = null;
 
-    addChangeFrame(onChange) {
-      const changeSignature = onChange.toString();
+    addAnimationFrame(animationFrame) {
+      const changeSignature = animationFrame.toString();
 
       // Remove existing change frames with same function signature
-      this._changeFrames = this._changeFrames.filter((changeFrame) => {
+      this._animationFrames = this._animationFrames.filter((changeFrame) => {
         const testChangeSignature = changeFrame.toString();
 
         if (changeSignature === testChangeSignature) {
@@ -34,7 +34,7 @@ const bufferUIChange = (() => {
       });
 
       // Add new frame to stack
-      this._changeFrames.push(onChange);
+      this._animationFrames.push(animationFrame);
 
       clearTimeout(this._nativeTimeout);
 
@@ -48,7 +48,7 @@ const bufferUIChange = (() => {
      */
     render() {
       // Create local buffer
-      const changeFrames = this._changeFrames;
+      const changeFrames = this._animationFrames;
       
       // Empty class buffer
       this.clearChangeFrames();
@@ -70,15 +70,15 @@ const bufferUIChange = (() => {
      * Empties the change frame stack.
      */
     clearChangeFrames() {
-      this._changeFrames = [];
+      this._animationFrames = [];
     }
   }
 
   const uiChangeStack = new UIChangeStack();
 
-  return (onChange) => {
-    uiChangeStack.addChangeFrame(onChange);
+  return (animationFrame) => {
+    uiChangeStack.addAnimationFrame(animationFrame);
   };
 })();
 
-export default bufferUIChange;
+export default bufferAnimateFrame;
