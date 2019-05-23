@@ -1,7 +1,6 @@
 // Note, currently the mere inclusion of this registers all of the default apps
 import /*apps from*/ 'apps/defaultApps';
 import React, { Component } from 'react';
-import Center from 'components/Center';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
 
@@ -27,6 +26,16 @@ import hocConnect from 'state/hocConnect';
     }
   }
 
+  _onInteract = (evt) => {
+    const {onDirectInteract} = this.props;
+
+    if (typeof onDirectInteract === 'function') {
+      if (evt.target === this._el ) {
+        onDirectInteract(evt);
+      }
+    }
+  }
+
   render() {
     // TODO: Base this off of open windows, instead of apps
     let {launchedApps} = this.props;
@@ -35,7 +44,12 @@ import hocConnect from 'state/hocConnect';
     }
   
     return (
-      <Center>
+      <div
+        ref={ c => this._el = c }
+        onMouseDown={ this._onInteract }
+        onTouchStart={ this._onInteract }
+        style={{width: '100%', height: '100%'}}
+      >
         {
           launchedApps.map((app) => {
             const uuid = app.getUUID();
@@ -52,7 +66,7 @@ import hocConnect from 'state/hocConnect';
             );
           })
         }
-      </Center>
+      </div>
     );
   }
 }

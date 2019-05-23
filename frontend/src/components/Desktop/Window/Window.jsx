@@ -11,43 +11,44 @@ import ContextMenu from 'components/ContextMenu';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Cover from 'components/Cover';
 import Moveable from 'components/Moveable';
-import ViewTransition from 'components/ViewTransition';
+// import ViewTransition from 'components/ViewTransition';
 import Resizable from 'components/Resizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
 import WindowHeader from './Header';
+import animate from 'utils/animate';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
 import {
   WindowLifecycleEvents,
   EVT_WINDOW_CREATED,
   EVT_WINDOW_MOUNTED,
-  
+
   EVT_WINDOW_TITLE_WILL_SET,
   EVT_WINDOW_TITLE_DID_SET,
 
   EVT_WINDOW_WILL_ACTIVATE,
   EVT_WINDOW_DID_ACTIVATE,
-  
+
   EVT_WINDOW_WILL_DEACTIVATE,
   EVT_WINDOW_DID_DEACTIVATE,
-  
+
   EVT_WINDOW_WILL_MINIMIZE,
   EVT_WINDOW_DID_MINIMIZE,
-  
+
   EVT_WINDOW_WILL_MAXIMIZE,
   EVT_WINDOW_DID_MAXIMIZE,
-  
+
   EVT_WINDOW_WILL_CLOSE,
   EVT_WINDOW_DID_CLOSE,
-  
+
   EVT_WINDOW_WILL_HIDE,
   EVT_WINDOW_DID_HIDE,
-  
+
   EVT_WINDOW_WILL_UNHIDE,
   EVT_WINDOW_DID_UNHIDE,
-  
+
   EVT_WINDOW_WILL_RESIZE,
   EVT_WINDOW_DID_RESIZE
 } from './windowLifecycleEvents';
@@ -77,7 +78,7 @@ export const getWindowStack = () => {
 // Only a single window can be "active" at a time (that is, the focused window)
 (() => {
   desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-    const {activeWindow} = updatedState;
+    const { activeWindow } = updatedState;
 
     if (typeof activeWindow !== 'undefined') {
       const windowStack = getWindowStack();
@@ -120,13 +121,13 @@ export default class Window extends Component {
       // Override default broadcast handler
       lifecycleEvents.broadcast = (() => {
         const oBroadcast = lifecycleEvents.broadcast;
-  
+
         return (...args) => {
           const eventName = args[0];
           if (typeof this.props[`on${eventName}`] === 'function') {
             this.props[`on${eventName}`](this);
           }
-  
+
           return oBroadcast.apply(this.lifecycleEvents, args);
         };
       })();
@@ -142,21 +143,18 @@ export default class Window extends Component {
       if (this.isClosed) {
         return;
       }
-      
+
       const { app } = this.props;
       if (app) {
         app.setRealWindow(this);
       }
-      
+
       // Set Window title either from props or from app
       // TODO: Remove app here; use passed props
       // const { app, title: propsTitle } = this.props;
       // const title = (app ? app.getTitle() : propsTitle);
       // this.setTitle(title);
       this.autosetTitle();
-
-      // Listen for touch / mouse
-      this._startInteractListening();
 
       this.activate();
 
@@ -176,10 +174,7 @@ export default class Window extends Component {
     this.autosetTitle();
 
     // TODO: Rework this
-    const base = this._base._base;
-
-    // TODO: Rework this
-    $(base).css({
+    $(this._el).css({
       zIndex: this.state.zStack
     });
   }
@@ -206,7 +201,7 @@ export default class Window extends Component {
       return;
     }
 
-    const {title: existingTitle} = this.state;
+    const { title: existingTitle } = this.state;
     if (title === existingTitle) {
       console.warn('Title has not changed');
       return;
@@ -221,7 +216,7 @@ export default class Window extends Component {
   }
 
   getTitle() {
-    const {title} = this.state;
+    const { title } = this.state;
 
     return title;
   }
@@ -230,30 +225,13 @@ export default class Window extends Component {
     return this._uuid;
   }
 
-  _startInteractListening() {
-    $(window).on('mousedown', this._onInteract);
-    $(window).on('touchstart', this._onInteract);
-  }
-
-
-  _stopInteractListening() {
-    $(window).off('mousedown', this._onInteract);
-    $(window).off('touchstart', this._onInteract);
-  }
-
   _onInteract = (evt) => {
     if (this.isClosed) {
       return;
     }
 
-    // TODO: Rework this
-    const base = this._base._base;
-
     // Activate window if touched
-    if (base === evt.target ||
-      $.contains(base, evt.target)) {
-      this.activate();
-    }
+    this.activate();
   };
 
   activate() {
@@ -361,21 +339,18 @@ export default class Window extends Component {
    */
   async animate(effect) {
     try {
-      // TODO: Rework base parsing
-      const base = this._base;
-
-      await base.animate(effect); 
+      await animate(this._el, effect);
     } catch (exc) {
       throw exc;
     }
   }
 
   getPosition() {
-    return this.moveable.getPosition();
+    return this._moveable.getPosition();
   }
 
   moveTo(posX, posY) {
-    this.moveable.moveTo(posX, posY);
+    this._moveable.moveTo(posX, posY);
   }
 
   /**
@@ -386,12 +361,12 @@ export default class Window extends Component {
    */
   /*
   setOuterSize(width, height) {
-    $(this.moveable).css({
+    $(this._moveable).css({
       width,
       height
     });
 
-    const $header = $(this.windowHeader);
+    const $header = $(this._windowHeader);
     const headerHeight = $header.outerHeight();
 
     const bodyHeight = height - headerHeight;
@@ -418,7 +393,7 @@ export default class Window extends Component {
     // this.bodyCover.setIsVisible(true);
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
-    
+
     $(this.windowBody).css({
       width: width,
       height: height
@@ -506,9 +481,6 @@ export default class Window extends Component {
     };
     */
 
-    // Width & height of 0 on backing div is important for allowing windows to
-    // move if two, or more windows, are created on the same coordinates
-
     if (this.isClosed) {
       return (
         <span></span>
@@ -516,34 +488,35 @@ export default class Window extends Component {
     }
 
     return (
-      <ViewTransition
-        ref={c => this._base = c}
-        className={`${className ? className : ''}`}
-        // Important to note that the width & height of the transition layer
-        // is intentionally kept at 0 width / height
+      <div
+        ref={c => this._el = c}
+        onMouseDown={this._onInteract}
+        onTouchStart={this._onInteract}
+        // Note: The width & height of the transition layer are intentionally
+        // kept at 0 width / height
         style={{ position: 'absolute', width: 0, height: 0 }}
-        effect={null}
       >
+
         <Moveable
-          ref={c => this.moveable = c}
+          ref={c => this._moveable = c}
         // initialX={...}
         // initialY={...}
         >
-        <ContextMenu>
+          <ContextMenu>
 
-          <Resizable
-            ref={c => this._resizable = c}
-            onResize={this._handleResize}
-            moveableComponent={this.moveable}
-            minWidth={minWidth}
-            minHeight={minHeight}
-            bodyClassName="zd-window-resizable"
-            onBodyMount={c => this._resizableBody = c}
-          // maxWidth={}
-          // maxHeight={}
-          >
-            <Cover>
-              <StackingContext>
+            <Resizable
+              ref={c => this._resizable = c}
+              onResize={this._handleResize}
+              moveableComponent={this._moveable}
+              minWidth={minWidth}
+              minHeight={minHeight}
+              bodyClassName="zd-window-resizable"
+              onBodyMount={c => this._resizableBody = c}
+            // maxWidth={}
+            // maxHeight={}
+            >
+              <Cover>
+                <StackingContext>
                   <div
                     {...propsRest}
                     ref={c => this._drawRef = c}
@@ -556,7 +529,7 @@ export default class Window extends Component {
                     }
 
                     <WindowHeader
-                      ref={c => this.windowHeader = c}
+                      ref={c => this._windowHeader = c}
                       desktopWindow={this}
                       title={title}
                       toolbar={toolbar}
@@ -600,26 +573,26 @@ export default class Window extends Component {
                     </div>
 
                   </div>
-              </StackingContext>
-            </Cover>
-
-            {
-              /*
-              <Cover>
-                [ TOTAL WINDOW COVER ]
+                </StackingContext>
               </Cover>
-              */
-            }
 
-          </Resizable>
+              {
+                /*
+                <Cover>
+                  [ TOTAL WINDOW COVER ]
+                </Cover>
+                */
+              }
+
+            </Resizable>
           </ContextMenu>
         </Moveable>
-      </ViewTransition>
+      </div>
     );
   }
 
   close() {
-    const {app} = this.props;
+    const { app } = this.props;
 
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
@@ -627,10 +600,6 @@ export default class Window extends Component {
     }
 
     this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
-
-    if (this._stopInteractListening) {
-      this._stopInteractListening();
-    }
 
     this.isClosed = true;
 

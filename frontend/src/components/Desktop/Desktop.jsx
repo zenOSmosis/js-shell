@@ -22,61 +22,69 @@ import DesktopBackground from './DesktopBackground';
 export default class Desktop extends Component {
   render() {
     return (
-      <FullViewport className="zd-desktop">
+      <div ref={c => this._el = c}>
 
-        {
-          // <URIRedirector /> 
-        }
+        <FullViewport className="zd-desktop">
 
-        <ContextMenu>
+          {
+            // <URIRedirector /> 
+          }
 
-          <DesktopBackground>
+          <ContextMenu>
 
-            {
-              // Top Panel
-            }
-            <Panel />
+            <DesktopBackground ref={c => this._desktopBackground = c}>
 
-            <Notifications />
+              <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
 
-            {
-              // TODO: Implement DrawersLayer as a separate component
-              // @see https://ant.design/components/drawer/
-              /*
-              <Drawer
-                mask={false}
-                bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                onContextMenu={ (evt) => alert('context') }
-                placement="right"
-                visible={true}
-              >
-                Well, hello
-              </Drawer>
-              */
-            }
+                {
+                  // Top Panel
+                }
+                <Panel />
 
-            {
-              // Binds windows to URI location; sets page title
-              // <AppRouteController />
-            }
+                <Notifications />
+
+                {
+                  // TODO: Implement DrawersLayer as a separate component
+                  // @see https://ant.design/components/drawer/
+                  /*
+                  <Drawer
+                    mask={false}
+                    bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                    onContextMenu={ (evt) => alert('context') }
+                    placement="right"
+                    visible={true}
+                  >
+                    Well, hello
+                  </Drawer>
+                  */
+                }
+
+                {
+                  // Binds windows to URI location; sets page title
+                  // <AppRouteController />
+                }
 
 
-            {
-              // Renders windows
-            }
-            <WindowDrawLayer />
+                {
+                  // Renders windows
+                }
+                <WindowDrawLayer onDirectInteract={ evt => console.debug('Desktop Interact', evt) } />
 
-            {
-              // Bottom Dock
-            }
+                {
+                  // Bottom Dock
+                }
 
-            <Dock />
+                <Dock />
 
-          </DesktopBackground>
+              </div>
 
-        </ContextMenu>
+            </DesktopBackground>
 
-      </FullViewport>
+          </ContextMenu>
+
+        </FullViewport>
+
+      </div>
     );
   }
 }

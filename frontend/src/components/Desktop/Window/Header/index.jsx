@@ -19,29 +19,13 @@ export default class WindowHeader extends Component {
   }
   */
 
-  handleTouchStart = (evt) => {
-    // console.debug('touch');
-
-    // console.debug('touch start', evt);
-
+  _handleTouchStart = (evt) => {
     const {desktopWindow} = this.props;
   
-    let {x: winPosX, y: winPosY} = desktopWindow.getPosition();
-    // winPosX = winPosX || 0;
-    // winPosY = winPosY || 0;
-
-    // console.debug('touch start', evt);
-    this._initialWindowPosition = {
-      x: winPosX,
-      y: winPosY
-    };
-
-    // TODO: Remove
-    // console.debug('start', evt);
-    // console.debug('initial window position', this._initialTouchPosition);
+    this._initialWindowPosition = desktopWindow.getPosition();
   }
 
-  handleTouchMove = (evt) => {
+  _handleTouchMove = (evt) => {
     const {desktopWindow} = this.props;
     const {x: initialWinPosX, y: initialWinPosY} = this._initialWindowPosition;
 
@@ -55,7 +39,7 @@ export default class WindowHeader extends Component {
   }
 
   // TODO: Handle touch end (if necessary)
-  handleTouchEnd = (evt) => {
+  _handleTouchEnd = (evt) => {
     // console.debug('touch end', evt);
   }
 
@@ -90,10 +74,9 @@ export default class WindowHeader extends Component {
         <Gesture
           touch={true}
           mouse={true}
-          onDown={(evt) => this.handleTouchStart(evt)}
-          onMove={(evt) => this.handleTouchMove(evt)}
-          onUp={(evt) => this.handleTouchEnd(evt)}
-          // onMove={ evt => console.debug(evt) /* (evt) => desktopWindow.moveTo(evt.xy[0], evt.xy[1]) */}
+          onDown={(evt) => this._handleTouchStart(evt)}
+          onMove={(evt) => this._handleTouchMove(evt)}
+          onUp={(evt) => this._handleTouchEnd(evt)}
         >
           {
             // Header content area is rendered in here
