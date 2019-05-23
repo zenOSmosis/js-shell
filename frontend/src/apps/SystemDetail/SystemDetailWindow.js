@@ -87,7 +87,7 @@ class Environment extends Component {
                 <div>
                   Display Mode:
                   <select>
-                    <option>Window</option>
+                    <option>Desktop</option>
                     <option>Touch</option>
                   </select>
                   <hr />
