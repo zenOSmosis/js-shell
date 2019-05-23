@@ -1,3 +1,6 @@
+// TODO: Implement ability to cancel running query.  If the availability is not
+// implemented directly in socket.io, proxy it
+
 import socket from './socket.io';
 import socketAPIRoutes from './socketAPIRoutes';
 
