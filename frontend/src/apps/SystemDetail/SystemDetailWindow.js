@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import app from './app';
 import Window from 'components/Desktop/Window';
+import { Button, ButtonGroup } from 'components/ButtonGroup';
 import Scrollable from 'components/Scrollable';
 import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 import { Layout, Header, Content, Footer } from 'components/Layout';
@@ -16,6 +17,19 @@ export default class SystemDetailWindow extends Component {
       <Window
         {...propsRest}
         app={app}
+        toolbar={
+          <ButtonGroup style={{whiteSpace: 'nowrap'}}>
+            <Button>
+              System Overview
+            </Button>
+            <Button>
+              Processes
+            </Button>
+            <Button active={true}>
+              Environment
+            </Button>
+          </ButtonGroup>
+        }
       >
         <ConnectedEnvironment />
       </Window>

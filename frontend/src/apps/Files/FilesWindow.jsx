@@ -114,7 +114,7 @@ export default class FilesWindow extends Component {
           <Search size="small" />
         }
         subToolbar={
-          <div>
+          <div style={{textAlign: 'center'}}>
             <div style={{ float: 'left', position: 'relative' }}>
               &nbsp;
               <div style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap' }}>
