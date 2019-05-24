@@ -7,14 +7,14 @@ import SplitEditorHorizontalIcon from 'icons/vscode/split-editor-horizontal-inve
 import SplitEditorVerticalIcon from 'icons/vscode/split-editor-vertical-inverse.svg';
 // TODO: Remove; prototyping
 import MonacoEditor from 'components/MonacoEditor';
-import asyncEval from '../../utils/asyncEval';
-import AppContainer from '../AppContainer';
-import createApp from 'utils/desktop/createApp';
-import config from 'config';
 
 // TODO: Remove
 // For editor context
-import page from 'page';
+// import page from 'page';
+import evalInContext from 'utils/evalInContext';
+import ClientGUIProcess from 'process/ClientGUIProcess';
+import Window from 'components/Desktop/Window';
+import Center from 'components/Center';
 
 export default class TabbedPane extends Component {
   state = {
@@ -55,9 +55,82 @@ export default class TabbedPane extends Component {
     return editor.getValue();
   }
 
-  async eval() {
+  eval() {
+    // @see https://codepen.io/namuol/pen/MXJOzy
+    
+    // TODO: Remove this.. just prototyping here
+    /*
+    window['zdModules'] = {
+      ClientGUIProcess
+    };
+    */
+
+  const compile = () => {
+    let compiledCode = window.Babel.transform(this.getEditorValue(), { presets: ['react', 'es2015'] }).code;
+
+    compiledCode = compiledCode.split('undefined').join('this');
+
+    return compiledCode;
+  };
+
+  const compiledCode = compile();
+
+  evalInContext(compiledCode, {
+    Center,
+    ClientGUIProcess,
+    React,
+    zdComponents: {
+      Window,
+      Center
+    }
+  });
+
+    /*
+    const evalInContext = () => {
+      
+
+      const codeWrapper = `
+        (() => {
+          ${compiledCode}
+        })();
+      `;
+
+      eval(codeWrapper);
+    };
+
+    evalInContext.call({
+      React,
+      ClientGUIProcess,
+      zdComponents: {
+        Window,
+        Center
+      }
+    });
+    */
+
+    /*
+    const blob = new Blob([code], {
+        type: 'text/javascript'
+    });
+
+    const blobURL = URL.createObjectURL(blob);
+
+    // TODO: Include ability to exec blobURL in a worker thread, or load it in an iFrame
+
+    const elScript = document.createElement('script');
+    // elScript.type = 'module';
+    elScript.src = blobURL;
+    window.document.body.appendChild(elScript);
+    */
+
+    // URL.revokeObjectURL(blobURL);
+
+    /*
+    (async () => {
+        // const res = await fetch(objURL);
+        // const text = await res.text();
     try {
-      const editorValue = this.getEditorValue();
+      
 
       const res = await asyncEval(
         Object.assign(

@@ -18,6 +18,7 @@ import DesktopBackground from './DesktopBackground';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import ClientGUIProcesses from './ClientGUIProcesses';
 
 import $ from 'jquery';
 
@@ -88,6 +89,7 @@ class Desktop extends Component {
                   // <AppRouteController />
                 }
 
+                <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
 
                 {
                   // Renders windows
@@ -97,7 +99,6 @@ class Desktop extends Component {
                 {
                   // Bottom Dock
                 }
-
                 <Dock />
 
               </div>

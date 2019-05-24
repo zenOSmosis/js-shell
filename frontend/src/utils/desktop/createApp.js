@@ -1,6 +1,6 @@
 import { commonAppLinkedState } from 'state/commonLinkedStates';
-import createDesktopNotification from '../createDesktopNotification';
-import App from './App';
+import createDesktopNotification from './createDesktopNotification';
+import App from 'utils/clientSystem/ClientApp';
 
 const createApp = (appProps) => {
   const newApp = new App(appProps);

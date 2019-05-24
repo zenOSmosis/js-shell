@@ -157,6 +157,8 @@ export default class App extends EventEmitter {
       return;
     }
 
+    // TODO: Launch new Process
+
     this._isRunning = true;
 
     commonDesktopLinkedState.registerLaunchedApp(this);

@@ -64,6 +64,12 @@ export default class Resizable extends Component {
 
   handleTouchStart = (evt) => {
     const {moveableComponent} = this.props;
+
+    if (!moveableComponent) {
+      console.error('No moveable component', this.props);
+      return;
+    }
+
     // console.debug('touch start', evt);
 
     const {x: initialPosX, y: initialPosY} = moveableComponent.getPosition();
@@ -91,8 +97,9 @@ export default class Resizable extends Component {
 
     const {onResize, moveableComponent} = this.props;
 
-    if (!(moveableComponent instanceof Moveable)) {
-      throw new Error('moveableComponent must be a Moveable component');
+    if (!moveableComponent) {
+      console.error('No moveable component', this.props);
+      return;
     }
 
     direction = direction.toLowerCase();

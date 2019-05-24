@@ -99,6 +99,7 @@ export default class Window extends Component {
     title: null,
     // isActive: false,
     // zStack: zStack + 1
+    ready: false
   };
 
   _uuid = null;
@@ -161,6 +162,15 @@ export default class Window extends Component {
       await this.animate(EFFECT_CREATE);
 
       this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+
+      this.setState({
+        ready: true
+      }, () => {
+        const { onReady } = this.props;
+        if (typeof onReady === 'function') {
+          onReady(this);
+        }
+      });
     } catch (exc) {
       throw exc;
     }
@@ -466,7 +476,7 @@ export default class Window extends Component {
       ...propsRest
     } = this.props;
 
-    children = app.getContentOverride() || children;
+    children = (app && app.getContentOverride()) || children;
 
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
@@ -613,6 +623,8 @@ export default class Window extends Component {
       app
     });
 
-    app.close();
+    if (app) {
+      app.close();
+    }
   }
 }

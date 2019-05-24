@@ -1,5 +1,5 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import App from '../utils/desktop/createApp';
+import App from 'utils/clientSystem/ClientApp';
 
 export {
   EVT_LINKED_STATE_UPDATE

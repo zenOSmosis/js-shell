@@ -61,8 +61,10 @@ html {
   box-sizing: border-box !important;
 }
 
-button {
-  color: #000
+button,
+input {
+  background-color: #000;
+  border: 1px rgba(255,255,255,.4) solid;
 }
 
 select {

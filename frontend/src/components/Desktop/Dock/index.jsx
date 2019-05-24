@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import ViewTransition from 'components/ViewTransition';
 import Image from 'components/Image';
 import { Tooltip } from 'antd';
 import hocConnect from 'state/hocConnect';
 import AppLinkedState from 'state/AppLinkedState';
-import DesktopLinkedState from 'state/DesktopLinkedState';
+// import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
 
 class Dock extends Component {
@@ -47,10 +46,10 @@ class Dock extends Component {
 
               // TODO: Convert to DockItem (or equiv.) class
               return (
-                <ViewTransition
+                <div
                   key={idx}
-                  effect="wobble" // TODO: Use variable
-                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px' }}
+                  // effect="wobble" // TODO: Use variable
+                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px', display: 'inline-block' }}
                 >
                   <Tooltip title={title}>
                     <button
@@ -59,7 +58,7 @@ class Dock extends Component {
                       <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
                     </button>
                   </Tooltip>
-                </ViewTransition>
+                </div>
               );
             })
           }

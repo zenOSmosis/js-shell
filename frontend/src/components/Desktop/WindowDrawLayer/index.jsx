@@ -12,20 +12,6 @@ import hocConnect from 'state/hocConnect';
  * Note: This should be treated as a singleton, having only one instance.
  */
  class WindowDrawLayer extends Component {
-  state = {
-    launchedApps: []
-  };
-
-  linkedStateUpdateFilter(updatedState) {
-    const {launchedApps} = updatedState;
-
-    if (launchedApps) {
-      return {
-        launchedApps
-      };
-    }
-  }
-
   _onInteract = (evt) => {
     const {onDirectInteract} = this.props;
 

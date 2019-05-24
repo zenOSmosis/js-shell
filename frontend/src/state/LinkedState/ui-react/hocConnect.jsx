@@ -90,14 +90,16 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null, onC
       />;
     }
 
-    _handleLinkedStateUpdate = (updatedState) => {
+    _handleLinkedStateUpdate = (changedState) => {
       if (typeof stateUpdateFilter === 'function') {
+        const fullState = this._linkedStateInstance.getState();
+
         // Overwrite updatedState w/ filter response
-        updatedState = stateUpdateFilter(updatedState) || {};
+        changedState = stateUpdateFilter(changedState, fullState) || {};
       }
 
-      if (updatedState) {
-        this.setState(updatedState);
+      if (Object.keys(changedState).length) {      
+        this.setState(changedState); 
       }
     }
   };
