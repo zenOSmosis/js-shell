@@ -1,3 +1,6 @@
+// TODO: Implement automatic forking if a new process is generated inside of
+// the context of another process.
+
 // TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
 
 import EventEmitter from 'events';
@@ -20,13 +23,16 @@ export default class ClientProcess extends EventEmitter {
   _parentProcess = null;
   _name = null;
   _startDate = null;
+  _serviceURI = null;
+  _isLaunched = false;
   _isExited = false;
-  _serviceURI;
 
   constructor(cmd, parentProcess = null) {
     super();
 
     this._serviceURI = window.location.href;
+
+    this._parentProcess = parentProcess;
 
     this._cmd = cmd;
 
@@ -38,6 +44,26 @@ export default class ClientProcess extends EventEmitter {
     this._startDate = new Date();
 
     this._launch();
+  }
+
+  async _launch() {
+    if (this._isLaunched) {
+      console.warn('Process has already launched');
+      return;
+    }
+
+    this._isLaunched = true;
+
+    processLinkedState.addProcess(this);
+
+    console.debug('Running process', this);
+
+    try {
+      await this._cmd(this);
+    } catch (exc) {
+      this.kill();
+      throw exc;
+    }
   }
 
   setName(name) {
@@ -71,19 +97,6 @@ export default class ClientProcess extends EventEmitter {
 
   fork() {
     throw new Error('TODO: Implement forking');
-  }
-
-  async _launch() {
-    processLinkedState.addProcess(this);
-
-    console.debug('Running process', this);
-
-    try {
-      await this._cmd(this);
-    } catch (exc) {
-      this.kill();
-      throw exc;
-    }
   }
 
   kill() {

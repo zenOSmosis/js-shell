@@ -12,6 +12,7 @@ import MonacoEditor from 'components/MonacoEditor';
 // For editor context
 // import page from 'page';
 import evalInContext from 'utils/evalInContext';
+import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
@@ -78,6 +79,7 @@ export default class TabbedPane extends Component {
   const compiledCode = compile();
 
   evalInContext(compiledCode, {
+    getLogicalProcessors,
     Center,
     ClientProcess,
     ClientGUIProcess,

@@ -3,7 +3,7 @@ const { Window } = zdComponents;
 
 new ClientGUIProcess(
   (proc) => {
-    proc.retain();
+    // proc.retain();
 
     proc.setName('xterm');
 
@@ -27,7 +27,7 @@ new ClientGUIProcess(
     );
 
     setTimeout(() => {
-      // TODO: Ensure window receives this update
+      // TODO: Assert window receives this update
       proc.setName('Hello1111');
     }, 2000);
   }
