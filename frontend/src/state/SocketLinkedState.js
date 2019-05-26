@@ -1,8 +1,8 @@
 import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
+import fetchClientIP from 'utils/fetchClientIP';
 export {
   EVT_LINKED_STATE_UPDATE
 };
-import fetchClientIP from 'utils/fetchClientIP';
 
 const SOCKET_LINKED_SCOPE_NAME = 'socket-linked-scope';
 

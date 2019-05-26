@@ -9,11 +9,17 @@ class Processes extends Component {
 
     // TODO: Make table sortable
     return (
-      <table style={{width: '100%'}}>
+      <table style={{width: '100%', textAlign: 'left'}}>
         <thead>
           <tr>
             <td>
               PID
+            </td>
+            <td>
+              Class
+            </td>
+            <td>
+              ServiceURI
             </td>
             <td>
               Start Date
@@ -30,6 +36,8 @@ class Processes extends Component {
           {
             processes.map((process, idx) => {
               const startDate = process.getStartDate().toString();
+              const className = process.getClassName();
+              const serviceURI = process.getServiceURI();
               const pid = process.getPID();
               const name = process.getName();
               
@@ -39,6 +47,12 @@ class Processes extends Component {
                     { pid }
                   </td>
                   <td>
+                    { className }
+                  </td>
+                  <td style={{maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
+                    { serviceURI }
+                  </td>
+                  <td style={{maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
                     { startDate }
                   </td>
                   <td>

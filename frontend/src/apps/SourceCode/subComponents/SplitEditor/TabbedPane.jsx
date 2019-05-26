@@ -12,7 +12,9 @@ import MonacoEditor from 'components/MonacoEditor';
 // For editor context
 // import page from 'page';
 import evalInContext from 'utils/evalInContext';
+import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
+import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -77,7 +79,9 @@ export default class TabbedPane extends Component {
 
   evalInContext(compiledCode, {
     Center,
+    ClientProcess,
     ClientGUIProcess,
+    ClientWorkerProcess,
     React,
     zdComponents: {
       Window,

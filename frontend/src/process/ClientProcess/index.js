@@ -15,21 +15,20 @@ const processLinkedState = new ProcessLinkedState();
 let nextPID = 0;
 
 export default class ClientProcess extends EventEmitter {
-  _runTarget = null;
   _pid = -1;
   _cmd = null;
   _parentProcess = null;
   _name = null;
   _startDate = null;
-  _retain = false;
   _isExited = false;
+  _serviceURI;
 
-  constructor(cmd, runTarget = RUN_TARGET_MAIN_THREAD, parentProcess = null) {
+  constructor(cmd, parentProcess = null) {
     super();
 
-    this._cmd = cmd;
+    this._serviceURI = window.location.href;
 
-    this._runTarget = runTarget;
+    this._cmd = cmd;
 
     this._pid = nextPID;
 
@@ -51,6 +50,10 @@ export default class ClientProcess extends EventEmitter {
     return this._name;
   }
 
+  getServiceURI() {
+    return this._serviceURI;
+  }
+
   getStartDate() {
     return this._startDate;
   }
@@ -63,15 +66,11 @@ export default class ClientProcess extends EventEmitter {
   }
 
   getClassName() {
-    return this.prototype.constructor.name;
+    return this.constructor.name;
   }
 
   fork() {
     throw new Error('TODO: Implement forking');
-  }
-
-  retain() {
-    this._isRetained = true;
   }
 
   async _launch() {
@@ -85,13 +84,11 @@ export default class ClientProcess extends EventEmitter {
       this.kill();
       throw exc;
     }
-
-    if (!this._isRetained) {
-      this.kill();
-    }
   }
 
   kill() {
+    console.debug('Shutting down process', this);
+
     // Tell anyone that this operation is about to complete
     this.emit(EVT_PROCESS_BEFORE_EXIT);
 
@@ -106,5 +103,7 @@ export default class ClientProcess extends EventEmitter {
 
     // Let anyone know that this operation has completed
     this.emit(EVT_PROCESS_EXIT);
+
+    console.debug('Exited process', this);
   }
 }

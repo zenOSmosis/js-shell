@@ -149,7 +149,7 @@ export default class DesktopLinkedState extends LinkedState {
 
     let isFocused = true;
 
-    if (prevType != e.type) {   //  reduce double fire issues
+    if (prevType !== e.type) {   //  reduce double fire issues
         switch (e.type) {
             case "blur":
               isFocused = false;
