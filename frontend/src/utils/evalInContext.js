@@ -15,9 +15,10 @@ const evalInContext = (code, context = {}) => {
 const evalInProtectedContext = (code, context = {}) => {
   code = `
     ((nativeWindow) => {
-      const window = undefined;
-      const document = undefined;
-      const self = undefined;
+      // Note: Usage of let instead of const to allow user to override
+      let window = undefined;
+      let document = undefined;
+      let self = undefined;
 
       ${code}
     })(window);
