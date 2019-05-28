@@ -99,11 +99,14 @@ export default class Window extends Component {
     title: null,
     // isActive: false,
     // zStack: zStack + 1
-    ready: false
+
+    // Is automatically set to true once the window is ready to be utilized
+    // via external handlers
+    ready: false // TODO: Rename to isReady
   };
 
   _uuid = null;
-  _isActive = false;
+  _isActive = false;  // TODO: Rename to isFocused
 
   constructor(props) {
     super(props);
@@ -145,6 +148,8 @@ export default class Window extends Component {
         return;
       }
 
+      this._handleProps();
+
       const { app } = this.props;
       if (app) {
         app.setRealWindow(this);
@@ -183,10 +188,31 @@ export default class Window extends Component {
 
     this.autosetTitle();
 
+    this._handleProps();
+
     // TODO: Rework this
     $(this._el).css({
       zIndex: this.state.zStack
     });
+  }
+
+  /**
+   * Internally called when component mounts and is updaated.
+   */
+  _handleProps = () => {
+    console.debug('Handling props', this.props);
+
+    // Prototype proc handling
+    // TODO: Implement
+    (() => {
+      const { proc } = this.props;
+
+      if (proc) {
+        console.debug('Connected window process', {
+          proc
+        });
+      }
+    })();
   }
 
   componentWillUnmount() {
@@ -244,6 +270,7 @@ export default class Window extends Component {
     this.activate();
   };
 
+  // TODO: Rename to focus()
   activate() {
     // Check if window is already activated
     if (this._isActive) {
@@ -262,6 +289,7 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
+  // TOD: Rename to blur()
   deactivate() {
     if (!this._isActive) {
       return false;
@@ -473,6 +501,7 @@ export default class Window extends Component {
       // onWindowResize,
       minWidth,
       minHeight,
+      onReady,
       ...propsRest
     } = this.props;
 
@@ -555,7 +584,7 @@ export default class Window extends Component {
                       className="zd-window-body-wrapper"
                     >
                       <Cover className="zd-window-body-background">
-                        
+
                       </Cover>
 
                       <Cover

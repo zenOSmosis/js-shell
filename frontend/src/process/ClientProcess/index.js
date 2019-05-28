@@ -1,3 +1,5 @@
+// TODO!  Remove all event listeners from Pipe instances during Process shutdown cycle
+
 // TODO: Implement automatic forking if a new process is generated inside of
 // the context of another process.
 
@@ -5,6 +7,7 @@
 
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
+import Pipe from '../Pipe';
 
 export const RUN_TARGET_MAIN_THREAD = 'main-thread';
 export const RUN_TARGET_WORKER_THREAD = 'worker-thread';
@@ -27,6 +30,10 @@ export default class ClientProcess extends EventEmitter {
   _isLaunched = false;
   _isExited = false;
 
+  _stdin = null; // Pipe
+  _stdout = null; // Pipe
+  _stderr = null; // Pipe
+
   constructor(cmd, parentProcess = null) {
     super();
 
@@ -43,7 +50,17 @@ export default class ClientProcess extends EventEmitter {
 
     this._startDate = new Date();
 
+    // Provides stdin/stdout/stderr
+    this._initDataPipes();
+
+    // Automatically launch
     this._launch();
+  }
+
+  _initDataPipes() {
+    this.stdin = new Pipe();
+    this.stdout = new Pipe();
+    this.stderr = new Pipe();
   }
 
   async _launch() {

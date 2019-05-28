@@ -3,6 +3,7 @@
 
 const { ClientWorkerProcess, ClientProcess } = this;
 
+/*
 // Tests to ensure we're not in a worker process
 (() => {
     // WebWorkers have an importScripts available to them natively
@@ -10,39 +11,80 @@ const { ClientWorkerProcess, ClientProcess } = this;
       throw new Error('importScripts is already defined');
     }
 })();
+*/
 
 const testCompiler = new ClientWorkerProcess(
   (proc) => {
     // Tests to ensure we're not in the parent process
     (() => {
+        console.debug({
+            proc,
+            context: this
+        });
+
       // Ensure we're in a new scope
+      /*
       if (typeof testCompiler !== 'undefined') {
         throw new Error('compiler already exists within this scope');
       }
+      */
     })();
 
-    // Import Babel compiler
-    // TODO: Should we modify "importScripts" so it proxies through backend?
-    importScripts('https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js');
-    // importScripts('react');
+    console.debug('Importing dependencies');
+    importScripts(
+        // Babel
+        'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js',
+        
+        // React
+        'https://unpkg.com/react@16/umd/react.development.js',
+        
+        // ReactDOM
+        'https://unpkg.com/react-dom@16/umd/react-dom.development.js'
+    );
+    console.debug('Finished importing dependencies');
 
     // Ensure we have a Babel reference
     // TODO: Ensure we have a valid hash for this reference (optional parameter)
-    if (typeof Babel === 'undefined') {
-      throw new Error('Babel failed to load');
+    if (typeof Babel === 'undefined' ||
+        typeof React === 'undefined' ||
+        typeof ReactDOM === 'undefined') {
+        throw new Error('A required dependency failed to load');
     }
 
     console.debug({
       Babel,
+      babelVersion: Babel.version,
+
+      React,
+      reactVersion: React.version,
+
       proc,
       context: this
     });
 
+    proc.stdin.on('data', data => {
+        console.debug({
+            evt: 'proc.stdin.write',
+            proc,
+            data
+        });
+
+        proc.stdout.write('I am the compiler, and I am responding');
+    });
   }
 );
 
+console.warn('TODO: Ensure write');
+
+testCompiler.stdin.write('Test message');
+
+// TODO: Ensure this gets written to
+testCompiler.stdout.on('data', (data) => {
+    console.debug('Recevited data from stdout', data);
+});
+
 console.debug({
-  compiler,
+  testCompiler,
   context: this
 });
 

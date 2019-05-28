@@ -16,6 +16,7 @@ import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
+import FilesystemProcess from 'process/FilesystemProcess';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -78,18 +79,23 @@ export default class TabbedPane extends Component {
 
   const compiledCode = compile();
 
-  evalInContext(compiledCode, {
-    getLogicalProcessors,
-    Center,
-    ClientProcess,
-    ClientGUIProcess,
-    ClientWorkerProcess,
-    React,
-    zdComponents: {
-      Window,
-      Center
-    }
-  });
+  try {
+    evalInContext(compiledCode, {
+      getLogicalProcessors,
+      Center,
+      ClientProcess,
+      ClientGUIProcess,
+      ClientWorkerProcess,
+      FilesystemProcess,
+      React,
+      zdComponents: {
+        Window,
+        Center
+      }
+    });
+  } catch (exc) {
+    console.error('Caught eval exception', exc);
+  }
 
     /*
     const evalInContext = () => {
