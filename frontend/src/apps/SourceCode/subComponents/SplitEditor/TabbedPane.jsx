@@ -17,6 +17,7 @@ import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import FilesystemProcess from 'process/FilesystemProcess';
+import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -87,6 +88,7 @@ export default class TabbedPane extends Component {
       ClientGUIProcess,
       ClientWorkerProcess,
       FilesystemProcess,
+      DependencyFetcherWorker,
       React,
       zdComponents: {
         Window,

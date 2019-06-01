@@ -1,5 +1,7 @@
 // Native WebWorker ClientWorkerProcess bootstrapper
 
+// TODO: Re-import from ClientWorkerProcess
+
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.2.6/EventEmitter.js');
 
 if (typeof EventEmitter === 'undefined') {
@@ -23,50 +25,50 @@ class ClientWorkerRemoteProcess extends EventEmitter {
 
     this._initDataPipes();
 
-    self.addEventListener('message', this._handleIncomingMessage);
-  }
+    const worker = this;
 
-  _handleIncomingMessage = (msg) => {
-    let isControlMsg = false;
+    self.addEventListener('message', function messageListener (msg) {
+      let isControlMsg = false;
 
-    console.log('received message', msg);
-
-    const { data } = msg;
-
-    const routedPipeNames = [
-      'stdin',
-      'stdout',
-      'stderr'
-    ];
-
-    for (let i = 0; i < routedPipeNames.length; i++) {
-      const testName = routedPipeNames[i];
-      const testIdx = data.indexOf('use-pipe:' + testName);
-
-      /*
-      console.log({
-        testName,
-        testIdx,
-        data
-      });
-      */
-
-      if (testIdx === 0) {
-        isControlMsg = true;
-        console.debug('Changing inbound message pipe name to:', testName);
-        this._inboundMessagePipeName = testName;
+      console.log('received message', msg);
+  
+      const { data } = msg;
+  
+      const routedPipeNames = [
+        'stdin',
+        'stdout',
+        'stderr'
+      ];
+  
+      for (let i = 0; i < routedPipeNames.length; i++) {
+        const testName = routedPipeNames[i];
+        const testIdx = data.indexOf('use-pipe:' + testName);
+  
+        /*
+        console.log({
+          testName,
+          testIdx,
+          data
+        });
+        */
+  
+        if (testIdx === 0) {
+          isControlMsg = true;
+          console.debug('Changing inbound message pipe name to:', testName);
+          this._inboundMessagePipeName = testName;
+        }
       }
-    }
-
-    if (!isControlMsg && this._inboundMessagePipeName.length) {
-      // console.debug('TODO: Pass to pipe', this._inboundMessagePipeName, data);
-
-      const writePipe = this[this._inboundMessagePipeName];
-
-      console.debug({ writePipe, class: this, pipeName: this._inboundMessagePipeName });
-
-      this[this._inboundMessagePipeName].emit('data', data);
-    }
+  
+      if (!isControlMsg && this._inboundMessagePipeName.length) {
+        // console.debug('TODO: Pass to pipe', this._inboundMessagePipeName, data);
+  
+        const writePipe = worker[worker._inboundMessagePipeName];
+  
+        console.debug({ writePipe, class: worker, pipeName: worker._inboundMessagePipeName });
+  
+        worker[worker._inboundMessagePipeName].emit('data', data);
+      }
+    });
   }
 
   _initDataPipes() {

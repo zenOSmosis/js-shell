@@ -1,3 +1,6 @@
+// TODO: Add badge capability to Dock icons
+// https://ant.design/components/badge/#header
+
 import React, { Component } from 'react';
 import Image from 'components/Image';
 import { Tooltip } from 'antd';

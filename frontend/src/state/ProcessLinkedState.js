@@ -16,6 +16,9 @@ export default class ProcessLinkedState extends LinkedState {
     super(LINKED_SCOPE_NAME, {
       processes: [],
 
+      guiProcesses: [],
+      focusedGUIProcess: null,
+
       // The last process which was updated
       updatedProcess: null
     });
@@ -39,6 +42,8 @@ export default class ProcessLinkedState extends LinkedState {
     };
 
     process.on(EVT_PROCESS_UPDATE, _handleProcessUpdate);
+
+    // TODO: Detect guiProcesses and update here
 
     this.setState({
       processes

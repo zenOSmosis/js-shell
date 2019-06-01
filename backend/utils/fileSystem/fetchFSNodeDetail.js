@@ -24,6 +24,8 @@ const fetchFSNodeDetail = async (pathName) => {
       isFile = stats.isFile();
       isDir = stats.isDirectory();
     }
+
+    const isHidden = path.base.startsWith('.');
   
     return Object.assign(
       {
@@ -31,6 +33,7 @@ const fetchFSNodeDetail = async (pathName) => {
         path,
         isFile,
         isDir,
+        isHidden,
         stats
       }
     );

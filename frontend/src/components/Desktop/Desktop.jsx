@@ -69,6 +69,21 @@ class Desktop extends Component {
                 <Notifications />
 
                 {
+                  <div style={{
+                      position: 'absolute',
+                      bottom: 10,
+                      right: 10,
+                      color: 'rgba(255,255,255,.8)'
+                    }}
+                  >
+                    Linux Shell Evaluation<br />
+                    Copyright &copy; 2019 zenOSmosis<br />
+                    TODO: Add licensing information<br />
+                    TODO: Add current git hash, etc.<br />
+                  </div>
+                }
+
+                {
                   // TODO: Implement DrawersLayer as a separate component
                   // @see https://ant.design/components/drawer/
                   /*
@@ -89,7 +104,11 @@ class Desktop extends Component {
                   // <AppRouteController />
                 }
 
-                <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
+                {
+                  //
+                  <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
+                }
+                
 
                 {
                   // Renders windows

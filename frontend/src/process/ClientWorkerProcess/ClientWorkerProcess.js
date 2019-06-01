@@ -6,6 +6,8 @@ import workerBootstrapperTxt from './remote/ClientWorker_WorkerBootstrapper.js.t
 
 /**
  * Spins up the native Worker, and allows it to be controlled.
+ * 
+ * TODO: Finish building out
  */
 class NativeWorkerController extends EventEmitter {
   constructor(hostPID, cmd) {
@@ -31,7 +33,7 @@ class NativeWorkerController extends EventEmitter {
       text = text.split('%CONTROLLER_PID%').join(this._hostPID);
       text = text.split('%CMD%').join(this._cmd);
 
-      console.debug(text);
+      // console.debug(text);
 
     } catch (exc) {
       throw exc;
@@ -107,50 +109,52 @@ export default class ClientWorkerProcess extends ClientProcess {
 
           this._initDataPipes();
 
-          self.addEventListener('message', this._handleIncomingMessage);
-        }
-
-        _handleIncomingMessage = (msg) => {
-          let isControlMsg = false;
-
-          console.log('received message', msg);
-
-          const { data } = msg;
-
-          const routedPipeNames = [
-            'stdin',
-            'stdout',
-            'stderr'
-          ];
-
-          for (let i = 0; i < routedPipeNames.length; i++) {
-            const testName = routedPipeNames[i];
-            const testIdx = data.indexOf('use-pipe:' + testName);
-
-            /*
-            console.log({
-              testName,
-              testIdx,
-              data
-            });
-            */
-
-            if (testIdx === 0) {
-              isControlMsg = true;
-              console.debug('Changing inbound message pipe name to:', testName);
-              this._inboundMessagePipeName = testName;
+          // Intentional non-usage of arrow function to target older browsers
+          const worker = this;
+          self.addEventListener('message', function messageListener (msg) {
+            let isControlMsg = false;
+      
+            console.log('received message', msg);
+        
+            const { data } = msg;
+        
+            const routedPipeNames = [
+              'stdin',
+              'stdout',
+              'stderr'
+            ];
+        
+            for (let i = 0; i < routedPipeNames.length; i++) {
+              const testName = routedPipeNames[i];
+              const testIdx = data.indexOf('use-pipe:' + testName);
+        
+              /*
+              console.log({
+                testName,
+                testIdx,
+                data
+              });
+              */
+        
+              if (testIdx === 0) {
+                isControlMsg = true;
+                console.debug('Changing inbound message pipe name to:', testName);
+                worker._inboundMessagePipeName = testName;
+              }
             }
-          }
-
-          if (!isControlMsg && this._inboundMessagePipeName.length) {
-            // console.debug('TODO: Pass to pipe', this._inboundMessagePipeName, data);
-
-            const writePipe = this[this._inboundMessagePipeName];
-
-            console.debug({writePipe, class: this, pipeName: this._inboundMessagePipeName});
-
-            this[this._inboundMessagePipeName].emit('data', data);
-          }
+        
+            if (!isControlMsg &&
+                worker._inboundMessagePipeName &&
+                worker._inboundMessagePipeName.length) {
+              // console.debug('TODO: Pass to pipe', worker._inboundMessagePipeName, data);
+        
+              const writePipe = worker[worker._inboundMessagePipeName];
+        
+              console.debug({ writePipe, class: worker, pipeName: worker._inboundMessagePipeName });
+        
+              worker[worker._inboundMessagePipeName].emit('data', data);
+            }
+          });
         }
         
         _initDataPipes() {

@@ -16,16 +16,13 @@ const registerCommonEventsHandler = () => {
   }
 
   (() => {
-    // Socket
+    // Socket.io
     commonSocketLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-      // Socket connection
-        const { connectionStatus } = updatedState;
-        
-        if (typeof connectionStatus !== 'undefined') {
-          console.warn('TODO: Update notification to be pretty');
+        const { connectionStatus: updatedConnectionStatus } = updatedState;
+
+        if (typeof updatedConnectionStatus !== 'undefined') {
           createDesktopNotification({
-            message: 'Socket.io connection status update',
-            description: connectionStatus
+            message: `Socket.io ${updatedConnectionStatus}`
           });
         }
     });

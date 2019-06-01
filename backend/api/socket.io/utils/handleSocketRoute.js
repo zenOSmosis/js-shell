@@ -22,11 +22,20 @@ const handleSocketRoute = async (serviceCall, ack) => {
     // Send acknowledgement to client
     ack(serviceResp);
   } catch (err) {
+    // Emit error to local console
+    console.error(err);
+
+    // Then, send error up to ack so that it can be debugged in the UI
+    // Keep in mind, even in production scenarios, this should be done as
+    // well, because the Desktop environment should be connected in every
+    // single way to the backend
+
     // Send serialized error to ack
     // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
     await (async () => {
       let { message, fileName, lineNumber, columnNumber, name } = err;
 
+      // Debuggable error stack
       const stack = await fetchStackTrace.fromError(err);
 
       const serialzedErr = {

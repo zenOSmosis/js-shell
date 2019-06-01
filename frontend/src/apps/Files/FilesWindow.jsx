@@ -1,31 +1,45 @@
 import React, { Component } from 'react';
 import app from './app';
 import Window from 'components/Desktop/Window';
-import Full from 'components/Full';
-import Icon from 'components/Icon';
-import IFrame from 'components/IFrame';
+// import IFrame from 'components/IFrame';
 import { Layout, Sider, Content, Footer } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
-import {Row, Column} from 'components/RowColumn';
+// import {Menu, MenuItem} from 'components/Menu';
+import { Row, Column } from 'components/RowColumn';
 // import DirectoryTree from './subComponents/DirectoryTree';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
-// import {Menu, MenuItem} from 'components/Menu';
-import {chdir} from 'utils/fileSystem';
-import {Input, Icon as AntdIcon} from 'antd';
-import config from 'config';
+import IconLayout from './subComponents/IconLayout';
+import { /*Input,*/ Icon as AntdIcon } from 'antd';
+import  Switch from 'components/Switch';
+// import config from 'config';
+import { chdir } from 'utils/fileSystem';
 import './style.css';
-import { Tree } from 'antd';
-const TreeNode = Tree.TreeNode;
 
-const {Search} = Input;
+// import { Tree } from 'antd';
+// const TreeNode = Tree.TreeNode;
+
+export const LAYOUT_TYPE_ICON = 'icon';
+export const LAYOUT_TYPE_TABLE = 'table';
+export const LAYOUT_TYPES = [
+  LAYOUT_TYPE_ICON,
+  LAYOUT_TYPE_TABLE
+];
+
+// const { Search } = Input;
 
 export default class FilesWindow extends Component {
   state = {
     selectedNodes: [],
 
+    showHidden: true,
+
+    // TODO: Rename to displayLayoutType
+    layoutType: LAYOUT_TYPE_ICON,
+
     pathName: null,
     pathConstituents: [],
-    childNodes: [],
+
+    childNodes: [], // fs child nodes for the current directory
 
     totalDirectorySubDirectories: 0,
     totalDirectoryFiles: 0,
@@ -56,6 +70,25 @@ export default class FilesWindow extends Component {
     });
   }
 
+  setLayoutType(layoutType) {
+    if (!LAYOUT_TYPES.includes(layoutType)) {
+      throw new Error('Unknown layout type:', layoutType);
+    }
+
+    this.setState({
+      layoutType
+    });
+  }
+
+  setShowHidden(showHidden) {
+    // Force boolean conversion
+    showHidden = showHidden === true;
+
+    this.setState({
+      showHidden
+    });
+  }
+
   async chdir(dirName) {
     try {
       console.debug('Changing directory to:', dirName);
@@ -77,7 +110,7 @@ export default class FilesWindow extends Component {
           totalDirectoryFiles++;
         }
       });
-  
+
       this.setState({
         pathName,
         childNodes,
@@ -87,11 +120,11 @@ export default class FilesWindow extends Component {
       }, () => {
         console.debug('Chaged directory', dir);
       });
-  
+
       // const dirNodes = await ls(dirName);
-  
+
       // console.debug('dirNodes', dirNodes);
-  
+
       // console.debug('nodes', nodes);
       // this.setState({dirNodes});
     } catch (exc) {
@@ -103,30 +136,77 @@ export default class FilesWindow extends Component {
   }
 
   render() {
-    const {pathConstituents} = this.state;
+    let {
+      showHidden,
+      childNodes,
+      layoutType,
+      pathConstituents,
+      pathName
+    } = this.state;
+
+    if (!showHidden) {
+      childNodes = childNodes.filter((childNode) => {
+        return !childNode.isHidden;
+      });
+    }
 
     return (
       <Window
         app={app}
-        // title={this.state.pathName}
-        title={this.state.pathName}
+        title={pathName}
+        toolbar={
+          <PathBreadcrumb filesWindow={this} pathParts={pathConstituents} />
+        }
         toolbarRight={
-          <Search size="small" />
+          <Switch
+            defaultChecked={showHidden}
+            checkedChildren={<span>Hide Hidden</span>}
+            unCheckedChildren={<span>Show Hidden</span>}
+            onChange={ showHidden => this.setShowHidden(showHidden) }
+          />
         }
         subToolbar={
-          <div style={{textAlign: 'center'}}>
-            <div style={{ float: 'left', position: 'relative' }}>
-              &nbsp;
-              <div style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap' }}>
-                <ButtonGroup>
-                  <Button disabled={true}><AntdIcon type="left" /></Button>
-                  <Button disabled={false}><AntdIcon type="right" /></Button>
-                </ButtonGroup>
-              </div>
-            </div>
+          <Row style={{ paddingTop: 4, paddingBottom: 4 }}>
+            <Column style={{ textAlign: 'left', paddingLeft: 4 }}>
+              <ButtonGroup>
+                <Button disabled={true}><AntdIcon type="left" /></Button>
+                <Button disabled={false}><AntdIcon type="right" /></Button>
+              </ButtonGroup>
+            </Column>
 
-            <PathBreadcrumb filesWindow={this} pathParts={pathConstituents} />
-          </div>
+            <Column style={{ textAlign: 'center'}}>
+              {
+                // Layout options (grid or list)
+                <ButtonGroup>
+                  <Button
+                    disabled={layoutType === LAYOUT_TYPE_ICON}
+                    onClick={ evt => this.setLayoutType(LAYOUT_TYPE_ICON) }
+                  >
+                    <AntdIcon type="table" />
+                  </Button>
+                  
+                  <Button
+                    disabled={layoutType === LAYOUT_TYPE_TABLE}
+                    onClick={ evt => this.setLayoutType(LAYOUT_TYPE_TABLE) }
+                  >
+                    <AntdIcon type="unordered-list" />
+                  </Button>
+                </ButtonGroup>
+              }
+            </Column>
+
+            <Column style={{ textAlign: 'right', paddingRight: 4 }}>
+              {
+                // FS node actions
+                <ButtonGroup>
+                  <Button disabled><AntdIcon type="folder-open" /></Button>
+                  <Button disabled><AntdIcon type="copy" /></Button>
+                  <Button disabled><AntdIcon type="scissor" /></Button>
+                  <Button disabled><AntdIcon type="delete" /></Button>
+                </ButtonGroup>
+              }
+            </Column>
+          </Row>
         }
       >
         <Layout className="FileNavigator">
@@ -158,33 +238,42 @@ export default class FilesWindow extends Component {
               */
             }
             <Content className="Main">
-              <Full style={{overflow: 'auto', textAlign: 'left'}}>
-                {
-                  this.state.childNodes.map((childNode, idx) => {
-                    return (
-                      <Icon
-                        onClick={ (evt) => this.selectNode(childNode) }
-                        onDoubleClick={ (evt) => this.chdir(childNode.pathName) }
-                        key={idx}
-                        width={80}
-                        height={80}
-                        style={{margin: 10}}
-                        title={childNode.path.name}
-                      />
-                    );
-                  })
-                }
-                {
-                  this.state.renderFilePath &&
-                  <div style={{width: 500, height: 500}}>
-                    To render... {`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`}<br />
-                    <IFrame src={`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`} />
-                  </div>
-                }
-              </Full>
+              {
+                (() => {
+                  const { layoutType } = this.state;
+
+                  switch (layoutType) {
+                    case LAYOUT_TYPE_ICON:
+                      return (
+                        <IconLayout
+                          filesWindow={this}
+                          fsNodes={childNodes}
+                        />
+                      );
+
+                    case LAYOUT_TYPE_TABLE:
+                      return (
+                        <div>TODO: Build out table layout</div>
+                      );
+
+                    default:
+                      throw new Error('Unknown layout type:', layoutType);
+                  }
+                })()
+              }
             </Content>
           </Layout>
-          <Footer className="Footer" style={{textAlign: 'left'}}>
+          {
+            // Prototype of URI-based file open (not deal w/ streams directly)
+            /*
+            this.state.renderFilePath &&
+            <div style={{width: 500, height: 500}}>
+              To render... {`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`}<br />
+              <IFrame src={`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`} />
+            </div>
+            */
+          }
+          <Footer className="Footer" style={{ textAlign: 'left' }}>
             {
               this.state.selectedNodes &&
               <div>
@@ -194,7 +283,7 @@ export default class FilesWindow extends Component {
                     Selected nodes: {this.state.selectedNodes.length}
                   </div>
                 }
-                
+
                 {
                   this.state.selectedNodes.length === 1 &&
                   ((node) => {
@@ -202,7 +291,7 @@ export default class FilesWindow extends Component {
                       <div>
                         Type:&nbsp;
                           {node.isDir ? 'Directory' : ''}
-                          {node.isFile ? 'File' : ''}
+                        {node.isFile ? 'File' : ''}
                       </div>
                     );
                   })(this.state.selectedNodes[0])
@@ -212,14 +301,14 @@ export default class FilesWindow extends Component {
             <hr />
             <Row>
               <Column>
-                  TODO Integrate:<br />
+                TODO Integrate:<br />
                 - https://nodejs.org/docs/latest/api/fs.html#fs_class_fs_fswatcher<br />
                 - Show free space<br />
                 - Preliminary opening of files<br />
                 - Drag / Drop of node nodes into other windows<br />
                 - Opening of node in other window if node is dragged to it
               </Column>
-              <Column style={{textAlign: 'right'}}>
+              <Column style={{ textAlign: 'right' }}>
                 Files: {this.state.totalDirectoryFiles}<br />
                 Folders: {this.state.totalDirectorySubDirectories}
               </Column>

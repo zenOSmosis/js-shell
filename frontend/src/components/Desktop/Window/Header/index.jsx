@@ -110,7 +110,7 @@ export default class WindowHeader extends Component {
                 </div>
               </Column>
               <Column style={{textAlign: 'center'}}>
-                <div style={{ width: '100%', textAlign: 'center', fontWeight: 'bold', display: 'inline-block', verticalAlign: 'middle' }}>
+                <div style={{ whiteSpace: 'nowrap', width: '100%', textAlign: 'center', fontWeight: 'bold', display: 'inline-block', verticalAlign: 'middle' }}>
                   {
                     toolbar
                   }

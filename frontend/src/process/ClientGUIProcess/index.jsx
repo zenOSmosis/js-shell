@@ -88,6 +88,17 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._desktopMenubarData;
   }
 
+  /*
+  setDockIcon(dockIconComponent) {
+    this.emit(EVT_PROCESS_UPDATE);
+  }
+  */
+
+  /*
+  getDockIcon() {
+  }
+  */
+
   /**
    * TODO: Rename to setViewComponentProps
    */

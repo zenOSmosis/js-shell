@@ -31,6 +31,11 @@ const PathBreadcrumb = (props = {}) => {
             >
               <Button disabled={idx === pathParts.length - 1} onClick={ (evt) => filesWindow.chdir(link) } >
                 {
+                  idx === 0 &&
+                  <span>root</span>
+                }
+                {
+                  idx > 0 &&
                   part
                 }
               </Button>

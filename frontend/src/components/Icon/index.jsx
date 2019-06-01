@@ -4,7 +4,7 @@ import textEllipsis from 'text-ellipsis';
 import './style.css';
 
 const Icon = (props = {}) => {
-  let {title, width, height, style, maxTitleLength, description, src, className, ...propsRest} = props;
+  let {title, children, width, height, style, maxTitleLength, description, src, className, ...propsRest} = props;
 
   maxTitleLength = maxTitleLength || 10;
 
@@ -16,7 +16,6 @@ const Icon = (props = {}) => {
     }
   );
 
-
   // TODO: Set default width / height, if not already set
 
   return (
@@ -26,20 +25,32 @@ const Icon = (props = {}) => {
       title={description}
       style={style}
     >
-      <Image
-        className="zd-icon-image"
-        alt={description}
-        title={description}
-        src={src}
-        width="100%"
-        height="100%"
-      />
+      {
+        // TODO: Consider encapuslating in Cover
+        children &&
+        children
+      }
+      {
+        // TODO: Consider encapuslating in Cover
+        src &&
+        <Image
+          className="zd-icon-image"
+          alt={description}
+          title={description}
+          src={src}
+          width="100%"
+          height="100%"
+        />
+      }
 
+      {
+        // // TODO: Consider encapuslating in Cover
+      }
       <div className="zd-icon-name">
         {
-          // TODO: Make ellipsis length configurable 
+          title &&
+          textEllipsis(title, maxTitleLength)
         }
-        {textEllipsis(title, maxTitleLength)}
       </div>
     </button>
   )
