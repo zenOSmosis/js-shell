@@ -1,10 +1,9 @@
-import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-// TODO: Use a copy of this file, instead
-import App from 'App';
-import * as serviceWorker from 'utils/reactServiceWorker';
+import Core from 'process/ClientCore/Core';
+import CoreCPUTimer from 'process/ClientCore/CoreCPUTimer';
+import CoreHTTPWorker from 'process/ClientCore/CoreHTTPWorker';
+import CoreSocketIOWorker from 'process/ClientCore/CoreSocketIOWorker';
+import CoreReactGUI from 'process/ClientCore/CoreReactGUI';
+import Desktop from 'process/ClientCore/Desktop';
 
 let hasStarted = false;
 
@@ -18,38 +17,15 @@ const startup = () => {
     console.warn('Client system has already started');
     return;
   } else {
-    console.debug('Starting client system');
+    const core = new Core();
+    new CoreCPUTimer(core);
 
-    console.warn('TODO: Implement Local Storage');
-
-    // Binds common Desktop events (e.g. Socket connect / disconnect; context menu; etc.)
-    registerCommonDesktopEventsHandler();
-  
-    // Launch React interface
-    (() => {
-      const rootEl = document.getElementById('root');
-
-      // Rendering directly to document.body is not ideal because it may cause
-      // issues w/ Google Font Loader or third party browser extensions
-      // @see https://github.com/facebook/create-react-app/issues/1568
-      ReactDOM.render(<App />, rootEl);
-  
-      // If you want your app to work offline and load faster, you can change
-      // unregister() to register() below. Note this comes with some pitfalls.
-      // Learn more about service workers: https://bit.ly/CRA-PWA
-      serviceWorker.register();
-    })();
+    new CoreHTTPWorker(core);
+    new CoreSocketIOWorker(core);
     
-    // Confirm before trying to unload
-    // TODO: Move to shutdown routine
-    /*
-    (() => {
-      window.onbeforeunload = () => {
-        return 'Are you sure you wish to shut down?';
-      };
-    })();
-    */
- 
+    const reactGUI = new CoreReactGUI(core);
+    new Desktop(reactGUI);
+
     hasStarted = true;
   }
 };

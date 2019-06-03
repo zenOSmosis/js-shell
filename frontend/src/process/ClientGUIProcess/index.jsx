@@ -8,6 +8,7 @@ export const getFocusedClientGUIProcess = () => {
 };
 
 export default class ClientGUIProcess extends ClientProcess {
+  _base = 'ClientGUIProcess';
   _ReactComponent = null;
   _isFocused = false;
   _desktopMenubarData = null;
@@ -149,5 +150,13 @@ export default class ClientGUIProcess extends ClientProcess {
    */
   getReactComponent() {
     return this._ReactComponent;
+  }
+
+  kill() {
+    // Remove the component from the DOM
+    // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
+    this.setReactRenderer(null);
+
+    super.kill();
   }
 }

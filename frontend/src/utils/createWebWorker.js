@@ -76,6 +76,10 @@ export class WebWorker extends EventEmitter {
     this._nativeWorker.terminate();
   }
 
+  getServiceURI() {
+    return this._serviceURI;
+  }
+
   /**
    * Alias of this.terminate().
    */

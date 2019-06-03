@@ -2,13 +2,32 @@ import React, { Component } from 'react';
 import app from './app';
 import Window from 'components/Desktop/Window';
 import { Button, ButtonGroup } from 'components/ButtonGroup';
+import { Layout, Content, Footer } from 'components/Layout';
 import Scrollable from 'components/Scrollable';
 import Environment from './subPanes/Environment';
 import Processes from './subPanes/Processes';
+import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
+import hocConnect from 'state/hocConnect';
 
 const TAB_SYSTEM_OVERVIEW = 'system-overview';
 const TAB_PROCESSES = 'processes';
 const TAB_ENVIRONMENT = 'environment';
+
+const ClientPressure = (props = {}) => {
+  return (
+    <span>{props.percent} %</span>
+  );
+}
+
+const ConnectedClientPressure = hocConnect(ClientPressure, CPUTimeLinkedState, (updatedState) => {
+  const { cpusLevels } = updatedState;
+
+  if (cpusLevels && cpusLevels[0]) {
+    return {
+      percent: cpusLevels[0]
+    }
+  }
+});
 
 export default class SystemDetailWindow extends Component {
   state = {
@@ -52,25 +71,32 @@ export default class SystemDetailWindow extends Component {
           </ButtonGroup>
         }
       >
-        <Scrollable>
-          {
-            (() => {
-              switch (activeTab) {
-                case TAB_SYSTEM_OVERVIEW:
-                  return 'System Overview';
-                
-                case TAB_PROCESSES:
-                  return <Processes />;
+        <Layout>
+          <Content>
+            <Scrollable>
+              {
+                (() => {
+                  switch (activeTab) {
+                    case TAB_SYSTEM_OVERVIEW:
+                      return 'System Overview';
+                    
+                    case TAB_PROCESSES:
+                      return <Processes />;
 
-                case TAB_ENVIRONMENT:
-                  return <Environment />;
-                
-                default:
-                  return null;
+                    case TAB_ENVIRONMENT:
+                      return <Environment />;
+                    
+                    default:
+                      return null;
+                  }
+                })()
               }
-            })()
-          }
-        </Scrollable>
+            </Scrollable>
+          </Content>
+          <Footer>
+            Main Thread CPU Usage: <ConnectedClientPressure />
+          </Footer>
+        </Layout>
       </Window>
     );
   }

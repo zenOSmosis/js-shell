@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import ClientProcess from '../ClientProcess';
+import ClientProcess, { PROCESS_THREAD_TYPE_DISTINCT } from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
 import createWebWorker from 'utils/createWebWorker';
 import workerBootstrapperTxt from './remote/ClientWorker_WorkerBootstrapper.js.txt';
@@ -71,15 +71,18 @@ new NativeWorkerController('FAKE-CONTROLLER-ID', 'doReallyGreatThings()');
 
 // TODO: Rename to ClientWorkerHostProcess
 export default class ClientWorkerProcess extends ClientProcess {
+  _base = 'ClientWorkerProcess';
   _nativeWorker = null;
 
-  constructor(cmd, parentProcess = null) {
+  constructor(parentProcess, cmd) {
     super(
-      // Override initial parent process with an empty instruction
-      (proc) => { },
+      parentProcess,
 
-      parentProcess
+      // Override initial parent process with an empty instruction
+      (proc) => { }
     );
+
+    this._threadType = PROCESS_THREAD_TYPE_DISTINCT;
 
     // This code is evaluated inside of the native Worker
     const code = `
@@ -215,12 +218,20 @@ export default class ClientWorkerProcess extends ClientProcess {
     });*/
 
     this._nativeWorker = createWebWorker(code);
+
+    this._serviceURI = this._nativeWorker.getServiceURI();
   }
 
   _initDataPipes() {
     this.stdin = new ClientWorkerDispatchPipe(this, 'stdin');
     this.stdout = new ClientWorkerDispatchPipe(this, 'stdout');
     this.stderr = new ClientWorkerDispatchPipe(this, 'stderr');
+  }
+
+  _onHeartbeatInterval() {
+    console.warn('TODO: Map heartbeat to native Worker');
+
+    super._onHeartbeatInterval();
   }
 
   postMessage(message) {

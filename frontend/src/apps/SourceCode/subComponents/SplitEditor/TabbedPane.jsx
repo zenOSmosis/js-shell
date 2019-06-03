@@ -8,16 +8,16 @@ import SplitEditorVerticalIcon from 'icons/vscode/split-editor-vertical-inverse.
 // TODO: Remove; prototyping
 import MonacoEditor from 'components/MonacoEditor';
 
-// TODO: Remove
 // For editor context
 // import page from 'page';
+// TODO: Move these to a different module, which will provide context to run all evaluated code
 import evalInContext from 'utils/evalInContext';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import FilesystemProcess from 'process/FilesystemProcess';
-import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
+// import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -88,7 +88,7 @@ export default class TabbedPane extends Component {
       ClientGUIProcess,
       ClientWorkerProcess,
       FilesystemProcess,
-      DependencyFetcherWorker,
+      // DependencyFetcherWorker,
       React,
       zdComponents: {
         Window,

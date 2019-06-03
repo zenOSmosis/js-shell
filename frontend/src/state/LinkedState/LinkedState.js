@@ -151,4 +151,11 @@ export default class LinkedState extends EventEmitter {
 
     mlscs.removeLinkedStateWithUUID(this._uuid);
   }
+
+  /**
+   * Alias of this.destroy().
+   */
+  kill() {
+    this.destroy();
+  }
 }
