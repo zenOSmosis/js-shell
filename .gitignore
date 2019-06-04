@@ -1,2 +1,4 @@
 # All Node modules in all directories
 */node_modules/*
+
+**.swp

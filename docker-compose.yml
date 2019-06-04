@@ -1,0 +1,44 @@
+# TODO: Use these strictly in development
+
+# Linux Shell Docker Compose Development Configuration
+
+version: '3.1'
+services:
+  # Creates a self-signed SSL proxy for local development
+  # This permits access to media devices (e.g. microphone / camera) during development
+  # 
+  # This is not intended to run on a production web server
+  #
+  # TODO: Possibly bugfix; not able to use custom port / Docker network alias from dev_proxy
+  dev_proxy:
+    build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
+    network_mode: "host" # Using host network here so we can proxy to localhost addresses
+    environment:
+      - PROXY_ADDRESS=http://127.0.0.1:3001 # Important, don't use quotations here, or it may break the template
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/shell/backend # Only during development
+    environment:
+      # TODO: Verify this is correct variable
+      - NODE_ENV="DEVELOPMENT"
+    links:
+      - frontend
+      - dev_proxy # During development
+    command: ["npm", "run", "start"]
+    ports:
+      - 3001:3001
+
+  # Note: No direct network access to frontend; proxied through backend
+  frontend:
+    build: ./frontend
+    volumes:
+      # Backend is mapped w/ frontend because of shared object in utils/bind
+      # jh: Not yet sure how this will work in production environment
+      - ./frontend:/shell/frontend # Only during development
+      - ./backend:/shell/backend # Only during development
+    environment:
+      # TODO: Verify this is correct variable
+      - NODE_ENV="DEVELOPMENT"
+    command: ["npm", "run", "start"]

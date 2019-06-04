@@ -1,3 +1,3 @@
-import * as socketAPIRoutes from './bind/socketAPIRoutes';
+import socketAPIRoutes from './bind/socketAPIRoutes';
 
 export default socketAPIRoutes;

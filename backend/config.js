@@ -3,8 +3,11 @@ const hostConfig = {
     ['X-Powered-By']: 'zenOSmosis'
   },
 
+  // Port the Express HTTP Server should listen in on
   HTTP_LISTEN_PORT: 3001,
-  FRONTEND_PROXY_URI: 'http://127.0.0.1:3000',
+
+  // Proxy frontend requests to this URI
+  FRONTEND_PROXY_URI: 'http://frontend:3000',
 
   TERMINAL_COMMAND: 'xterm',
 
