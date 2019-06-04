@@ -47,12 +47,44 @@ export default class ClientWorkerDispatchPipe extends Pipe {
     }
   };
 
-  write(data) {
-    // Writes the data as a serialized data object
-    // TODO: Handle data serialization better
-    const serializedMessage = data.toString();
+  _serialize(data) {
+    let serialized;
+    
+    switch (typeof data) {
+      case 'object':
+        serialized = JSON.stringify(data);
+      break;
 
-    this._clientWorkerProcess.postMessage(`use-pipe:${this._pipeName}`);
-    this._clientWorkerProcess.postMessage(serializedMessage);
+      case 'function':
+        serialized = data.toString();
+      break;
+
+      default:
+        serialized = data;
+      break;
+    }
+
+    return serialized;
+  }
+
+  write(data) {
+    console.warn('TODO: Create uuid for message...?');
+
+    // Notify Worker that we're writing to stdin
+    this._clientWorkerProcess.postMessage(this._serialize({
+      isCtrlMsg: true,
+      pipeName: this._pipeName,
+      isWriting: true
+    }));
+    
+    // Write to stdin
+    this._clientWorkerProcess.postMessage(this._serialize(data));
+
+    // Notify Worker that we're done writing to stdin
+    this._clientWorkerProcess.postMessage(this._serialize({
+      isCtrlMsg: true,
+      pipeName: this._pipeName,
+      isWriting: false
+    }));
   }
 }

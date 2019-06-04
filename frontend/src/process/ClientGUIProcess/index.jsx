@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ClientProcess, { EVT_PROCESS_UPDATE } from '../ClientProcess';
 
 // Only one ClientGUIProcess can be focused at once for user interactivity
@@ -50,6 +50,18 @@ export default class ClientGUIProcess extends ClientProcess {
    * @param {boolean} isFocused 
    */
   setIsFocused(isFocused) {
+    // Ignore duplicate
+    if (this._isFocused === isFocused) {
+      return;
+    }
+
+    // Blur existing focused process, if exists
+    if (_focusedClientGUIProcess) {
+      _focusedClientGUIProcess.blur();
+    }
+
+    console.debug(isFocused ? 'Focusing' : 'Blurring');
+
     this._isFocused = isFocused;
 
     _focusedClientGUIProcess = this;
@@ -110,7 +122,7 @@ export default class ClientGUIProcess extends ClientProcess {
 
     this.emit(EVT_PROCESS_UPDATE);
   }
- 
+
   /**
    * TODO: Rename to setViewComponent
    * 
@@ -118,21 +130,55 @@ export default class ClientGUIProcess extends ClientProcess {
    * @return {Promise<boolean>} Resolves to true after the component has been set
    */
   setReactRenderer(Content) {
+    const proc = this;
+
     return new Promise((resolve) => {
       // Using timeout to allow the process to kick to the next cycle
       // Otherwise it will not immediately render to any listeners
       // TODO: Replace w/ nextTick()
       setTimeout(() => {
         // A slight hoc wrapper
-        // TODO: Should this be converted into a class w/ a monitorable view cycle?
-        this._ReactComponent = (props = {}) => {
-          return (
-            <Content
-              {...props} // Pass all props from hoc
-              key={this.getPID()}
-            />
-          )
+
+        class ReactComponent extends Component {
+          componentDidMount() {
+            console.warn('TODO: Handle process notification of mount', proc);
+          }
+
+          componentWillUnmount() {
+            console.warn('TODO: Handle process notification of unmount', proc);
+          }
+
+          render() {
+            const { ...propsRest } = this;
+
+            if (Content) {
+              return (
+                <div
+                  ref={c => this._el = c}
+                  onMouseDown={this._handleDirectInteract}
+                  onTouchStart={this._handleDirectInteract}
+                  style={{ display: 'inline-block' }}
+                >
+                  <Content
+                    {...propsRest} // Pass all props from hoc
+                    key={proc.getPID()}
+                  />
+                </div>
+              );
+            } else {
+              return null;
+            }
+          }
+
+          /**
+           * Focus process when directly interacted with.
+           */
+          _handleDirectInteract = (evt) => {
+            proc.focus();
+          }
         }
+
+        this._ReactComponent = ReactComponent;
 
         // Let listeners know we have updated the process
         this.emit(EVT_PROCESS_UPDATE);
@@ -157,6 +203,9 @@ export default class ClientGUIProcess extends ClientProcess {
     // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
     this.setReactRenderer(null);
 
-    super.kill();
+    // Allow view to unset before calling super.kill().
+    setTimeout(() => {
+      super.kill();
+    }, 0);
   }
 }

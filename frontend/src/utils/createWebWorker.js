@@ -27,21 +27,24 @@ export class WebWorker extends EventEmitter {
    * @param {Function | String} code
    */
   _launchWithCode(code) {
-    const { Blob, Worker } = self;
+    const { Blob, Worker } = window;
 
     code = code.toString();
 
+    // Convert the code to a blob
     const blob = new Blob([code], {
       type: 'text/javascript'
     });
-    const blobURL = URL.createObjectURL(blob);
 
-    this._serviceURI = blobURL;
+    // Convert the blob to a URI
+    this._serviceURI = URL.createObjectURL(blob);
 
-    this._nativeWorker = new Worker(blobURL);
+    this._nativeWorker = new Worker(this._serviceURI);
 
     // Handle emitted messages from the worker
     this._nativeWorker.addEventListener(EVT_MESSAGE, this._handleNativeMessage);
+
+    console.warn('TODO: Monitor native Worker for premature termination');
   }
 
   /**

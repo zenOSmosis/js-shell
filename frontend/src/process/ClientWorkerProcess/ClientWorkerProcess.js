@@ -1,73 +1,6 @@
-import EventEmitter from 'events';
 import ClientProcess, { PROCESS_THREAD_TYPE_DISTINCT } from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
 import createWebWorker from 'utils/createWebWorker';
-import workerBootstrapperTxt from './remote/ClientWorker_WorkerBootstrapper.js.txt';
-
-/**
- * Spins up the native Worker, and allows it to be controlled.
- * 
- * TODO: Finish building out
- */
-class NativeWorkerController extends EventEmitter {
-  constructor(hostPID, cmd) {
-    super();
-
-    this._hostPID = hostPID;
-    this._cmd = cmd;
-
-    (async () => {
-      try {
-        const code = await this._read();
-      } catch (exc) {
-        throw exc;
-      }
-    })();
-  }
-
-  _read = async () => {
-    try {
-      const res = await fetch(workerBootstrapperTxt);
-      let text = await res.text();
-
-      text = text.split('%CONTROLLER_PID%').join(this._hostPID);
-      text = text.split('%CMD%').join(this._cmd);
-
-      // console.debug(text);
-
-    } catch (exc) {
-      throw exc;
-    }
-  };
-
-  /*
-  _launch() {
-    // TODO: Use createWebWorker()
-
-    const blob = new Blob([code], {
-      type: 'text/javascript'
-    });
-    const blobURL = URL.createObjectURL(blob);
-
-    this._serviceURI = blobURL;
-
-    this._nativeWorker = new window.Worker(blobURL);
-
-    this._nativeWorker.addEventListener('message', (data) => {
-      console.debug('Received message from worker', data);
-
-      console.debug('Sending message to worker')
-      this._nativeWorker.postMessage('PONG');
-    });
-  }
-  */
-
-  kill() {
-    this.removeAllListeners();
-  }
-}
-
-new NativeWorkerController('FAKE-CONTROLLER-ID', 'doReallyGreatThings()');
 
 // TODO: Rename to ClientWorkerHostProcess
 export default class ClientWorkerProcess extends ClientProcess {
@@ -116,15 +49,17 @@ export default class ClientWorkerProcess extends ClientProcess {
           const worker = this;
           self.addEventListener('message', function messageListener (msg) {
             let isControlMsg = false;
-      
-            console.log('received message', msg);
         
             const { data } = msg;
+
+            console.log('received message data', data);
         
             const routedPipeNames = [
               'stdin',
               'stdout',
-              'stderr'
+              'stderr',
+              'stdctrlin',
+              'stdctrlout'
             ];
         
             for (let i = 0; i < routedPipeNames.length; i++) {
@@ -164,6 +99,9 @@ export default class ClientWorkerProcess extends ClientProcess {
           this.stdin = new WorkerPipe(this);
           this.stdout = new WorkerPipe(this);
           this.stderr = new WorkerPipe(this);
+
+          this.stdctrlin = new WorkerPipe(this);
+          this.stdctrlout = new WorkerPipe(this);
         }
 
         postMessage(message) {
@@ -175,11 +113,8 @@ export default class ClientWorkerProcess extends ClientProcess {
         }
 
         getClassName() {
+          // TODO: Fix constructor name render
           return '${`${this.getClassName()} => $/{this.constructor.name/}`}';
-        }
-
-        setName(name) {
-          console.warn('TODO: Set name in parent process', name);
         }
 
         kill() {
@@ -226,6 +161,9 @@ export default class ClientWorkerProcess extends ClientProcess {
     this.stdin = new ClientWorkerDispatchPipe(this, 'stdin');
     this.stdout = new ClientWorkerDispatchPipe(this, 'stdout');
     this.stderr = new ClientWorkerDispatchPipe(this, 'stderr');
+
+    this.stdctrlin = new ClientWorkerDispatchPipe(this, 'stdctrlin');
+    this.stdctrlout = new ClientWorkerDispatchPipe(this, 'stdctrlout');
   }
 
   _onHeartbeatInterval() {

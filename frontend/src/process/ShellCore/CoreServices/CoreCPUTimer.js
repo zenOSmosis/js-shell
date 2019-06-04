@@ -1,4 +1,4 @@
-import ClientProcess from '../ClientProcess';
+import ClientProcess from 'process/ClientProcess';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 // import ProcessHeartbeatLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/ProcessHeartbeatLinkedState';
 

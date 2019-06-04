@@ -1,9 +1,9 @@
-import ClientWorkerProcess from '../ClientWorkerProcess';
+import ClientWorkerProcess from 'process/ClientWorkerProcess';
 
 export default class CoreHTTPWorker extends ClientWorkerProcess {
   constructor(parentProcess) {
     super(parentProcess, (proc) => {
-      console.debug('Hello from CoreHTTPWorker!', proc);
+      console.warn('TODO: Read from control in', proc);
     });
   }
 }

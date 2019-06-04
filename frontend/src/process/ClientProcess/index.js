@@ -36,7 +36,6 @@ export default class ClientProcess extends EventEmitter {
   _parentProcess = null;
   _parentPID = -1;
   _cmd = null;
-  _name = null;
   _startDate = null;
   _serviceURI = null;
   _isLaunched = false;
@@ -101,6 +100,15 @@ export default class ClientProcess extends EventEmitter {
     processLinkedState.addProcess(this);
 
     try {
+      if (typeof this._cmd !== 'function') {
+        console.warn(
+          `"cmd" is not a function, ignoring passed launch command.  If writing
+          multithreaded code, anything within this class outside of this cmd
+          will be run on the main thread.`
+        );
+        return;
+      }
+
       await this._cmd(this);
     } catch (exc) {
       this.kill();
@@ -108,18 +116,8 @@ export default class ClientProcess extends EventEmitter {
     }
   }
 
-  setName(name) {
-    this._name = name;
-
-    this.emit(EVT_PROCESS_UPDATE);
-  }
-
   getBase() {
     return this._base;
-  }
-
-  getName() {
-    return this._name;
   }
 
   getThreadType() {

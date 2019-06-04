@@ -1,5 +1,3 @@
-console.log('Hello');
-
-import startup from 'utils/clientSystem/startup';
+import startup from 'process/ShellCore/startup';
 
 startup();
