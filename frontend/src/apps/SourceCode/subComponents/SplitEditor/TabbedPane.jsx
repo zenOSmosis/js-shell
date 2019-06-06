@@ -81,19 +81,22 @@ export default class TabbedPane extends Component {
   const compiledCode = compile();
 
   try {
-    evalInContext(compiledCode, {
-      getLogicalProcessors,
-      Center,
-      ClientProcess,
-      ClientGUIProcess,
-      ClientWorkerProcess,
-      FilesystemProcess,
-      // DependencyFetcherWorker,
-      React,
-      zdComponents: {
-        Window,
-        Center
-      }
+    new ClientProcess(false, (process) => {
+      evalInContext(compiledCode, {
+        process,
+        getLogicalProcessors,
+        Center,
+        ClientProcess,
+        ClientGUIProcess,
+        ClientWorkerProcess,
+        FilesystemProcess,
+        // DependencyFetcherWorker,
+        React,
+        zdComponents: {
+          Window,
+          Center
+        }
+      });
     });
   } catch (exc) {
     console.error('Caught eval exception', exc);

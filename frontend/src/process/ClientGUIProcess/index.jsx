@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import ClientProcess, { EVT_PROCESS_UPDATE } from '../ClientProcess';
 
-// Only one ClientGUIProcess can be focused at once for user interactivity
-let _focusedClientGUIProcess = null;
-export const getFocusedClientGUIProcess = () => {
-  return _focusedClientGUIProcess;
-};
-
 export default class ClientGUIProcess extends ClientProcess {
   _base = 'ClientGUIProcess';
   _ReactComponent = null;
@@ -44,30 +38,27 @@ export default class ClientGUIProcess extends ClientProcess {
    * Sets whether or not this process' React.Component has top priority in the
    * UI (e.g. if a Window, this Window would be the currently focused Window).
    * 
-   * TODO: Allow optional focus context so we can have independent channels
-   * of focus.
+   * IMPORTANT: Handling of dynamically blurring other instances is not handled
+   * directly in here.
    * 
    * @param {boolean} isFocused 
    */
   setIsFocused(isFocused) {
     // Ignore duplicate
     if (this._isFocused === isFocused) {
+      console.warn('isFocused is already set to:', isFocused);
       return;
     }
 
-    // Blur existing focused process, if exists
-    if (_focusedClientGUIProcess) {
-      _focusedClientGUIProcess.blur();
-    }
-
-    console.debug(isFocused ? 'Focusing' : 'Blurring');
+    console.debug(`${isFocused ? 'Focusing' : 'Blurring'} process:`, {
+      guiProcess: this,
+      nativeProcess: process
+    });
 
     this._isFocused = isFocused;
 
-    _focusedClientGUIProcess = this;
-
     // TODO: Should we utilize a better state handling system here?
-    this.emit(EVT_PROCESS_UPDATE);
+    this.nextTick();
   }
 
   /**
@@ -91,7 +82,7 @@ export default class ClientGUIProcess extends ClientProcess {
     this._desktopMenubarData = menubarData;
 
     // TODO: Should we utilize a better state handling system here?
-    this.emit(EVT_PROCESS_UPDATE);
+    this.nextTick();
   }
 
   /**
@@ -103,7 +94,7 @@ export default class ClientGUIProcess extends ClientProcess {
 
   /*
   setDockIcon(dockIconComponent) {
-    this.emit(EVT_PROCESS_UPDATE);
+    this.nextTick();
   }
   */
 
@@ -120,7 +111,7 @@ export default class ClientGUIProcess extends ClientProcess {
 
     console.debug('setting render props', props);
 
-    this.emit(EVT_PROCESS_UPDATE);
+    this.nextTick();
   }
 
   /**
@@ -181,7 +172,7 @@ export default class ClientGUIProcess extends ClientProcess {
         this._ReactComponent = ReactComponent;
 
         // Let listeners know we have updated the process
-        this.emit(EVT_PROCESS_UPDATE);
+        this.nextTick();
 
         resolve(true);
       }, 0);

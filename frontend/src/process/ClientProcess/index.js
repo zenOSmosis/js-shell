@@ -14,7 +14,9 @@ import Pipe from '../Pipe';
 export const RUN_TARGET_MAIN_THREAD = 'main-thread';
 export const RUN_TARGET_WORKER_THREAD = 'worker-thread';
 
+// TODO: Rename to EVT_PROCESS_TICK(?)
 export const EVT_PROCESS_UPDATE = 'update';
+
 export const EVT_PROCESS_BEFORE_EXIT = 'beforeexit';
 export const EVT_PROCESS_EXIT = 'exit';
 export const EVT_PROCESS_HEARTBEAT = 'heartbeat';
@@ -29,6 +31,28 @@ export const PROCESS_THREAD_TYPES = [
 const processLinkedState = new ProcessLinkedState();
 
 let nextPID = 0;
+
+const makeCallback = (scope, callback) => {
+  if (typeof scope !== 'object') {
+    throw new Error('Scope must be an object');
+  }
+
+  const exec = async () => {
+    try {
+      if (typeof callback === 'function') {
+        await callback.apply(scope, [scope]);
+      }
+
+      callback = undefined;
+    } catch (exc) {
+      callback = undefined;
+
+      throw exc;
+    }
+  };
+
+  return exec;
+};
 
 export default class ClientProcess extends EventEmitter {
   _base = 'ClientProcess';
@@ -46,6 +70,11 @@ export default class ClientProcess extends EventEmitter {
   _stdin = null; // Pipe
   _stdout = null; // Pipe
   _stderr = null; // Pipe
+
+  _setImmediateCallStack = [];
+  _nextTickCallStack = [];
+
+  _tickTimeout = null;
 
   constructor(parentProcess, cmd) {
     super();
@@ -79,6 +108,84 @@ export default class ClientProcess extends EventEmitter {
 
     // Automatically launch
     this._launch();
+  }
+
+  /**
+   * Postpone the execution of code until immediately after polling for I/O.
+   * 
+   * NOTE: This method is created as an arrow function because it's intended to
+   * be used outside of the process scope (where "global" setImmediate should)
+   * be mapped to this method.
+   * 
+   * @see http://plafer.github.io/2015/09/08/nextTick-vs-setImmediate/
+   * ["Section: Putting it all together"] 
+   * 
+   * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
+   */
+  setImmediate = async (callback, error) => {
+    callback = makeCallback(this, callback);
+    error = makeCallback(this, error);
+
+    this._setImmediateCallStack.push({
+      callback,
+      error
+    });
+
+    this._tick();
+  }
+
+  /**
+   * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
+   */
+  nextTick = async (callback, error) => {
+    callback = makeCallback(this, callback);
+    error = makeCallback(this, error);
+
+    this._nextTickCallStack.push({
+      callback,
+      error
+    });
+
+    this._tick();
+  }
+
+  _tick() {
+    if (this._tickTimeout) {
+      clearTimeout(this._tickTimeout);
+    }
+
+    this._tickTimeout = setTimeout(async () => {
+      try {
+        for (let i = 0; i < this._nextTickCallStack.length; i++) {
+          const {callback, error} = this._nextTickCallStack[i];
+          
+          try {
+            await callback();  
+          } catch (exc) {
+            error(exc);
+          }
+        }
+
+        this._nextTickCallStack = [];
+
+        // Execute all setImmediate()
+        for (let i = 0; i < this._setImmediateCallStack.length; i++) {
+          const {callback, error} = this._setImmediateCallStack[i];
+          
+          try {
+            await callback();  
+          } catch (exc) {
+            error(exc);
+          }
+        }
+
+        this._setImmediateCallStack = [];
+
+        this.emit(EVT_PROCESS_UPDATE);
+      } catch (exc) {
+        throw exc;
+      }
+    }, 0);
   }
 
   _initDataPipes() {

@@ -16,6 +16,9 @@ const evalInProtectedContext = (code, context = {}) => {
   code = `
     ((nativeWindow) => {
       // Note: Usage of let instead of const to allow user to override
+      const { process } = this;
+      const { setImmediate } = process;
+
       let window = undefined;
       let document = undefined;
       let self = undefined;
