@@ -16,7 +16,7 @@ import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
-import FilesystemProcess from 'process/FilesystemProcess';
+// import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
@@ -81,23 +81,34 @@ export default class TabbedPane extends Component {
   const compiledCode = compile();
 
   try {
-    new ClientProcess(false, (process) => {
-      evalInContext(compiledCode, {
-        process,
-        getLogicalProcessors,
-        Center,
-        ClientProcess,
-        ClientGUIProcess,
-        ClientWorkerProcess,
-        FilesystemProcess,
-        // DependencyFetcherWorker,
-        React,
-        zdComponents: {
-          Window,
-          Center
-        }
-      });
-    });
+    /**
+     * Evaluates JavaScript in a custom runtime.
+     */
+    class ClientJITRuntime extends ClientProcess {
+      constructor(parentProcess) {
+        super(parentProcess || false, (process) => {
+          // Evaluate JavaScript in the given context
+          evalInContext(compiledCode, {
+            process,
+            getLogicalProcessors,
+            Center,
+            ClientProcess,
+            ClientGUIProcess,
+            ClientWorkerProcess,
+            // FilesystemProcess,
+            // DependencyFetcherWorker,
+            React,
+            zdComponents: {
+              Window,
+              Center
+            }
+          });
+        });
+      }
+    }
+
+    new ClientJITRuntime();
+
   } catch (exc) {
     console.error('Caught eval exception', exc);
   }
