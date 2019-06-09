@@ -1,7 +1,7 @@
-import Pipe from '../Pipe';
-import { EVT_PROCESS_BEFORE_EXIT } from '../ClientProcess';
-
-export const EVT_PIPE_DATA = 'data';
+import {
+    ClientProcessPipe,
+    EVT_PIPE_DATA
+} from '../ClientProcess';
 
 // Important! Leave as 'message' for native Worker
 export const EVT_CLIENT_WORKER_MESSAGE = 'message';
@@ -12,28 +12,22 @@ export const EVT_CLIENT_WORKER_MESSAGE = 'message';
  * It acts as a router for the native Worker's postMessage() and 'message'
  * events handling.
  */
-export default class ClientWorkerDispatchPipe extends Pipe {
-  _clientWorkerProcess = null;
-  _pipeName = '';
+export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
+  _clientWorkerProcess;
 
   constructor(clientWorkerProcess, pipeName) {
-    super();
+    super(clientWorkerProcess, pipeName);
 
     this._clientWorkerProcess = clientWorkerProcess;
-    this._pipeName = pipeName;
 
     // Bind incoming messages
-    this._clientWorkerProcess.on(EVT_CLIENT_WORKER_MESSAGE, this._handleIncomingMessage);
-
-    // Remove all listeners before the process exits
-    this._clientWorkerProcess.on(EVT_PROCESS_BEFORE_EXIT, () => {
-      console.debug('Removing all listeners', this);
-      this.removeAllListeners();
-    });
+    // this._clientWorkerProcess.on(EVT_CLIENT_WORKER_MESSAGE, this._handleIncomingMessage);
   }
 
   /**
-   * Automatically called when the WebWorker calls postMessage.
+   * Automatically called when the WebWorker calls postMessage().
+   * 
+   * TODO: Refactor into an external routing utility.
    */
   _handleIncomingMessage = (serializedMessage) => {
     const message = JSON.parse(serializedMessage);
@@ -47,6 +41,13 @@ export default class ClientWorkerDispatchPipe extends Pipe {
     }
   };
 
+  /**
+   * Serializes data for transmission over wire or silicon.
+   * 
+   * TODO: Mate w/ _unserialize()
+   * 
+   * @param {any} data 
+   */
   _serialize(data) {
     let serialized;
     
@@ -59,14 +60,26 @@ export default class ClientWorkerDispatchPipe extends Pipe {
         serialized = data.toString();
       break;
 
-      default:
+      case 'number':
+      case 'string':
         serialized = data;
+      break;
+
+      default:
+        // Leave as is
+        serialized = data.toString()
       break;
     }
 
     return serialized;
   }
 
+  /**
+   * Overrides ClientProcessPipe's write() method w/ handling to dispatch
+   * across the native Worker's postMessage() method.
+   * 
+   * @param {any} data 
+   */
   write(data) {
     console.warn('TODO: Create uuid for message...?');
 

@@ -1,22 +1,29 @@
+import {
+  EVT_TICK,
+
+  EVT_PIPE_DATA,
+
+  EVT_BEFORE_EXIT,
+  EVT_EXIT,
+
+  THREAD_TYPE_SHARED,
+  THREAD_TYPE_DISTINCT,
+  THREAD_TYPES
+} from './constants';
 import ClientProcessNext from './ClientProcessNext';
+import ClientProcessPipe from './ClientProcessPipe';
 
 export default ClientProcessNext;
+export {
+  EVT_TICK,
 
-// Can we dyanmically export using a loop?
+  ClientProcessPipe,
+  EVT_PIPE_DATA,
 
-export const RUN_TARGET_MAIN_THREAD = 'main-thread';
-export const RUN_TARGET_WORKER_THREAD = 'worker-thread';
+  EVT_BEFORE_EXIT,
+  EVT_EXIT,
 
-// TODO: Rename to EVT_PROCESS_TICK(?)
-export const EVT_PROCESS_UPDATE = 'update';
-
-export const EVT_PROCESS_BEFORE_EXIT = 'beforeexit';
-export const EVT_PROCESS_EXIT = 'exit';
-export const EVT_PROCESS_HEARTBEAT = 'heartbeat';
-
-export const PROCESS_THREAD_TYPE_SHARED = 'shared';
-export const PROCESS_THREAD_TYPE_DISTINCT = 'distinct';
-export const PROCESS_THREAD_TYPES = [
-  PROCESS_THREAD_TYPE_SHARED,
-  PROCESS_THREAD_TYPE_DISTINCT
-];
+  THREAD_TYPE_SHARED,
+  THREAD_TYPE_DISTINCT,
+  THREAD_TYPES
+};

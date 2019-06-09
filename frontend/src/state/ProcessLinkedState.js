@@ -1,5 +1,5 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import ClientProcess, { EVT_PROCESS_UPDATE, EVT_PROCESS_BEFORE_EXIT } from 'process/ClientProcess';
+import ClientProcess, { EVT_TICK, EVT_BEFORE_EXIT } from 'process/ClientProcess';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -40,10 +40,10 @@ export default class ProcessLinkedState extends LinkedState {
       });
     };
 
-    process.on(EVT_PROCESS_UPDATE, _handleProcessUpdate);
+    process.on(EVT_TICK, _handleProcessUpdate);
     // Auto-cleanup
-    process.once(EVT_PROCESS_BEFORE_EXIT, () => {
-      process.off(EVT_PROCESS_UPDATE, _handleProcessUpdate);
+    process.once(EVT_BEFORE_EXIT, () => {
+      process.off(EVT_TICK, _handleProcessUpdate);
     });
 
     // TODO: Detect guiProcesses and update here

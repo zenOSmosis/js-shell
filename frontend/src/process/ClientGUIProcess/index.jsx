@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ClientProcess, { EVT_PROCESS_UPDATE } from '../ClientProcess';
+import ClientProcess, { EVT_TICK } from '../ClientProcess';
 
 export default class ClientGUIProcess extends ClientProcess {
   _base = 'ClientGUIProcess';

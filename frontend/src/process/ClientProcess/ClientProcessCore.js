@@ -1,59 +1,31 @@
-// TODO!  Remove all event listeners from Pipe instances during Process shutdown cycle
+
+// TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
 
 // TODO: Implement automatic forking if a new process is generated inside of
 // the context of another process.
 
-// TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
-
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
-import Pipe from '../Pipe';
+import ClientProcessPipe from './ClientProcessPipe';
+import makeCallback from './makeCallback';
 
-// export const HEARTBEAT_INTERVAL_TIME = 1000;
+import {
+  EVT_TICK,
 
-export const RUN_TARGET_MAIN_THREAD = 'main-thread';
-export const RUN_TARGET_WORKER_THREAD = 'worker-thread';
+  EVT_BEFORE_EXIT,
+  EVT_EXIT,
 
-// TODO: Rename to EVT_PROCESS_TICK(?)
-export const EVT_PROCESS_UPDATE = 'update';
-
-export const EVT_PROCESS_BEFORE_EXIT = 'beforeexit';
-export const EVT_PROCESS_EXIT = 'exit';
-export const EVT_PROCESS_HEARTBEAT = 'heartbeat';
-
-export const PROCESS_THREAD_TYPE_SHARED = 'shared';
-export const PROCESS_THREAD_TYPE_DISTINCT = 'distinct';
-export const PROCESS_THREAD_TYPES = [
-  PROCESS_THREAD_TYPE_SHARED,
-  PROCESS_THREAD_TYPE_DISTINCT
-];
+  THREAD_TYPE_SHARED
+} from './constants';
 
 const processLinkedState = new ProcessLinkedState();
 
 let nextPID = 0;
 
-const makeCallback = (scope, callback) => {
-  if (typeof scope !== 'object') {
-    throw new Error('Scope must be an object');
-  }
-
-  const exec = async () => {
-    try {
-      if (typeof callback === 'function') {
-        await callback.apply(scope, [scope]);
-      }
-
-      callback = undefined;
-    } catch (exc) {
-      callback = undefined;
-
-      throw exc;
-    }
-  };
-
-  return exec;
-};
-
+/**
+ * ClientProcessCore, at least in API, strives to be mostly compatible w/
+ * Node.js' global process object
+ */
 export default class ClientProcessCore extends EventEmitter {
   _base = 'ClientProcess';
   _pid = -1;
@@ -64,8 +36,7 @@ export default class ClientProcessCore extends EventEmitter {
   _serviceURI = null;
   _isLaunched = false;
   _isExited = false;
-  _threadType = PROCESS_THREAD_TYPE_SHARED;
-  _heartbeat = null;
+  _threadType = THREAD_TYPE_SHARED;
 
   _stdin = null; // Pipe
   _stdout = null; // Pipe
@@ -181,7 +152,7 @@ export default class ClientProcessCore extends EventEmitter {
 
         this._setImmediateCallStack = [];
 
-        this.emit(EVT_PROCESS_UPDATE);
+        this.emit(EVT_TICK);
       } catch (exc) {
         throw exc;
       }
@@ -189,9 +160,9 @@ export default class ClientProcessCore extends EventEmitter {
   }
 
   _initDataPipes() {
-    this.stdin = new Pipe();
-    this.stdout = new Pipe();
-    this.stderr = new Pipe();
+    this.stdin = new ClientProcessPipe(this, 'stdin'); // TODO: Use contant for pipe name
+    this.stdout = new ClientProcessPipe(this, 'stdout'); // TODO: Use contant for pipe name
+    this.stderr = new ClientProcessPipe(this, 'stderr'); // TODO: Use contant for pipe name
   }
 
   async _launch() {
@@ -262,10 +233,7 @@ export default class ClientProcessCore extends EventEmitter {
     console.debug(`Shutting down ${this.getClassName()}`, this);
 
     // Tell anyone that this operation is about to complete
-    this.emit(EVT_PROCESS_BEFORE_EXIT);
-
-    // Stop the heartbeat
-    // this._deinitHeartbeat();
+    this.emit(EVT_BEFORE_EXIT);
 
     // Clean up event handles
     this.removeAllListeners();
@@ -277,7 +245,7 @@ export default class ClientProcessCore extends EventEmitter {
     this._isExited = true;
 
     // Let anyone know that this operation has completed
-    this.emit(EVT_PROCESS_EXIT);
+    this.emit(EVT_EXIT);
 
     console.debug(`Exited ${this.getClassName()}`, this);
   }

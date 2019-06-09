@@ -1,4 +1,4 @@
-import ClientProcess, { PROCESS_THREAD_TYPE_DISTINCT } from '../ClientProcess';
+import ClientProcess, { THREAD_TYPE_DISTINCT } from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
 import createWebWorker from 'utils/createWebWorker';
 
@@ -15,7 +15,7 @@ export default class ClientWorkerProcess extends ClientProcess {
       (proc) => { }
     );
 
-    this._threadType = PROCESS_THREAD_TYPE_DISTINCT;
+    this._threadType = THREAD_TYPE_DISTINCT;
 
     // This code is evaluated inside of the native Worker
     const code = `
