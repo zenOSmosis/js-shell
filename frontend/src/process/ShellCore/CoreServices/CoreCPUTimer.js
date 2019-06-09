@@ -1,3 +1,5 @@
+// TODO: Refactor out elapsed string, etc.
+
 import ClientProcess from 'process/ClientProcess';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 // import ProcessHeartbeatLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/ProcessHeartbeatLinkedState';
@@ -34,7 +36,7 @@ export default class CoreCPUTimer extends ClientProcess {
         time += intervalTime;
 
         elapsed = Math.floor(time / intervalTime) / 10;
-        if (Math.round(elapsed) == elapsed) { elapsed += '.0'; }
+        if (Math.round(elapsed) === elapsed) { elapsed += '.0'; }
 
         let diff = (Date.now() - start) - time;
         window.setTimeout(instance, (intervalTime - diff));

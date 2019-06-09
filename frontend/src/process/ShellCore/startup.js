@@ -1,12 +1,9 @@
 // Initializes the ShellCore services
-
-import Core from 'process/ShellCore/Core';
-
+import Core from './Core';
+import ShellDesktop from './ShellDesktop';
 /*
-import CoreCPUTimer from 'process/ShellCore/CoreCPUTimer';
 import CoreNetworkController from 'process/ShellCore/CoreNetworkController';
-import CoreReactGUI from 'process/ShellCore/CoreReactGUI';
-import Desktop from 'process/ShellCore/Desktop';*/
+*/
 
 let hasStarted = false;
 
@@ -21,15 +18,9 @@ const startup = () => {
     return;
   } else {
     const core = new Core();
-    
-    /*
-    new CoreCPUTimer(core);
 
-    new CoreNetworkController(core);
-    
-    const reactGUI = new CoreReactGUI(core);
-    new Desktop(reactGUI);
-    */
+    // Mount the Shell Desktop
+    new ShellDesktop(core);
 
     hasStarted = true;
   }

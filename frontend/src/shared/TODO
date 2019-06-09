@@ -1,1 +1,1 @@
-TODO: Move any shared resources between client and server here
+TODO: Move any shared resources between client and server here (they currently exist in utils/bind)

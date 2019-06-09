@@ -1,3 +1,5 @@
+console.warn('Old App model is deprecated; Utilize process model instead');
+
 import EventEmitter from 'events';
 import { commonDesktopLinkedState, commonAppLinkedState } from 'state/commonLinkedStates';
 import Window from 'components/Desktop/Window';
