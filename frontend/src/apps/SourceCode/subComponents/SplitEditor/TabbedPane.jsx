@@ -3,23 +3,11 @@ import Full from 'components/Full';
 import { Layout, Header, Content, Aside, Footer } from 'components/Layout';
 import { Button } from 'components/Button';
 import { Icon as AntdIcon } from 'antd';
+import ClientJITRuntime from 'process/ClientJITRuntime';
 import SplitEditorHorizontalIcon from 'icons/vscode/split-editor-horizontal-inverse.svg';
 import SplitEditorVerticalIcon from 'icons/vscode/split-editor-vertical-inverse.svg';
 // TODO: Remove; prototyping
 import MonacoEditor from 'components/MonacoEditor';
-
-// For editor context
-// import page from 'page';
-// TODO: Move these to a different module, which will provide context to run all evaluated code
-import evalInContext from 'utils/evalInContext';
-import getLogicalProcessors from 'utils/getLogicalProcessors';
-import ClientProcess from 'process/ClientProcess';
-import ClientGUIProcess from 'process/ClientGUIProcess';
-import ClientWorkerProcess from 'process/ClientWorkerProcess';
-// import FilesystemProcess from 'process/FilesystemProcess';
-// import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
-import Window from 'components/Desktop/Window';
-import Center from 'components/Center';
 
 export default class TabbedPane extends Component {
   state = {
@@ -70,44 +58,12 @@ export default class TabbedPane extends Component {
     };
     */
 
-  const compile = () => {
-    let compiledCode = window.Babel.transform(this.getEditorValue(), { presets: ['react', 'es2015'] }).code;
-
-    compiledCode = compiledCode.split('undefined').join('this');
-
-    return compiledCode;
-  };
-
-  const compiledCode = compile();
-
   try {
-    /**
-     * Evaluates JavaScript in a custom runtime.
-     */
-    class ClientJITRuntime extends ClientProcess {
-      constructor(parentProcess) {
-        super(parentProcess || false, (process) => {
-          // Evaluate JavaScript in the given context
-          evalInContext(compiledCode, {
-            process,
-            getLogicalProcessors,
-            Center,
-            ClientProcess,
-            ClientGUIProcess,
-            ClientWorkerProcess,
-            // FilesystemProcess,
-            // DependencyFetcherWorker,
-            React,
-            zdComponents: {
-              Window,
-              Center
-            }
-          });
-        });
-      }
-    }
+    const jitRuntime = new ClientJITRuntime();
 
-    new ClientJITRuntime();
+    // Execute the editor content
+    // TODO: Make thie project based (option) vs. per-editor based
+    jitRuntime.exec(this.getEditorValue());
 
   } catch (exc) {
     console.error('Caught eval exception', exc);
