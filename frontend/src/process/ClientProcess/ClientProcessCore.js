@@ -15,7 +15,11 @@ import {
   EVT_BEFORE_EXIT,
   EVT_EXIT,
 
-  THREAD_TYPE_SHARED
+  THREAD_TYPE_SHARED,
+
+  PIPE_NAME_STDIN,
+  PIPE_NAME_STDOUT,
+  PIPE_NAME_STDERR
 } from './constants';
 
 const processLinkedState = new ProcessLinkedState();
@@ -81,6 +85,41 @@ export default class ClientProcessCore extends EventEmitter {
     this._launch();
   }
 
+  _initDataPipes() {
+    this.stdin = new ClientProcessPipe(this, PIPE_NAME_STDIN); // TODO: Use contant for pipe name
+    this.stdout = new ClientProcessPipe(this, PIPE_NAME_STDOUT); // TODO: Use contant for pipe name
+    this.stderr = new ClientProcessPipe(this, PIPE_NAME_STDERR); // TODO: Use contant for pipe name
+  }
+
+  async _launch() {
+    if (this._isLaunched) {
+      console.warn('Process has already launched');
+      return;
+    }
+
+    console.debug(`Executing ${this.getClassName()}`, this);
+
+    // Set monitoring flag states before execution so that they are available during execution
+    this._isLaunched = true;
+    processLinkedState.addProcess(this);
+
+    try {
+      if (typeof this._cmd !== 'function') {
+        console.warn(
+          `"cmd" is not a function, ignoring passed launch command.  If writing
+          multithreaded code, anything within this class outside of this cmd
+          will be run on the main thread.`
+        );
+        return;
+      }
+
+      await this._cmd(this);
+    } catch (exc) {
+      this.kill();
+      throw exc;
+    }
+  }
+
   /**
    * Postpone the execution of code until immediately after polling for I/O.
    * 
@@ -120,6 +159,34 @@ export default class ClientProcessCore extends EventEmitter {
     this._tick();
   }
 
+  /**
+   * Non-standard process API method(?)
+   */
+  setTimeout() {
+    console.debug('TODO: Implement proc.setTimeout()');
+  }
+
+  /**
+   * Non-standard process API method(?)
+   */
+  clearTimeout() {
+    console.debug('TODO: Implement proc.clearTimeout()');
+  }
+
+  /**
+   * Non-standard process API method(?)
+   */
+  setInterval() {
+    console.debug('TODO: Implement proc.setInterval()');
+  }
+
+  /**
+   * Non-standard process API method(?)
+   */
+  clearInterval() {
+    console.debug('TODO: Implement proc.clearInterval()');
+  }
+
   _tick() {
     if (this._tickTimeout) {
       clearTimeout(this._tickTimeout);
@@ -157,41 +224,6 @@ export default class ClientProcessCore extends EventEmitter {
         throw exc;
       }
     }, 0);
-  }
-
-  _initDataPipes() {
-    this.stdin = new ClientProcessPipe(this, 'stdin'); // TODO: Use contant for pipe name
-    this.stdout = new ClientProcessPipe(this, 'stdout'); // TODO: Use contant for pipe name
-    this.stderr = new ClientProcessPipe(this, 'stderr'); // TODO: Use contant for pipe name
-  }
-
-  async _launch() {
-    if (this._isLaunched) {
-      console.warn('Process has already launched');
-      return;
-    }
-
-    console.debug(`Executing ${this.getClassName()}`, this);
-
-    // Set monitoring flag states before execution so that they are available during execution
-    this._isLaunched = true;
-    processLinkedState.addProcess(this);
-
-    try {
-      if (typeof this._cmd !== 'function') {
-        console.warn(
-          `"cmd" is not a function, ignoring passed launch command.  If writing
-          multithreaded code, anything within this class outside of this cmd
-          will be run on the main thread.`
-        );
-        return;
-      }
-
-      await this._cmd(this);
-    } catch (exc) {
-      this.kill();
-      throw exc;
-    }
   }
 
   getBase() {

@@ -8,7 +8,12 @@ import {
 
   THREAD_TYPE_SHARED,
   THREAD_TYPE_DISTINCT,
-  THREAD_TYPES
+  THREAD_TYPES,
+
+  PIPE_NAME_STDIN,
+  PIPE_NAME_STDOUT,
+  PIPE_NAME_STDERR,
+  PIPE_NAMES
 } from './constants';
 import ClientProcessNext from './ClientProcessNext';
 import ClientProcessPipe from './ClientProcessPipe';
@@ -25,5 +30,10 @@ export {
 
   THREAD_TYPE_SHARED,
   THREAD_TYPE_DISTINCT,
-  THREAD_TYPES
+  THREAD_TYPES,
+
+  PIPE_NAME_STDIN,
+  PIPE_NAME_STDOUT,
+  PIPE_NAME_STDERR,
+  PIPE_NAMES
 };
