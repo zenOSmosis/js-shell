@@ -41,6 +41,7 @@ export default class ClientProcessCore extends EventEmitter {
   _isLaunched = false;
   _isExited = false;
   _threadType = THREAD_TYPE_SHARED;
+  _title = null;
 
   _stdin = null; // Pipe
   _stdout = null; // Pipe
@@ -89,6 +90,16 @@ export default class ClientProcessCore extends EventEmitter {
     this.stdin = new ClientProcessPipe(this, PIPE_NAME_STDIN); // TODO: Use contant for pipe name
     this.stdout = new ClientProcessPipe(this, PIPE_NAME_STDOUT); // TODO: Use contant for pipe name
     this.stderr = new ClientProcessPipe(this, PIPE_NAME_STDERR); // TODO: Use contant for pipe name
+  }
+
+  setTitle(title) {
+    this.setImmediate(() => {
+      this._title = title;
+    });
+  }
+
+  getTitle() {
+    return this._title;
   }
 
   async _launch() {

@@ -2,7 +2,6 @@ import ClientProcess from '../ClientProcess';
 import React from 'react';
 
 // [main threaded] JITRuntime included shared objects
-import evalInContext from 'utils/evalInContext';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
@@ -36,8 +35,8 @@ export default class ClientJITRuntime extends ClientProcess {
     const compiledCode = this.compile(code);
 
     // Evaluate JavaScript in the given context
-    evalInContext(compiledCode, {
-      process,
+    this.evalInProtectedContext(compiledCode, {
+      process: this,
       getLogicalProcessors,
       Center,
       ClientProcess,
@@ -54,5 +53,39 @@ export default class ClientJITRuntime extends ClientProcess {
         Center
       }
     });
+  }
+
+  // TODO: Evaluate differences in evalInContext and evalInProtetedContext 
+
+  evalInContext(code, context = {}){
+    const exec = () => {
+      const wrappedCode = `
+        (() => {
+          ${code}
+        })();
+      `;
+  
+      eval(wrappedCode);
+    };
+  
+    return exec.call(context);
+  }
+  
+  evalInProtectedContext(code, context = {}) {
+    code = `
+      ((nativeWindow) => {
+        // Note: Usage of let instead of const to allow user to override
+        const { process } = this;
+        const { setImmediate } = process;
+  
+        let window = undefined;      
+        let document = undefined;
+        let self = undefined;
+  
+        ${code}
+      })(window);
+    `;
+  
+    return this.evalInContext(code, context);
   }
 }
