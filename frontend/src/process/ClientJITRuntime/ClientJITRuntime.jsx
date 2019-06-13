@@ -5,6 +5,8 @@ import React from 'react';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
+import MicrophoneProcess from 'process/MicrophoneProcess';
+import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
@@ -42,6 +44,8 @@ export default class ClientJITRuntime extends ClientProcess {
       ClientProcess,
       ClientGUIProcess,
       ClientWorkerProcess,
+      MicrophoneProcess,
+      PCMAudioRecorderProcess,
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,

@@ -1,3 +1,5 @@
+// TODO: Look into: https://github.com/mohayonao/inline-worker/
+
 import ClientProcess, { THREAD_TYPE_DISTINCT } from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
 import createWebWorker from 'utils/createWebWorker';
@@ -12,12 +14,15 @@ export default class ClientWorkerProcess extends ClientProcess {
       parentProcess,
 
       // Override initial parent process with an empty instruction
-      (proc) => { }
+      // (cmd is serialized, then executed, further down)
+      (proc) => {}
     );
 
     this._threadType = THREAD_TYPE_DISTINCT;
 
     // This code is evaluated inside of the native Worker
+    // TODO: Build this unserialized, then dynamically serialize what needs to
+    // run in the native Worker
     const code = `
       importScripts('https://cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.2.6/EventEmitter.js');
       
@@ -54,6 +59,7 @@ export default class ClientWorkerProcess extends ClientProcess {
 
             console.log('received message data', data);
         
+            // TODO: Obtain from constants
             const routedPipeNames = [
               'stdin',
               'stdout',
@@ -158,6 +164,7 @@ export default class ClientWorkerProcess extends ClientProcess {
   }
 
   _initDataPipes() {
+    // TODO: Use constants for pipe names
     this.stdin = new ClientWorkerDispatchPipe(this, 'stdin');
     this.stdout = new ClientWorkerDispatchPipe(this, 'stdout');
     this.stderr = new ClientWorkerDispatchPipe(this, 'stderr');
@@ -166,18 +173,23 @@ export default class ClientWorkerProcess extends ClientProcess {
     this.stdctrlout = new ClientWorkerDispatchPipe(this, 'stdctrlout');
   }
 
-  _onHeartbeatInterval() {
-    console.warn('TODO: Map heartbeat to native Worker');
-
-    super._onHeartbeatInterval();
-  }
-
+  /**
+   * Executes postMessage() on the native Worker.
+   * 
+   * @param {string | object | any} message 
+   */
   postMessage(message) {
+    if (!this._nativeWorker) {
+      console.warn('Native Worker does not exist. Ignoring postMessage call.');
+      return;
+    }
     this._nativeWorker.postMessage(message);
   }
 
   kill() {
-    this._nativeWorker.terminate();
+    if (this._nativeWorker) {
+      this._nativeWorker.terminate();
+    }
 
     super.kill();
   }
