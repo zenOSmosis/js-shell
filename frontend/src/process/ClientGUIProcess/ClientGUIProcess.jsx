@@ -28,6 +28,61 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
+  /*
+  setIcon(iconComponent) {
+    this.nextTick();
+  }
+  */
+
+  /*
+  getIcon() {
+  }
+  */
+
+  /**
+   * Sets the UI's upper menubar data, for this process.
+   * 
+   * @param {object[]} menubarData TODO: Define a structure in comments for this
+   */
+  setDesktopMenubarData(menubarData) {
+    // TODO: Verify integrity of menubarData, throwing error if invalid
+
+    this._desktopMenubarData = menubarData;
+
+    // TODO: Should we utilize a better state handling system here?
+    this.nextTick();
+  }
+
+  /**
+   * Retrieves the UI's upper menubar data, for this process.
+   */
+  getDesktopMenubarData() {
+    return this._desktopMenubarData;
+  }
+
+  setReactRenderer(Content) {
+    this.setImmediate(() => {
+      this._Content = Content;
+    });
+  }
+
+  /**
+   * Alias of this.setReactRenderer().
+   */
+  setContent(...args) {
+    this.setReactRenderer(...args);
+  }
+
+  /**
+   * Retrieves the wrapping React component which represents this process.
+   * 
+   * @return {React.Component} Note the returned React.Component has a 'proc'
+   * attribute which represents this ClientGUIProcess instance.
+   */
+  getReactComponent() {
+    return this._ReactComponent;
+  }
+
   /**
    * Notifies all listeners that this process is the one the user is
    * interacting with directly.
@@ -75,10 +130,9 @@ export default class ClientGUIProcess extends ClientProcess {
       nativeProcess: process
     });
 
-    this._isFocused = isFocused;
-
-    // TODO: Should we utilize a better state handling system here?
-    this.nextTick();
+    this.setImmediate(() => {
+      this._isFocused = isFocused;
+    });
   }
 
   /**
@@ -91,83 +145,14 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._isFocused;
   }
 
-  /**
-   * Sets the UI's upper menubar data, for this process.
-   * 
-   * @param {object[]} menubarData TODO: Define a structure in comments for this
-   */
-  setDesktopMenubarData(menubarData) {
-    // TODO: Verify integrity of menubarData, throwing error if invalid
-
-    this._desktopMenubarData = menubarData;
-
-    // TODO: Should we utilize a better state handling system here?
-    this.nextTick();
-  }
-
-  /**
-   * Retrieves the UI's upper menubar data, for this process.
-   */
-  getDesktopMenubarData() {
-    return this._desktopMenubarData;
-  }
-
-  /*
-  setDockIcon(dockIconComponent) {
-    this.nextTick();
-  }
-  */
-
-  /*
-  getDockIcon() {
-  }
-  */
-
-  /**
-   * TODO: Rename to setViewComponentProps
-   */
-  /*
-  setRenderProps(props) {
-    this._renderProps = props;
-
-    console.debug('setting render props', props);
-
-    this.nextTick();
-  }
-  */
-
-  setReactRenderer(Content) {
-    // console.warn('TODO: Handle renderer content', Content);
-
-    this.setImmediate(() => {
-      this._Content = Content;
-    });
-  }
-
-  /**
-   * Alias of this.setReactRenderer().
-   */
-  setContent(...args) {
-    this.setReactRenderer(...args);
-  }
-
-  /**
-   * Retrieves the component set by this.setReactRenderer().
-   * 
-   * @return {React.Component} Note the returned React.Component has a 'proc'
-   * attribute which represents this ClientGUIProcess instance.
-   */
-  getReactComponent() {
-    return this._ReactComponent;
-  }
-
   kill() {
     // TODO: Remove the component from the DOM
+    console.warn('TODO: Remove the component from the DOM');
     // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
 
     // Allow view to unset before calling super.kill().
     // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
-    this.nextTick(() => {
+    this.setImmediate(() => {
       super.kill();
     });
   }
