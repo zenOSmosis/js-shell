@@ -55,11 +55,15 @@ export default class ClientProcessCore extends EventEmitter {
   constructor(parentProcess, cmd) {
     super();
 
-    if (typeof parentProcess === 'undefined') {
+    if (parentProcess &&
+      parentProcess.getIsExited()) {
+      throw new Error('Cannot fork from an exited process');
+    } else if (typeof parentProcess === 'undefined') {
       throw new Error('parentProcess must be set');
     } else if (parentProcess === false) {
       parentProcess = null;
     }
+
     this._parentProcess = parentProcess;
 
     if (this._parentProcess !== null) {
@@ -238,10 +242,10 @@ export default class ClientProcessCore extends EventEmitter {
     this._tickTimeout = setTimeout(async () => {
       try {
         for (let i = 0; i < this._nextTickCallStack.length; i++) {
-          const {callback, error} = this._nextTickCallStack[i];
-          
+          const { callback, error } = this._nextTickCallStack[i];
+
           try {
-            await callback();  
+            await callback();
           } catch (exc) {
             error(exc);
           }
@@ -251,10 +255,10 @@ export default class ClientProcessCore extends EventEmitter {
 
         // Execute all setImmediate()
         for (let i = 0; i < this._setImmediateCallStack.length; i++) {
-          const {callback, error} = this._setImmediateCallStack[i];
-          
+          const { callback, error } = this._setImmediateCallStack[i];
+
           try {
-            await callback();  
+            await callback();
           } catch (exc) {
             error(exc);
           }
@@ -327,5 +331,9 @@ export default class ClientProcessCore extends EventEmitter {
     this.emit(EVT_EXIT);
 
     console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
+  }
+
+  getIsExited() {
+    return this._isExited;
   }
 }
