@@ -23,11 +23,10 @@ export default class MicrophoneProcess extends ClientProcess {
   }
 
   _handleMicStream(micStream) {
-    // Write mic stream to stdout
-    // this.stdout.write(micStream);
-
     const context = new AudioContext();
+    // Attach context as class property
     this._audioContext = context;
+    
     const source = context.createMediaStreamSource(micStream);
     
     // TODO: Make processor values dynamic
@@ -61,6 +60,7 @@ export default class MicrophoneProcess extends ClientProcess {
     this._stopMic();
 
     if (this._audioContext) {
+      // TODO: Verify the processor is destroyed with the AudioContext instance
       await this._audioContext.close();
     }
 
