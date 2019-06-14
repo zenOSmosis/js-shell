@@ -24,6 +24,8 @@ export class WebWorker extends EventEmitter {
   /**
    * Launches a new native Worker with the given code.
    * 
+   * // TODO: Rename to something a little better.
+   * 
    * @param {Function | String} code
    */
   _launchWithCode(code) {
@@ -48,7 +50,7 @@ export class WebWorker extends EventEmitter {
   }
 
   /**
-   * Handles messages emitted by the native Worker.
+   * Handles postMessages() emitted by the native Worker.
    */
   _handleNativeMessage = (message) => {
     console.debug('Received message from native Worker', {
@@ -61,12 +63,12 @@ export class WebWorker extends EventEmitter {
   };
 
   /**
-   * Sends a message to the native Worker's inner scope.
+   * Sends a postMessage to the native Worker.
    * 
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage
    *
-   * @param {String || any} message The object to deliver to the worker; this will be in the data field in the event delivered to the DedicatedWorkerGlobalScope.onmessage handler. This may be any value or JavaScript object handled by the structured clone algorithm, which includes cyclical references.
-   * @param {[] || undefined} transfer An optional array of Transferable objects to transfer ownership of. If the ownership of an object is transferred, it becomes unusable (neutered) in the context it was sent from and becomes available only to the worker it was sent to.
+   * @param {String | any} message The object to deliver to the worker; this will be in the data field in the event delivered to the DedicatedWorkerGlobalScope.onmessage handler. This may be any value or JavaScript object handled by the structured clone algorithm, which includes cyclical references.
+   * @param {[] | undefined} transfer An optional array of Transferable objects to transfer ownership of. If the ownership of an object is transferred, it becomes unusable (neutered) in the context it was sent from and becomes available only to the worker it was sent to.
    * Transferable objects are instances of classes like ArrayBuffer, MessagePort or ImageBitmap objects that can be transferred. null is not an acceptable value for transfer.
    */
   postMessage(message, transfer = undefined) {
@@ -75,12 +77,15 @@ export class WebWorker extends EventEmitter {
     this._nativeWorker.postMessage(message, transfer);
   }
 
-  terminate() {
-    this._nativeWorker.terminate();
-  }
-
+  /**
+   * Retrieves the URI of the native Worker.
+   */
   getServiceURI() {
     return this._serviceURI;
+  }
+
+  terminate() {
+    this._nativeWorker.terminate();
   }
 
   /**

@@ -15,10 +15,10 @@ import {
   PIPE_NAME_STDERR,
   PIPE_NAMES
 } from './constants';
-import ClientProcessNext from './ClientProcessNext';
+import ClientProcess from './ClientProcess';
 import ClientProcessPipe from './ClientProcessPipe';
 
-export default ClientProcessNext;
+export default ClientProcess;
 export {
   EVT_TICK,
 

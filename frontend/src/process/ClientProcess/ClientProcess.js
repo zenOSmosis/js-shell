@@ -1,8 +1,7 @@
+// TODO: Remove direct LinkedState usage from base ClientProcessCore (use in
+// extension)
 
 // TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
-
-// TODO: Implement automatic forking if a new process is generated inside of
-// the context of another process.
 
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
@@ -30,7 +29,7 @@ let nextPID = 0;
  * ClientProcessCore, at least in API, strives to be mostly compatible w/
  * Node.js' global process object
  */
-export default class ClientProcessCore extends EventEmitter {
+export default class ClientProcess extends EventEmitter {
   _base = 'ClientProcess';
   _pid = -1;
   _parentProcess = null;
@@ -142,13 +141,13 @@ export default class ClientProcessCore extends EventEmitter {
       return;
     }
 
+    // Register process with processLinkedState
+    processLinkedState.addProcess(this);
+
     console.debug(`Executing ${this.getClassName()}`, this);
 
     // Set monitoring flag states before execution so that they are available during execution
     this._isLaunched = true;
-
-    // Register process with processLinkedState
-    processLinkedState.addProcess(this);
 
     try {
       if (typeof this._cmd !== 'function') {
@@ -160,6 +159,7 @@ export default class ClientProcessCore extends EventEmitter {
         return;
       }
 
+      // Run cmd in this process scope
       await this._cmd(this);
     } catch (exc) {
       this.kill();
@@ -291,10 +291,6 @@ export default class ClientProcessCore extends EventEmitter {
 
   getClassName() {
     return this.constructor.name;
-  }
-
-  fork() {
-    throw new Error('TODO: Implement forking');
   }
 
   /**

@@ -22,5 +22,10 @@ module.exports = function override(config, env) {
 
   config = rewireReactHotLoader(config, env);
 
+  console.log('Webpack config w/ overrides @ config-overrides.js', {
+    config,
+    env
+  });
+
   return config;
 };
