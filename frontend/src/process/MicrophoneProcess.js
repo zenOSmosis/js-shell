@@ -8,22 +8,38 @@ import ClientProcess from 'process/ClientProcess';
  */
 export default class MicrophoneProcess extends ClientProcess {
   _micStream = null;
+  _audioContext = null;
 
   constructor(parentProcess) {
     super(parentProcess, async (proc) => {
       try {
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
+
         proc._handleMicStream(micStream);
       } catch (exc) {
         throw exc;
       }
     });
   }
-  
+
   _handleMicStream(micStream) {
     // Write mic stream to stdout
-    this.stdout.write(micStream);
+    // this.stdout.write(micStream);
+
+    const context = new AudioContext();
+    this._audioContext = context;
+    const source = context.createMediaStreamSource(micStream);
+    
+    // TODO: Make processor values dynamic
+    const processor = context.createScriptProcessor(1024, 1, 1);
+
+    source.connect(processor);
+    processor.connect(context.destination);
+
+    processor.onaudioprocess = (e) => {
+      // Write AudioBuffer to stdout
+      this.stdout.write(e.inputBuffer);
+    };
   }
 
   /**
@@ -43,6 +59,10 @@ export default class MicrophoneProcess extends ClientProcess {
 
   async kill(killSignal = 0) {
     this._stopMic();
+
+    if (this._audioContext) {
+      await this._audioContext.close();
+    }
 
     await super.kill(killSignal);
   }

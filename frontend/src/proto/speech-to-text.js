@@ -2,6 +2,15 @@ const { MicrophoneProcess, PCMAudioRecorderProcess } = this;
 
 const mic = new MicrophoneProcess(process);
 
+mic.stdout.on('data', (stream) => {
+    console.debug(stream);
+});
+
+/*
+const { MicrophoneProcess, PCMAudioRecorderProcess } = this;
+
+const mic = new MicrophoneProcess(process);
+
 // MediaRecorder
 const recorder = new PCMAudioRecorderProcess(process);
 mic.stdout.on('data', (stream) => {
@@ -10,3 +19,4 @@ mic.stdout.on('data', (stream) => {
 });
 
 // WSS worker
+*/
