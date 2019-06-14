@@ -8,6 +8,8 @@
   /* Enables clicking beside the Dock being passed to container */
   left: 50%;
   transform: translateX(-50%);
+
+  z-index: 9999;
 }
 
 .zd-desktop-dock .zd-desktop-dock-items {

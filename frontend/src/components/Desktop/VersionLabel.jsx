@@ -6,7 +6,8 @@ const VersionLabel = () => {
       position: 'absolute',
       bottom: 10,
       right: 10,
-      color: 'rgba(255,255,255,.8)'
+      color: 'rgba(255,255,255,.8)',
+      zIndex: 1
     }}
 
     // TODO: Make this all dynamic

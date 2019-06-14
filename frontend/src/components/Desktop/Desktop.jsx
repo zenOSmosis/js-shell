@@ -69,8 +69,6 @@ class Desktop extends Component {
 
                 <Notifications />
 
-                <VersionLabel />
-
                 {
                   // TODO: Implement DrawersLayer as a separate component
                   // @see https://ant.design/components/drawer/
@@ -101,6 +99,8 @@ class Desktop extends Component {
                   // Renders windows
                 }
                 <WindowDrawLayer onDirectInteract={ evt => console.debug('Desktop Interact', evt) } />
+
+                <VersionLabel />
 
                 {
                   // Bottom Dock
