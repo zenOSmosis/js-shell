@@ -41,9 +41,9 @@ export default class MicrophoneProcess extends ClientProcess {
     });
   }
 
-  kill() {
+  async kill(killSignal = 0) {
     this._stopMic();
 
-    super.kill();
+    await super.kill(killSignal);
   }
 }

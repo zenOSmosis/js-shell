@@ -11,7 +11,7 @@ export const EVT_PIPE_DATA = 'data';
 
 export const EVT_TICK = 'tick';
 
-export const EVT_BEFORE_EXIT = 'beforeexit';
+export const EVT_BEFORE_EXIT = 'beforeExit';
 export const EVT_EXIT = 'exit';
 
 export const THREAD_TYPE_SHARED = 'shared';

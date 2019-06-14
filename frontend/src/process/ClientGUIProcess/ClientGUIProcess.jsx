@@ -145,15 +145,15 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._isFocused;
   }
 
-  kill() {
+  async kill(killSignal = 0) {
     // TODO: Remove the component from the DOM
     console.warn('TODO: Remove the component from the DOM');
     // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
 
     // Allow view to unset before calling super.kill().
     // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
-    this.setImmediate(() => {
-      super.kill();
-    });
+    // this.setImmediate(async () => {
+      await super.kill(killSignal);
+    // });
   }
 }

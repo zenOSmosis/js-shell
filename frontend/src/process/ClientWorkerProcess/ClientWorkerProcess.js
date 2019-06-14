@@ -186,11 +186,11 @@ export default class ClientWorkerProcess extends ClientProcess {
     this._nativeWorker.postMessage(message);
   }
 
-  kill() {
+  async kill(killSignal = 0) {
     if (this._nativeWorker) {
       this._nativeWorker.terminate();
     }
 
-    super.kill();
+    await super.kill(killSignal);
   }
 }

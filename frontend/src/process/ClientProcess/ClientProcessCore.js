@@ -86,6 +86,17 @@ export default class ClientProcessCore extends EventEmitter {
     this._launch();
   }
 
+  /**
+   * Retrieves the process identifier.
+   */
+  getPID() {
+    return this._pid;
+  }
+
+  getParentPID() {
+    return this._parentPID;
+  }
+
   _initDataPipes() {
     this.stdin = new ClientProcessPipe(this, PIPE_NAME_STDIN); // TODO: Use contant for pipe name
     this.stdout = new ClientProcessPipe(this, PIPE_NAME_STDOUT); // TODO: Use contant for pipe name
@@ -102,6 +113,25 @@ export default class ClientProcessCore extends EventEmitter {
     return this._title;
   }
 
+  /**
+   * Retrieves the direct descendant processes forked from this current
+   * process.
+   * 
+   * @return {ClientProcess[]}
+   */
+  getChildren() {
+    const { processes } = processLinkedState.getState();
+    const pid = this.getPID();
+
+    const children = processes.filter((proc) => {
+      const testParentPID = proc.getParentPID();
+
+      return testParentPID === pid;
+    });
+
+    return children;
+  }
+
   async _launch() {
     if (this._isLaunched) {
       console.warn('Process has already launched');
@@ -112,6 +142,8 @@ export default class ClientProcessCore extends EventEmitter {
 
     // Set monitoring flag states before execution so that they are available during execution
     this._isLaunched = true;
+
+    // Register process with processLinkedState
     processLinkedState.addProcess(this);
 
     try {
@@ -253,17 +285,6 @@ export default class ClientProcessCore extends EventEmitter {
     return this._startDate;
   }
 
-  /**
-   * Retrieves the process identifier.
-   */
-  getPID() {
-    return this._pid;
-  }
-
-  getParentPID() {
-    return this._parentPID;
-  }
-
   getClassName() {
     return this.constructor.name;
   }
@@ -272,16 +293,31 @@ export default class ClientProcessCore extends EventEmitter {
     throw new Error('TODO: Implement forking');
   }
 
-  kill() {
+  /**
+   * TODO: Add optional signal
+   */
+  async kill(killSignal = 0) {
     console.debug(`Shutting down ${this.getClassName()}`, this);
 
     // Tell anyone that this operation is about to complete
     this.emit(EVT_BEFORE_EXIT);
 
+    // Remove child processes
+    const children = this.getChildren();
+    for (let i = 0; i < children.length; i++) {
+      try {
+        const proc = children[i];
+
+        await proc.kill();
+      } catch (exc) {
+        console.error(exc);
+      }
+    }
+
     // Clean up event handles
     this.removeAllListeners();
 
-    // Clear from the ProcessLinkedState list
+    // Unregister process with processLinkedState
     processLinkedState.removeProcess(this);
 
     // Set our exit flag
@@ -290,6 +326,6 @@ export default class ClientProcessCore extends EventEmitter {
     // Let anyone know that this operation has completed
     this.emit(EVT_EXIT);
 
-    console.debug(`Exited ${this.getClassName()}`, this);
+    console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
   }
 }

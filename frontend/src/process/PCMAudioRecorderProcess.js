@@ -33,9 +33,9 @@ export default class PCMAudioRecorderProcess extends ClientProcess {
     });
   }
 
-  kill() {
+  async kill(killSignal = 0) {
     console.warn('TODO: Implement stopping of recorderjs, etc.');
 
-    super.kill();
+    await super.kill(killSignal);
   }
 }
