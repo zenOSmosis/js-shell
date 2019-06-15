@@ -42,62 +42,26 @@ export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
   };
 
   /**
-   * Serializes data for transmission over wire or silicon.
-   * 
-   * TODO: Mate w/ _unserialize()
-   * 
-   * @param {any} data 
-   */
-  _serialize(data) {
-    let serialized;
-    
-    switch (typeof data) {
-      case 'object':
-        serialized = JSON.stringify(data);
-      break;
-
-      case 'function':
-        serialized = data.toString();
-      break;
-
-      case 'number':
-      case 'string':
-        serialized = data;
-      break;
-
-      default:
-        // Leave as is
-        serialized = data.toString()
-      break;
-    }
-
-    return serialized;
-  }
-
-  /**
    * Overrides ClientProcessPipe's write() method w/ handling to dispatch
    * across the native Worker's postMessage() method.
    * 
    * @param {any} data 
+   * @param {object[]} transfer (optional) An optional array of Transferable
+   * objects to transfer ownership of. If the ownership of an object is
+   * transferred, it becomes unusable (neutered) in the context it was sent
+   * from and becomes available only to the worker it was sent to. Transferable
+   * objects are instances of classes like ArrayBuffer, MessagePort or
+   * ImageBitmap objects that can be transferred. null is not an acceptable
+   * value for transfer.
    */
-  write(data) {
-    console.warn('TODO: Create uuid for message...?');
+  write(data, transfer = undefined) {
+    const pipeName = this._pipeName;
 
-    // Notify Worker that we're writing to stdin
-    this._clientWorkerProcess.postMessage(this._serialize({
-      isCtrlMsg: true,
-      pipeName: this._pipeName,
-      isWriting: true
-    }));
+    const message = {
+      pipeName,
+      data
+    };
     
-    // Write to stdin
-    this._clientWorkerProcess.postMessage(this._serialize(data));
-
-    // Notify Worker that we're done writing to stdin
-    this._clientWorkerProcess.postMessage(this._serialize({
-      isCtrlMsg: true,
-      pipeName: this._pipeName,
-      isWriting: false
-    }));
+    this._clientWorkerProcess.postMessage(message, transfer);
   }
 }

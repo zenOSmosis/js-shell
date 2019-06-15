@@ -1,4 +1,6 @@
 import {
+  EVT_MESSAGE,
+
   EVT_TICK,
 
   EVT_PIPE_DATA,
@@ -13,6 +15,7 @@ import {
   PIPE_NAME_STDIN,
   PIPE_NAME_STDOUT,
   PIPE_NAME_STDERR,
+  PIPE_NAME_CTRL,
   PIPE_NAMES
 } from './constants';
 import ClientProcess from './ClientProcess';
@@ -20,6 +23,8 @@ import ClientProcessPipe from './ClientProcessPipe';
 
 export default ClientProcess;
 export {
+  EVT_MESSAGE,
+  
   EVT_TICK,
 
   ClientProcessPipe,
@@ -35,5 +40,6 @@ export {
   PIPE_NAME_STDIN,
   PIPE_NAME_STDOUT,
   PIPE_NAME_STDERR,
+  PIPE_NAME_CTRL,
   PIPE_NAMES
 };

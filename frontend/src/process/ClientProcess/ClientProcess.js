@@ -1,3 +1,5 @@
+// TODO: Separate ClientProcess from ClientProcessCore (and extend w/ ClientWorker_WorkerProcess).
+
 // TODO: Remove direct LinkedState usage from base ClientProcessCore (use in
 // extension)
 
@@ -26,8 +28,7 @@ const processLinkedState = new ProcessLinkedState();
 let nextPID = 0;
 
 /**
- * ClientProcessCore, at least in API, strives to be mostly compatible w/
- * Node.js' global process object
+ * TODO: Document...
  */
 export default class ClientProcess extends EventEmitter {
   _base = 'ClientProcess';
@@ -69,7 +70,10 @@ export default class ClientProcess extends EventEmitter {
       this._parentPID = this._parentProcess.getPID();
     }
 
-    this._serviceURI = window.location.href;
+    if (typeof window !== 'undefined') {
+      // TODO: Can a service worker use this, somehow?
+      this._serviceURI = window.location.href;
+    }
 
     this._parentProcess = parentProcess;
 

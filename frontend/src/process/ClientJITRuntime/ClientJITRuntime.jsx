@@ -1,5 +1,6 @@
 import ClientProcess from '../ClientProcess';
 import React from 'react';
+import evalInContext from 'utils/evalInContext';
 
 // [main threaded] JITRuntime included shared objects
 import getLogicalProcessors from 'utils/getLogicalProcessors';
@@ -9,7 +10,6 @@ import MicrophoneProcess from 'process/MicrophoneProcess';
 import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
-import getSerializedWorkerProcess from 'process/ClientWorkerProcess/ClientWorker_WorkerProcess';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -60,28 +60,11 @@ export default class ClientJITRuntime extends ClientProcess {
       zdComponents: {
         Window,
         Center
-      },
-
-      // Proto
-      __getSerializedWorkerProcess: getSerializedWorkerProcess,
+      }
     });
   }
 
   // TODO: Evaluate differences in evalInContext and evalInProtetedContext 
-
-  evalInContext(code, context = {}){
-    const exec = () => {
-      const wrappedCode = `
-        (() => {
-          ${code}
-        })();
-      `;
-  
-      eval(wrappedCode);
-    };
-  
-    return exec.call(context);
-  }
   
   evalInProtectedContext(code, context = {}) {
     code = `
@@ -98,6 +81,6 @@ export default class ClientJITRuntime extends ClientProcess {
       })(window);
     `;
   
-    return this.evalInContext(code, context);
+    return evalInContext(code, context);
   }
 }

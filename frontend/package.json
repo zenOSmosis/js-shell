@@ -36,6 +36,7 @@
     "text-ellipsis": "^1.0.3",
     "uuid": "^3.3.2",
     "webamp": "^1.4.0",
+    "worker-loader": "^2.0.0",
     "xterm": "^3.13.1"
   },
   "scripts": {

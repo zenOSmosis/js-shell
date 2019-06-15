@@ -1,11 +1,23 @@
-const { MicrophoneProcess, PCMAudioRecorderProcess } = this;
+const {
+    ClientProcess,
+    ClientWorkerProcess,
+    MicrophoneProcess,
+    PCMAudioRecorderProcess
+} = this;
 
 const mic = new MicrophoneProcess(process);
-
-mic.stdout.on('data', (stream) => {
-    console.debug(stream);
+const worker = new this.ClientWorkerProcess(process, (worker) => {
+    worker.stdin.on('data', (buffer) => {
+        console.debug(buffer);
+    });
 });
 
+mic.stdout.on('data', (buffer) => {
+    worker.stdin.write(buffer);
+});
+
+
+// worker.stdin.write('hello from client');
 /*
 const { MicrophoneProcess, PCMAudioRecorderProcess } = this;
 

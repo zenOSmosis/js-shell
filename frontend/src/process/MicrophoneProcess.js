@@ -22,6 +22,9 @@ export default class MicrophoneProcess extends ClientProcess {
     });
   }
 
+  /**
+   * @see https://aws.amazon.com/blogs/machine-learning/capturing-voice-input-in-a-browser/
+   */
   _handleMicStream(micStream) {
     const context = new AudioContext();
     // Attach context as class property
@@ -37,7 +40,7 @@ export default class MicrophoneProcess extends ClientProcess {
 
     processor.onaudioprocess = (e) => {
       // Write AudioBuffer to stdout
-      this.stdout.write(e.inputBuffer);
+      this.stdout.write(e.inputBuffer.getChannelData(0));
     };
   }
 

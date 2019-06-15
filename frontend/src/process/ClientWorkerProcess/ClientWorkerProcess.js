@@ -1,15 +1,16 @@
 // TODO: Look into: https://github.com/mohayonao/inline-worker/
 
-import ClientProcess, { THREAD_TYPE_DISTINCT } from '../ClientProcess';
+import ClientProcess, {
+  THREAD_TYPE_DISTINCT,
+  PIPE_NAMES
+} from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
-import createWebWorker from 'utils/createWebWorker';
-import getSerializedWorkerProcess from './ClientWorker_WorkerProcess';
+import ClientWorker from './ClientWorkerProcess.worker';
+// import createWebWorker from 'utils/createWebWorker';
+// import getSerializedWorkerProcess from './ClientWorker_WorkerProcess';
 
 // TODO: Rename to ClientWorkerHostProcess
 export default class ClientWorkerProcess extends ClientProcess {
-  _base = 'ClientWorkerProcess';
-  _nativeWorker = null;
-
   constructor(parentProcess, cmd) {
     super(
       parentProcess,
@@ -20,39 +21,75 @@ export default class ClientWorkerProcess extends ClientProcess {
     );
 
     this._threadType = THREAD_TYPE_DISTINCT;
+    this._base = 'ClientWorkerProcess';
+    this._nativeWorker = null;
 
-    const code = getSerializedWorkerProcess(cmd);
+    this._initNativeWorker(cmd);
+  }
 
-    this._nativeWorker = createWebWorker(code);
+  _initNativeWorker(cmd) {
+    this._nativeWorker = new ClientWorker();
+    
+    console.debug('Initialized native worker:', this._nativeWorker);
 
-    this._serviceURI = this._nativeWorker.getServiceURI();
+    // Instantiate communications
+    (() => {
+      const pid = this.getPID();
+      
+      // Send init message (first message is the init)
+      this._nativeWorker.postMessage({
+        // This process is the 'controller'
+        controller: {
+          pid
+        },
+        serializedCmd: cmd.toString()
+      });
+
+      this._nativeWorker.onmessage = (evt) => {
+        console.debug('Received message event from native worker', evt);
+      };
+
+      // Event emitter... listen once
+    })();
+    
+    // this._serviceURI = this._nativeWorker.getServiceURI();
   }
 
   _initDataPipes() {
     // TODO: Use constants for pipe names
-    this.stdin = new ClientWorkerDispatchPipe(this, 'stdin');
-    this.stdout = new ClientWorkerDispatchPipe(this, 'stdout');
-    this.stderr = new ClientWorkerDispatchPipe(this, 'stderr');
-
-    this.stdctrlin = new ClientWorkerDispatchPipe(this, 'stdctrlin');
-    this.stdctrlout = new ClientWorkerDispatchPipe(this, 'stdctrlout');
+    PIPE_NAMES.forEach(pipeName => {
+      this[pipeName] = new ClientWorkerDispatchPipe(this, pipeName);
+    });
   }
 
   /**
-   * Executes postMessage() on the native Worker.
+   * Sends a message using the native Worker's postMessage().
    * 
-   * @param {string | object | any} message 
+   * @param {*} messageThe object to deliver to the worker; this will be in the
+   * data field in the event delivered to the DedicatedWorkerGlobalScope.onmessage
+   * handler. This may be any value or JavaScript object handled by the structured
+   * clone algorithm, which includes cyclical references.
+   * @param {object[]} transfer (optional) An optional array of Transferable
+   * objects to transfer ownership of. If the ownership of an object is
+   * transferred, it becomes unusable (neutered) in the context it was sent
+   * from and becomes available only to the worker it was sent to. Transferable
+   * objects are instances of classes like ArrayBuffer, MessagePort or
+   * ImageBitmap objects that can be transferred. null is not an acceptable
+   * value for transfer.
    */
-  postMessage(message) {
+  postMessage(message, transfer = undefined) {
     if (!this._nativeWorker) {
       console.warn('Native Worker does not exist. Ignoring postMessage call.');
       return;
     }
-    this._nativeWorker.postMessage(message);
+    
+    this._nativeWorker.postMessage(message, transfer);
   }
 
   async kill(killSignal = 0) {
     if (this._nativeWorker) {
+      // TODO: Send signal to remote worker before terminating
+
       this._nativeWorker.terminate();
     }
 

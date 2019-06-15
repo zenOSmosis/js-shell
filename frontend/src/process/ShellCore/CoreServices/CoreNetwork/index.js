@@ -9,10 +9,6 @@ export default class CoreNetworkController extends ClientProcess {
     // TODO: Provide pipe routing
     new CoreHTTPWorker(this);
     
-    
-    const socketWorker = new CoreSocketIOWorker(this);
-    socketWorker.stdctrlin.write({
-      foo: 'bar'
-    });
+    new CoreSocketIOWorker(this);
   }
 }
