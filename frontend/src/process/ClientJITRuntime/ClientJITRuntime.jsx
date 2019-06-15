@@ -9,9 +9,14 @@ import MicrophoneProcess from 'process/MicrophoneProcess';
 import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
+import getSerializedWorkerProcess from 'process/ClientWorkerProcess/ClientWorker_WorkerProcess';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
+/**
+ * Fancy name for green-threaded, eval'd code within semi-controlled process
+ * context.
+ */
 export default class ClientJITRuntime extends ClientProcess {
   constructor(parentProcess) {
     // Default parentProcess to being non-forked (subject to change)
@@ -55,7 +60,10 @@ export default class ClientJITRuntime extends ClientProcess {
       zdComponents: {
         Window,
         Center
-      }
+      },
+
+      // Proto
+      __getSerializedWorkerProcess: getSerializedWorkerProcess,
     });
   }
 
