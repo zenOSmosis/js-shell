@@ -12,7 +12,7 @@ const VersionLabel = () => {
 
     // TODO: Make this all dynamic
     >
-      Linux Shell Evaluation<br />
+      JS Shell Evaluation<br />
       Copyright &copy; 2019 zenOSmosis<br />
       TODO: Add licensing information<br />
       TODO: Add current git hash, etc.<br />

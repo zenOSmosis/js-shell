@@ -43,7 +43,7 @@ class ClientWorker_WorkerProcess extends ClientProcess {
   }
 
   _initDataPipes() {
-    // TODO: Use constants for pipe names
+    // Dynamic pipe allocation
     PIPE_NAMES.forEach(pipeName => {
       this[pipeName] = new ClientWorkerDispatchPipe(this, pipeName);
     });
@@ -90,7 +90,7 @@ class ClientWorker_WorkerProcess extends ClientProcess {
   }
 
   _handleReceivedMessage(message) {
-    let { data } = message;
+    const { data } = message;
 
     this._idxReceivedMsg++;
 
@@ -109,9 +109,26 @@ class ClientWorker_WorkerProcess extends ClientProcess {
         `, this);
 
       }, 0);
-    }
+    } else {
+      // Route to stdio
 
-    console.debug('Native Worker received postMessage() w/ data:', data);
+      const { pipeName, data: writeData } = data;
+
+      if (pipeName
+          && this[pipeName]) {
+        
+        /*
+        console.debug('writing', {
+          pipeName,
+          writeData
+        });
+        */
+       
+        this[pipeName].write(writeData);
+      } else {
+        console.warn('Unhandled pipe message', message);
+      }
+    }
   }
 }
 

@@ -45,8 +45,19 @@ export default class ClientWorkerProcess extends ClientProcess {
         serializedCmd: cmd.toString()
       });
 
-      this._nativeWorker.onmessage = (evt) => {
-        console.debug('Received message event from native worker', evt);
+      this._nativeWorker.onmessage = (message) => {
+        // console.debug('Received message event from native worker', message);
+
+        const { data } = message;
+      
+        // Route to stdio
+        const { pipeName, data: writeData } = data;
+        if (pipeName
+            && this[pipeName]) {
+          this[pipeName].write(writeData);
+        } else {
+          console.warn('Unhandled pipe message', message);
+        }
       };
 
       // Event emitter... listen once

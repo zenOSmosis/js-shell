@@ -43,9 +43,9 @@ export default class ClientProcess extends EventEmitter {
   _threadType = THREAD_TYPE_SHARED;
   _title = null;
 
-  _stdin = null; // Pipe
-  _stdout = null; // Pipe
-  _stderr = null; // Pipe
+  stdin = null; // Pipe
+  stdout = null; // Pipe
+  stderr = null; // Pipe
 
   _setImmediateCallStack = [];
   _nextTickCallStack = [];
@@ -105,6 +105,7 @@ export default class ClientProcess extends EventEmitter {
   }
 
   _initDataPipes() {
+    // TODO: Dynamically allocate
     this.stdin = new ClientProcessPipe(this, PIPE_NAME_STDIN); // TODO: Use contant for pipe name
     this.stdout = new ClientProcessPipe(this, PIPE_NAME_STDOUT); // TODO: Use contant for pipe name
     this.stderr = new ClientProcessPipe(this, PIPE_NAME_STDERR); // TODO: Use contant for pipe name
