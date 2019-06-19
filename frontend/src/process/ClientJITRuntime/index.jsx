@@ -1,3 +1,3 @@
-import ClientJITRuntime from './ClientJITRuntime';
+import UI_JITRuntime from './UI_JITRuntime';
 
-export default ClientJITRuntime;
+export default UI_JITRuntime;
