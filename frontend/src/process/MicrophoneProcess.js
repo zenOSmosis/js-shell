@@ -10,38 +10,61 @@ export default class MicrophoneProcess extends ClientProcess {
   _micStream = null;
   _audioContext = null;
 
-  constructor(parentProcess) {
+  constructor(parentProcess, cmd = null, options = {}) {
     super(parentProcess, async (proc) => {
       try {
-        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this._outputSampleRate = null;
+        this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        proc._handleMicStream(micStream);
+        proc.setImmediate(() => {
+          proc._handleMicStream(this._micStream);
+        
+          // Run passed cmd, if available
+          if (typeof cmd === 'function') {
+            cmd(proc);
+          }
+        });
       } catch (exc) {
         throw exc;
       }
-    });
+    }, options);
   }
 
   /**
    * @see https://aws.amazon.com/blogs/machine-learning/capturing-voice-input-in-a-browser/
    */
   _handleMicStream(micStream) {
+    // TODO: resample @see https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/OfflineAudioContext
+    // TODO: @see https://mdn.github.io/webaudio-examples/offline-audio-context/
+
+
     const context = new AudioContext();
     // Attach context as class property
     this._audioContext = context;
     
     const source = context.createMediaStreamSource(micStream);
+
+    const { bufferSize } = this._options;
+    const numberOfInputChannels = 1;
+    const numberOfOutputChannels = 1;
     
-    // TODO: Make processor values dynamic
-    const processor = context.createScriptProcessor(1024, 1, 1);
+    // The createScriptProcessor() method of the BaseAudioContext interface creates a ScriptProcessorNode used for direct audio processing.
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor
+    const processor = context.createScriptProcessor(bufferSize, numberOfInputChannels, numberOfOutputChannels);
 
     source.connect(processor);
     processor.connect(context.destination);
 
     processor.onaudioprocess = (e) => {
-      // Write AudioBuffer to stdout
-      this.stdout.write(e.inputBuffer.getChannelData(0));
+      const audioBuffer = e.inputBuffer;
+
+      // Write AudioBuffer to stdout stream
+      this.stdout.write(audioBuffer);
     };
+  }
+
+  getOutputSampleRate() {
+    return this._outputSampleRate;
   }
 
   /**
@@ -49,6 +72,7 @@ export default class MicrophoneProcess extends ClientProcess {
    */
   _stopMic() {
     if (!this._micStream) {
+      console.warn('_micStream is not available');
       return;
     }
 

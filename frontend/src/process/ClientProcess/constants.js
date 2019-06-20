@@ -11,11 +11,13 @@ export const PIPE_NAMES = [
 
 export const EVT_PIPE_DATA = 'data';
 
+export const EVT_READY = 'ready';
 export const EVT_TICK = 'tick';
 
 export const EVT_BEFORE_EXIT = 'beforeExit';
 export const EVT_EXIT = 'exit';
 
+// Typically used for IPC w/ native Workers
 export const EVT_MESSAGE = 'message';
 
 export const THREAD_TYPE_SHARED = 'shared';

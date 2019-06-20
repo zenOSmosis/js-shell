@@ -54,7 +54,7 @@ new ClientGUIProcess((proc) => {
     )
   });
 
-  proc.on('beforeexit', () => {
+  proc.on('beforeExit', () => {
     keyboard.kill();
   });
 });

@@ -11,6 +11,7 @@ import ClientProcessPipe from './ClientProcessPipe';
 import makeCallback from './makeCallback';
 
 import {
+  EVT_READY,
   EVT_TICK,
 
   EVT_BEFORE_EXIT,
@@ -31,6 +32,7 @@ let nextPID = 0;
  * TODO: Document...
  */
 export default class ClientProcess extends EventEmitter {
+  // TODO: Move these into constructor
   _base = 'ClientProcess';
   _pid = -1;
   _parentProcess = null;
@@ -52,8 +54,11 @@ export default class ClientProcess extends EventEmitter {
 
   _tickTimeout = null;
 
-  constructor(parentProcess, cmd) {
+  constructor(parentProcess, cmd, options = {}) {
     super();
+
+    // Increment up for the next process
+    nextPID++;
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
@@ -65,32 +70,53 @@ export default class ClientProcess extends EventEmitter {
     }
 
     this._parentProcess = parentProcess;
-
     if (this._parentProcess !== null) {
       this._parentPID = this._parentProcess.getPID();
     }
+    this._isReady = false;
+    this._cmd = cmd;
+    this._pid = nextPID;
+    this._startDate = new Date();
+    this._options = options;
 
     if (typeof window !== 'undefined') {
       // TODO: Can a service worker use this, somehow?
       this._serviceURI = window.location.href;
     }
 
-    this._parentProcess = parentProcess;
-
-    this._cmd = cmd;
-
-    this._pid = nextPID;
-
-    // Increment up for the next process
-    nextPID++;
-
-    this._startDate = new Date();
-
     // Provides stdin/stdout/stderr
     this._initDataPipes();
 
-    // Automatically launch
-    this._launch();
+    this.setImmediate(() => {  
+      this._init();
+    });
+  }
+
+  /**
+   * Makes the process "ready."
+   */
+  _init() {
+    this.setImmediate(() => {
+      this._isReady = true;
+
+      this.emit(EVT_READY);
+
+      // Automatically launch
+      this._launch();
+    });
+  }
+
+  getOptions() {
+    return this._options;
+  }
+
+  /**
+   * Determines whether the process is ready for consumption as a service.
+   * 
+   * @return {boolean}
+   */
+  getIsReady() {
+    return this._isReady();
   }
 
   /**

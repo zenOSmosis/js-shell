@@ -13,34 +13,6 @@ export const EVT_CLIENT_WORKER_MESSAGE = 'message';
  * events handling.
  */
 export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
-  _clientWorkerProcess;
-
-  constructor(clientWorkerProcess, pipeName) {
-    super(clientWorkerProcess, pipeName);
-
-    this._clientWorkerProcess = clientWorkerProcess;
-
-    // Bind incoming messages
-    // this._clientWorkerProcess.on(EVT_CLIENT_WORKER_MESSAGE, this._handleIncomingMessage);
-  }
-
-  /**
-   * Automatically called when the WebWorker calls postMessage().
-   * 
-   * TODO: Refactor into an external routing utility.
-   */
-  _handleIncomingMessage = (serializedMessage) => {
-    const message = JSON.parse(serializedMessage);
-
-    const { data } = message;
-
-    console.debug('Received incoming message data', data);
-
-    if (data) {
-      this.emit(EVT_PIPE_DATA, data);
-    }
-  };
-
   /**
    * Overrides ClientProcessPipe's write() method w/ handling to dispatch
    * across the native Worker's postMessage() method.
@@ -62,6 +34,6 @@ export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
       data
     };
     
-    this._clientWorkerProcess.postMessage(message, transfer);
+    this._clientProcess.postMessage(message, transfer);
   }
 }

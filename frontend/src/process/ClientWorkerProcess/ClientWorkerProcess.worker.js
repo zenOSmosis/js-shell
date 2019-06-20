@@ -1,30 +1,20 @@
-import ClientProcess, {
-  THREAD_TYPE_DISTINCT,
-  PIPE_NAMES,
-  EVT_BEFORE_EXIT
+import {
+  EVT_BEFORE_EXIT,
 } from '../ClientProcess';
-import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
+import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 import evalInContext from 'utils/evalInContext';
 
 /**
- * TODO: Remove
+ * The ClientWorkerProcess.worker class, which runs directly in a native
+ * Worker.
  * 
- * Implementation:
- * 
-  const worker = new this.ClientWorkerProcess(process, (worker) => {
-      worker.stdout.write('hello from worker');
-  });
-  worker.stdin.write('hello from client');
- */
-
-/**
  * postMessage() protocol:
  * - first received message is the init message (automatically handled).
  * - subsequent messages routed to stdio / etc.
  * 
  * postMessage should be considered low-level and not used directly.
  */
-class ClientWorker_WorkerProcess extends ClientProcess {
+class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
   constructor(parentProcess, cmd = null) {
     if (!cmd) {
       cmd = (proc) => null;
@@ -33,20 +23,11 @@ class ClientWorker_WorkerProcess extends ClientProcess {
     super(parentProcess, cmd);
 
     this._handleReceivedMessage = this._handleReceivedMessage.bind(this);
-
-    this._threadType = THREAD_TYPE_DISTINCT;
-    this._base = 'ClientWorkerProcess';
+    
     this._idxReceivedMsg = -1;
     this._messageReceiverIsInit = false;
 
     this._initMessageReceiver();
-  }
-
-  _initDataPipes() {
-    // Dynamic pipe allocation
-    PIPE_NAMES.forEach(pipeName => {
-      this[pipeName] = new ClientWorkerDispatchPipe(this, pipeName);
-    });
   }
 
   /**
@@ -73,7 +54,7 @@ class ClientWorker_WorkerProcess extends ClientProcess {
   /**
    * Sends a message using the native Worker's postMessage().
    * 
-   * @param {*} messageThe object to deliver to the worker; this will be in the
+   * @param {any} message The object to deliver to the worker; this will be in the
    * data field in the event delivered to the DedicatedWorkerGlobalScope.onmessage
    * handler. This may be any value or JavaScript object handled by the structured
    * clone algorithm, which includes cyclical references.
@@ -90,8 +71,6 @@ class ClientWorker_WorkerProcess extends ClientProcess {
   }
 
   _handleReceivedMessage(message) {
-    const { data } = message;
-
     this._idxReceivedMsg++;
 
     if (this._idxReceivedMsg === 0) {
@@ -99,9 +78,13 @@ class ClientWorker_WorkerProcess extends ClientProcess {
       // this.setImmediate(() => {
       // TODO: Replace w/ setImmediate()
       setTimeout(() => {
+        const { data } = message;
+
         this._pid = data.controller.pid;
 
         console.debug('Executing native Worker command');
+
+        // TODO: Route setImmediate() as a "global" for the executed scripting
         evalInContext(`
           const cmd = ${data.serializedCmd};
 
@@ -111,24 +94,12 @@ class ClientWorker_WorkerProcess extends ClientProcess {
       }, 0);
     } else {
       // Route to stdio
-
-      const { pipeName, data: writeData } = data;
-
-      if (pipeName
-          && this[pipeName]) {
-        
-        /*
-        console.debug('writing', {
-          pipeName,
-          writeData
-        });
-        */
-       
-        this[pipeName].write(writeData);
-      } else {
-        console.warn('Unhandled pipe message', message);
-      }
+      this._routeMessage(message);
     }
+  }
+
+  async kill(killSignal = 0) {
+    console.warn('Route kill() up to parent process');
   }
 }
 

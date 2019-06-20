@@ -1,16 +1,14 @@
-// TODO: Look into: https://github.com/mohayonao/inline-worker/
+// TODO: Implement EVT_READY
+// TODO: Implement terminate detection
 
-import ClientProcess, {
-  THREAD_TYPE_DISTINCT,
-  PIPE_NAMES
-} from '../ClientProcess';
-import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
+import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 import ClientWorker from './ClientWorkerProcess.worker';
-// import createWebWorker from 'utils/createWebWorker';
-// import getSerializedWorkerProcess from './ClientWorker_WorkerProcess';
 
-// TODO: Rename to ClientWorkerHostProcess
-export default class ClientWorkerProcess extends ClientProcess {
+/**
+ * The ClientWorkerProcess class, which acts as a green-threaded controller to
+ * the ClientWorkerProcess.worker class, which runs in a native Worker.
+ */
+export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
   constructor(parentProcess, cmd) {
     super(
       parentProcess,
@@ -20,63 +18,69 @@ export default class ClientWorkerProcess extends ClientProcess {
       (proc) => {}
     );
 
-    this._threadType = THREAD_TYPE_DISTINCT;
-    this._base = 'ClientWorkerProcess';
+    this._deferredCmd = cmd;
+    
     this._nativeWorker = null;
-
-    this._initNativeWorker(cmd);
   }
 
-  _initNativeWorker(cmd) {
-    this._nativeWorker = new ClientWorker();
-    
-    console.debug('Initialized native worker:', this._nativeWorker);
+  async _init() {
+    try {
+      await this._initNativeWorker();
 
-    // Instantiate communications
-    (() => {
-      const pid = this.getPID();
-      
-      // Send init message (first message is the init)
-      this._nativeWorker.postMessage({
-        // This process is the 'controller'
-        controller: {
-          pid
-        },
-        serializedCmd: cmd.toString()
-      });
+      super._init();
+    } catch (exc) {
+      throw exc;
+    }
+  }
 
-      this._nativeWorker.onmessage = (message) => {
-        // console.debug('Received message event from native worker', message);
-
-        const { data } = message;
-      
-        // Route to stdio
-        const { pipeName, data: writeData } = data;
-        if (pipeName
-            && this[pipeName]) {
-          this[pipeName].write(writeData);
-        } else {
-          console.warn('Unhandled pipe message', message);
+  async _initNativeWorker() {
+    return new Promise((resolve, reject) => {
+      try {
+        if (this._nativeWorker) {
+          throw new Error('nativeWorker is already initialized');
         }
-      };
-
-      // Event emitter... listen once
-    })();
     
-    // this._serviceURI = this._nativeWorker.getServiceURI();
-  }
+        this._nativeWorker = new ClientWorker();
+        
+        console.debug('Initialized native worker:', this._nativeWorker);
+    
+        // Instantiate communications
+        (() => {
+          const cmd = this._deferredCmd;
+          const serializedCmd = cmd.toString();
 
-  _initDataPipes() {
-    // TODO: Use constants for pipe names
-    PIPE_NAMES.forEach(pipeName => {
-      this[pipeName] = new ClientWorkerDispatchPipe(this, pipeName);
+          const pid = this.getPID();
+          
+          // Send init message (first message is the init)
+          this._nativeWorker.postMessage({
+            // This process is the 'controller'
+            controller: {
+              pid
+            },
+            serializedCmd
+          });
+    
+          // Handle message receiving
+          this._nativeWorker.onmessage = (message) => {
+            this._routeMessage(message);
+          };
+    
+          // Event emitter... listen once
+        })();
+        
+        // this._serviceURI = this._nativeWorker.getServiceURI();
+
+        resolve();
+      } catch (exc) {
+        reject(exc);
+      }
     });
   }
 
   /**
    * Sends a message using the native Worker's postMessage().
    * 
-   * @param {*} messageThe object to deliver to the worker; this will be in the
+   * @param {any} message The object to deliver to the worker; this will be in the
    * data field in the event delivered to the DedicatedWorkerGlobalScope.onmessage
    * handler. This may be any value or JavaScript object handled by the structured
    * clone algorithm, which includes cyclical references.

@@ -1,6 +1,7 @@
 import {
   EVT_MESSAGE,
 
+  EVT_READY,
   EVT_TICK,
 
   EVT_PIPE_DATA,
@@ -25,6 +26,7 @@ export default ClientProcess;
 export {
   EVT_MESSAGE,
   
+  EVT_READY,
   EVT_TICK,
 
   ClientProcessPipe,
