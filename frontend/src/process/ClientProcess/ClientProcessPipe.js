@@ -17,7 +17,7 @@ export default class ClientProcessPipe extends EventEmitter {
     this._pipeName = pipeName;
 
     // Automatically destruct pipe before exiting process
-    this._clientProcess.on(EVT_BEFORE_EXIT, () => {
+    this._clientProcess.once(EVT_BEFORE_EXIT, () => {
       this.destruct();
     });
   }

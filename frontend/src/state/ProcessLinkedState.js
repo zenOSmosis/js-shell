@@ -28,11 +28,13 @@ export default class ProcessLinkedState extends LinkedState {
       throw new Error('process must be a ClientProcess instance');
     }
 
-    console.debug('Adding process', process);
+    // console.debug('Adding process', process);
 
     const { processes } = this.getState();
 
     processes.push(process);
+    
+    const guiProcesses = this.getGUIProcesses(processes);
 
     const _handleProcessUpdate = () => {
       this.setState({
@@ -41,15 +43,18 @@ export default class ProcessLinkedState extends LinkedState {
     };
 
     process.on(EVT_TICK, _handleProcessUpdate);
-    // Auto-cleanup
+
+    // Handle shutdown
     process.once(EVT_BEFORE_EXIT, () => {
       process.off(EVT_TICK, _handleProcessUpdate);
     });
 
     // TODO: Detect guiProcesses and update here
+    
 
     this.setState({
-      processes
+      processes,
+      guiProcesses
     });
   }
 
@@ -58,15 +63,21 @@ export default class ProcessLinkedState extends LinkedState {
       throw new Error('process must be a ClientProcess instance');
     }
 
-    console.debug('Removing process', process);
+    // console.debug('Removing process', process);
 
     let processes = this.getProcesses();
 
+    // Filter out the process
     processes = processes.filter(testProcess => {
       return !Object.is(process, testProcess);
     });
 
-    this._setProcesses(processes, this);
+    const guiProcesses = this.getGUIProcesses(processes);
+
+    this.setState({
+      processes,
+      guiProcesses
+    });
   }
 
   getProcesses() {
@@ -75,13 +86,25 @@ export default class ProcessLinkedState extends LinkedState {
     return processes;
   }
 
-  _setProcesses(processes, _setter) {
-    if (!Object.is(this, _setter)) {
-      throw new Error('_setProcesses(...) can only be utilized internally');
+  /**
+   * Retrieves GUI processes.
+   * 
+   * If "processes" is not specified as an argument, it will use the class state. 
+   * 
+   * @param {ClientProcess[]} processes [optional] Overridden (over class
+   * property) processes.
+   */
+  getGUIProcesses(processes = null) {
+    if (!processes) {
+      const state = this.getState();
+
+      processes = state.processes;
     }
 
-    this.setState({
-      processes
+    const guiProcesses = processes.filter((proc) => {
+      return (typeof proc.getReactComponent === 'function');
     });
+
+    return guiProcesses;
   }
 }

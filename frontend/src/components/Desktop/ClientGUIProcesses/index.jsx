@@ -5,6 +5,7 @@ import ProcessLinkedState from 'state/ProcessLinkedState';
 // import ClientGUIProcess from 'process/ClientGUIProcess';
 import hocConnect from 'state/hocConnect';
 import Cover from 'components/Cover';
+import ShellDesktop from 'process/ShellCore/ShellDesktop';
 
 // import Window from 'components/Desktop/Window';
 
@@ -29,7 +30,10 @@ class ClientGUIProcesses extends Component {
     let { guiProcesses } = this.props;
     guiProcesses = guiProcesses || [];
 
-    console.debug('rendering', this.props);
+    // Filter out core desktop processes which are already rendered
+    guiProcesses = guiProcesses.filter(proc => {
+      return (!(proc instanceof ShellDesktop));
+    });
 
     return (
       <Cover>
@@ -55,20 +59,11 @@ class ClientGUIProcesses extends Component {
   }
 }
 
-
-
 // @see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/withRouter.md
 export default hocConnect(ClientGUIProcesses, ProcessLinkedState, (updatedState, fullState) => {
-  const { processes, updatedProcess } = fullState;
-
-  console.debug('updated process', updatedProcess);
-
-  const guiProcesses = processes.filter((proc) => {
-    return (typeof proc.getReactComponent === 'function');
-  });
+  const { guiProcesses } = fullState;
 
   return {
     guiProcesses,
-    updatedProcess
   };
 });

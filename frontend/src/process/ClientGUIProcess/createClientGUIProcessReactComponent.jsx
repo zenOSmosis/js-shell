@@ -10,7 +10,7 @@ import ClientGUIProcess from './ClientGUIProcess';
  * 
  * @param {ClientGUIProcess} proc 
  */
-const createClientGUIProcessReactComponent = (proc, onMount) => {
+const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
   if (!(proc instanceof ClientGUIProcess)) {
     throw new Error('proc must be a ClientGUIProcess instance');
   }
@@ -31,25 +31,27 @@ const createClientGUIProcessReactComponent = (proc, onMount) => {
       }
 
       this._Content = null;
+      this._isMounted = false;
     }
 
     componentDidMount() {
+      this._isMounted = true;
+
       console.warn('TODO: Handle process notification of mount', this._proc);
 
       if (typeof onMount === 'function') {
         onMount(this);
       }
-
-      /*
-      const { handleMount } = this.props;
-      if (typeof handleMount === 'function') {
-        handleMount(this);
-      }
-      */
     }
 
     componentWillUnmount() {
+      this._isMounted = false;
+
       console.warn('TODO: Handle process notification of unmount', this._proc);
+
+      if (typeof onUnmount === 'function') {
+        onUnmount(this);
+      }
     }
 
     /**
@@ -58,7 +60,7 @@ const createClientGUIProcessReactComponent = (proc, onMount) => {
      * @param {Component} Content 
      */
     setContent(Content) {
-      console.warn('TODO: Verify the integrity of the content');
+      // console.warn('TODO: Verify the integrity of the content');
 
       this.setState({
         Content

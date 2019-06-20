@@ -43,7 +43,7 @@ class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
     self.addEventListener('message',  this._handleReceivedMessage);
 
     // Cleanup
-    this.on(EVT_BEFORE_EXIT, () => {
+    this.once(EVT_BEFORE_EXIT, () => {
       // TODO: Use constant for 'message'
       self.removeEventListener('message', this._handleReceivedMessage);
     });

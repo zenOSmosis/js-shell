@@ -9,6 +9,8 @@
     "animate.css": "^3.7.0",
     "antd": "^3.18.1",
     "bootstrap": "^4.3.1",
+    "browserslist": "^4.6.3",
+    "caniuse-lite": "^1.0.30000974",
     "fast-safe-stringify": "^2.0.6",
     "jquery": "^3.4.1",
     "jsoneditor": "^5.32.5",

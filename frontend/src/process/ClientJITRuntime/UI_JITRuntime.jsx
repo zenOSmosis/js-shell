@@ -44,4 +44,34 @@ export default class UI_JITRuntime extends ClientJITRuntime {
       babelPresets: BABEL_REACT_PRESETS
     });
   }
+
+    /**
+   * Wraps code in an enclosure w/ modified access to the outer scope.
+   * 
+   * @param {string} code
+   */
+  _evalInProtectedContext(code) {
+
+    // Wrap the code
+    code = `
+      ((nativeWindow) => {
+        // Define, or override, native process & setImmediate implementations
+        const { process, React } = this;
+        const { setImmediate } = process;
+  
+        // Note: Usage of let instead of const to allow user to override them as necessary
+        // (some scripts may want to redefine the window object back to native, etc.)
+        let window = undefined;      
+        let document = undefined;
+        
+        const self = (this || undefined);
+
+        ${code}
+
+      })(window);
+    `;
+
+    // Perform the eval
+    super._evalInProtectedContext(code);
+  }
 }

@@ -14,15 +14,23 @@ export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
     super(...args);
 
-    this._ReactComponent = createClientGUIProcessReactComponent(this, (component) => {
-      this.setImmediate(() => {
-        this._mountedReactComponent = component;
-      });
-    });
+    this._ReactComponent = createClientGUIProcessReactComponent(this,
+      /* onMount */ (component) => {
+        this.setImmediate(() => {
+          this._mountedReactComponent = component;
+        });
+      },
+      
+      /* onUnmount */ (component) => {
+        this.setImmediate(() => {
+          this._mountedReactComponent = null;
+        });
+      }
+    );
 
     this.on(EVT_TICK, () => {
       // Mount Content, if available
-      if (this._Content) {
+      if (this._Content && this._mountedReactComponent !== null) {
         this._mountedReactComponent.setContent(this._Content);
       }
     });

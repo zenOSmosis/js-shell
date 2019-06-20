@@ -60,6 +60,9 @@ export default class ClientProcess extends EventEmitter {
     // Increment up for the next process
     nextPID++;
 
+    // Register process with processLinkedState
+    processLinkedState.addProcess(this);
+
     if (parentProcess &&
       parentProcess.getIsExited()) {
       throw new Error('Cannot fork from an exited process');
@@ -87,22 +90,23 @@ export default class ClientProcess extends EventEmitter {
     // Provides stdin/stdout/stderr
     this._initDataPipes();
 
+    // Run init in next tick
     this.setImmediate(() => {  
       this._init();
     });
   }
 
   /**
-   * Makes the process "ready."
+   * Initializes the process.
    */
   _init() {
     this.setImmediate(() => {
+      // Automatically launch
+      this._launch();
+
       this._isReady = true;
 
       this.emit(EVT_READY);
-
-      // Automatically launch
-      this._launch();
     });
   }
 
@@ -166,14 +170,14 @@ export default class ClientProcess extends EventEmitter {
     return children;
   }
 
+  /**
+   * Executes this._cmd.
+   */
   async _launch() {
     if (this._isLaunched) {
       console.warn('Process has already launched');
       return;
     }
-
-    // Register process with processLinkedState
-    processLinkedState.addProcess(this);
 
     console.debug(`Executing ${this.getClassName()}`, this);
 
@@ -184,8 +188,8 @@ export default class ClientProcess extends EventEmitter {
       if (typeof this._cmd !== 'function') {
         console.warn(
           `"cmd" is not a function, ignoring passed launch command.  If writing
-          multithreaded code, anything within this class outside of this cmd
-          will be run on the main thread.`
+          multithreaded code anything executed outside of "cmd" will be run on
+          the main thread.`
         );
         return;
       }
@@ -210,13 +214,13 @@ export default class ClientProcess extends EventEmitter {
    * 
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  setImmediate = async (callback, error) => {
+  setImmediate = async (callback/*, error*/) => {
     callback = makeCallback(this, callback);
-    error = makeCallback(this, error);
+    // error = makeCallback(this, error);
 
     this._setImmediateCallStack.push({
       callback,
-      error
+      // error
     });
 
     this._tick();
@@ -225,13 +229,13 @@ export default class ClientProcess extends EventEmitter {
   /**
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  nextTick = async (callback, error) => {
+  nextTick = async (callback/*, error*/) => {
     callback = makeCallback(this, callback);
     error = makeCallback(this, error);
 
     this._nextTickCallStack.push({
       callback,
-      error
+      // error
     });
 
     this._tick();
@@ -273,12 +277,13 @@ export default class ClientProcess extends EventEmitter {
     this._tickTimeout = setTimeout(async () => {
       try {
         for (let i = 0; i < this._nextTickCallStack.length; i++) {
-          const { callback, error } = this._nextTickCallStack[i];
+          const { callback /*, error*/ } = this._nextTickCallStack[i];
 
           try {
             await callback();
           } catch (exc) {
-            error(exc);
+            // error(exc);
+            throw(exc);
           }
         }
 
@@ -286,12 +291,13 @@ export default class ClientProcess extends EventEmitter {
 
         // Execute all setImmediate()
         for (let i = 0; i < this._setImmediateCallStack.length; i++) {
-          const { callback, error } = this._setImmediateCallStack[i];
+          const { callback /*, error*/ } = this._setImmediateCallStack[i];
 
           try {
             await callback();
           } catch (exc) {
-            error(exc);
+            // error(exc);
+            throw(exc);
           }
         }
 

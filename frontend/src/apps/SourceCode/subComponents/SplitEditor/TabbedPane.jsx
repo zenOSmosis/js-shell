@@ -171,14 +171,10 @@ export default class TabbedPane extends Component {
             <Layout>
               <Content>
                 <Button
-                  style={{border: 0, padding: 0, borderRadius: 0}}
+                  style={{border: 0, padding: 2, borderRadius: 0}}
                   onClick={ evt => alert('file tab') }
                 >
                   <AntdIcon type="file" /><span style={{fontStyle: 'italic'}}>Untitled</span>
-
-                  <Button onClick={ evt => alert('close')} >
-                    x
-                  </Button>
                 </Button>
               </Content>
               {

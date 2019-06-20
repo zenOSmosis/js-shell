@@ -36,10 +36,12 @@ export default class ClientJITRuntime extends ClientProcess {
 
     this.setContext(context);
 
-    // If code is supplied, automatically execute it
-    if (code) {
-      this.exec(code);
-    }
+    this.setImmediate(() => {
+      // If code is supplied, automatically execute it
+      if (code) {
+        this.exec(code);
+      }
+    });
   }
 
   /**
@@ -123,21 +125,9 @@ export default class ClientJITRuntime extends ClientProcess {
 
     // Wrap the code
     code = `
-      ((nativeWindow) => {
-        // Define, or override, native process & setImmediate implementations
-        const { process } = this;
-        const { setImmediate } = process;
-  
-        // Note: Usage of let instead of const to allow user to override them as necessary
-        // (some scripts may want to redefine the window object back to native, etc.)
-        let window = undefined;      
-        let document = undefined;
-        
-        const self = (this || undefined);
-
+      (() => {
         ${code}
-
-      })(window);
+      })();
     `;
 
     // Perform the eval

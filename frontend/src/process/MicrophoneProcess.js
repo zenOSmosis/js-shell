@@ -11,37 +11,32 @@ export default class MicrophoneProcess extends ClientProcess {
   _audioContext = null;
 
   constructor(parentProcess, cmd = null, options = {}) {
-    super(parentProcess, async (proc) => {
-      try {
-        this._outputSampleRate = null;
-        this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    super(parentProcess, null, options);
 
-        proc.setImmediate(() => {
-          proc._handleMicStream(this._micStream);
-        
-          // Run passed cmd, if available
-          if (typeof cmd === 'function') {
-            cmd(proc);
-          }
-        });
-      } catch (exc) {
-        throw exc;
+    this._outputSampleRate = null;
+    this._micStream = null;
+    this._deferredCmd = cmd;
+  }
+
+  _init() {
+    this.setImmediate(async () => {
+      this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this._handleMicStream(this._micStream);
+
+      super._init();
+
+      if (typeof this._deferredCmd === 'function') {
+        this._deferredCmd(this);
       }
-    }, options);
+    });
   }
 
   /**
    * @see https://aws.amazon.com/blogs/machine-learning/capturing-voice-input-in-a-browser/
    */
   _handleMicStream(micStream) {
-    // TODO: resample @see https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext/OfflineAudioContext
-    // TODO: @see https://mdn.github.io/webaudio-examples/offline-audio-context/
-
-
-    const context = new AudioContext();
-    // Attach context as class property
-    this._audioContext = context;
-    
+    this._audioContext = new AudioContext();
+    const context = this._audioContext;
     const source = context.createMediaStreamSource(micStream);
 
     const { bufferSize } = this._options;
@@ -67,6 +62,10 @@ export default class MicrophoneProcess extends ClientProcess {
     return this._outputSampleRate;
   }
 
+  getAudioContext() {
+    return this._audioContext;
+  }
+
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/stop
    */
@@ -78,9 +77,12 @@ export default class MicrophoneProcess extends ClientProcess {
 
     // Stop each track
     const tracks = this._micStream.getTracks();
+
     tracks.forEach((track) => {
       track.stop();
     });
+
+    console.warn('TODO: Debug why mic is not stopping');
   }
 
   async kill(killSignal = 0) {

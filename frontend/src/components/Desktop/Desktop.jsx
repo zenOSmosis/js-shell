@@ -19,7 +19,7 @@ import VersionLabel from './VersionLabel';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
-// import ClientGUIProcesses from './ClientGUIProcesses';
+import ClientGUIProcesses from './ClientGUIProcesses';
 
 import $ from 'jquery';
 
@@ -90,10 +90,7 @@ class Desktop extends Component {
                   // <AppRouteController />
                 }
 
-                {
-                  // <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
-                }
-                
+                <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
 
                 {
                   // Renders windows
