@@ -12,14 +12,18 @@ body {
   overflow: hidden;
 }
 
+/*
 body.blur,
 body:not(.blur) {
   transition: filter .4s;
 }
+*/
 
+/*
 body.blur {
   filter: grayscale(100%);
 }
+*/
 
 h1 {
   font-size: 1.4rem;

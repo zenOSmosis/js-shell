@@ -74,7 +74,11 @@ class Processes extends Component {
           <tbody>
             {
               processes.map((process, idx) => {
-                const startDate = process.getStartDate().toString();
+                if (!process) {
+                  return;
+                }
+
+                const startDate = process.getStartDate();
                 const className = process.getClassName();
                 const base = process.getBase();
                 const threadType = process.getThreadType();
@@ -106,7 +110,14 @@ class Processes extends Component {
                       {serviceURI}
                     </td>
                     <td style={{ maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                      {moment(startDate).format('YYYY-MM-DD hh:mm:ss A')}
+                      {
+                        (() => {
+                          if (startDate) {
+                            return moment(startDate).format('YYYY-MM-DD hh:mm:ss A'); 
+                          }
+                        })()
+                      }
+                      
                     </td>
                     <td>
                       <button onClick={evt => process.kill()}>Close</button>

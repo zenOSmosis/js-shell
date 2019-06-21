@@ -24,7 +24,7 @@ const fetchScripts = async (uris) => {
       JSON.stringify(uris)
     );
 
-    const text = await new Promise((resolve, reject) => {
+    const sources = await new Promise((resolve, reject) => {
       // Handle successful data
       workerProcess.stdout.on('data' , (data) => {
         workerProcess.kill();
@@ -38,7 +38,7 @@ const fetchScripts = async (uris) => {
       });
     });
 
-    return text;
+    return sources;
   } catch (exc) {
     throw exc;
   }
@@ -47,12 +47,13 @@ const fetchScripts = async (uris) => {
 // Test the implementation
 (async () => {
   try {
-    const text = await fetchScripts([
+    // An array of source code
+    const sources = await fetchScripts([
       'https://www.webrtc-experiment.com/RecordRTC.js',
       'https://webrtc.github.io/adapter/adapter-latest.js'
     ]);
 
-    console.debug('Captured text', text);
+    console.debug('Captured sources', sources);
   } catch (exc) {
     throw exc;
   }

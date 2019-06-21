@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ClientJITRuntime, { THIS_REP, BABEL_REACT_PRESETS } from './ClientJITRuntime';
 
 // [main threaded] JITRuntime included shared objects
@@ -8,11 +8,13 @@ import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import AudioResampler from 'process/AudioResampler';
+import Float32ArrayWorker from 'process/Float32ArrayWorker';
 // import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
+import IFrame from 'components/IFrame';
 
 export default class UI_JITRuntime extends ClientJITRuntime {
   constructor(parentProcess, code, options = {}) {
@@ -26,14 +28,17 @@ export default class UI_JITRuntime extends ClientJITRuntime {
       ClientWorkerProcess,
       MicrophoneProcess,
       AudioResampler,
+      Float32ArrayWorker,
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,
+      Component,
 
       // (e.g. reference this.zdComponents in evaluated scripting)
       components: {
         Window,
-        Center
+        Center,
+        IFrame
       }
     };
 

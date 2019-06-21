@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,900');
+body {
+  display:flex;
+  font-family: 'Roboto', sans-serif;
+  background-color: #000;
+}
+
+svg {
+height:95vh; 
+  margin: 0px auto;
+}
+
+#vu  {
+  font-family: 'Roboto', sans-serif;
+  font-size:50px;
+  color: black;
+  font-weight:900;
+}
+
+#zeiger {
+  transform-box:fill-box;    /* FIX Firefox */
+  transform-origin: right bottom;
+  /* animation: move 1s linear; */
+  transition: transform 0.5s ease-out;
+  transform: rotate(0deg);
+}
+
+@keyframes move {
+  0% { transform: rotate(15deg); }
+  18% { transform: rotate(45deg); }
+  30% { transform: rotate(30deg); }
+  41% { transform: rotate(42deg); }
+  46% { transform: rotate(30deg); }
+  68% { transform: rotate(62deg); }
+  72% { transform: rotate(54deg); }
+  80% { transform: rotate(75deg); }
+ 93% { transform: rotate(25deg); }
+ 95% { transform: rotate(27deg); }
+ 100% { transform: rotate(15deg); }
+}
+
+div {
+  position:absolute;
+  bottom:5px;
+  right:10px;
+}

@@ -9,25 +9,35 @@ import ClientWorker from './ClientWorkerProcess.worker';
  * the ClientWorkerProcess.worker class, which runs in a native Worker.
  */
 export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
-  constructor(parentProcess, cmd) {
+  constructor(parentProcess, cmd, options = {}) {
     super(
       parentProcess,
 
       // Override initial parent process with an empty instruction
       // (cmd is serialized, then executed, further down)
-      (proc) => {}
+      (proc) => {},
+
+      options
     );
 
-    this._deferredCmd = cmd;
-    
     this._nativeWorker = null;
+
+    this.setImmediate(() => {
+      this._deferredCmd = cmd;
+    });
   }
 
   async _init() {
     try {
-      await this._initNativeWorker();
+      this.setImmediate(async () => {
+        try {
+          await this._initNativeWorker();
 
-      super._init();
+          super._init();
+        } catch (exc) {
+          throw exc;
+        }
+      });
     } catch (exc) {
       throw exc;
     }

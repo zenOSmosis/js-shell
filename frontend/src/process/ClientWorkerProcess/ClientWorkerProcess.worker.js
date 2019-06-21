@@ -15,11 +15,7 @@ import evalInContext from 'utils/evalInContext';
  * postMessage should be considered low-level and not used directly.
  */
 class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
-  constructor(parentProcess, cmd = null) {
-    if (!cmd) {
-      cmd = (proc) => null;
-    }
-
+  constructor(parentProcess, cmd) {
     super(parentProcess, cmd);
 
     this._handleReceivedMessage = this._handleReceivedMessage.bind(this);
@@ -86,9 +82,9 @@ class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
 
         // TODO: Route setImmediate() as a "global" for the executed scripting
         evalInContext(`
-          const cmd = ${data.serializedCmd};
+          const ___evalCmd___ = ${data.serializedCmd};
 
-          cmd(this);
+          ___evalCmd___(this);
         `, this);
 
       }, 0);

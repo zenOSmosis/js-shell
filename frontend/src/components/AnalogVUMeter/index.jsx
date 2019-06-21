@@ -1,0 +1,1 @@
+// Use IFrame for embedded meter and use postMessage for setting value
