@@ -8,7 +8,7 @@ import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import AudioResampler from 'process/AudioResampler';
-import Float32ArrayWorker from 'process/Float32ArrayWorker';
+import Float32AudioWorker from 'process/Float32AudioWorker';
 // import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
@@ -28,7 +28,7 @@ export default class UI_JITRuntime extends ClientJITRuntime {
       ClientWorkerProcess,
       MicrophoneProcess,
       AudioResampler,
-      Float32ArrayWorker,
+      Float32AudioWorker,
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,

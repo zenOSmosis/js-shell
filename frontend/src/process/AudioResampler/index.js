@@ -1,12 +1,15 @@
 import ClientProcess, { EVT_PIPE_DATA } from '../ClientProcess';
 
-export const OUTPUT_DATA_TYPE_FLOAT32ARRAY = 'Float32Array';
+export const OUTPUT_DATA_TYPE_FLOAT32ARRAY = 'Float32Audio';
 export const OUTPUT_DATA_TYPE_AUDIOBUFFER = 'AudioBuffer';
 export const OUTPUT_DATA_TYPES = [
   OUTPUT_DATA_TYPE_FLOAT32ARRAY,
   OUTPUT_DATA_TYPE_AUDIOBUFFER
 ];
 
+/**
+ * TODO: Use R_Float32AudioWorker instead, or as a fallback....
+ */
 export default class AudioResamplerProcess extends ClientProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     // defaults
@@ -24,6 +27,8 @@ export default class AudioResamplerProcess extends ClientProcess {
         const numCh_ = audioBuffer.numberOfChannels;
         const numFrames_ = audioBuffer.length * outputTargetSampleRate / audioBuffer.sampleRate;
     
+        // TODO: Creating a new OfflineAudioContext on each buffer is
+        // inefficient and will probably lead to choppy audio
         const offlineContext_ = new OfflineAudioContext(numCh_, numFrames_, outputTargetSampleRate);
         const bufferSource_ = offlineContext_.createBufferSource();
         bufferSource_.buffer = audioBuffer;
@@ -31,9 +36,7 @@ export default class AudioResamplerProcess extends ClientProcess {
         offlineContext_.oncomplete = (event) => {
           const resampledAudioBuffer = event.renderedBuffer;
           
-          // Write to stdout
-          // proc.stdout.write(resampledAudioBuffer);
-
+          // Write to output buffer
           this._outputAudioBuffer(resampledAudioBuffer);
         };
     
@@ -50,11 +53,16 @@ export default class AudioResamplerProcess extends ClientProcess {
     }, options);
   }
 
+  /**
+   * Writes audioBuffer to stdout.
+   * 
+   * @param { AudioBuffer } audioBuffer 
+   */
   _outputAudioBuffer(audioBuffer) {
     const { outputDataType } = this._options;
 
     if (outputDataType === OUTPUT_DATA_TYPE_FLOAT32ARRAY) {
-      this.stdout.write(audioBuffer.getChannelData(0)); // Float32Array
+      this.stdout.write(audioBuffer.getChannelData(0)); // Float32Audio
 
     } else if (outputDataType === OUTPUT_DATA_TYPE_AUDIOBUFFER) {
       this.stdout.write(audioBuffer); // AudioBuffer

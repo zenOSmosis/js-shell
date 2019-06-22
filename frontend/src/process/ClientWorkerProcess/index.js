@@ -1,3 +1,9 @@
-import ClientWorkerProcess from './ClientWorkerProcess';
+import ClientWorkerProcessHost from './ClientWorkerProcessHost';
+// import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
+import ClientWorkerProcessWorker from './ClientWorkerProcessHost'
 
-export default ClientWorkerProcess;
+export default ClientWorkerProcessHost;
+export {
+  // ClientWorkerDispatchPipe,
+  ClientWorkerProcessWorker
+};

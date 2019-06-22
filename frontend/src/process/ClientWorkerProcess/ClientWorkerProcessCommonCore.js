@@ -16,7 +16,6 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     super(...args);
 
     this._threadType = THREAD_TYPE_DISTINCT;
-    this._base = 'ClientWorkerProcess';
   }
 
   _initDataPipes() {

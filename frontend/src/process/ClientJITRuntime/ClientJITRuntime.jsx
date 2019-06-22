@@ -84,6 +84,10 @@ export default class ClientJITRuntime extends ClientProcess {
     // TODO: Remove Babel include in index.html
     console.warn('TODO: Move code compilation to separate thread. Remove Babel compiler script inclusion from index.html');
 
+    if (typeof window.Babel === 'undefined') {
+      throw new Error('Babel is not loaded.  Check internet connection...');
+    }
+
     let compiledCode = window
       .Babel
       .transform(code, {

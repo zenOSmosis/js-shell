@@ -168,14 +168,14 @@
       const needle = document.getElementById('zeiger');
     
       window.addEventListener('message', function (evt) {
-        const { data: max } = evt;
+        // TODO: Rework this implementation for db readings
 
-        const rotation = max * 90;
+        // Where "max" should be in the range of 0 - 1
+        let { data: max } = evt;
 
-        // console.debug('rotation', rotation);
+        const degRotation = max * 90;
 
-        needle.style.transform = `rotate(${rotation}deg)`;
-        // console.debug('window message', evt);
+        needle.style.transform = `rotate(${degRotation}deg)`;
       });
     })();
   </script>

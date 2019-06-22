@@ -58,6 +58,7 @@ export default class MicrophoneProcess extends ClientProcess {
     };
   }
 
+  // TODO: Move out(?)
   getOutputSampleRate() {
     return this._outputSampleRate;
   }

@@ -2,38 +2,54 @@
 // TODO: Implement terminate detection
 
 import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
-import ClientWorker from './ClientWorkerProcess.worker';
+import R_ClientWorkerProcess from './dispatch.worker';
 
 /**
  * The ClientWorkerProcess class, which acts as a green-threaded controller to
  * the ClientWorkerProcess.worker class, which runs in a native Worker.
  */
-export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
+export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCore {
   constructor(parentProcess, cmd, options = {}) {
+    const defOptions = {
+      // The native Worker implementation
+      // worker-loader callable *.worker.js extension
+      DispatchWorker: R_ClientWorkerProcess
+    };
+
+    options = Object.assign({}, defOptions, options);
+
     super(
       parentProcess,
 
       // Override initial parent process with an empty instruction
       // (cmd is serialized, then executed, further down)
-      (proc) => {},
+      () => {},
 
       options
     );
 
     this._nativeWorker = null;
 
+    // TODO: Obtain dynamic URI from native Worker
+    this._serviceURI = `[blob://ClientWorker]`;
+
     this.setImmediate(() => {
       this._deferredCmd = cmd;
     });
   }
 
+  /**
+   * @return {Promise<void>} Resolves after native Worker and super class have
+   * initialized.
+   */
   async _init() {
     try {
       this.setImmediate(async () => {
         try {
           await this._initNativeWorker();
 
-          super._init();
+          // Init super class
+          await super._init();
         } catch (exc) {
           throw exc;
         }
@@ -43,48 +59,62 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     }
   }
 
+  /**
+   * @return {Promise<void>} Resolves after native Worker is initialized.
+   */
   async _initNativeWorker() {
-    return new Promise((resolve, reject) => {
-      try {
-        if (this._nativeWorker) {
-          throw new Error('nativeWorker is already initialized');
-        }
-    
-        this._nativeWorker = new ClientWorker();
-        
-        console.debug('Initialized native worker:', this._nativeWorker);
-    
-        // Instantiate communications
-        (() => {
-          const cmd = this._deferredCmd;
-          const serializedCmd = cmd.toString();
-
-          const pid = this.getPID();
+    try {
+      return new Promise((resolve, reject) => {
+        try {
+          if (this._nativeWorker) {
+            throw new Error('nativeWorker is already initialized');
+          }
+  
+          // Launch the native Worker
+          const { DispatchWorker } = this._options;
+          this._nativeWorker = new DispatchWorker();
           
-          // Send init message (first message is the init)
-          this._nativeWorker.postMessage({
-            // This process is the 'controller'
-            controller: {
-              pid
-            },
-            serializedCmd
-          });
-    
-          // Handle message receiving
-          this._nativeWorker.onmessage = (message) => {
-            this._routeMessage(message);
-          };
-    
-          // Event emitter... listen once
-        })();
-        
-        // this._serviceURI = this._nativeWorker.getServiceURI();
-
-        resolve();
-      } catch (exc) {
-        reject(exc);
-      }
-    });
+          console.debug('Post initializaing native worker', this._nativeWorker);
+      
+          // Instantiate communications
+          // TODO: Rework this
+          (() => {
+            // TODO: Event emitter... listen once for 'hello'
+  
+            const cmd = this._deferredCmd;
+            const serializedCmd = cmd.toString();
+  
+            const pid = this.getPID();
+  
+            const sendData = {
+              // This process is the 'controller'
+              controller: {
+                pid
+              },
+              serializedCmd
+            };
+  
+            console.debug('Sending init comm to native worker', sendData);
+            
+            // Send init message (first message is the init)
+            this._nativeWorker.postMessage(sendData);
+      
+            // Handle message receiving
+            this._nativeWorker.onmessage = (message) => {
+              this._routeMessage(message);
+            };
+          })();
+          
+          // this._serviceURI = this._nativeWorker.getServiceURI();
+  
+          resolve();
+        } catch (exc) {
+          reject(exc);
+        }
+      });
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /**

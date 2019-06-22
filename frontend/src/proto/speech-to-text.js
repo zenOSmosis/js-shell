@@ -5,7 +5,7 @@ const {
     ClientGUIProcess,
     MicrophoneProcess,
     AudioResampler,
-    // Float32ArrayWorker,
+    Float32AudioWorker,
     components
 } = this;
 const { Window, IFrame } = components;
@@ -14,59 +14,13 @@ const mic = new MicrophoneProcess(process, (mic) => {
     // const audioContext = mic.getAudioContext();
 });
 const audioResampler = new AudioResampler(process, null, {
-    outputDataType: 'Float32Array',
+    outputDataType: 'Float32Audio',
     outputTargetSampleRate: 44000
 });
 
 // Process the mic stream
-// TODO: Fix so that worker operates under context of Float32ArrayWorker
-const float32Worker = new ClientWorkerProcess(process, (worker) => {
-    worker.getAverage = (float32Array) => {
-        // Turn Float32Array into regular array
-
-        // sum all the elements of the array
-        const sum = float32Array.reduce(function (accumulator, currentValue) {
-            return accumulator + currentValue;
-        });
-
-        const average = sum / float32Array.length;
-
-        return average;
-    }
-
-    /**
-     * Uses this.getFrameAverage() to obtain an average percent, as a float.
-     * 
-     * @param {*} frame 
-     * @return {number} Any value between 0 and 1
-     */
-    worker.getPercent = (float32Array) => {
-        const average = worker.getAverage(float32Array);
-
-        const percent = ((average + 1) / 2);
-
-        return percent;
-    }
-
-    worker.getMax = (float32Array) => {
-        const max = float32Array.reduce((a, b) => {
-            return (a > b ? a : b);
-        });
-
-        return max;
-    }
-
-    // TODO: Use the server as a wss proxy
-
-    /*
-    // TODO: PCM mime type: audio/x-raw
-    const ws = new WebSocket('ws://hp4.recotechnologies.com:17201/client/ws/speech?rmeav_sessionid=gpg3IRVXBayGHfogR3uFWdhn532yJ4&rmeav_spkr_engineweight=0.00&rmeav_face_engineweight=0.00&rmeav_spch_engineweight=1.00&rmeav_userid=rmeeng16k16&rmeav_action=segment&rmeav_claimedid=everyone&rmeav_spch_return_adaptation_state=0&rmeav_spkr_segment_return_final_results=1');
-
-    ws.onmessage = (message) => {
-        console.debug('ws message', message);
-    };
-    */
-   
+// TODO: Fix so that worker operates under context of Float32AudioWorker
+const f32Worker = new Float32AudioWorker(process, (worker) => {   
     worker.stdin.on('data', (float32Array) => {
         worker.stdout.write({
             max: worker.getMax(float32Array)
@@ -100,14 +54,14 @@ mic.once('ready', () => {
                     console.debug('vu meter', this._vuMeter);
 
                     // Start listening to audio data
-                    float32Worker.stdout.on('data', this._handleAudioData);
+                    f32Worker.stdout.on('data', this._handleAudioData);
                 }
 
                 componentWillUnmount() {
                     this._isMounted = false;
 
                     // Stop listening to audio data
-                    float32Worker.stdout.off('data', this._handleAudioData);
+                    f32Worker.stdout.off('data', this._handleAudioData);
                 }
 
                 _handleAudioData(data) {
@@ -147,7 +101,7 @@ mic.once('ready', () => {
 
 // Resample the stream
 audioResampler.stdout.on('data', (float32Array) => {
-    float32Worker.stdin.write(float32Array);
+    f32Worker.stdin.write(float32Array);
 });
 
 // Capture the mic stream

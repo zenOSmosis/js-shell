@@ -52,9 +52,6 @@ class Processes extends Component {
                 Name
               </td>
               <td>
-                Base
-              </td>
-              <td>
                 CPU
               </td>
               <td>
@@ -80,7 +77,6 @@ class Processes extends Component {
 
                 const startDate = process.getStartDate();
                 const className = process.getClassName();
-                const base = process.getBase();
                 const threadType = process.getThreadType();
                 const serviceURI = process.getServiceURI();
                 const pid = process.getPID();
@@ -96,9 +92,6 @@ class Processes extends Component {
                     </td>
                     <td>
                       {className}
-                    </td>
-                    <td>
-                      {base}
                     </td>
                     <td>
                       <MainCPUUsagePercent />

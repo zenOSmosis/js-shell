@@ -14,9 +14,9 @@ import evalInContext from 'utils/evalInContext';
  * 
  * postMessage should be considered low-level and not used directly.
  */
-class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
-  constructor(parentProcess, cmd) {
-    super(parentProcess, cmd);
+export default class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
+  constructor(parentProcess) {
+    super(parentProcess);
 
     this._handleReceivedMessage = this._handleReceivedMessage.bind(this);
     
@@ -24,6 +24,11 @@ class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
     this._messageReceiverIsInit = false;
 
     this._initMessageReceiver();
+
+    this.setImmediate(() => {
+      // TODO: Set this as part of auth routine
+      this.postMessage('hello');
+    });
   }
 
   /**
@@ -94,9 +99,10 @@ class ClientWorker_WorkerProcess extends ClientWorkerProcessCommonCore {
     }
   }
 
-  async kill(killSignal = 0) {
-    console.warn('Route kill() up to parent process');
+  kill(killSignal = 0) {
+    console.warn(`Route kill(${killSignal}) up to parent process`);
+
+    // TODO: Verify this works
+    // self.terminate();
   }
 }
-
-new ClientWorker_WorkerProcess(false);

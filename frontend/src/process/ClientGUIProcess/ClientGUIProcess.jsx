@@ -3,7 +3,6 @@ import ClientProcess, { EVT_TICK } from '../ClientProcess';
 import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
 
 export default class ClientGUIProcess extends ClientProcess {
-  _base = 'ClientGUIProcess';
   _ReactComponent = null;
   _mountedReactComponent = null;
   _Content = null;
@@ -14,6 +13,7 @@ export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
     super(...args);
 
+    // TODO: Move this to _init
     this._ReactComponent = createClientGUIProcessReactComponent(this,
       /* onMount */ (component) => {
         this.setImmediate(() => {
@@ -35,6 +35,16 @@ export default class ClientGUIProcess extends ClientProcess {
       }
     });
   }
+
+  /*
+  async _init() {
+    try {
+      await super._init();
+    } catch (exc) {
+      throw exc;
+    } 
+  }
+  */
 
   /*
   setIcon(iconComponent) {

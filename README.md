@@ -1,6 +1,6 @@
 # Shell
 
-A prototype, web-based program launcher, with GPU selector, for Linux.
+A general-purpose, prototype, Desktop environment for JavaScript.
 
 ## Potential Usage Scenarios
 

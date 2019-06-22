@@ -33,7 +33,7 @@ let nextPID = 0;
  */
 export default class ClientProcess extends EventEmitter {
   // TODO: Move these into constructor
-  _base = 'ClientProcess';
+  // _base = 'ClientProcess';
   _pid = -1;
   _parentProcess = null;
   _parentPID = -1;
@@ -91,23 +91,48 @@ export default class ClientProcess extends EventEmitter {
     this._initDataPipes();
 
     // Run init in next tick
-    this.setImmediate(() => {  
-      this._init();
+    this.setImmediate(async () => {  
+      try {
+        await this._init();
+      } catch (exc) {
+        throw exc;
+      }
     });
   }
 
   /**
    * Initializes the process.
+   * 
+   * @return {Promise<void>} Promise resolves after process has fully launched.
    */
-  _init() {
-    this.setImmediate(() => {
-      // Automatically launch
-      this._launch();
+  async _init() {
+    try {
+      await new Promise((resolve, reject) => {
+        try {
+          this.setImmediate(async () => {
+            try {
+              // Automatically launch
+              await this._launch();
+                    
+              // Set internal ready state
+              this._isReady = true;
 
-      this._isReady = true;
+              // Tell listeners the process is ready
+              this.emit(EVT_READY);
 
-      this.emit(EVT_READY);
-    });
+            } catch (exc) {
+              throw exc;
+            }
+          });
+
+          resolve();
+        } catch (exc) {
+          reject(exc);
+        }
+      });
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   getOptions() {
@@ -308,10 +333,6 @@ export default class ClientProcess extends EventEmitter {
         throw exc;
       }
     }, 0);
-  }
-
-  getBase() {
-    return this._base;
   }
 
   getThreadType() {
