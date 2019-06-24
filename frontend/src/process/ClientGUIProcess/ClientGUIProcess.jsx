@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import ClientProcess, { EVT_TICK } from '../ClientProcess';
 import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
 

@@ -19,6 +19,13 @@ export default class MonacoEditor extends Component {
       editor.layout();
     }, this._intervalTime);
 
+    // @see https://github.com/Microsoft/monaco-editor/issues/270
+    // @see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
+    const model /* ITextModel */ = editor.getModel();
+    model.updateOptions({
+      tabSize: 2
+    });
+
     if (typeof editorDidMount === 'function') {
       editorDidMount(editor);
     }

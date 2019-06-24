@@ -17,9 +17,7 @@ export default class ShellDesktop extends ClientGUIProcess {
       const rootEl = document.getElementById(DOM_ROOT_ID);
 
       const ReactComponent = this.getReactComponent();
-
-      console.warn('ROOT COMPONENT', ReactComponent);
-
+      
       // Mounts the base ReactComponent to the DOM
       ReactDOM.render(<ReactComponent />, rootEl);
 

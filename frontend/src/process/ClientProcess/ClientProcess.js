@@ -256,7 +256,7 @@ export default class ClientProcess extends EventEmitter {
    */
   nextTick = async (callback/*, error*/) => {
     callback = makeCallback(this, callback);
-    error = makeCallback(this, error);
+    // error = makeCallback(this, error);
 
     this._nextTickCallStack.push({
       callback,

@@ -1,7 +1,8 @@
 import { commonAppLinkedState } from 'state/commonLinkedStates';
 import createDesktopNotification from './createDesktopNotification';
-import App from 'utils/clientSystem/ClientApp';
+import App from 'process/App';
 
+// Registers an app for use w/ the system / Dock
 const createApp = (appProps) => {
   const newApp = new App(appProps);
   const existingApp = getExistingHMRApp(newApp);

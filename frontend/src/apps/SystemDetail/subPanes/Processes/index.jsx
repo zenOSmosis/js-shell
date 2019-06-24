@@ -33,6 +33,9 @@ class Processes extends Component {
             <input type="checkbox" checked />Include Client Processes
           </div>
 
+          {
+            // TODO: Replace w/ CSS styling
+          }
           &nbsp;&nbsp;&nbsp;&nbsp;
 
           <div style={{ display: 'inline-block' }}>
@@ -71,8 +74,10 @@ class Processes extends Component {
           <tbody>
             {
               processes.map((process, idx) => {
+                // TODO: Debug ProcessLinkedState issue where exited processes
+                // could still show in this list
                 if (!process) {
-                  return;
+                  return false;
                 }
 
                 const startDate = process.getStartDate();

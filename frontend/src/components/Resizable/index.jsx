@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Moveable from '../Moveable';
+// import Moveable from '../Moveable';
 import Gesture from '../Gesture';
 import $ from 'jquery';
 import './style.css';

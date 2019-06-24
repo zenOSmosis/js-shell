@@ -3,9 +3,9 @@ import Scrollable from 'components/Scrollable';
 import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 import { Layout, Header, Content, Footer } from 'components/Layout';
 import socketQuery, { socketAPIRoutes } from 'utils/socketQuery';
-import DesktopLinkedState from 'state/DesktopLinkedState';
-import SocketLinkedState from 'state/SocketLinkedState';
-import hocConnect from 'state/hocConnect';
+// import DesktopLinkedState from 'state/DesktopLinkedState';
+// import SocketLinkedState from 'state/SocketLinkedState';
+// import hocConnect from 'state/hocConnect';
 
 const MODE_CLIENT = 'client';
 const MODE_HOST = 'host';
@@ -126,6 +126,7 @@ export default class Environment extends Component {
   }
 }
 
+/*
 const DesktopEnvironment = hocConnect(Environment, DesktopLinkedState, (updatedState) => {
   const {isFocused} = updatedState;
 
@@ -139,7 +140,9 @@ const DesktopEnvironment = hocConnect(Environment, DesktopLinkedState, (updatedS
     return filteredState;
   }
 });
+*/
 
+/*
 const ConnectedEnvironment = hocConnect(DesktopEnvironment, SocketLinkedState, (updatedState) => {
   const {clientIP, connectionStatus} = updatedState;
 
@@ -157,3 +160,4 @@ const ConnectedEnvironment = hocConnect(DesktopEnvironment, SocketLinkedState, (
     return filteredState;
   }
 });
+*/

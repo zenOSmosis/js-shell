@@ -1,6 +1,6 @@
 import {
     ClientProcessPipe,
-    EVT_PIPE_DATA
+    // EVT_PIPE_DATA
 } from '../ClientProcess';
 
 // Important! Leave as 'message' for native Worker

@@ -2,7 +2,7 @@ import config from '../config';
 // import Window from 'components/Desktop/Window';
 // import App from '../utils/desktop/createApp';
 import hocConnect from './hocConnect';
-import LinkedState, {EVT_LINKED_STATE_UPDATE} from './LinkedState';
+import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
 import uuidv4 from 'uuid/v4';
 import $ from 'jquery';
 
@@ -18,7 +18,7 @@ export default class DesktopLinkedState extends LinkedState {
     super(DESKTOP_LINKED_SCOPE_NAME, {
       // Whether, or not, the Desktop should capture right-click context menu
       contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
-      
+
       // Setting this will generate a new Desktop Notification
       lastNotification: {
         message: null,
@@ -52,7 +52,7 @@ export default class DesktopLinkedState extends LinkedState {
    * @param {App} app 
    */
   registerLaunchedApp(app) {
-    const {launchedApps} = this.getState();
+    const { launchedApps } = this.getState();
 
     launchedApps.push(app);
 
@@ -70,7 +70,7 @@ export default class DesktopLinkedState extends LinkedState {
    * @param {*} app 
    */
   unregisterLaunchedApp(app) {
-    let {launchedApps} = this.getState();
+    let { launchedApps } = this.getState();
 
     const appUUID = app.getUUID();
 
@@ -92,7 +92,7 @@ export default class DesktopLinkedState extends LinkedState {
    * conflicts w/ DOM Window. 
    */
   setActiveWindow(activeWindow) {
-    const {activeWindow: prevActiveWindow} = this.getState();
+    const { activeWindow: prevActiveWindow } = this.getState();
 
     if (!Object.is(activeWindow, prevActiveWindow)) {
       this.setState({
@@ -102,7 +102,7 @@ export default class DesktopLinkedState extends LinkedState {
   }
 
   getActiveWindow() {
-    const {activeWindow} = this.getState();
+    const { activeWindow } = this.getState();
 
     return activeWindow;
   }
@@ -135,30 +135,37 @@ export default class DesktopLinkedState extends LinkedState {
    * @return {boolean}
    */
   getContextMenuIsTrapping() {
-    const {contextMenuIsTrapping} = this.getState();
+    const { contextMenuIsTrapping } = this.getState();
 
     return contextMenuIsTrapping;
   }
 }
 
+// Handle Desktop blur / focus
+// TODO: Move elsewhere
 (() => {
   const desktopLinkedState = new DesktopLinkedState();
 
-  $(window).on('blur focus', function(e) {
+  // TODO: Use constants for "blur" / "focus"
+  $(window).on('blur focus', function (e) {
     let prevType = $(this).data('prevType');
 
     let isFocused = true;
 
-    if (prevType !== e.type) {   //  reduce double fire issues
-        switch (e.type) {
-            case "blur":
-              isFocused = false;
-            break;
-            
-            case "focus":
-              isFocused = true;
-            break;
-        }
+    if (prevType !== e.type) {   //  reduce double-fire issues
+      switch (e.type) {
+        case 'blur':
+          isFocused = false;
+          break;
+
+        case 'focus':
+          isFocused = true;
+          break;
+
+        default:
+          // Ignore default case
+          break;
+      }
     }
 
     $(this).data("prevType", e.type);
