@@ -169,13 +169,14 @@
     
       window.addEventListener('message', function (evt) {
         // TODO: Rework this implementation for db readings
+        // Where "maxAmplitude" should be in the range of 0 - 1
+        const { data: maxAmplitude } = evt;
 
-        // Where "max" should be in the range of 0 - 1
-        let { data: max } = evt;
+        window.requestAnimationFrame(function() {
+          const degRotation = maxAmplitude * 90;
 
-        const degRotation = max * 90;
-
-        needle.style.transform = `rotate(${degRotation}deg)`;
+          needle.style.transform = `rotate(${degRotation}deg)`;
+        });
       });
     })();
   </script>

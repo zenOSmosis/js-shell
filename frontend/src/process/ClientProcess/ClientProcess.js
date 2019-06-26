@@ -40,7 +40,10 @@ export default class ClientProcess extends EventEmitter {
   _cmd = null;
   _startDate = null;
   _serviceURI = null;
+  
+  // Set to true after _launch() has been called, before command has executed
   _isLaunched = false;
+  
   _isExited = false;
   _threadType = THREAD_TYPE_SHARED;
   _title = null;
@@ -107,23 +110,16 @@ export default class ClientProcess extends EventEmitter {
    */
   async _init() {
     try {
-      await new Promise((resolve, reject) => {
+      await new Promise(async (resolve, reject) => {
         try {
-          this.setImmediate(async () => {
-            try {
-              // Automatically launch
-              await this._launch();
-                    
-              // Set internal ready state
-              this._isReady = true;
+          // Automatically launch
+          await this._launch();
+                
+          // Set internal ready state
+          this._isReady = true;
 
-              // Tell listeners the process is ready
-              this.emit(EVT_READY);
-
-            } catch (exc) {
-              throw exc;
-            }
-          });
+          // Tell listeners the process is ready
+          this.emit(EVT_READY);
 
           resolve();
         } catch (exc) {
@@ -199,15 +195,15 @@ export default class ClientProcess extends EventEmitter {
    * Executes this._cmd.
    */
   async _launch() {
+    // Prevent possiblity of double-launch
     if (this._isLaunched) {
-      console.warn('Process has already launched');
+      // console.warn('Process has already launched');
       return;
+    } else {
+      this._isLaunched = true;
     }
 
     console.debug(`Executing ${this.getClassName()}`, this);
-
-    // Set monitoring flag states before execution so that they are available during execution
-    this._isLaunched = true;
 
     try {
       if (typeof this._cmd !== 'function') {
@@ -222,7 +218,10 @@ export default class ClientProcess extends EventEmitter {
       // Run cmd in this process scope
       await this._cmd(this);
     } catch (exc) {
-      this.kill();
+      // Automatically kill if crashed
+      // TODO: Use killSignal constant for error
+      this.kill(1);
+
       throw exc;
     }
   }

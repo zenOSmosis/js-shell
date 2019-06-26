@@ -60,17 +60,17 @@ app.use('/', expressRoutes);
 
 // React Frontend Proxy
 (() => {
-  const idmProxy = httpProxy.createProxyServer();
-  const idmProxyWS = httpProxy.createProxyServer({ws: true});
+  const reactProxy = httpProxy.createProxyServer();
+  const reactProxyWS = httpProxy.createProxyServer({ws: true});
   app.get('/*', (req, res) => {
-    idmProxy.web(req, res, {target: FRONTEND_PROXY_URI}, (err) => {
+    reactProxy.web(req, res, {target: FRONTEND_PROXY_URI}, (err) => {
       // TODO: Implement better frontend server error handling
       console.error(err);
       res.status(404).send('Frontend server offline');
     });
   });
   app.all('/sockjs-node/*', (req, res, next) => {
-    idmProxyWS.web(req, res, {target: FRONTEND_PROXY_URI}, (err) => {
+    reactProxyWS.web(req, res, {target: FRONTEND_PROXY_URI}, (err) => {
       console.error(err);
       next();
     });

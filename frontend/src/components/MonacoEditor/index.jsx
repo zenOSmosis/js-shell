@@ -2,15 +2,15 @@ import React, {Component} from 'react';
 import Full from '../Full';
 import ReactMonacoEditor from 'react-monaco-editor';
 
-export default class MonacoEditor extends Component {
-  _editor = null;
-  _layoutInterval = null;
-  _intervalTime = 100; // milliseconds
+export const DEFAULT_TAB_SIZE = 2;
 
+export default class MonacoEditor extends Component {
   editorDidMount(editor) {
     const {editorDidMount} = this.props;
 
     this._editor = editor;
+    this._layoutInterval = null;
+    this._intervalTime = 100; // milliseconds
 
     // Reimplementation of internal automatic layout
     // Passing of automaticLayout as prop does not seem to be working
@@ -19,16 +19,25 @@ export default class MonacoEditor extends Component {
       editor.layout();
     }, this._intervalTime);
 
-    // @see https://github.com/Microsoft/monaco-editor/issues/270
-    // @see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
-    const model /* ITextModel */ = editor.getModel();
-    model.updateOptions({
-      tabSize: 2
+    this.updateModelOptions({
+      tabSize: DEFAULT_TAB_SIZE
     });
 
     if (typeof editorDidMount === 'function') {
       editorDidMount(editor);
     }
+  }
+
+  /**
+   * @see https://github.com/Microsoft/monaco-editor/issues/270
+   * @see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
+   * 
+   * @param {object} modelOptions 
+   */
+  updateModelOptions(modelOptions) {
+    const model = this._editor.getModel();
+
+    model.updateOptions(modelOptions);
   }
 
   componentWillUnmount() {

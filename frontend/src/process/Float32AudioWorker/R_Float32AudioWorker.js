@@ -6,9 +6,10 @@ import R_ClientWorkerProcess from '../ClientWorkerProcess/R_ClientWorkerProcess'
 export default class R_Float32AudioWorker extends R_ClientWorkerProcess {
   // TODO: Improve implementation
   // @see https://github.com/mattdiamond/Recorderjs/issues/186
-  downsample(float32Array, fromRate, toRate, /* options={} */) {
+  downsample(float32Array, toRate, fromRate=48000, /* options={} */) {
     const buffer = float32Array;
 
+    // TODO: Rename internal variables
     const sampleRate = fromRate;
     const rate = toRate;
 
@@ -22,9 +23,9 @@ export default class R_Float32AudioWorker extends R_ClientWorkerProcess {
 
     const sampleRateRatio = sampleRate / rate;
     const newLength = Math.round(buffer.length / sampleRateRatio);
-    const result = new Float32Audio(newLength);
-    const offsetResult = 0;
-    const offsetBuffer = 0;
+    let result = new Float32Array(newLength);
+    let offsetResult = 0;
+    let offsetBuffer = 0;
     while (offsetResult < result.length) {
       const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
       // Use average value of skipped samples
@@ -39,6 +40,7 @@ export default class R_Float32AudioWorker extends R_ClientWorkerProcess {
       offsetResult++;
       offsetBuffer = nextOffsetBuffer;
     }
+
     return result;
   }
 

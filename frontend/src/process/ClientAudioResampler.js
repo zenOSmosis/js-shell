@@ -1,16 +1,21 @@
-import ClientProcess, { EVT_PIPE_DATA } from '../ClientProcess';
+import { EVT_PIPE_DATA } from './ClientProcess';
 
-export const OUTPUT_DATA_TYPE_FLOAT32ARRAY = 'Float32Audio';
-export const OUTPUT_DATA_TYPE_AUDIOBUFFER = 'AudioBuffer';
-export const OUTPUT_DATA_TYPES = [
+import ClientAudioProcess, {
   OUTPUT_DATA_TYPE_FLOAT32ARRAY,
-  OUTPUT_DATA_TYPE_AUDIOBUFFER
-];
+  OUTPUT_DATA_TYPE_AUDIOBUFFER,
+  OUTPUT_DATA_TYPES
+} from 'process/ClientAudioProcess';
+
+export {
+  OUTPUT_DATA_TYPE_FLOAT32ARRAY,
+  OUTPUT_DATA_TYPE_AUDIOBUFFER,
+  OUTPUT_DATA_TYPES
+};
 
 /**
  * TODO: Use R_Float32AudioWorker instead, or as a fallback....
  */
-export default class AudioResamplerProcess extends ClientProcess {
+export default class ClientAudioResampler extends ClientAudioProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     // defaults
     const defOptions = {
@@ -51,24 +56,5 @@ export default class AudioResamplerProcess extends ClientProcess {
         cmd(proc);
       }
     }, options);
-  }
-
-  /**
-   * Writes audioBuffer to stdout.
-   * 
-   * @param { AudioBuffer } audioBuffer 
-   */
-  _outputAudioBuffer(audioBuffer) {
-    const { outputDataType } = this._options;
-
-    if (outputDataType === OUTPUT_DATA_TYPE_FLOAT32ARRAY) {
-      this.stdout.write(audioBuffer.getChannelData(0)); // Float32Audio
-
-    } else if (outputDataType === OUTPUT_DATA_TYPE_AUDIOBUFFER) {
-      this.stdout.write(audioBuffer); // AudioBuffer
-
-    } else {
-      throw new Error(`Unhandled output data type: ${outputDataType}`);
-    }
   }
 }
