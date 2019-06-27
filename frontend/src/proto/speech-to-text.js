@@ -107,6 +107,11 @@ mic.once('ready', async () => {
           }
 
           _handleAudioData(data) {
+            if (!this._vuMeter) {
+              console.warn('vuMeter is not available');
+              return;
+            }
+
             this._tickIdx++;
 
             const { maxAmplitude } = data;

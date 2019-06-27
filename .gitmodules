@@ -1,0 +1,3 @@
+[submodule "docker_modules/dev-ssl-proxy"]
+	path = docker_modules/dev-ssl-proxy
+	url = https://github.com/zenOSmosis/docker-dev-ssl-proxy.git

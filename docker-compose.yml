@@ -11,7 +11,8 @@ services:
   #
   # TODO: Possibly bugfix; not able to use custom port / Docker network alias from dev_proxy
   dev_proxy:
-    build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
+    # build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
+    build: ./docker_modules/dev-ssl-proxy
     network_mode: "host" # Using host network here so we can proxy to localhost addresses
     environment:
       - PROXY_ADDRESS=http://127.0.0.1:3001 # Important, don't use quotations here, or it may break the template
@@ -41,4 +42,7 @@ services:
     environment:
       # TODO: Verify this is correct variable
       - NODE_ENV="DEVELOPMENT"
+      # - HTTPS=true
     command: ["npm", "run", "start"]
+    ports:
+      - 3000:3000

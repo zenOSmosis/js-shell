@@ -1,3 +1,5 @@
+const path = require('path');
+
 const hostConfig = {
   EXPRESS_CUSTOM_RESPONSE_HEADERS: {
     ['X-Powered-By']: 'zenOSmosis'
@@ -6,8 +8,12 @@ const hostConfig = {
   // Port the Express HTTP Server should listen in on
   HTTP_LISTEN_PORT: 3001,
 
+  // Directory for static URL resources
+  PATH_PUBLIC: path.resolve(__dirname, 'public'),
+
   // Proxy frontend requests to this URI
   FRONTEND_PROXY_URI: 'http://frontend:3000',
+  FRONTEND_WS_PROXY_URI: 'ws://frontend:3000',
 
   TERMINAL_COMMAND: 'xterm',
 

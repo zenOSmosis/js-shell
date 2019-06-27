@@ -4,7 +4,8 @@ WORKDIR /shell/frontend
 
 COPY ./ ./
 
-RUN npm install --loglevel verbose --only=prod
+# TODO: Only if in production
+# RUN npm install --loglevel verbose --only=prod
 
 # In development
 EXPOSE 3000

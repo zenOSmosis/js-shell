@@ -7,7 +7,8 @@ WORKDIR /shell/backend
 
 COPY ./ ./
 
-RUN npm install --loglevel verbose --only=prod
+# TODO: Only if in production
+# RUN npm install --loglevel verbose --only=prod
 
 EXPOSE 3001
 
