@@ -1,3 +1,5 @@
+// TODO: Rename, and refactor, to ClientAppProcess (extends ClientProcess)
+
 import EventEmitter from 'events';
 import { commonDesktopLinkedState, commonAppLinkedState } from 'state/commonLinkedStates';
 import Window from 'components/Desktop/Window';

@@ -4,17 +4,37 @@ const {
   ClientWorkerProcess,
   ClientGUIProcess,
   MicrophoneProcess,
-  // ClientAudioResampler,
+  ClientAudioResamplerProcess,
   Float32AudioWorker,
   components
 } = this;
 const { Window, IFrame } = components;
 
-const mic = new MicrophoneProcess(process);
+const mic = new MicrophoneProcess(process, null, {
+  outputDataType: 'AudioBuffer'
+});
 
-// Process the mic stream
+const resampler = new ClientAudioResamplerProcess(process, (resampler) => {
+  resampler.once('ready', async () => {
+    try {
+      const resamplerOutputFormat = await resampler.fetchOutputAudioFormat();
+      console.debug('resampler output format', resamplerOutputFormat);
+    } catch (exc) {
+      throw exc;
+    }
+  });
+}, {
+  outputDataType: 'Float32Array'
+});;
+
+// Process the mic stream / sends over network / etc
 // TODO: Fix so that worker operates under context of Float32AudioWorker
-const f32Worker = new Float32AudioWorker(process, (worker) => {
+const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
+  importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
+  const ttsSocket = io('https://xubuntu-dev', {
+    path: '/stt-socket'
+  });
+
   // TODO: Send through WSS proxy
   // name: content-type
   // value:  audio/x-raw, layout=(string)interleaved, rate=(int)16000, format=(string)S16LE, channels=(int)1
@@ -24,34 +44,31 @@ const f32Worker = new Float32AudioWorker(process, (worker) => {
   // const WS_ENDPOINT = 'ws://hp4.recotechnologies.com:17201/client/ws/speech?rmeav_sessionid=gpg3IRVXBayGHfogR3uFWdhn532yJ4&rmeav_spkr_engineweight=0.00&rmeav_face_engineweight=0.00&rmeav_spch_engineweight=1.00&rmeav_userid=rmeeng16k16&rmeav_action=segment&rmeav_claimedid=everyone&rmeav_spch_return_adaptation_state=0&rmeav_spkr_segment_return_final_results=1&content-type=audio/x-raw';
   // const webSocket = new WebSocket('wss://xubuntu-dev/ws-proxy?wsProxyAddress=' + encodeURI(WS_ENDPOINT));
 
-  let idxStdin = -1;
-  let cycleMaxAmplitude = 0;
+  // let idxStdin = -1;
+  // let cycleMaxAmplitude = 0;
 
-  worker.stdin.on('data', (float32Array) => {
-    idxStdin++;
+  audioWorker.stdin.on('data', (float32Array) => {
+    // idxStdin++;
 
-    // TODO: Determine if more efficient than running on main thread
-    const float32ArrayResampled = worker.downsample(float32Array, 16000);
-
-    const maxAmplitude = worker.getMax(float32ArrayResampled);
+    /*
+    const maxAmplitude = audioWorker.getMax(float32Array);
     if (maxAmplitude > cycleMaxAmplitude) {
       cycleMaxAmplitude = maxAmplitude;
     }
-
     // Determine if new cycle
     if (idxStdin % 6 === 1) {
       // Determine max for VUMeter
-      worker.stdout.write({
+      audioWorker.stdout.write({
         maxAmplitude: cycleMaxAmplitude
       });
 
       // Start a new cycle
       cycleMaxAmplitude = 0;
     }
+    */
 
-    // TODO: Convert float32ArrayResampled to Uint16Array
     // TODO: Send data to WebSocket proxy
-    // webSocket.send(uint16Array);
+    ttsSocket.emit('audioData', float32Array);
   });
 
   /*
@@ -61,17 +78,33 @@ const f32Worker = new Float32AudioWorker(process, (worker) => {
   */
 });
 
-// Route mic audio through f32Worker
-mic.stdout.on('data', (float32Array) => {
-  f32Worker.stdin.write(float32Array);
+// Route mic audio through audioWorker
+// TODO: Transfer float32Array for extra performance
+mic.stdout.on('data', (audioBuffer) => {
+  // Transfer the array buffer to the worker (via float32Array.buffer)
+  // Note: This makes the float32Array unusable on the client
+  // audioWorker.stdin.write(float32Array, [float32Array.buffer]);
+
+  resampler.stdin.write(audioBuffer);
+});
+
+resampler.stdout.on('data', (resampledFloat32Array) => {
+  audioWorker.stdin.write(resampledFloat32Array, [resampledFloat32Array.buffer])
+  // console.log(resampledFloat32Array);
 });
 
 // Render VUMeter once mic is ready
 mic.once('ready', async () => {
   try {
-    // const micOutputSampleRate = await mic.fetchOutputSampleRate();
+    const micOutputFormat = await mic.fetchOutputAudioFormat();
+    console.debug('mic output format', micOutputFormat);
+    
+    /*
+    const micOutputSampleRate = await mic.fetchOutputSampleRate();
+    console.debug('mic output sample rate', micOutputSampleRate);
+    */
 
-    // TODO: Configure f32Worker w/ micOutputSampleRate
+    // TODO: Configure audioWorker w/ micOutputSampleRate
 
     new ClientGUIProcess(process, (proc) => {
       // TODO: How to set view properties from process?
@@ -96,14 +129,14 @@ mic.once('ready', async () => {
             console.debug('vu meter', this._vuMeter);
 
             // Start listening to audio data
-            f32Worker.stdout.on('data', this._handleAudioData);
+            audioWorker.stdout.on('data', this._handleAudioData);
           }
 
           componentWillUnmount() {
             this._isMounted = false;
 
             // Stop listening to audio data
-            f32Worker.stdout.off('data', this._handleAudioData);
+            audioWorker.stdout.off('data', this._handleAudioData);
           }
 
           _handleAudioData(data) {

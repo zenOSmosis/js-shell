@@ -4,49 +4,7 @@ import R_ClientWorkerProcess from '../ClientWorkerProcess/R_ClientWorkerProcess'
  * Native process Float32AudioWorker.
  */
 export default class R_Float32AudioWorker extends R_ClientWorkerProcess {
-  // TODO: Improve implementation
-  // @see https://github.com/mattdiamond/Recorderjs/issues/186
-  downsample(float32Array, toRate, fromRate=48000, /* options={} */) {
-    const buffer = float32Array;
-
-    // TODO: Rename internal variables
-    const sampleRate = fromRate;
-    const rate = toRate;
-
-    if (rate === sampleRate) {
-      return buffer;
-    }
-
-    if (rate > sampleRate) {
-      throw new Error('downsampling rate show be smaller than original sample rate');
-    }
-
-    const sampleRateRatio = sampleRate / rate;
-    const newLength = Math.round(buffer.length / sampleRateRatio);
-    let result = new Float32Array(newLength);
-    let offsetResult = 0;
-    let offsetBuffer = 0;
-    while (offsetResult < result.length) {
-      const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
-      // Use average value of skipped samples
-      const accum = 0, count = 0;
-      for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
-        accum += buffer[i];
-        count++;
-      }
-      result[offsetResult] = accum / count;
-      // Or you can simply get rid of the skipped samples:
-      // result[offsetResult] = buffer[nextOffsetBuffer];
-      offsetResult++;
-      offsetBuffer = nextOffsetBuffer;
-    }
-
-    return result;
-  }
-
   getAverage(float32Array) {
-    // Turn Float32Audio into regular array
-
     // sum all the elements of the array
     const sum = float32Array.reduce(function (accumulator, currentValue) {
       return accumulator + currentValue;

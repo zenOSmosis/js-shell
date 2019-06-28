@@ -26,7 +26,7 @@ export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
    * ImageBitmap objects that can be transferred. null is not an acceptable
    * value for transfer.
    */
-  write(data, transfer = undefined) {
+  write(data, transfer = []) {
     const pipeName = this._pipeName;
 
     const message = {

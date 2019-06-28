@@ -1,3 +1,7 @@
+// TODO: Implement Readable & Writable Streams (or make API consistent w/)
+// For an example:
+// @see https://www.npmjs.com/package/ogg
+
 import EventEmitter from 'events';
 import { EVT_PIPE_DATA, EVT_BEFORE_EXIT } from './constants';
 

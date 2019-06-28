@@ -1,26 +1,14 @@
+import ClientAudioProcess from './ClientAudioProcess';
 import { EVT_PIPE_DATA } from './ClientProcess';
-
-import ClientAudioProcess, {
-  OUTPUT_DATA_TYPE_FLOAT32ARRAY,
-  OUTPUT_DATA_TYPE_AUDIOBUFFER,
-  OUTPUT_DATA_TYPES
-} from 'process/ClientAudioProcess';
-
-export {
-  OUTPUT_DATA_TYPE_FLOAT32ARRAY,
-  OUTPUT_DATA_TYPE_AUDIOBUFFER,
-  OUTPUT_DATA_TYPES
-};
 
 /**
  * TODO: Use R_Float32AudioWorker instead, or as a fallback....
  */
-export default class ClientAudioResampler extends ClientAudioProcess {
+export default class ClientAudioResamplerProcess extends ClientAudioProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     // defaults
     const defOptions = {
-      outputDataType: OUTPUT_DATA_TYPE_AUDIOBUFFER,
-      outputTargetSampleRate: 44000
+      outputTargetSampleRate: 16000
     };
 
     options = Object.assign({}, defOptions, options);

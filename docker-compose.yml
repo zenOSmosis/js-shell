@@ -1,4 +1,4 @@
-# TODO: Use these strictly in development
+# TODO: Use these strictly in development (extend from production config)
 
 # Linux Shell Docker Compose Development Configuration
 
@@ -12,8 +12,13 @@ services:
   # TODO: Possibly bugfix; not able to use custom port / Docker network alias from dev_proxy
   dev_proxy:
     # build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
+    # TODO: Add depends on stt-socket
     build: ./docker_modules/dev-ssl-proxy
+    # depends_on:
+    #  - stt-socket
     network_mode: "host" # Using host network here so we can proxy to localhost addresses
+    volumes:
+      - ./docker_modules/dev-ssl-proxy:/app # Only during development
     environment:
       - PROXY_ADDRESS=http://127.0.0.1:3001 # Important, don't use quotations here, or it may break the template
 
@@ -46,3 +51,12 @@ services:
     command: ["npm", "run", "start"]
     ports:
       - 3000:3000
+
+  # Prototype STT socket w/ Socket.io interface
+  stt-socket:
+    build: ./docker_modules/stt-socket
+    volumes:
+      - ./docker_modules/stt-socket:/app # Only during development
+      - /tmp/stt-socket:/tmp # Only during development
+    ports:
+      - 8888:8888
