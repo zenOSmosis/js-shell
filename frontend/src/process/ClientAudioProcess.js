@@ -28,8 +28,12 @@ export default class ClientAudioProcess extends ClientProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     // Default options
     const defOptions = {
-      outputDataType: OUTPUT_DATA_TYPE_AUDIOBUFFER
-    }
+      outputDataType: OUTPUT_DATA_TYPE_AUDIOBUFFER,
+
+      outputAudioBufferSize: 256 * 4 * 8
+    };
+
+    options = Object.assign({}, defOptions, options);
 
     options = Object.assign({}, defOptions, options);
     
@@ -62,12 +66,12 @@ export default class ClientAudioProcess extends ClientProcess {
       
     this._source = this._audioContext.createMediaStreamSource(this._outputStream);
 
-    const { bufferSize } = this._options;
+    const { outputAudioBufferSize } = this._options;
     
     // TODO: Read input stream to determine number of input channels
     // The createScriptProcessor() method of the BaseAudioContext interface creates a ScriptProcessorNode used for direct audio processing.
     // @see https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor
-    this._scriptNode = this._audioContext.createScriptProcessor(bufferSize, NUM_INPUT_CHANNELS, NUM_OUTPUT_CHANNELS);
+    this._scriptNode = this._audioContext.createScriptProcessor(outputAudioBufferSize, NUM_INPUT_CHANNELS, NUM_OUTPUT_CHANNELS);
 
     this._source.connect(this._scriptNode);
     this._scriptNode.connect(this._audioContext.destination);

@@ -9,13 +9,6 @@ import ClientAudioProcess from './ClientAudioProcess';
  */
 export default class MicrophoneProcess extends ClientAudioProcess {
   constructor(parentProcess, cmd = null, options = {}) {
-    const defOptions = {
-      // TODO: Rename to outputBufferSize (maybe move this to ClientAudioProcess)
-      bufferSize: 256 * 4 * 2
-    };
-
-    options = Object.assign({}, defOptions, options);
-
     super(parentProcess, cmd, options);
 
     this._audioContext = null;

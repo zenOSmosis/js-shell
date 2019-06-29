@@ -11,9 +11,13 @@ const {
 const { Window, IFrame } = components;
 
 const mic = new MicrophoneProcess(process, null, {
-  outputDataType: 'AudioBuffer'
+  // outputDataType: 'AudioBuffer'
+  outputDataType: 'Float32Array',
+
+  outputAudioBufferSize: 256 * 4 * 8
 });
 
+/*
 const resampler = new ClientAudioResamplerProcess(process, (resampler) => {
   resampler.once('ready', async () => {
     try {
@@ -25,7 +29,8 @@ const resampler = new ClientAudioResamplerProcess(process, (resampler) => {
   });
 }, {
   outputDataType: 'Float32Array'
-});;
+});
+*/
 
 // Process the mic stream / sends over network / etc
 // TODO: Fix so that worker operates under context of Float32AudioWorker
@@ -78,26 +83,30 @@ const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
   */
 });
 
-// Route mic audio through audioWorker
-// TODO: Transfer float32Array for extra performance
-mic.stdout.on('data', (audioBuffer) => {
+// Route mic audio through resampler
+mic.stdout.on('data', (float32Array) => {
   // Transfer the array buffer to the worker (via float32Array.buffer)
   // Note: This makes the float32Array unusable on the client
-  // audioWorker.stdin.write(float32Array, [float32Array.buffer]);
+  audioWorker.stdin.write(float32Array, [float32Array.buffer]);
 
-  resampler.stdin.write(audioBuffer);
+  // resampler.stdin.write(audioBuffer);
 });
 
+// Route resampler through audio worker
+/*
 resampler.stdout.on('data', (resampledFloat32Array) => {
   audioWorker.stdin.write(resampledFloat32Array, [resampledFloat32Array.buffer])
   // console.log(resampledFloat32Array);
 });
+*/
 
 // Render VUMeter once mic is ready
 mic.once('ready', async () => {
   try {
     const micOutputFormat = await mic.fetchOutputAudioFormat();
     console.debug('mic output format', micOutputFormat);
+
+    return;
     
     /*
     const micOutputSampleRate = await mic.fetchOutputSampleRate();
