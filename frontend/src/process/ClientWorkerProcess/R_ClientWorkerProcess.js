@@ -80,8 +80,12 @@ export default class ClientWorker_WorkerProcess extends ClientWorkerProcessCommo
       // TODO: Replace w/ setImmediate()
       setTimeout(() => {
         const { data } = message;
+        const { host } = data;
 
-        this._pid = data.controller.pid;
+        const { pid, options } = host;
+
+        this._pid = pid;
+        // this._options = options;
 
         console.debug('Executing native Worker command');
 

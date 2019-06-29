@@ -1,3 +1,8 @@
+// @see https://aws.amazon.com/blogs/machine-learning/capturing-voice-input-in-a-browser/
+// @see https://github.com/awslabs/aws-lex-browser-audio-capture
+
+// @see http://watson-developer-cloud.github.io/speech-javascript-sdk/master/speech-to-text_webaudio-l16-stream.js.html
+
 const {
   Component,
   ClientProcess,
@@ -11,25 +16,27 @@ const {
 const { Window, IFrame } = components;
 
 const mic = new MicrophoneProcess(process, null, {
-  // outputDataType: 'AudioBuffer'
+  outputAudioBufferSize: 256 * 4 * 8,
+  // outputDataType: 'AudioBuffer',
   outputDataType: 'Float32Array',
-
-  outputAudioBufferSize: 256 * 4 * 8
 });
 
 /*
-const resampler = new ClientAudioResamplerProcess(process, (resampler) => {
-  resampler.once('ready', async () => {
-    try {
-      const resamplerOutputFormat = await resampler.fetchOutputAudioFormat();
-      console.debug('resampler output format', resamplerOutputFormat);
-    } catch (exc) {
-      throw exc;
-    }
-  });
-}, {
-  outputDataType: 'Float32Array'
-});
+const resampler = new ClientAudioResamplerProcess(process,
+  (resampler) => {
+    resampler.once('ready', async () => {
+      try {
+        const resamplerOutputFormat = await resampler.fetchOutputAudioFormat();
+        console.debug('resampler output format', resamplerOutputFormat);
+      } catch (exc) {
+        throw exc;
+      }
+    });
+  },
+  {
+    outputDataType: 'Float32Array'
+  }
+);
 */
 
 // Process the mic stream / sends over network / etc
@@ -39,6 +46,127 @@ const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
   const ttsSocket = io('https://xubuntu-dev', {
     path: '/stt-socket'
   });
+
+  // TODO: Make these dynamic
+  const inputSampleRate = 48000;
+  const outputSampleRate = 16000;
+
+  audioWorker.bufferUnusedSamples = new Float32Array(0);
+
+  // Note:  This seems to work, but the output sample rate seems off by 2khz.
+  const downsampleL16 = (bufferNewSamples) => {
+    // TODO: Convert all var to const / let; etc.
+
+    var buffer = null;
+    var newSamples = bufferNewSamples.length;
+    var unusedSamples = audioWorker.bufferUnusedSamples.length;
+    var i;
+    var offset;
+    if (unusedSamples > 0) {
+      buffer = new Float32Array(unusedSamples + newSamples);
+      for (i = 0; i < unusedSamples; ++i) {
+        buffer[i] = audioWorker.bufferUnusedSamples[i];
+      }
+      for (i = 0; i < newSamples; ++i) {
+        buffer[unusedSamples + i] = bufferNewSamples[i];
+      }
+    } else {
+      buffer = bufferNewSamples;
+    }
+    // Downsampling and low-pass filter:
+    // Input audio is typically 44.1kHz or 48kHz, audioWorker downsamples it to 16kHz.
+    // It uses a FIR (finite impulse response) Filter to remove (or, at least attinuate) 
+    // audio frequencies > ~8kHz because sampled audio cannot accurately represent  
+    // frequiencies greater than half of the sample rate. 
+    // (Human voice tops out at < 4kHz, so nothing important is lost for transcription.)
+    // See http://dsp.stackexchange.com/a/37475/26392 for a good explination of audioWorker code.
+    var filter = [
+      -0.037935,
+      -0.00089024,
+      0.040173,
+      0.019989,
+      0.0047792,
+      -0.058675,
+      -0.056487,
+      -0.0040653,
+      0.14527,
+      0.26927,
+      0.33913,
+      0.26927,
+      0.14527,
+      -0.0040653,
+      -0.056487,
+      -0.058675,
+      0.0047792,
+      0.019989,
+      0.040173,
+      -0.00089024,
+      -0.037935
+    ];
+    // var samplingRateRatio = audioWorker.options.sourceSampleRate / TARGET_SAMPLE_RATE;
+    // TODO: Remove hardcoding; use dynamically
+    var samplingRateRatio = inputSampleRate / outputSampleRate;
+
+    var nOutputSamples = Math.floor((buffer.length - filter.length) / samplingRateRatio) + 1;
+    var outputBuffer = new Float32Array(nOutputSamples);
+    for (i = 0; i + filter.length - 1 < buffer.length; i++) {
+      offset = Math.round(samplingRateRatio * i);
+      var sample = 0;
+      for (var j = 0; j < filter.length; ++j) {
+        sample += buffer[offset + j] * filter[j];
+      }
+      outputBuffer[i] = sample;
+    }
+    var indexSampleAfterLastUsed = Math.round(samplingRateRatio * i);
+    var remaining = buffer.length - indexSampleAfterLastUsed;
+    if (remaining > 0) {
+      audioWorker.bufferUnusedSamples = new Float32Array(remaining);
+      for (i = 0; i < remaining; ++i) {
+        audioWorker.bufferUnusedSamples[i] = buffer[indexSampleAfterLastUsed + i];
+      }
+    } else {
+      audioWorker.bufferUnusedSamples = new Float32Array(0);
+    }
+    return outputBuffer;
+  }
+
+  const floatTo16BitPCM = (output, offset, input) => {
+    for (var i = 0; i < input.length; i++, offset += 2) {
+      var s = Math.max(-1, Math.min(1, input[i]));
+      output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    }
+  };
+
+  const writeString = (view, offset, string) => {
+    for (var i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  };
+
+  const encodeWAV = (samples) => {
+      // TODO: Remove hardcoded
+      const sampleRate = outputSampleRate;
+
+      var buffer = new ArrayBuffer(44 + samples.length * 2);
+      var view = new DataView(buffer);
+ 
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 32 + samples.length * 2, true);
+      writeString(view, 8, 'WAVE');
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, 'data');
+      view.setUint32(40, samples.length * 2, true);
+      floatTo16BitPCM(view, 44, samples);
+ 
+      return view;
+    };
 
   // TODO: Send through WSS proxy
   // name: content-type
@@ -73,7 +201,13 @@ const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
     */
 
     // TODO: Send data to WebSocket proxy
-    ttsSocket.emit('audioData', float32Array);
+    const downsampled = downsampleL16(float32Array);
+    // const encodedWAV = encodeWAV(downsampleL16(float32Array));
+    // console.log(encodedWAV.buffer);
+    
+    const audioBlob = new Blob([downsampled], {type: 'application/octet-stream'});
+    ttsSocket.emit('audioBlob', audioBlob);
+    
   });
 
   /*
@@ -87,18 +221,22 @@ const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
 mic.stdout.on('data', (float32Array) => {
   // Transfer the array buffer to the worker (via float32Array.buffer)
   // Note: This makes the float32Array unusable on the client
-  audioWorker.stdin.write(float32Array, [float32Array.buffer]);
+  // audioWorker.stdin.write(float32Array, [float32Array.buffer]);
 
-  // resampler.stdin.write(audioBuffer);
+  // resampler.stdin.write(float32Array);
+  audioWorker.stdin.write(float32Array);
 });
 
-// Route resampler through audio worker
 /*
-resampler.stdout.on('data', (resampledFloat32Array) => {
+resampler.stdin.on('data', (resampledFloat32Array) => {
   audioWorker.stdin.write(resampledFloat32Array, [resampledFloat32Array.buffer])
-  // console.log(resampledFloat32Array);
 });
 */
+
+
+
+
+
 
 // Render VUMeter once mic is ready
 mic.once('ready', async () => {

@@ -100,7 +100,7 @@ export default class ClientJITRuntime extends ClientProcess {
     // Remove compiled version of this (if targeting es2015)
     compiledCode = compiledCode.split('var ___this___ = {};').join('');
 
-    console.debug('compiled code:', compiledCode);
+    console.debug('compiled code:\n--------------\n', compiledCode);
 
     return compiledCode;
   }

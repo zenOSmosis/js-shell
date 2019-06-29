@@ -88,6 +88,8 @@ class Processes extends Component {
 
                 const startDate = process.getStartDate();
                 const className = process.getClassName();
+                const title = process.getTitle();
+                const renderedName = title || className;
                 const threadType = process.getThreadType();
                 const serviceURI = process.getServiceURI();
                 const pid = process.getPID();
@@ -102,7 +104,7 @@ class Processes extends Component {
                       {parentPID}
                     </td>
                     <td>
-                      {className}
+                      {renderedName}
                     </td>
                     <td>
                       <MainCPUUsagePercent />

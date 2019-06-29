@@ -30,8 +30,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
 
     this._nativeWorker = null;
 
-    // TODO: Obtain dynamic URI from native Worker
-    this._serviceURI = `[blob://ClientWorker]`;
+    this._serviceURI = `[blob://ClientWorker]`; // Hardcoded; TODO: Obtain dynamic URI from native Worker
 
     this.setImmediate(() => {
       this._deferredCmd = cmd;
@@ -82,14 +81,15 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
             // TODO: Event emitter... listen once for 'hello'
   
             const cmd = this._deferredCmd;
+            // const options = this._options;
             const serializedCmd = cmd.toString();
   
             const pid = this.getPID();
   
             const sendData = {
-              // This process is the 'controller'
-              controller: {
-                pid
+              host: {
+                pid,
+                // options // TODO: Implement serizable options
               },
               serializedCmd
             };
