@@ -17,6 +17,7 @@
     "jsoneditor-react": "^1.0.0",
     "moment": "^2.24.0",
     "monaco-editor-webpack-plugin": "^1.7.0",
+    "msr": "^1.3.4",
     "normalize.css": "^8.0.1",
     "react": "^16.8.6",
     "react-app-rewire-hot-loader": "^2.0.1",

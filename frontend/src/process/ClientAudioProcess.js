@@ -145,8 +145,10 @@ export default class ClientAudioProcess extends ClientProcess {
     });
   }
 
-  // TODO: Implement
-  // @see https://github.com/saebekassebil/microphone-stream/blob/master/microphone-stream.js
+
+  /**
+   * @return {Promise<{}>}
+   */
   async fetchOutputAudioFormat() {
     try  {
       const outputAudioBuffer = await this.fetchOutputAudioBuffer();

@@ -9,6 +9,7 @@ import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import ClientAudioResamplerProcess from 'process/ClientAudioResamplerProcess';
 import Float32AudioWorker from 'process/Float32AudioWorker';
+import MediaStreamRecorder from 'msr';
 // import PCMAudioRecorderProcess from 'process/PCMAudioRecorderProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
@@ -29,6 +30,7 @@ export default class UI_JITRuntime extends ClientJITRuntime {
       ClientAudioResamplerProcess,
       MicrophoneProcess,
       Float32AudioWorker,
+      MediaStreamRecorder,
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,

@@ -32,12 +32,12 @@ let nextPID = 0;
  * TODO: Document...
  */
 export default class ClientProcess extends EventEmitter {
-  // TODO: Move these into constructor
+  // TODO: Move everything into constructor
   // _base = 'ClientProcess';
-  _pid = -1;
-  _parentProcess = null;
-  _parentPID = -1;
-  _cmd = null;
+  // _pid = -1;
+  // _parentProcess = null;
+  // _parentPID = -1;
+  // _cmd = null;
   _startDate = null;
   _serviceURI = null;
   
@@ -141,7 +141,26 @@ export default class ClientProcess extends EventEmitter {
    * @return {boolean}
    */
   getIsReady() {
-    return this._isReady();
+    return this._isReady;
+  }
+
+  /**
+   * Resolves once the process is ready.
+   * 
+   * @return {Promise<void>}
+   */
+  onceReady() {
+    return new Promise((resolve, reject) => {
+      if (this.getIsReady()) {
+        // Resolve immediately
+        return resolve();
+      } else {
+        // Await ready
+        this.once(EVT_READY, () => {
+          return resolve();
+        });
+      }
+    });
   }
 
   /**

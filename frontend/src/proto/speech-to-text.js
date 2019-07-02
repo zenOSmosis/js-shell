@@ -1,3 +1,5 @@
+// This is the original prototype implementation, w/ prototype VU Meter (not currently functional in this implementation)
+
 // @see https://aws.amazon.com/blogs/machine-learning/capturing-voice-input-in-a-browser/
 // @see https://github.com/awslabs/aws-lex-browser-audio-capture
 
