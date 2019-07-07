@@ -2,7 +2,7 @@
 // socket.io server
 // The stream is playable via: play -r 16000 -b 16 -e signed-integer *.raw
 
-const { MicrophoneProcess, MediaStreamRecorder, ClientWorkerProcess } = this;
+const { MicrophoneProcess, ClientWorkerProcess } = this;
 
 const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
   importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
@@ -113,6 +113,11 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
       type: 'audio/pcm'
     });
     ttsSocket.emit('audioBlob', audioBlob);
+  });
+
+  // Handle the received transcription
+  ttsSocket.on('transcription', (transcription) => {
+    console.debug('transcription', transcription);
   });
 });
 
