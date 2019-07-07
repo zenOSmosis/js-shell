@@ -8,6 +8,7 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
   importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
   // TODO: Make io params dynamic
+  // TODO: Pass base address via options
   const sttSocket = io('https://xubuntu-dev', {
     path: '/stt-socket'
   });
@@ -17,20 +18,15 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
     let buf = new Int16Array(l);
 
     while (l--) {
-        buf[l] = buffer[l] * 0xFFFF; //convert to 16 bit
+        buf[l] = buffer[l] * 0xFFFF; // convert to 16 bit
     }
     return buf.buffer
   };
 
-  // TODO: Make these dynamically set from mic stream
-  // BT audio speaker / iMac is at 44100; laptop card is at 48000
-  const inputSampleRate = 48000;
-
-  const outputSampleRate = 16000;
-
   audioWorker.bufferUnusedSamples = new Float32Array(0);
 
-  const downsampleL16 = (bufferNewSamples) => {
+  // BT audio speaker / iMac is at 44100; laptop card is at 48000
+  const downsampleL16 = (bufferNewSamples, inputSampleRate = 48000, outputSampleRate = 16000) => {
     // TODO: Convert all let to const / let; etc.
 
     let buffer = null;
@@ -103,21 +99,49 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
       audioWorker.bufferUnusedSamples = new Float32Array(0);
     }
     return outputBuffer;
-  }
+  };
 
-  audioWorker.stdin.on('data', (float32Array) => {
+  /**
+   * Takes float32Array buffer, converts it to S16 and emits it over STT
+   * socket. 
+   */
+  const sttSend = (float32Array) => {
     // TODO: Force LE encoding in pcm16
 
+    // TODO: Pass input & output sample rates to downsampleL16
     const pcm16 = (convertFloat32ToInt16(downsampleL16(float32Array)));
     const audioBlob =  new Blob([pcm16], {
       type: 'audio/pcm'
     });
     sttSocket.emit('audioBlob', audioBlob);
-  });
+  };
 
   // Handle the received transcription
   sttSocket.on('transcription', (transcription) => {
-    console.debug('transcription', transcription);
+    // console.debug('transcription data', transcription);
+
+    const {message} = transcription;
+
+    if (message) {
+      const {result} = message;
+      
+      if (result) {
+        const {hypotheses} = result;
+
+        if (hypotheses) {
+          const totalHypotheses = hypotheses.length;
+
+          // console.debug('hypotheses', hypotheses);
+          hypotheses.forEach((singleHypotheses, idx) => {
+            console.debug(`hypotheses ${idx + 1} of ${totalHypotheses}`, singleHypotheses);
+          });
+        }
+      }
+    }
+  });
+
+  audioWorker.stdin.on('data', (float32Array) => {
+    sttSend(float32Array);
   });
 });
 
@@ -129,9 +153,14 @@ const mic = new MicrophoneProcess(process,
       // TODO: Send audio worker configuration parameters for mic
 
       const micOutputAudioFormat = await mic.fetchOutputAudioFormat();
-      // TODO: Set options in audioWorker depending on output audio format
-
       console.debug('mic output audio format', micOutputAudioFormat);
+
+      const { sampleRate: micOutputSampleRate } = micOutputAudioFormat;
+
+      // TODO: Set options in audioWorker depending on output audio format
+      audioWorker.setOptions({
+        inputSampleRate: micOutputSampleRate
+      });
 
       mic.stdout.on('data', (float32Array) => {
         // Pass the buffer as a transfer object

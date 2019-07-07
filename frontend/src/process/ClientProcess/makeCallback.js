@@ -3,11 +3,14 @@
  * 
  * Applies the given scope to the given callback, both as context, and as a
  * first argument.
+ * 
+ * Note, callback is optional due to less if/then checking across
+ * implementations.
  *
  * @param {Object} scope 
- * @param {Function} callback 
+ * @param {Function} callback [optional]
  */
-const makeCallback = (scope, callback) => {
+const makeCallback = (scope, callback = null) => {
   if (typeof scope !== 'object') {
     throw new Error('Scope must be an object');
   }

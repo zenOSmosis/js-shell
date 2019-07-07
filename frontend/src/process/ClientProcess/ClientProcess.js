@@ -40,10 +40,10 @@ export default class ClientProcess extends EventEmitter {
   // _cmd = null;
   _startDate = null;
   _serviceURI = null;
-  
+
   // Set to true after _launch() has been called, before command has executed
   _isLaunched = false;
-  
+
   _isExited = false;
   _threadType = THREAD_TYPE_SHARED;
   _title = null;
@@ -94,7 +94,7 @@ export default class ClientProcess extends EventEmitter {
     this._initDataPipes();
 
     // Run init in next tick
-    this.setImmediate(async () => {  
+    this.setImmediate(async () => {
       try {
         await this._init();
       } catch (exc) {
@@ -114,7 +114,7 @@ export default class ClientProcess extends EventEmitter {
         try {
           // Automatically launch
           await this._launch();
-                
+
           // Set internal ready state
           this._isReady = true;
 
@@ -129,6 +129,12 @@ export default class ClientProcess extends EventEmitter {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  setOptions(options = {}) {
+    this._options = options;
+
+    this._tick();
   }
 
   getOptions() {
@@ -182,9 +188,9 @@ export default class ClientProcess extends EventEmitter {
   }
 
   setTitle(title) {
-    this.setImmediate(() => {
-      this._title = title;
-    });
+    this._title = title;
+
+    this._tick();
   }
 
   getTitle() {
@@ -257,7 +263,7 @@ export default class ClientProcess extends EventEmitter {
    * 
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  setImmediate = async (callback/*, error*/) => {
+  setImmediate = async (callback = null/*, error = null*/) => {
     callback = makeCallback(this, callback);
     // error = makeCallback(this, error);
 
@@ -272,7 +278,7 @@ export default class ClientProcess extends EventEmitter {
   /**
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  nextTick = async (callback/*, error*/) => {
+  nextTick = async (callback = null/*, error = null*/) => {
     callback = makeCallback(this, callback);
     // error = makeCallback(this, error);
 
@@ -326,7 +332,7 @@ export default class ClientProcess extends EventEmitter {
             await callback();
           } catch (exc) {
             // error(exc);
-            throw(exc);
+            throw (exc);
           }
         }
 
@@ -340,7 +346,7 @@ export default class ClientProcess extends EventEmitter {
             await callback();
           } catch (exc) {
             // error(exc);
-            throw(exc);
+            throw (exc);
           }
         }
 

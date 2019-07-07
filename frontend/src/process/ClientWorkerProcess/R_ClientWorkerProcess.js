@@ -19,6 +19,9 @@ export default class ClientWorker_WorkerProcess extends ClientWorkerProcessCommo
     super(parentProcess);
 
     this._handleReceivedMessage = this._handleReceivedMessage.bind(this);
+
+    // This is the worker, running in its own thread
+    this._isWorker = true; 
     
     this._idxReceivedMsg = -1;
     this._messageReceiverIsInit = false;

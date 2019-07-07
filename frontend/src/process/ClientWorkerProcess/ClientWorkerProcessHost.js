@@ -10,6 +10,13 @@ import serialize from 'serialize-javascript';
  * the ClientWorkerProcess.worker class, which runs in a native Worker.
  */
 export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCore {
+  /**
+   * Note, cmd gets executed directly in the worker, instead of in the main thread.
+   * 
+   * @param {ClientProcess} parentProcess 
+   * @param {Function} cmd 
+   * @param {Object} options [optional]
+   */
   constructor(parentProcess, cmd, options = {}) {
     const defOptions = {
       // The native Worker implementation
@@ -23,7 +30,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
       parentProcess,
 
       // Override initial parent process with an empty instruction
-      // (cmd is serialized, then executed, further down)
+      // (cmd is passed to worker thread further down)
       () => {},
 
       options
@@ -31,11 +38,13 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
 
     this._nativeWorker = null;
 
-    this._serviceURI = `[blob://ClientWorker]`; // Hardcoded; TODO: Obtain dynamic URI from native Worker
+    // This is the host, running on the main thread, so this is not the worker
+    this._isWorker = false;
 
-    this.setImmediate(() => {
-      this._deferredCmd = cmd;
-    });
+    // Hardcoded; TODO: Obtain dynamic URI from native Worker
+    this._serviceURI = `[blob://ClientWorker]`;
+
+    this._workerCmd = cmd;
   }
 
   /**
@@ -81,7 +90,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
           (() => {
             // TODO: Event emitter... listen once for 'hello'
   
-            const cmd = this._deferredCmd;
+            const cmd = this._workerCmd;
             const options = serialize(this._options);
             const serializedCmd = cmd.toString();
   
@@ -108,6 +117,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
           
           // this._serviceURI = this._nativeWorker.getServiceURI();
   
+          // TODO: Don't resolve until native worker is init and ready for usage
           resolve();
         } catch (exc) {
           reject(exc);
