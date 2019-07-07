@@ -8,7 +8,7 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
   importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
   // TODO: Make io params dynamic
-  const ttsSocket = io('https://xubuntu-dev', {
+  const sttSocket = io('https://xubuntu-dev', {
     path: '/stt-socket'
   });
 
@@ -112,11 +112,11 @@ const audioWorker = new ClientWorkerProcess(process, (audioWorker) => {
     const audioBlob =  new Blob([pcm16], {
       type: 'audio/pcm'
     });
-    ttsSocket.emit('audioBlob', audioBlob);
+    sttSocket.emit('audioBlob', audioBlob);
   });
 
   // Handle the received transcription
-  ttsSocket.on('transcription', (transcription) => {
+  sttSocket.on('transcription', (transcription) => {
     console.debug('transcription', transcription);
   });
 });
