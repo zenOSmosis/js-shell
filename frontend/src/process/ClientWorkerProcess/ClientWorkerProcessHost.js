@@ -3,6 +3,7 @@
 
 import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 import R_ClientWorkerProcess from './dispatch.worker';
+import serialize from 'serialize-javascript';
 
 /**
  * The ClientWorkerProcess class, which acts as a green-threaded controller to
@@ -81,7 +82,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
             // TODO: Event emitter... listen once for 'hello'
   
             const cmd = this._deferredCmd;
-            // const options = this._options;
+            const options = serialize(this._options);
             const serializedCmd = cmd.toString();
   
             const pid = this.getPID();
@@ -89,7 +90,7 @@ export default class ClientWorkerProcessHost extends ClientWorkerProcessCommonCo
             const sendData = {
               host: {
                 pid,
-                // options // TODO: Implement serizable options
+                options // TODO: Implement serizable options
               },
               serializedCmd
             };
