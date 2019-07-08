@@ -3,19 +3,19 @@ import {
     // EVT_PIPE_DATA
 } from '../ClientProcess';
 
-// Important! Leave as 'message' for native Worker
+// Important! Leave as 'message' for native Web Worker
 export const EVT_CLIENT_WORKER_MESSAGE = 'message';
 
 /**
- * Adapts Pipe to work with native Worker.
+ * Adapts Pipe to work with native Web Worker.
  * 
- * It acts as a router for the native Worker's postMessage() and 'message'
+ * It acts as a router for the native Web Worker's postMessage() and 'message'
  * events handling.
  */
 export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
   /**
    * Overrides ClientProcessPipe's write() method w/ handling to dispatch
-   * across the native Worker's postMessage() method.
+   * across the native Web Worker's postMessage() method.
    * 
    * @param {any} data 
    * @param {object[]} transfer (optional) An optional array of Transferable

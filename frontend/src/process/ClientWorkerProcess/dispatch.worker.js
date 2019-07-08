@@ -1,3 +1,3 @@
-import R_ClientWorkerProcess from './R_ClientWorkerProcess';
+import ClientWorkerProcess from './ClientWorkerProcess';
 
-new R_ClientWorkerProcess(false);
+new ClientWorkerProcess(false);

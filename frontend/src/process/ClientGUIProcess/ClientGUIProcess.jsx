@@ -13,6 +13,8 @@ export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
     super(...args);
 
+    this._isGUIProcess = true;
+
     // TODO: Move this to _init
     this._ReactComponent = createClientGUIProcessReactComponent(this,
       /* onMount */ (component) => {

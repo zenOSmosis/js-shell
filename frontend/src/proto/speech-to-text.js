@@ -12,7 +12,7 @@ const {
   ClientGUIProcess,
   MicrophoneProcess,
   ClientAudioResamplerProcess,
-  Float32AudioWorker,
+  ClientAudioWorkerProcess,
   components
 } = this;
 const { Window, IFrame } = components;
@@ -42,8 +42,8 @@ const resampler = new ClientAudioResamplerProcess(process,
 */
 
 // Process the mic stream / sends over network / etc
-// TODO: Fix so that worker operates under context of Float32AudioWorker
-const audioWorker = new Float32AudioWorker(process, (audioWorker) => {
+// TODO: Fix so that worker operates under context of ClientAudioWorkerProcess
+const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
   importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
   const ttsSocket = io('https://xubuntu-dev', {
     path: '/stt-socket'

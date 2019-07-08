@@ -29,12 +29,13 @@ module.exports = function override(config, env) {
     test: /\.worker\.js$/,
     loader: 'worker-loader',
     options: {
-      name: 'ClientWorkerProcess.[hash].js', // Set a custom name for the output script
-      inline: true // Inline the worker as a BLOB
+      name: 'native-worker.[hash].js', // Set a custom name for the output script
+      inline: false // Inline the worker as a BLOB
     }
   });
 
   // Fix window not defined error in worker
+  // TODO: Cite why this is needed
   // @see https://medium.com/@vincentdnl/just-did-all-the-steps-in-the-article-on-a-fresh-cra-install-and-i-get-a-referenceerror-window-is-e200541533d0
   config.output['globalObject'] = 'this';
 

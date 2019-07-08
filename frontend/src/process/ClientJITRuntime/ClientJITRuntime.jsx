@@ -75,6 +75,7 @@ export default class ClientJITRuntime extends ClientProcess {
     // Pre-process
     // Weird hack to retain "this" keyword passing through compiler, or else all
     // "this" references are compiled as "undefined"
+    // TODO: This needs extensive testing and is probably a very terrible hack
     code = `
       const ___this___ = {};
       ${code}

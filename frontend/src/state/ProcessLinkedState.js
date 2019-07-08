@@ -36,25 +36,27 @@ export default class ProcessLinkedState extends LinkedState {
     
     const guiProcesses = this.getGUIProcesses(processes);
 
-    const _handleProcessUpdate = () => {
-      this.setState({
-        updatedProcess: process
-      });
-    };
-
-    process.on(EVT_TICK, _handleProcessUpdate);
+    process.on(EVT_TICK, this._handleProcessUpdate);
 
     // Handle shutdown
     process.once(EVT_BEFORE_EXIT, () => {
-      process.off(EVT_TICK, _handleProcessUpdate);
+      process.off(EVT_TICK, this._handleProcessUpdate);
     });
-
-    // TODO: Detect guiProcesses and update here
-    
 
     this.setState({
       processes,
       guiProcesses
+    });
+  }
+
+  /**
+   * This is called internally on each process tick.
+   * 
+   * @param {ClientProcess} updatedProcess The process which was updated.
+   */
+  _handleProcessUpdate = (updatedProcess) => {
+    this.setState({
+      updatedProcess
     });
   }
 
@@ -80,6 +82,9 @@ export default class ProcessLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * @return {ClientProcess[]}
+   */
   getProcesses() {
     const { processes } = this.getState();
 
@@ -93,16 +98,17 @@ export default class ProcessLinkedState extends LinkedState {
    * 
    * @param {ClientProcess[]} processes [optional] Overridden (over class
    * property) processes.
+   * @return {ClientGUIProcess[]}
    */
   getGUIProcesses(processes = null) {
     if (!processes) {
-      const state = this.getState();
-
-      processes = state.processes;
+      processes = this.getProcesses();
     }
 
     const guiProcesses = processes.filter((proc) => {
-      return (typeof proc.getReactComponent === 'function');
+      // TODO: Does checking for instance of ClientGUIProcess work, instead?
+
+      return proc.getIsGUIProcess();
     });
 
     return guiProcesses;

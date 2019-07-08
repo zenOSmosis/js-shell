@@ -1,8 +1,8 @@
-import ClientWorkerProcessHost from '../ClientWorkerProcess';
-import R_Float32AudioWorker from './dispatch.worker';
+import ClientWorkerProcessController from '../ClientWorkerProcess';
+import ClientAudioWorkerProcess from './dispatch.worker';
 
 /**
- * Processes Float32Array audio in a native Worker.
+ * Processes Float32Array audio in a native Web Worker.
  * 
  * The Float32Array typed array represents an array of 32-bit floating point
  * numbers (corresponding to the C float data type) in the platform byte order.
@@ -17,12 +17,12 @@ import R_Float32AudioWorker from './dispatch.worker';
  * For endianess, etc:
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView#Endianness
  */
-export default class Float32AudioWorkerHost extends ClientWorkerProcessHost {
+export default class ClientAudioWorkerProcessController extends ClientWorkerProcessController {
   constructor(parentProcess, cmd = null, options = {}) {
     // Default options
     const defOptions = {
       // The non-instantiated class of the Worker implementation
-      DispatchWorker: R_Float32AudioWorker
+      DispatchWorker: ClientAudioWorkerProcess
     };
 
     options = Object.assign({}, defOptions, options);

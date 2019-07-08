@@ -7,6 +7,7 @@ import SystemDetail from './SystemDetail';
 // import DocsApp from './Docs';
 // import AboutApp from './About';
 import HelloWorldApp from './HelloWorld';
+import ProcessTester from './ProcessTester';
 
 const defaultApps = [
   FilesApp,
@@ -17,7 +18,8 @@ const defaultApps = [
   // ScreenRecorder,
   // DocsApp,
   // AboutApp,
-  HelloWorldApp
+  HelloWorldApp,
+  ProcessTester
 ];
 
 export default defaultApps;

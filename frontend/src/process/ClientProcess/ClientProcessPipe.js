@@ -31,7 +31,7 @@ export default class ClientProcessPipe extends EventEmitter {
   }
 
   destruct() {
-    console.debug('Shutting down pipe', this);
+    // console.debug('Shutting down pipe', this);
 
     this.removeAllListeners();
   }

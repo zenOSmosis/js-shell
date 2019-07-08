@@ -13,10 +13,6 @@ let _mlscsIsInstantiated = false;
  * Master controller for all LinkedState instances.
  */
 export class MasterLinkedStateControllerSingleton extends EventEmitter {
-  _linkedStateInstances = [];
-  _sharedStates = {};
-  _masterLinkedStateListener = null;
-
   constructor() {
     if (_mlscsIsInstantiated) {
       throw new Error('MasterLinkedStateControllerSingleton can only be instantiated once');
@@ -24,7 +20,11 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
 
     super();
 
-    _mlscsIsInstantiated = true;
+    this._linkedStateInstances = [];
+    this._sharedStates = {};
+    this._masterLinkedStateListener = null;
+
+    this._mlscsIsInstantiated = true;
 
     // Script needs to instantiate before master linked state listener is present
     setTimeout(() => {

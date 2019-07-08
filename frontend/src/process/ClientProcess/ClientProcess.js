@@ -1,14 +1,10 @@
-// TODO: Separate ClientProcess from ClientProcessCore (and extend w/ ClientWorker_WorkerProcess).
-
-// TODO: Remove direct LinkedState usage from base ClientProcessCore (use in
-// extension)
-
 // TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
 
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
 import ClientProcessPipe from './ClientProcessPipe';
 import makeCallback from './makeCallback';
+import evalInContext from 'utils/evalInContext';
 
 import {
   EVT_READY,
@@ -17,54 +13,28 @@ import {
   EVT_BEFORE_EXIT,
   EVT_EXIT,
 
-  THREAD_TYPE_SHARED,
+  THREAD_TYPE_MAIN,
 
-  PIPE_NAME_STDIN,
-  PIPE_NAME_STDOUT,
-  PIPE_NAME_STDERR
+  PIPE_NAMES
 } from './constants';
 
 const processLinkedState = new ProcessLinkedState();
 
+// The process id of the next process
 let nextPID = 0;
 
 /**
  * TODO: Document...
  */
 export default class ClientProcess extends EventEmitter {
-  // TODO: Move everything into constructor
-  // _base = 'ClientProcess';
-  // _pid = -1;
-  // _parentProcess = null;
-  // _parentPID = -1;
-  // _cmd = null;
-  _startDate = null;
-  _serviceURI = null;
-
-  // Set to true after _launch() has been called, before command has executed
-  _isLaunched = false;
-
-  _isExited = false;
-  _threadType = THREAD_TYPE_SHARED;
-  _title = null;
-
-  stdin = null; // Pipe
-  stdout = null; // Pipe
-  stderr = null; // Pipe
-
-  _setImmediateCallStack = [];
-  _nextTickCallStack = [];
-
-  _tickTimeout = null;
-
   constructor(parentProcess, cmd, options = {}) {
     super();
 
-    // Increment up for the next process
-    nextPID++;
+    this._pid = (() => {
+      nextPID++;
 
-    // Register process with processLinkedState
-    processLinkedState.addProcess(this);
+      return nextPID;
+    })();
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
@@ -79,11 +49,38 @@ export default class ClientProcess extends EventEmitter {
     if (this._parentProcess !== null) {
       this._parentPID = this._parentProcess.getPID();
     }
+    
+    // Set to true after process has initialized
     this._isReady = false;
+
+    // Set to true after process has exited
+    // Note, the process should no longer be interacted w/ and all references
+    // should be discarded before, or at once, this value sets
+    this._isExited = false;
+
+    // Set to true after _launch() has been called, before command has executed
+    this._isLaunchStarted = false;
+
+    this._threadType = THREAD_TYPE_MAIN;
+    this._title = null;
+    
+    this._isGUIProcess = false;
     this._cmd = cmd;
-    this._pid = nextPID;
-    this._startDate = new Date();
+    this._startDate = new Date(); // TODO: Rename, and rework, to _startTime
     this._options = options;
+    this._startDate = null;
+    this._serviceURI = null;
+
+    // STDIO pipes
+    this.stdin = null; // Pipe
+    this.stdout = null; // Pipe
+    this.stderr = null; // Pipe
+  
+    // Tick callstacks
+    this._setImmediateCallStack = [];
+    this._nextTickCallStack = [];
+  
+    this._tickTimeout = null;
 
     if (typeof window !== 'undefined') {
       // TODO: Can a service worker use this, somehow?
@@ -96,6 +93,15 @@ export default class ClientProcess extends EventEmitter {
     // Run init in next tick
     this.setImmediate(async () => {
       try {
+        if (!this._isExited) {
+          // Register process with processLinkedState
+          // Important, processLinkedState must be set in setImmediate or it won't
+          // accurately reflect process extensions until the next tick.
+          // Without using setImmediate, GUI components, etc. won't render until the
+          // next tick.
+          processLinkedState.addProcess(this);
+        }
+
         await this._init();
       } catch (exc) {
         throw exc;
@@ -106,11 +112,14 @@ export default class ClientProcess extends EventEmitter {
   /**
    * Initializes the process.
    * 
+   * Important! Process extensions which require their own _init routines
+   * should initialize their own _init routines before calling super._init().
+   * 
    * @return {Promise<void>} Promise resolves after process has fully launched.
    */
   async _init() {
     try {
-      await new Promise(async (resolve, reject) => {
+      return await new Promise(async (resolve, reject) => {
         try {
           // Automatically launch
           await this._launch();
@@ -131,17 +140,16 @@ export default class ClientProcess extends EventEmitter {
     }
   }
 
-  setOptions(options = {}) {
-    this._options = options;
-
-    this._tick();
-  }
-
-  getOptions() {
-    return this._options;
-  }
-
   /**
+   * Init default stdio data pipes.
+   */
+  _initDataPipes() {
+    PIPE_NAMES.forEach(pipeName => {
+      this[pipeName] = new ClientProcessPipe(this, pipeName);
+    });
+  }
+
+    /**
    * Determines whether the process is ready for consumption as a service.
    * 
    * @return {boolean}
@@ -170,6 +178,69 @@ export default class ClientProcess extends EventEmitter {
   }
 
   /**
+   * Evaluates the given command in the process' context.
+   * 
+   * @param {Function | String} cmd 
+   * @return {Promise<void>} Resolves after cmd stack frames have processed.
+   */
+  async _evalInProcessContext(cmd) {
+    try {
+      if (typeof cmd === 'function') {
+        const exec = () => {
+          cmd(this);
+        };
+
+        await exec.call(cmd);
+      } else {
+        throw new Error('String processing in process context is not currently available');
+
+        /*
+        cmd = cmd.toString();
+
+        evalInContext(`
+          let ___serializedCmd___ = ${cmd};
+    
+          console.debug('this', this);
+          
+          // const setImmediate = this.setImmediate;
+    
+          // Evaluate serialized command in ClientProcess instance
+          // context, as well as passing "this" as the parameter
+          await ___serializedCmd___.call(this, this);
+    
+          // Cleanup
+          // ___serializedCmd___ = null;
+        `, this);
+        */
+      }
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * Sets process options, merging new options into existing.
+   * 
+   * @param {Object} options 
+   */
+  setOptions(options = {}) {
+    // Set options on current tick
+    this._options = Object.assign({}, this._options, options);
+
+    // Advance to next tick, for any EVT_TICK listeners
+    this._tick();
+  }
+
+  /**
+   * Retrieves current process options.
+   * 
+   * @return {Object}
+   */
+  getOptions() {
+    return this._options;
+  }
+
+  /**
    * Retrieves the process identifier.
    */
   getPID() {
@@ -180,16 +251,11 @@ export default class ClientProcess extends EventEmitter {
     return this._parentPID;
   }
 
-  _initDataPipes() {
-    // TODO: Dynamically allocate
-    this.stdin = new ClientProcessPipe(this, PIPE_NAME_STDIN); // TODO: Use contant for pipe name
-    this.stdout = new ClientProcessPipe(this, PIPE_NAME_STDOUT); // TODO: Use contant for pipe name
-    this.stderr = new ClientProcessPipe(this, PIPE_NAME_STDERR); // TODO: Use contant for pipe name
-  }
-
   setTitle(title) {
+    // Set title on current tick
     this._title = title;
 
+    // Advance to next tick, for any EVT_TICK listeners
     this._tick();
   }
 
@@ -217,20 +283,31 @@ export default class ClientProcess extends EventEmitter {
   }
 
   /**
+   * Retrieves whether the process is a GUI process, with internal React bindings, etc.
+   * 
+   * Note, GUI processes are only available on the main thread.
+   * 
+   * @return {Boolean}
+   */
+  getIsGUIProcess() {
+    return this._isGUIProcess;
+  }
+
+  /**
    * Executes this._cmd.
    */
   async _launch() {
-    // Prevent possiblity of double-launch
-    if (this._isLaunched) {
-      // console.warn('Process has already launched');
-      return;
-    } else {
-      this._isLaunched = true;
-    }
-
-    console.debug(`Executing ${this.getClassName()}`, this);
-
     try {
+      // Prevent possiblity of double-launch
+      if (this._isLaunchStarted) {
+        // console.warn('Process has already launched');
+        return;
+      } else {
+        this._isLaunchStarted = true;
+      }
+
+      console.debug(`Executing ${this.getClassName()}`, this);
+      
       if (typeof this._cmd !== 'function') {
         console.warn(
           `"cmd" is not a function, ignoring passed launch command.  If writing
@@ -241,7 +318,8 @@ export default class ClientProcess extends EventEmitter {
       }
 
       // Run cmd in this process scope
-      await this._cmd(this);
+      await this._evalInProcessContext(this._cmd);
+
     } catch (exc) {
       // Automatically kill if crashed
       // TODO: Use killSignal constant for error
@@ -263,7 +341,7 @@ export default class ClientProcess extends EventEmitter {
    * 
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  setImmediate = async (callback = null/*, error = null*/) => {
+  setImmediate = (callback = null/*, error = null*/) => {
     callback = makeCallback(this, callback);
     // error = makeCallback(this, error);
 
@@ -278,7 +356,7 @@ export default class ClientProcess extends EventEmitter {
   /**
    * @see https://nodejs.org/de/docs/guides/event-loop-timers-and-nexttick/
    */
-  nextTick = async (callback = null/*, error = null*/) => {
+  nextTick = (callback = null/*, error = null*/) => {
     callback = makeCallback(this, callback);
     // error = makeCallback(this, error);
 
@@ -294,62 +372,65 @@ export default class ClientProcess extends EventEmitter {
    * Non-standard process API method(?)
    */
   setTimeout() {
-    console.debug('TODO: Implement proc.setTimeout()');
+    // TODO: CHECK IF PROCESS IS RUNNING BEFORE CONTINUING
+
+    throw new Error('TODO: Implement proc.setTimeout()');
   }
 
   /**
    * Non-standard process API method(?)
    */
   clearTimeout() {
-    console.debug('TODO: Implement proc.clearTimeout()');
+    throw new Error('TODO: Implement proc.clearTimeout()');
   }
 
   /**
    * Non-standard process API method(?)
    */
   setInterval() {
-    console.debug('TODO: Implement proc.setInterval()');
+    // TODO: CHECK IF PROCESS IS RUNNING BEFORE CONTINUING
+
+    throw new Error('TODO: Implement proc.setInterval()');
   }
 
   /**
    * Non-standard process API method(?)
    */
   clearInterval() {
-    console.debug('TODO: Implement proc.clearInterval()');
+    throw new Error('TODO: Implement proc.clearInterval()');
   }
 
   _tick() {
-    if (this._tickTimeout) {
-      clearTimeout(this._tickTimeout);
+    // Prevent tick if process is exited
+    if (this._isExited) {
+      console.warn('Process is exited. Ignoring tick() call.', this);
+      return;
     }
 
+    clearTimeout(this._tickTimeout);
+
+    // Runs after all existing stack frames complete
+    // setTimeout with 0 timeout value emulates tick functionality as
+    // it won't start until the current stack frames have run
     this._tickTimeout = setTimeout(async () => {
       try {
         for (let i = 0; i < this._nextTickCallStack.length; i++) {
           const { callback /*, error*/ } = this._nextTickCallStack[i];
 
-          try {
-            await callback();
-          } catch (exc) {
-            // error(exc);
-            throw (exc);
-          }
+          await callback();
         }
 
+        // Clear next tick callstack
         this._nextTickCallStack = [];
 
         // Execute all setImmediate()
         for (let i = 0; i < this._setImmediateCallStack.length; i++) {
           const { callback /*, error*/ } = this._setImmediateCallStack[i];
 
-          try {
-            await callback();
-          } catch (exc) {
-            // error(exc);
-            throw (exc);
-          }
+          await callback();
         }
 
+        // Clear set immediate callstack
         this._setImmediateCallStack = [];
 
         this.emit(EVT_TICK);
@@ -371,14 +452,26 @@ export default class ClientProcess extends EventEmitter {
     return this._startDate;
   }
 
+  /*
+  getUptime() {
+  }
+  */
+
   getClassName() {
-    return this.constructor.name;
+    const { name: className } = this.constructor;
+
+    return className;
   }
 
   /**
    * TODO: Add optional signal
    */
   async kill(killSignal = 0) {
+    // Prevent trying to kill an already exited process
+    if (this._isExited) {
+      return;
+    }
+
     console.debug(`Shutting down ${this.getClassName()}`, this);
 
     // Tell anyone that this operation is about to complete
@@ -411,6 +504,11 @@ export default class ClientProcess extends EventEmitter {
     console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
   }
 
+  /**
+   * Retrieves whether if the process is exited.
+   * 
+   * @return {Boolean}
+   */
   getIsExited() {
     return this._isExited;
   }

@@ -14,10 +14,12 @@ export const EVT_LINKED_STATE_UPDATE = 'update';
 export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 
 export default class LinkedState extends EventEmitter {
-  _isScopeOriginalInstance = false;
-
   constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState = {}) {
     super();
+
+    // Whether this is the original instance in the collective scope
+    // LinkedState's share the same "scope" across multiple instances
+    this._isScopeOriginalInstance = false;
 
     this._uuid = uuidv4();
 

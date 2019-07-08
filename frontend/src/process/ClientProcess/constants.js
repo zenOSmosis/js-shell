@@ -17,12 +17,12 @@ export const EVT_TICK = 'tick';
 export const EVT_BEFORE_EXIT = 'beforeExit';
 export const EVT_EXIT = 'exit';
 
-// Typically used for IPC w/ native Workers
+// Typically used for IPC w/ native Web Workers
 export const EVT_MESSAGE = 'message';
 
-export const THREAD_TYPE_SHARED = 'shared';
-export const THREAD_TYPE_DISTINCT = 'distinct';
+export const THREAD_TYPE_MAIN = 'main';
+export const THREAD_TYPE_WORKER = 'worker';
 export const THREAD_TYPES = [
-  THREAD_TYPE_SHARED,
-  THREAD_TYPE_DISTINCT
+  THREAD_TYPE_MAIN,
+  THREAD_TYPE_WORKER
 ];

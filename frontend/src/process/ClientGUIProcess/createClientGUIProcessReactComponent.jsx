@@ -37,7 +37,7 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
     componentDidMount() {
       this._isMounted = true;
 
-      console.warn('TODO: Handle process notification of mount', this._proc);
+      console.warn('TODO: Handle process notification of mount', proc);
 
       if (typeof onMount === 'function') {
         onMount(this);
@@ -47,7 +47,7 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
     componentWillUnmount() {
       this._isMounted = false;
 
-      console.warn('TODO: Handle process notification of unmount', this._proc);
+      console.warn('TODO: Handle process notification of unmount', proc);
 
       if (typeof onUnmount === 'function') {
         onUnmount(this);
