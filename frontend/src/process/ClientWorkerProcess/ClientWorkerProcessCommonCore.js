@@ -5,12 +5,8 @@ import ClientProcess, {
   PIPE_NAMES
 } from '../ClientProcess';
 import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
-
 import createClientWorkerInitProcess from './ClientWorkerInitProcess/createClientWorkerInitProcess';
-
-/// Specific pipes solely for workers
-export const WORKER_CTRL_IN_PIPE_NAME = 'stdWorkerCtrlIn';
-export const WORKER_CTRL_OUT_PIPE_NAME = 'stdWorkerCtrlIn';
+import serialize, { deserialize } from 'utils/serialize';
 
 /**
  * Common class which ClientWorkerProcess and ClientWorkerProcessController
@@ -26,11 +22,6 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     // Initialized in _init, this sub-process authenticates the native Web Worker
     // with the ClientWorkerProcessController controller
     this._clientWorkerInitProcess = null;
-
-    // Specific pipes solely for workers
-    // TODO: Add ability to dynamically add and remove pipes
-    this._workerCtrlInPipe = null;
-    this._workerCtrlOutPipe = null;
 
     // Run through next tick...
     this.setImmediate(() => {
@@ -48,6 +39,8 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
    */
   async _init() {
     try {
+      this._initOptionsReceiver();
+
       /**
        * Await for init process to initially sync the Web Worker to the controller.
        * Important! createClientWorkerInitProcess must be run in _init()
@@ -63,6 +56,18 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     }
   }
 
+  _initOptionsReceiver() {
+    this.stdctrl.on('data', (data) => {
+      const { ctrlName } = data;
+      
+      if (ctrlName === 'setOptions') {
+        const {ctrlData: options } = data;
+
+        this.setOptions(deserialize(options), false);
+      }
+    });
+  }
+
   /**
    * @return {Boolean} If true: Web Worker. If false: controller (main thread)
    */
@@ -72,6 +77,19 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     } else {
       return this._isNativeWorker;
     }
+  }
+
+  setOptions(options = {}, useCtrl = true) {
+    if (useCtrl) {
+      this.stdctrl.write({
+        ctrlName: 'setOptions',
+        ctrlData: serialize(options)
+      });
+    }
+
+    super.setOptions(options);
+
+    console.debug(`set ${this._isNativeWorker ? 'Web Worker' : 'controller'} options`, this.getOptions());
   }
 
   /**
@@ -125,10 +143,6 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     PIPE_NAMES.forEach(pipeName => {
       this[pipeName] = new ClientWorkerDispatchPipe(this, pipeName);
     });
-
-    // Specific pipes solely for workers
-    this[WORKER_CTRL_IN_PIPE_NAME] = new ClientWorkerDispatchPipe(this, WORKER_CTRL_IN_PIPE_NAME);
-    this[WORKER_CTRL_OUT_PIPE_NAME] = new ClientWorkerDispatchPipe(this, WORKER_CTRL_OUT_PIPE_NAME);
   }
 
   /**
@@ -137,7 +151,7 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
    * 
    * @param {any} message
    */
-  _routeMessage(message) {
+  _routeMessage = (message) => {
     const { data } = message;
       
     // Route to stdio

@@ -22,7 +22,10 @@ export default class ClientAudioWorkerProcessController extends ClientWorkerProc
     // Default options
     const defOptions = {
       // The non-instantiated class of the Worker implementation
-      DispatchWorker: ClientAudioWorkerProcess
+      DispatchWorker: ClientAudioWorkerProcess,
+
+      outputSampleRate: 16000,
+      // inputSampleRate: 48000 // Should be overridden by passed options
     };
 
     options = Object.assign({}, defOptions, options);

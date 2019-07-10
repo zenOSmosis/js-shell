@@ -53,6 +53,8 @@ export default class ClientProcess extends EventEmitter {
     // Set to true after process has initialized
     this._isReady = false;
 
+    this._isShuttingDown = false;
+
     // Set to true after process has exited
     // Note, the process should no longer be interacted w/ and all references
     // should be discarded before, or at once, this value sets
@@ -165,14 +167,18 @@ export default class ClientProcess extends EventEmitter {
    */
   onceReady() {
     return new Promise((resolve, reject) => {
-      if (this.getIsReady()) {
-        // Resolve immediately
-        return resolve();
-      } else {
-        // Await ready
-        this.once(EVT_READY, () => {
+      try {
+        if (this.getIsReady()) {
+          // Resolve immediately
           return resolve();
-        });
+        } else {
+          // Await ready
+          this.once(EVT_READY, () => {
+            return resolve();
+          });
+        }
+      } catch (exc) {
+        reject(exc);
       }
     });
   }
@@ -183,7 +189,7 @@ export default class ClientProcess extends EventEmitter {
    * @param {Function | String} cmd 
    * @return {Promise<void>} Resolves after cmd stack frames have processed.
    */
-  async _evalInProcessContext(cmd) {
+  async evalInProcessContext(cmd) {
     try {
       if (typeof cmd === 'function') {
         const exec = () => {
@@ -192,9 +198,8 @@ export default class ClientProcess extends EventEmitter {
 
         await exec.call(cmd);
       } else {
-        throw new Error('String processing in process context is not currently available');
+        // throw new Error('String processing in process context is not currently available');
 
-        /*
         cmd = cmd.toString();
 
         evalInContext(`
@@ -211,7 +216,6 @@ export default class ClientProcess extends EventEmitter {
           // Cleanup
           // ___serializedCmd___ = null;
         `, this);
-        */
       }
     } catch (exc) {
       throw exc;
@@ -318,7 +322,7 @@ export default class ClientProcess extends EventEmitter {
       }
 
       // Run cmd in this process scope
-      await this._evalInProcessContext(this._cmd);
+      await this.evalInProcessContext(this._cmd);
 
     } catch (exc) {
       // Automatically kill if crashed
@@ -344,6 +348,21 @@ export default class ClientProcess extends EventEmitter {
   setImmediate = (callback = null/*, error = null*/) => {
     callback = makeCallback(this, callback);
     // error = makeCallback(this, error);
+
+    // Usage of setImmediate during process init cycle causes weird issues
+    // related to calling nested setImmediate calls multiple times.  This
+    // indicates a potential bug in the setImmediate handling.
+    // TODO: Refactor this portion of code.
+    if (!this._isReady) {
+      // Skip setImmediateCallStack addition, and run a new timeout
+      setTimeout(callback, 0);
+
+      // Proceed to next tick, w/o new stack frames added
+      this._tick();
+
+      // Ensure we stop here
+      return;
+    }
 
     this._setImmediateCallStack.push({
       callback,
@@ -402,7 +421,7 @@ export default class ClientProcess extends EventEmitter {
 
   _tick() {
     // Prevent tick if process is exited
-    if (this._isExited) {
+    if (this._isShuttingDown || this._isExited) {
       console.warn('Process is exited. Ignoring tick() call.', this);
       return;
     }
@@ -413,6 +432,11 @@ export default class ClientProcess extends EventEmitter {
     // setTimeout with 0 timeout value emulates tick functionality as
     // it won't start until the current stack frames have run
     this._tickTimeout = setTimeout(async () => {
+      // Prevent tick if process is stopped
+      if (this._isShuttingDown || this._isExited) {
+        return;
+      }
+
       try {
         for (let i = 0; i < this._nextTickCallStack.length; i++) {
           const { callback /*, error*/ } = this._nextTickCallStack[i];
@@ -468,9 +492,12 @@ export default class ClientProcess extends EventEmitter {
    */
   async kill(killSignal = 0) {
     // Prevent trying to kill an already exited process
-    if (this._isExited) {
+    if (this._isShuttingDown || this._isExited) {
+      console.warn('Process already exited, or is shutting down');
       return;
     }
+
+    this._isShuttingDown = true;
 
     console.debug(`Shutting down ${this.getClassName()}`, this);
 

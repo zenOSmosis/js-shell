@@ -50,14 +50,14 @@ const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
   audioWorker.stdin.on('data', (float32Array) => {
     sttSend(float32Array);
   });
+}, {
+  // inputSampleRate: 48000 // Should be overridden by passed options
 });
 
 const mic = new MicrophoneProcess(process,
   async (mic) => {
     try {
       await audioWorker.onceReady();
-
-      // TODO: Send audio worker configuration parameters for mic
 
       const micOutputAudioFormat = await mic.fetchOutputAudioFormat();
       console.debug('mic output audio format', micOutputAudioFormat);

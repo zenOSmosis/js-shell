@@ -34,8 +34,6 @@ export default class ClientAudioProcess extends ClientProcess {
     };
 
     options = Object.assign({}, defOptions, options);
-
-    options = Object.assign({}, defOptions, options);
     
     super(parentProcess, cmd, options);
 

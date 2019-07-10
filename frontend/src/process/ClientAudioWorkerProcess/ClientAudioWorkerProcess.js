@@ -47,10 +47,17 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
   /**
    * 
    * @param {Float32Array} float32Array A mono (1 channel) RAW audio container
-   * @param {Number} inputSampleRate // TODO: Remove 
-   * @param {Number} outputSampleRate // TODO: Remove
    */
-  downsampleL16(float32Array, inputSampleRate = 48000, outputSampleRate = 16000) {
+  downsampleL16(float32Array) {
+    const { inputSampleRate, outputSampleRate } = this._options;
+
+    if (!inputSampleRate || !outputSampleRate) {
+      console.warn('Input and output sample rates must be defined in options', this._options);
+
+      // Gracefully handle
+      return new Float32Array(0);
+    }
+
     // TODO: Convert all let to const / let; etc.
 
     let buffer = null;

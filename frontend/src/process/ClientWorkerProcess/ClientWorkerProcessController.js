@@ -6,12 +6,8 @@
 // TODO: Implement EVT_READY
 // TODO: Implement terminate detection
 
-import ClientWorkerProcessCommonCore, {
-  WORKER_CTRL_IN_PIPE_NAME,
-  WORKER_CTRL_OUT_PIPE_NAME
-} from './ClientWorkerProcessCommonCore';
+import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 import ClientWorkerProcess from './dispatch.worker';
-// import serialize from 'serialize-javascript';
 
 export default class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
   /**
@@ -21,7 +17,7 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
    * @param {Function} cmd 
    * @param {Object} options [optional]
    */
-  constructor(parentProcess, cmd, options = {}) {
+  constructor(parentProcess, cmd = null, options = {}) {
     const defOptions = {
       // The native Web Worker implementation
       // worker-loader callable *.worker.js extension
@@ -40,6 +36,10 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
       options
     );
 
+    // Important! Non-initialized workerCmd should be -1.  If no worker command
+    // is given, it will be later set to null.
+    this._workerCmd = -1;
+
     // Represents the native Web Worker
     this._nativeWorker = null;
     this._isNativeWorkerInit = false;
@@ -51,8 +51,9 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     // initialized
     this._serviceURI = '[Initializing...]';
 
-    // Important! It is IMPERATIVE to use setImmediate here, or the command
-    // will not be utilize class extensions, and only be available to the super
+    // Important! It is IMPERATIVE to use setImmediate (or timeout w/ 0 time
+    // value) here, or the command will not be utilize class extensions, and
+    // only be available to the super
     // ClientWorkerProcess
     this.setImmediate(() => {
       this._workerCmd = cmd;
@@ -79,7 +80,7 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
         try {
           const serializedCmd = (this._workerCmd ? this._workerCmd.toString() : null);
 
-          this[WORKER_CTRL_IN_PIPE_NAME].write({
+          this.stdctrl.write({
             // TODO: Use constant for ctrlMessage
             ctrlMessage: 'hostReady',
             data: {
@@ -101,6 +102,14 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     } catch (exc) {
       throw exc;
     }
+  }
+
+  getWorkerCmd() {
+    if (this._workerCmd === -1) {
+      throw new Error('workerCmd has not initialized');
+    }
+    
+    return this._workerCmd;
   }
 
   /**
@@ -126,39 +135,6 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
         this._nativeWorker.onmessage = (message) => {
           this._routeMessage(message);
         };
-
-        /*
-        // Await for control data from native Web Worker
-        await (async () => {
-          try {
-            return new Promise((ctrlResolve, ctrlReject) => {
-              try {
-                const handleInitialCtrl = (data) => {
-                  const { serviceURI } = data;
-                  this._serviceURI = serviceURI;
-                  console.debug('received worker ctrl_out_pipe_data', data);
-    
-                  // Stop listening to initial ctrl data
-                  this[WORKER_CTRL_OUT_PIPE_NAME].off('data', handleInitialCtrl);
-
-                  ctrlResolve();
-                };
-    
-                // Start listenting for initial ctrl data
-                this[WORKER_CTRL_OUT_PIPE_NAME].on('data', handleInitialCtrl);
-              } catch (exc) {
-                ctrlReject(exc);
-              }
-            });
-          } catch (exc) {
-            throw exc;
-          }
-        })();
-        */
-
-        this[WORKER_CTRL_OUT_PIPE_NAME].on('data', (data) => {
-          console.debug('Received post init ctrl data', data);
-        });
 
         this._isNativeWorkerInit = true;
 

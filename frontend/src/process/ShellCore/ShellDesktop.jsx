@@ -6,14 +6,14 @@ import * as serviceWorker from 'utils/reactServiceWorker';
 import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 
-// DOM element ID to draw the ShellDesktop in
-const DOM_ROOT_ID = 'root';
+import config from 'config';
+
+const { DOM_ROOT_ID } = config;
 
 // This should be treated as a singleton
 export default class ShellDesktop extends ClientGUIProcess {
-  _init() {
-    this.setImmediate(() => {
-      // TODO: Make dynamic root address(?)
+  async _init() {
+    try {
       const rootEl = document.getElementById(DOM_ROOT_ID);
 
       const ReactComponent = this.getReactComponent();
@@ -30,8 +30,8 @@ export default class ShellDesktop extends ClientGUIProcess {
       serviceWorker.register();
 
       registerCommonDesktopEventsHandler();
-
-      super._init();
-    });
+    } catch (exc) {
+      throw exc;
+    }
   }
 }

@@ -16,7 +16,7 @@ import {
   PIPE_NAME_STDIN,
   PIPE_NAME_STDOUT,
   PIPE_NAME_STDERR,
-  PIPE_NAME_CTRL,
+  PIPE_NAME_STDCTRL,
   PIPE_NAMES
 } from './constants';
 import ClientProcess from './ClientProcess';
@@ -42,6 +42,6 @@ export {
   PIPE_NAME_STDIN,
   PIPE_NAME_STDOUT,
   PIPE_NAME_STDERR,
-  PIPE_NAME_CTRL,
+  PIPE_NAME_STDCTRL,
   PIPE_NAMES
 };

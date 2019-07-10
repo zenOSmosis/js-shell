@@ -5,11 +5,7 @@
 import {
   EVT_BEFORE_EXIT,
 } from '../ClientProcess';
-import ClientWorkerProcessCommonCore, {
-  // WORKER_CTRL_IN_PIPE_NAME,
-  WORKER_CTRL_OUT_PIPE_NAME,
-  NATIVE_WORKER_ONLINE_MESSAGE
-} from './ClientWorkerProcessCommonCore';
+import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 
 const nativeWorker = self;
 
@@ -21,10 +17,17 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     // initialization phase it will hand off the updated pid to this process.
     super(false);
 
-    this._handleReceivedMessage = this._handleReceivedMessage.bind(this);
-
     // This is a native Web Worker, running in its own thread
-    this._isNativeWorker = true; 
+    this._isNativeWorker = true;
+
+    this._serviceURI = (() => {
+      if (nativeWorker.location) {
+        return nativeWorker.location.href;
+      } else {
+        console.warn('Unable to obtain Web Worker location');
+        return 'N/A';
+      }
+    })();
     
     // Sets to true once the main thread host controller has init
     this._isNativeWorkerHostInit = false;
@@ -35,18 +38,8 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
   async _init() {
     try {
       this._initMessageReceiver();
-      // Tell host that we're 
 
       await super._init();
-
-      // TODO: Remove
-      console.debug(nativeWorker);
-
-      // Emit that native Web Worker is online
-      this[WORKER_CTRL_OUT_PIPE_NAME].write({
-        onlineMessage: NATIVE_WORKER_ONLINE_MESSAGE,
-        serviceURI: nativeWorker.location.href
-      });
     } catch (exc) {
       throw exc;
     }
@@ -64,56 +57,15 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     // Native Worker addEventListener listens for postMessage() calls sent from
     // the host process
     // TODO: Use constant for 'message'
-    nativeWorker.addEventListener('message',  this._handleReceivedMessage);
+    nativeWorker.addEventListener('message',  this._routeMessage);
 
     // Cleanup on exit
     this.once(EVT_BEFORE_EXIT, () => {
       // TODO: Use constant for 'message'
-      nativeWorker.removeEventListener('message', this._handleReceivedMessage);
+      nativeWorker.removeEventListener('message', this._routeMessage);
     });
 
     this._messageReceiverIsInit = true;
-  }
-
-  _handleReceivedMessage(message) {
-    console.debug('received message', message);
-
-    // If process is not init, send messsage to pre-init
-
-    // else, route message to stdio
-    // this._routeMessage(message);
-
-    // Current implementation below
-
-    // TODO: Detect if not init
-    /*
-    if (!this._isNativeWorkerHostInit) {
-      // Control message
-      // this.setImmediate(() => {
-      // TODO: Replace w/ setImmediate()
-      // this.setImmediate(() => {
-        const { data } = message;
-
-        console.debug('received data', data);
-
-        const { host, serializedCmd } = data;
-
-        const { pid, options } = host;
-
-        this._pid = pid;
-        // this._options = options;
-
-        console.debug('Executing native Web Worker command');
-
-        // Run command in process context
-        this._evalInProcessContext(serializedCmd);
-      // });
-
-    } else {
-      // Route to stdio
-      this._routeMessage(message);
-    }
-    */
   }
 
   /**
@@ -137,10 +89,10 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
 
   kill(killSignal = 0) {
     // Emit to host
-    this[WORKER_CTRL_OUT_PIPE_NAME].write({
+    this.stdctrl.write({
       // TODO: Use constant for ctrl message
       ctrlMessage: 'kill',
-      data: {
+      ctrlData: {
         killSignal
       }
     });

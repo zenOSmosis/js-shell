@@ -1,12 +1,15 @@
+// Important! These pipe names also represent ClientProcess class properties.
+// If changing a value here, the relevant class property name should be changed
+// as well.
 export const PIPE_NAME_STDIN = 'stdin';
 export const PIPE_NAME_STDOUT = 'stdout';
 export const PIPE_NAME_STDERR = 'stderr';
-export const PIPE_NAME_CTRL = 'io-ctrl';
+export const PIPE_NAME_STDCTRL = 'stdctrl';
 export const PIPE_NAMES = [
   PIPE_NAME_STDIN,
   PIPE_NAME_STDOUT,
   PIPE_NAME_STDERR,
-  PIPE_NAME_CTRL
+  PIPE_NAME_STDCTRL
 ];
 
 export const EVT_PIPE_DATA = 'data';

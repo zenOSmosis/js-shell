@@ -10,6 +10,8 @@ import parseURL from './utils/parseURL';
 const parsedWinURL = parseURL(window.href);
 
 let config = {
+  DOM_ROOT_ID: 'root',
+
   // HOST_PORT: 443
 };
 

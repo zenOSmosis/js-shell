@@ -1,9 +1,12 @@
 // Initializes the ShellCore services
 import Core from './Core';
 import ShellDesktop from './ShellDesktop';
+import config from 'config';
 /*
 import CoreNetworkController from 'process/ShellCore/CoreNetworkController';
 */
+
+const { DOM_ROOT_ID } = config;
 
 let hasStarted = false;
 
@@ -17,6 +20,10 @@ const startup = () => {
     console.warn('Client system has already started');
     return;
   } else {
+    // Display "Launching" notice
+    const rootEl = document.getElementById(DOM_ROOT_ID);
+    rootEl.innerHTML = 'Launching...';
+
     const core = new Core();
 
     // Mount the Shell Desktop

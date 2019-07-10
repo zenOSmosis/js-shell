@@ -1,4 +1,8 @@
-// TODO: Create commonDesktopLinkedState here, not there
+/**
+ * A collection of LinkedState instances which are intended to be shared
+ * between various core services.
+ */
+
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from './DesktopLinkedState';
 import AppLinkedState from './AppLinkedState';
 import SocketLinkedState from './SocketLinkedState';
