@@ -8,6 +8,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "animate.css": "^3.7.0",
     "antd": "^3.18.1",
+    "babel-standalone": "^6.26.0",
     "bootstrap": "^4.3.1",
     "browserslist": "^4.6.3",
     "caniuse-lite": "^1.0.30000974",

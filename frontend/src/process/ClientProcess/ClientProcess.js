@@ -197,7 +197,7 @@ export default class ClientProcess extends EventEmitter {
         };
 
         await exec.call(cmd);
-      } else {
+      } else if (typeof cmd === 'string') {
         // throw new Error('String processing in process context is not currently available');
 
         cmd = cmd.toString();
@@ -216,6 +216,8 @@ export default class ClientProcess extends EventEmitter {
           // Cleanup
           // ___serializedCmd___ = null;
         `, this);
+      } else {
+        console.warn('Unhandled cmd type:', (typeof cmd));
       }
     } catch (exc) {
       throw exc;
@@ -310,7 +312,7 @@ export default class ClientProcess extends EventEmitter {
         this._isLaunchStarted = true;
       }
 
-      console.debug(`Executing ${this.getClassName()}`, this);
+      // console.debug(`Executing ${this.getClassName()}`, this);
       
       if (typeof this._cmd !== 'function') {
         console.warn(
@@ -499,7 +501,7 @@ export default class ClientProcess extends EventEmitter {
 
     this._isShuttingDown = true;
 
-    console.debug(`Shutting down ${this.getClassName()}`, this);
+    // console.debug(`Shutting down ${this.getClassName()}`, this);
 
     // Tell anyone that this operation is about to complete
     this.emit(EVT_BEFORE_EXIT);
@@ -528,7 +530,7 @@ export default class ClientProcess extends EventEmitter {
     // Let anyone know that this operation has completed
     this.emit(EVT_EXIT);
 
-    console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
+    // console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
   }
 
   /**

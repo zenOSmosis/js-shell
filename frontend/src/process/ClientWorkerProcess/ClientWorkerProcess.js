@@ -10,12 +10,12 @@ import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 const nativeWorker = self;
 
 export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
-  constructor() {
+  constructor(...args) {
     // As this process is running natively in its own thread on the host OS,
     // it's not extending a previous ClientProcess on its own.
     // The ClientWorkerProcessController extends previous processes, and during the
     // initialization phase it will hand off the updated pid to this process.
-    super(false);
+    super(...args);
 
     // This is a native Web Worker, running in its own thread
     this._isNativeWorker = true;

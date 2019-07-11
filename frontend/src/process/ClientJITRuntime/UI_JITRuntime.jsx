@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import ClientJITRuntime, { THIS_REP, BABEL_REACT_PRESETS } from './ClientJITRuntime';
+import ClientJITRuntime, { THIS_REP } from './ClientJITRuntime';
 
 // [main threaded] JITRuntime included shared objects
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import getPrototypeChain from 'utils/getPrototypeChain';
 
+import BabelCompilerWorkerProcess from 'process/BabelCompilerWorkerProcess';
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
-import MediaStreamRecorder from 'msr';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
@@ -24,12 +24,12 @@ export default class UI_JITRuntime extends ClientJITRuntime {
     const predefinedContext = {
       process: THIS_REP,
       
+      BabelCompilerWorkerProcess,
       ClientProcess,
       ClientGUIProcess,
       ClientWorkerProcess,
       MicrophoneProcess,
       ClientAudioWorkerProcess,
-      MediaStreamRecorder,
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,
@@ -51,8 +51,7 @@ export default class UI_JITRuntime extends ClientJITRuntime {
     context = Object.assign({}, predefinedContext, context);
 
     super(parentProcess, code, {
-      context,
-      babelPresets: BABEL_REACT_PRESETS
+      context
     });
   }
 

@@ -20,6 +20,7 @@ export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
  * TODO: Revise this documentation as needed.
  * 
  * TODO: Extend ClientGUIProcess
+ * TODO: Rename to AppProcess
  */
 export default class App extends EventEmitter {
   _defaultTitle = null;

@@ -1,4 +1,5 @@
 import ClientProcess from '../ClientProcess';
+import BabelCompilerWorkerProcess from '../BabelCompilerWorkerProcess';
 
 import evalInContext from 'utils/evalInContext';
 
@@ -7,18 +8,12 @@ import evalInContext from 'utils/evalInContext';
 // e.g. { process: THIS_REP } would be replaced with { process: this }
 export const THIS_REP = '%___THIS___%';
 
-export const BABEL_REACT_PRESETS = [
-  'react',
-  'es2015',
-  // 'transform-require-context'
-];
-
 /**
  * Process-driven JS code runtime.
  */
 export default class ClientJITRuntime extends ClientProcess {
   constructor(parentProcess = false, code = null, options = {}) {
-    const { context, babelPresets } = options;
+    const { context } = options;
 
     // Default parentProcess to being non-forked (subject to change)
     if (parentProcess === false) {
@@ -32,7 +27,6 @@ export default class ClientJITRuntime extends ClientProcess {
     super(parentProcess);
 
     this._context = {};
-    this._babelPresets = babelPresets;
 
     this.setContext(context);
 
@@ -47,7 +41,7 @@ export default class ClientJITRuntime extends ClientProcess {
   /**
    * Sets the context (scope) of the code.
    * 
-   * @param {object} context 
+   * @param {Object} context 
    */
   setContext(context) {
     if (Object.keys(this._context).length) {
@@ -68,42 +62,36 @@ export default class ClientJITRuntime extends ClientProcess {
   }
 
   /**
-   * @param {string} code
-   * @return {string} Transformed output 
+   * @param {String} code
+   * @return {Promise<String>} Transformed output 
    */
-  compile(code) {
-    // Pre-process
-    // Weird hack to retain "this" keyword passing through compiler, or else all
-    // "this" references are compiled as "undefined"
-    // TODO: This needs extensive testing and is probably a very terrible hack
-    code = `
-      const ___this___ = {};
-      ${code}
-    `.split('this').join('___this___');
+  async compile(code, babelCompilerWorker) {
+    try {
+      code = code.toString();
 
-    // TODO: Finish proto/compiler.js
-    // TODO: Remove Babel include in index.html
-    console.warn('TODO: Move code compilation to separate thread. Remove Babel compiler script inclusion from index.html');
+      babelCompilerWorker.stdctrl.write({
+        ctrlName: 'compile',
+        ctrlData: code
+      });
 
-    if (typeof window.Babel === 'undefined') {
-      throw new Error('Babel is not loaded.  Check internet connection...');
+      return await new Promise((resolve, reject) => {
+        try {
+          babelCompilerWorker.stdctrl.on('data', (data) => {
+            const { ctrlName } = data;
+
+            if (ctrlName === 'compiledCode') {
+              const { ctrlData: compiledCode } = data;
+
+              resolve(compiledCode);
+            }
+          });
+        } catch (exc) {
+          reject(exc);
+        }
+      });
+    } catch (exc) {
+      throw exc;
     }
-
-    let compiledCode = window
-      .Babel
-      .transform(code, {
-        // TODO: Make presets adjustable
-        presets: this._babelPresets
-      }).code;
-
-    // Post-process
-    compiledCode = compiledCode.split('___this___').join('this');
-    // Remove compiled version of this (if targeting es2015)
-    compiledCode = compiledCode.split('var ___this___ = {};').join('');
-
-    console.debug('compiled code:\n--------------\n', compiledCode);
-
-    return compiledCode;
   }
 
   /**
@@ -111,11 +99,23 @@ export default class ClientJITRuntime extends ClientProcess {
    * 
    * @param {string} code 
    */
-  exec(code) {
-    const compiledCode = this.compile(code);
+  async exec(code) {
+    try {
+      const babelCompilerWorker = new BabelCompilerWorkerProcess(this);
+      
+      // Wait for compiler, etc. to be ready before continuing
+      await babelCompilerWorker.onceReady();
 
-    // Evaluate JavaScript in the given context
-    this._evalInProtectedContext(compiledCode);
+      const compiledCode = await this.compile(code, babelCompilerWorker);
+
+      // We're done w/ the compiler
+      babelCompilerWorker.kill();
+
+      // Evaluate JavaScript in the given context
+      this._evalInProtectedContext(compiledCode);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   // TODO: Evaluate differences in evalInContext and evalInProtetedContext 
@@ -123,17 +123,19 @@ export default class ClientJITRuntime extends ClientProcess {
   /**
    * Wraps code in an enclosure w/ modified access to the outer scope.
    * 
-   * @param {string} code
+   * @param {String} code
    */
   _evalInProtectedContext(code) {
     const context = this._context;
 
     // Wrap the code
+    /*
     code = `
       (() => {
         ${code}
       })();
     `;
+    */
 
     // Perform the eval
     evalInContext(code, context);
