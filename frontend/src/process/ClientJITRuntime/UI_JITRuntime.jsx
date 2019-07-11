@@ -3,6 +3,8 @@ import ClientJITRuntime, { THIS_REP, BABEL_REACT_PRESETS } from './ClientJITRunt
 
 // [main threaded] JITRuntime included shared objects
 import getLogicalProcessors from 'utils/getLogicalProcessors';
+import getPrototypeChain from 'utils/getPrototypeChain';
+
 import ClientProcess from 'process/ClientProcess';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
@@ -21,7 +23,7 @@ export default class UI_JITRuntime extends ClientJITRuntime {
 
     const predefinedContext = {
       process: THIS_REP,
-      getLogicalProcessors,
+      
       ClientProcess,
       ClientGUIProcess,
       ClientWorkerProcess,
@@ -38,6 +40,11 @@ export default class UI_JITRuntime extends ClientJITRuntime {
         Window,
         Center,
         IFrame
+      },
+
+      utils: {
+        getLogicalProcessors,
+        getPrototypeChain
       }
     };
 
