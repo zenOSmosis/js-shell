@@ -6,6 +6,8 @@ const STAGE_2_WORKER_READY = '[WORKER PROCESS READY]';
 
 /**
  * Provides initial sync of Web Worker and controller.
+ * 
+ * Note: This runs in both the Web Worker and the controller process.
  */
 export default class ClientWorkerAuthInitProcess extends ClientProcess {
   /**
@@ -19,11 +21,11 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
 
   async _init() {
     try {
-      let stages = [];
+      let initStages = [];
 
       // "Hello" prototype stage
       /*
-      stages.push(
+      initStages.push(
         async () => {
           try {
             await this._clientWorker.setDualCommand({
@@ -51,7 +53,7 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
       */
 
       // Handle initial "Hello" from Web Worker
-      stages.push(
+      initStages.push(
         async () => {
           try {
             await this._clientWorker.setDualCommand({
@@ -109,7 +111,7 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
       );
 
       // Send original sync data from controller
-      stages.push(
+      initStages.push(
         async () => {
           try {
             await this._clientWorker.setDualCommand({
@@ -192,7 +194,7 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
       );
 
       // Handle online notification from Web Worker
-      stages.push(
+      initStages.push(
         async () => {
           try {
             await this._clientWorker.setDualCommand({
@@ -227,11 +229,11 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
         }
       );
 
-      const lenStages = stages.length;
+      const lenStages = initStages.length;
       for (let i = 0; i < lenStages; i++) {
-        console.debug(`starting stage ${i}`);
-        await stages[i]();
-        console.debug(`completed stage ${i}`)
+        // console.debug(`starting stage ${i}`);
+        await initStages[i]();
+        //console.debug(`completed stage ${i}`)
       }
 
       // Initialize the super
