@@ -88,7 +88,10 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
   }
 
   kill(killSignal = 0) {
+    console.warn('TODO: Implement Web Worker terminate handling');
+
     // Emit to host
+    /*
     this.stdctrl.write({
       // TODO: Use constant for ctrl message
       ctrlMessage: 'kill',
@@ -96,6 +99,7 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
         killSignal
       }
     });
+    */
 
     // TODO: Verify this works
     // nativeWorker.terminate();
