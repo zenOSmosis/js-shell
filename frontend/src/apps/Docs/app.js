@@ -1,9 +1,9 @@
 import React from 'react';
-import createApp from 'utils/desktop/createApp';
+import registerApp from 'utils/desktop/registerApp';
 import DocsWindow from './DocsWindow';
 import config from 'config';
 
-export default createApp({
+export default registerApp({
   title: 'Docs',
   mainWindow: <DocsWindow />,
   iconSrc: `${config.HOST_ICON_URI_PREFIX}documentation/documentation.svg`

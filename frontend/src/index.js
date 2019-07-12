@@ -1,3 +1,3 @@
-import startup from 'process/ShellCore/startup';
+import startup from 'core/startup';
 
 startup();

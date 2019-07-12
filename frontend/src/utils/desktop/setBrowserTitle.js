@@ -1,16 +1,29 @@
-const defaultTitle = document.title;
+let defaultTitle = document.title;
+
+/**
+ * Overrides the defaultTitle with a new default.
+ * 
+ * @param {String} title 
+ */
+const setDefaultTitle = (title) => {
+  defaultTitle = title;
+};
 
 /**
  * Sets the browser's title.
  * 
- * @param {string} title 
+ * @param {String} title 
  */
-const setBrowserTitle = (title) => {
-  document.title = `${title} | ${defaultTitle}`;
+const setBrowserTitle = (title = null) => {
+  if (title) {
+    document.title = `${title} | ${defaultTitle}`;
+  } else {
+    document.title = defaultTitle;
+  }
 };
 
 /**
- * Resets browser title back to default.
+ * Resets browser title back to the default.
  */
 const resetBrowserTitle = () => {
   this.setBrowserTitle(defaultTitle);
@@ -18,5 +31,6 @@ const resetBrowserTitle = () => {
 
 export default setBrowserTitle;
 export {
+  setDefaultTitle,
   resetBrowserTitle
 };

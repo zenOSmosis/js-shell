@@ -1,9 +1,9 @@
 import React from 'react';
-import createApp from 'utils/desktop/createApp';
+import registerApp from 'utils/desktop/registerApp';
 import ScreenRecorderWindow from './ScreenRecorderWindow';
 import config from 'config';
 
-export default createApp({
+export default registerApp({
   title: 'Screen Recorder',
   mainWindow: <ScreenRecorderWindow />,
   iconSrc: `${config.HOST_ICON_URI_PREFIX}record/record.svg`

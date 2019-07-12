@@ -5,7 +5,7 @@ import ProcessLinkedState from 'state/ProcessLinkedState';
 // import ClientGUIProcess from 'process/ClientGUIProcess';
 import hocConnect from 'state/hocConnect';
 import Cover from 'components/Cover';
-import ShellDesktop from 'process/ShellCore/ShellDesktop';
+import ShellDesktop from 'core/ShellDesktop';
 
 // import Window from 'components/Desktop/Window';
 

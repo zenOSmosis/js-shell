@@ -2,7 +2,7 @@
 
 // import React from 'react';
 // import ReactDOM from 'react-dom';
-import startup from 'process/ShellCore/startup';
+import startup from 'core/startup';
 
 it('renders without crashing', () => {
   /*

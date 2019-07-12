@@ -3,7 +3,7 @@ import Core from './Core';
 import ShellDesktop from './ShellDesktop';
 import config from 'config';
 /*
-import CoreNetworkController from 'process/ShellCore/CoreNetworkController';
+import CoreNetworkController from 'core/CoreNetworkController';
 */
 
 const { DOM_ROOT_ID } = config;

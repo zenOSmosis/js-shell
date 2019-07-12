@@ -1,6 +1,6 @@
 import config from '../config';
 // import Window from 'components/Desktop/Window';
-// import App from '../utils/desktop/createApp';
+// import App from '../utils/desktop/registerApp';
 import hocConnect from './hocConnect';
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
 import uuidv4 from 'uuid/v4';

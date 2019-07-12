@@ -24,7 +24,7 @@ export default class AppLinkedState extends LinkedState {
   addApp(app) {
     // TODO: Prevent duplicate apps
 
-    // TODO: This breaks when using createApp.  Debug why.
+    // TODO: This breaks when using registerApp.  Debug why.
     /*
     if (!(app instanceof App)) {
       throw new Error('app must be instance of App');

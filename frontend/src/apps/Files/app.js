@@ -1,9 +1,9 @@
 import React from 'react';
-import createApp from 'utils/desktop/createApp';
+import registerApp from 'utils/desktop/registerApp';
 import FilesWindow from './FilesWindow';
 import config from 'config';
 
-export default createApp({
+export default registerApp({
   allowMultipleWindows: true,
   title: 'Files',
   mainWindow: <FilesWindow />,
