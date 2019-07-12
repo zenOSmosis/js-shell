@@ -164,19 +164,33 @@
   </svg>
 
   <script>
-    (function() {
+    (function () {
       const needle = document.getElementById('zeiger');
-    
+
       window.addEventListener('message', function (evt) {
-        // TODO: Rework this implementation for db readings
-        // Where "maxAmplitude" should be in the range of 0 - 1
-        const { data: maxAmplitude } = evt;
+        const { data } = evt;
 
-        window.requestAnimationFrame(function() {
-          const degRotation = maxAmplitude * 90;
+        const { vuLevel } = data;
 
-          needle.style.transform = `rotate(${degRotation}deg)`;
-        });
+        if (typeof vuLevel !== 'undefined') {
+          window.requestAnimationFrame(function () {
+            // This algorithm is not correct, just for a proof-of-concept
+
+            let degRotation = (vuLevel + 20);
+
+            // Min bottom-out
+            if (degRotation < 0) {
+              degRotation = 0;
+            }
+
+            // Max top-out
+            if (degRotation > 90) {
+              degRotation = 90;
+            }
+
+            needle.style.transform = `rotate(${degRotation}deg)`;
+          });
+        }
       });
     })();
   </script>

@@ -132,39 +132,38 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
     return outputBuffer;
   }
 
-  getAverage(binaryArray) {
-    // sum all the elements of the array
-    const sum = binaryArray.reduce(function (accumulator, currentValue) {
-      return accumulator + currentValue;
-    });
+  // @see https://stackoverflow.com/questions/28123525/how-do-you-get-the-decibel-level-of-an-audio-in-javascript
+  getRMS(i16Array) {
+    const typedArray = new Int16Array(i16Array);
+    const arr = [...typedArray];
 
-    const average = sum / binaryArray.length;
+    const len = arr.length;
+    let i = 0;
+    let total = i;
 
-    return average;
+    while ( i < len ) total += Math.abs( arr[i++] );
+    const rms = Math.sqrt( total / len );
+
+    return rms;
+  }
+
+  // TODO: Verify this is the correct algorithm
+  // @see // @see https://stackoverflow.com/questions/2917762/android-pcm-bytes
+  getDB(rms) {
+    const db = 20 * Math.log(rms) / Math.log(10);
+
+    return db;
   }
 
   /**
-   * Uses this.getFrameAverage() to obtain an average percent, as a float.
    * 
-   * @param {Float32Array | Int16Array | []} binaryArray 
-   * @return {number} Any value between 0 and 1
+   * @param {Int16Array} i16Array 
    */
-  /*
-  getPercent(binaryArray) {
-    const average = this.getAverage(binaryArray);
+  getMax(i16Array) {
+    const typedArray = new Int16Array(i16Array);
+    const arr = [...typedArray];
 
-    const percent = ((average + 1) / 2);
-
-    return percent;
-  }
-  */
-
-  /**
-   * 
-   * @param {Float32Array | Int16Array | []} binaryArray 
-   */
-  getMax(binaryArray) {
-    const max = binaryArray.reduce((a, b) => {
+    const max = arr.reduce((a, b) => {
       return (a > b ? a : b);
     });
 

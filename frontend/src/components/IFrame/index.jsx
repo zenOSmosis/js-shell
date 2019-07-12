@@ -52,11 +52,12 @@ export default class IFrame extends Component {
     }
   }
 
+  // TODO: Is transfer an option here?
   sendMessage(message) {
     try {
       this._iframe.contentWindow.postMessage(message);
     } catch (exc) {
-      alert('...');
+      throw exc;
     }
   }
 
@@ -66,12 +67,6 @@ export default class IFrame extends Component {
   postMessage(...args) {
     return this.sendMessage(...args);
   }
-
-  /*
-  handleMessageReceive(message) {
-
-  }
-  */
   
   render() {
     const {className, onLoad, ...propsRest} = this.props;
