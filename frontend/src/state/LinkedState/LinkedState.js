@@ -29,13 +29,15 @@ export default class LinkedState extends EventEmitter {
     this._linkedScopeName = linkedScopeName;
 
     mlscs.addLinkedState(this, initialDefaultState);
+
+    // this.setState(initialDefaultState);
   }
 
   /**
    * Retrieves this particular instance's UUID.  Note, this UUID is different
    * on each reference to this LinkedState scope.
    * 
-   * @return {string}
+   * @return {String}
    */
   getUUID() {
     return this._uuid;
@@ -44,7 +46,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Retrieves this class' name (e.g. "LinkedState").
    * 
-   * @return {string}
+   * @return {String}
    */
   getClassName() {
     const { constructor } = this;
@@ -83,7 +85,7 @@ export default class LinkedState extends EventEmitter {
   }
 
   /**
-   * @return {string}
+   * @return {String}
    */
   getLinkedScopeName() {
     return this._linkedScopeName;
@@ -99,13 +101,14 @@ export default class LinkedState extends EventEmitter {
   /**
    * Sets a common state across all shared LinkedState instances.
    * 
-   * @param {object} updatedState 
-   * @param {function} onSet [default = null] Optional callback to be
+   * @param {Object} updatedState 
+   * @param {Function} onSet [default = null] Optional callback to be
    * performed after state has been updated
    */
   setState(updatedState = {}, onSet = null) {
     // const prevState = this.getState();
 
+    // Pre-set event hook
     // this.emit(EVT_LINKED_STATE_WILL_UPDATE, prevState);
 
     mlscs.setSharedState(this, {
@@ -121,11 +124,14 @@ export default class LinkedState extends EventEmitter {
       onSet();
     }
 
+    // Post-set event hook
     // this.emit(EVT_LINKED_STATE_DID_UPDATE, prevState);
   }
 
   /**
    * Retrieves a common state across all shared link state instances.
+   * 
+   * @return {Object}
    */
   getState() {
     // return sharedStates[this._linkedScopeName];
@@ -135,7 +141,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Broadcasts an events across all shared linked state instances.
    * 
-   * @param {string} eventName 
+   * @param {String} eventName 
    * @param {any} args
    */
   broadcast(eventName, ...args) {

@@ -1,6 +1,7 @@
-import { commonAppLinkedState } from 'state/commonLinkedStates';
+import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
 import createDesktopNotification from './createDesktopNotification';
-import App from 'core/App';
+// import AppRuntime from 'core/AppRuntime';
+import AppRegistration from 'core/AppRegistration';
 
 // Registers an app for use w/ the system / Dock
 // Note: When hot module replacement (HMR) is run, this function is executed
@@ -10,22 +11,22 @@ const registerApp = (appProps) => {
   // TODO: Verify appProps for API compatibility
 
   // TODO: Don't create new app process until the app is launched
-  const newApp = new App(appProps);
+  const newAppRegistration = new AppRegistration(appProps); // AppRuntime should be when the app is launched, not registered
 
-  const existingApp = getExistingHMRApp(newApp);
+  const existingAppRegistration = getExistingHMRApp(newAppRegistration);
 
    // Don't re-add if app is already existing
-  if (!existingApp) {
-    // New registration; not using HMR
+  if (existingAppRegistration) {
+    // Remove new app registration
+    console.warn('Skipping existing app registration unregister'); // TODO: Remove
+    // newAppRegistration.unregister();
 
-    commonAppLinkedState.addApp(newApp);
-  } else {
     // Existing app registration (via HMR)
     // TODO: Move this out of here into a more centralized handler
-    createDesktopNotification(`"${existingApp.getTitle()}" app source code updated`);
+    createDesktopNotification(`"${existingAppRegistration.getTitle()}" app source code updated`);
   }
 
-  return existingApp || newApp;
+  return existingAppRegistration || newAppRegistration;
 };
 
 /**
@@ -57,7 +58,10 @@ const getExistingHMRApp = (app) => {
     return;
   }
 
-  const apps = commonAppLinkedState.getApps();
+  console.warn('TODO: Re-implement existing HMR detection based on icon, instead of window');
+  return;
+
+  const apps = commonAppRegistryLinkedState.getAppRegistrations();
 
   const appMainWindow = app.getMainWindow();
   const appFilename = getWindowFilename(appMainWindow);

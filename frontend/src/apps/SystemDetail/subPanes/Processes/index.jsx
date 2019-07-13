@@ -25,6 +25,8 @@ class Processes extends Component {
     let { processes } = this.props;
     processes = processes || [];
 
+    // TODO: Add button to hide current processes / show all processes
+
     // TODO: Make table sortable
     return (
       <div>

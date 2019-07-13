@@ -4,7 +4,7 @@
  */
 
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from './DesktopLinkedState';
-import AppLinkedState from './AppLinkedState';
+import AppRegistryLinkedState from './AppRegistryLinkedState';
 import SocketLinkedState from './SocketLinkedState';
 import blockLinkedStateDestruction from 'utils/blockLinkedStateDestruction';
 
@@ -24,12 +24,12 @@ const createPersistentLinkedState = (LinkedStateClass) => {
 };
 
 const commonDesktopLinkedState = createPersistentLinkedState(DesktopLinkedState);
-const commonAppLinkedState = createPersistentLinkedState(AppLinkedState);
+const commonAppRegistryLinkedState = createPersistentLinkedState(AppRegistryLinkedState);
 const commonSocketLinkedState = createPersistentLinkedState(SocketLinkedState);
 
 export {
   commonDesktopLinkedState,
-  commonAppLinkedState,
+  commonAppRegistryLinkedState,
   commonSocketLinkedState,
   EVT_LINKED_STATE_UPDATE
 };

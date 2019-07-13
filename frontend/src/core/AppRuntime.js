@@ -7,7 +7,8 @@ export const EVT_CONTENT_UPDATE = 'content-update';
 export const EVT_TITLE_UPDATE = 'title-update';
 export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
 
-export default class App extends ClientGUIProcess {
+export default class AppRuntime extends ClientGUIProcess {
+  // TODO: Replace runProps w/ process API
   constructor(runProps) {
     // TODO: Construct super accordingly
     super(false);

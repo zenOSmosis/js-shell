@@ -3,9 +3,17 @@ const Babel = require('babel-standalone'); // babel-standalone is not an ES6 mod
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+// TODO: Enable optional passing of presets from controller
 export const BABEL_REACT_PRESETS = [
   'react',
   'es2015',
+
+  // Will this solve arrow functions not using proper scope?
+  // @see https://babeljs.io/docs/en/babel-plugin-transform-arrow-functions
+  // 'transform-arrow-functions'
+  
+  // Will this solve "__this__" string replacements?
+  // @see https://www.npmjs.com/package/babel-plugin-transform-require-context
   // 'transform-require-context'
 ];
 
@@ -13,6 +21,7 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
   constructor(...args) {
     super(...args);
 
+    // TODO: Remove
     console.debug({
       compilerLibaries: {
         Babel,
@@ -21,6 +30,8 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
       }
     });
 
+    // TODO: Utilize constants for ctrlNames and/or leave it up to
+    // implementation to handle control messages
     this.stdctrl.on('data', data => {
       const { ctrlName } = data;
       if (ctrlName === 'compile') {
@@ -36,7 +47,7 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
   }
 
   /**
-   * @param {String} code
+   * @param {String} code The code to compile
    * @return {String} Transformed output 
    */
   compile(code) {

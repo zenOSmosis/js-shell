@@ -2,9 +2,6 @@
 import Core from './Core';
 import ShellDesktop from './ShellDesktop';
 import config from 'config';
-/*
-import CoreNetworkController from 'core/CoreNetworkController';
-*/
 
 const { DOM_ROOT_ID } = config;
 
@@ -22,7 +19,7 @@ const startup = () => {
   } else {
     // Display "Launching" notice
     const rootEl = document.getElementById(DOM_ROOT_ID);
-    rootEl.innerHTML = 'Launching...';
+    rootEl.innerHTML = 'Launching Core & Desktop services';
 
     const core = new Core();
 
