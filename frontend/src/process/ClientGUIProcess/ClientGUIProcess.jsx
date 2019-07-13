@@ -3,17 +3,16 @@ import ClientProcess, { EVT_TICK } from '../ClientProcess';
 import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
 
 export default class ClientGUIProcess extends ClientProcess {
-  _ReactComponent = null;
-  _mountedReactComponent = null;
-  _Content = null;
-  _isFocused = false;
-  _desktopMenubarData = null;
-  _renderProps = {};
-
   constructor(...args) {
     super(...args);
 
     this._isGUIProcess = true;
+    this._ReactComponent = null;
+    this._mountedReactComponent = null;
+    this._Content = null;
+    this._isFocused = false;
+    this._desktopMenubarData = null;
+    this._renderProps = {};
 
     // TODO: Move this to _init
     this._ReactComponent = createClientGUIProcessReactComponent(this,
@@ -31,7 +30,7 @@ export default class ClientGUIProcess extends ClientProcess {
     );
 
     this.on(EVT_TICK, () => {
-      // Mount Content, if available
+      // Mount Content, if available, and not already mounted
       if (this._Content && this._mountedReactComponent !== null) {
         this._mountedReactComponent.setContent(this._Content);
       }

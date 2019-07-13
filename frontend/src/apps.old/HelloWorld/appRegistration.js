@@ -5,6 +5,10 @@ import config from 'config';
 
 export default registerApp({
   title: 'Hello World',
-  mainWindow: <HelloWorldWindow />,
+  mainWindow: (props) => {
+    return (
+      <HelloWorldWindow />
+    )
+  },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}hello/hello.svg`
 });

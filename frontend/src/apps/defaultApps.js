@@ -1,25 +1,17 @@
-import FilesApp from './Files';
-import SettingsApp from './Settings';
-import SourceCode from './SourceCode';
-import SystemDetail from './SystemDetail';
-// import WindowManagerApp from './WindowManager';
-// import ScreenRecorder from './ScreenRecorder';
-// import DocsApp from './Docs';
-// import AboutApp from './About';
-import HelloWorldApp from './HelloWorld';
-import ProcessTester from './ProcessTester';
+/**
+ * Note: Each app registers itself with the Desktop.
+ * 
+ * Important!  This file should only be included in the ShellDesktop core process.
+ */
 
-const defaultApps = [
-  FilesApp,
-  SettingsApp,
-  SourceCode,
-  SystemDetail,
-  // WindowManagerApp,
-  // ScreenRecorder,
-  // DocsApp,
-  // AboutApp,
-  HelloWorldApp,
-  ProcessTester
-];
+import './HelloWorldApp';
 
-export default defaultApps;
+// import './FilesApp';
+// import './SettingsApp';
+// import './SourceCodeApp';
+// import './SystemDetailApp';
+// import './WindowManagerApp';
+// import './ScreenRecorderApp';
+// import './DocsApp';
+// import './AboutApp';
+// import './ProcessTesterApp';

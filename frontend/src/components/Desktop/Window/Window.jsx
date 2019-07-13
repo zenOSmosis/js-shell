@@ -95,23 +95,21 @@ export const getWindowStack = () => {
 })();
 
 export default class Window extends Component {
-  state = {
-    title: null,
-    // isActive: false,
-    // zStack: zStack + 1
-
-    // Is automatically set to true once the window is ready to be utilized
-    // via external handlers
-    ready: false // TODO: Rename to isReady
-  };
-
-  _uuid = null;
-  _isActive = false;  // TODO: Rename to isFocused
-
   constructor(props) {
     super(props);
 
+    this.state = {
+      title: null,
+      // isActive: false,
+      // zStack: zStack + 1
+  
+      // Is automatically set to true once the window is ready to be utilized
+      // via external handlers
+      ready: false // TODO: Rename to isReady
+    };
+
     this._uuid = uuidv4();
+    this._isActive = false;  // TODO: Rename to isFocused
 
     this.isClosed = false;
 
@@ -149,11 +147,6 @@ export default class Window extends Component {
       }
 
       this._handleProps();
-
-      const { app } = this.props;
-      if (app) {
-        app.setRealWindow(this);
-      }
 
       // Set Window title either from props or from app
       // TODO: Remove app here; use passed props
@@ -220,12 +213,12 @@ export default class Window extends Component {
   }
 
   /**
-   * Automatically sets title based on props or app.
+   * Automatically sets title based on configuration.
    */
   autosetTitle() {
     const { title: existingTitle } = this.state;
-    const { app, title: propsTitle } = this.props;
-    const newTitle = (app ? app.getTitle() : propsTitle);
+    const { appRegistration, title: propsTitle } = this.props;
+    const newTitle = (appRegistration ? appRegistration.getTitle() : propsTitle);
     if (newTitle !== existingTitle) {
       this.setTitle(newTitle);
     }
@@ -487,7 +480,7 @@ export default class Window extends Component {
 
   render() {
     let {
-      app,
+      appRegistration,
       children,
       className,
       description,
@@ -504,8 +497,6 @@ export default class Window extends Component {
       onReady,
       ...propsRest
     } = this.props;
-
-    children = (app && app.getContentOverride()) || children;
 
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
@@ -635,7 +626,7 @@ export default class Window extends Component {
   }
 
   close() {
-    const { app } = this.props;
+    const { appRegistration } = this.props;
 
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
@@ -649,11 +640,11 @@ export default class Window extends Component {
     this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close event detach', {
-      app
+      appRegistration
     });
 
-    if (app) {
-      app.close();
+    if (appRegistration) {
+      appRegistration.closeApp();
     }
   }
 }

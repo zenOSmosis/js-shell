@@ -1,31 +1,27 @@
-// TODO: Rename, and refactor, to ClientAppProcess (extends ClientProcess)
-
 import ClientGUIProcess from 'process/ClientGUIProcess';
-import Window from 'components/Desktop/Window';
+// import Window from 'components/Desktop/Window';
 
-export const EVT_CONTENT_UPDATE = 'content-update';
-export const EVT_TITLE_UPDATE = 'title-update';
-export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
+// export const EVT_CONTENT_UPDATE = 'content-update';
+// export const EVT_TITLE_UPDATE = 'title-update';
+// export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
 
 export default class AppRuntime extends ClientGUIProcess {
   // TODO: Replace runProps w/ process API
   constructor(runProps) {
-    // TODO: Construct super accordingly
+    if (typeof runProps !== 'object') {
+      throw new Error('runProps is not an object');
+    }
+
+    // TODO: Fork from Shell Desktop process (or other common base)
     super(false);
 
     this._defaultTitle = null;
-    this._windows = [];
-    this._realWindow = null;
-    this._defaultIconSrc = null;
-    this._allowMultipleWindows = false;
-    this._contentOverride = null;
+    this._iconSrc = null;
+    this._mainWindow = null;
 
     // TODO: Move these to app registration
     (() => {
-      const { title, iconSrc, mainWindow, allowMultipleWindows: propsAllowMultipleWindows } = runProps;
-
-      // Convert to boolean from run property
-      this._allowMultipleWindows = (propsAllowMultipleWindows ? true : false);
+      const { title, iconSrc, mainWindow } = runProps;
 
       if (title) {
         this.setTitle(title);
@@ -48,62 +44,19 @@ export default class AppRuntime extends ClientGUIProcess {
     return this._defaultTitle;
   }
 
+  // TODO: Utilize ClientGUIProcess setIcon
   setIconSrc(iconSrc) {
-    this._defaultIconSrc = iconSrc;
+    this._iconSrc = iconSrc;
 
-    this.emit(EVT_ICON_SRC_UPDATE, iconSrc);
+    // this.emit(EVT_ICON_SRC_UPDATE, iconSrc);
   }
 
+  // TODO: Utilize ClientGUIProcess getIcon
   getIconSrc() {
-    return this._defaultIconSrc;
+    return this._iconSrc;
   }
 
-  // TODO: Remove(?)
-  getContentOverride() {
-    return this._contentOverride;
-  }
-
-  // TODO: Use setContent(...)
-  setMainWindow(desktopWindow) {
-    if (this._windows.length) {
-      throw new Error('MainWindow is already set');
-    }
-
-    this._windows.push(desktopWindow);
-  }
-
-  /**
-   * Note, may retrieve a Window composite, and not the actual window.
-   * 
-   * @see this.getRealWindow() to obtain a reference to the actual underlying window.
-   */
-  getMainWindow() {
-    if (this._windows &&
-        this._windows[0]) {
-      return this._windows[0];
-    }
-  }
-
-  getWindows() {
-    return this._windows;
-  }
-
-  /**
-   * Sets the real, non-composited window.
-   * 
-   * TODO: Remove this....
-   * 
-   * @param {Window} realWindow 
-   */
-  setRealWindow(realWindow) {
-    if (!(realWindow instanceof Window)) {
-      throw new Error('realWindow must be a Window instance');
-    }
-
-    this._realWindow = realWindow;
-  }
-
-  getRealWindow() {
-    return this._realWindow;
+  setMainWindow(mainWindow) {
+    this.setContent(mainWindow);
   }
 }

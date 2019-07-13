@@ -1,5 +1,3 @@
-// Note, currently the mere inclusion of this registers all of the default apps
-import /*apps from*/ 'apps/defaultApps';
 import React, { Component } from 'react';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';

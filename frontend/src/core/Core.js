@@ -1,6 +1,8 @@
 import ClientProcess from 'process/ClientProcess';
+
+// TODO: Handle this directly within processes
+// TODO: Enable to work independently in Web Worker processes
 import CoreCPUTimer from './CoreServices/CoreCPUTimer';
-// import CoreNetwork from './CoreServices/CoreNetwork';
 
 let isCoreInit = false;
 

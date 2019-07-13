@@ -1,5 +1,3 @@
-// Note, currently the mere inclusion of this registers all of the default apps
-import /*apps from*/ 'apps/defaultApps';
 import React, { Component } from 'react';
 import ProcessLinkedState from 'state/ProcessLinkedState';
 // import ClientGUIProcess from 'process/ClientGUIProcess';

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import app from './app';
+import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 
@@ -9,7 +9,7 @@ export default class HelloWorldWindow extends Component {
     return (
       <Window
         {...propsRest}
-        app={app}
+        appRegistration={appRegistration}
       >
         <Center>
           Hello World

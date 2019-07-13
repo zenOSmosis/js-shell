@@ -14,7 +14,7 @@ class Dock extends Component {
     const isLaunched = appRegistration.getIsLaunched();
 
     if (!isLaunched) {
-      appRegistration.launch();
+      appRegistration.launchApp();
     } else {
       // TODO: If app is already launched, bring it to the front
       console.warn('TODO: Implement bring to front');

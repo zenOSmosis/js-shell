@@ -424,7 +424,7 @@ export default class ClientProcess extends EventEmitter {
   _tick() {
     // Prevent tick if process is exited
     if (this._isShuttingDown || this._isExited) {
-      console.warn('Process is exited. Ignoring tick() call.', this);
+      console.warn('Process is exiting, or has exited. Ignoring tick() call.', this);
       return;
     }
 
@@ -439,31 +439,45 @@ export default class ClientProcess extends EventEmitter {
         return;
       }
 
+      // Create a local copy of the call stacks
+      const nextTickCallStack = this._nextTickCallStack;
+      const lenNextTickCallStack = nextTickCallStack.length;
+
+      const setImmediateCallStack = this._setImmediateCallStack;
+      const lenSetImmediateCallStack = setImmediateCallStack.length;
+
+      // Clear class property call stacks
+      this._clearCallStacks();
+
       try {
-        for (let i = 0; i < this._nextTickCallStack.length; i++) {
-          const { callback /*, error*/ } = this._nextTickCallStack[i];
+        // Execute all nextTick()
+        for (let i = 0; i < lenNextTickCallStack; i++) {
+          const { callback /*, error*/ } = nextTickCallStack[i];
 
           await callback();
         }
-
-        // Clear next tick callstack
-        this._nextTickCallStack = [];
 
         // Execute all setImmediate()
-        for (let i = 0; i < this._setImmediateCallStack.length; i++) {
-          const { callback /*, error*/ } = this._setImmediateCallStack[i];
+        for (let i = 0; i < lenSetImmediateCallStack; i++) {
+          const { callback /*, error*/ } = setImmediateCallStack[i];
 
           await callback();
         }
 
-        // Clear set immediate callstack
-        this._setImmediateCallStack = [];
-
+        // Tell listeners a tick has been performed
         this.emit(EVT_TICK);
       } catch (exc) {
         throw exc;
       }
     }, 0);
+  }
+
+  /**
+   * Removes all stack frames from the nextTick and setImmediate call stacks
+   */
+  _clearCallStacks() {
+    this._nextTickCallStack = [];
+    this._setImmediateCallStack = [];
   }
 
   getThreadType() {
@@ -490,7 +504,18 @@ export default class ClientProcess extends EventEmitter {
   }
 
   /**
-   * TODO: Add optional signal
+   * Alias for this.kill().
+   */
+  async close() {
+    try {
+      return await this.kill();
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * TODO: Handle optional signal
    */
   async kill(killSignal = 0) {
     // Prevent trying to kill an already exited process
@@ -500,6 +525,8 @@ export default class ClientProcess extends EventEmitter {
     }
 
     this._isShuttingDown = true;
+
+    this._clearCallStacks();
 
     // console.debug(`Shutting down ${this.getClassName()}`, this);
 
@@ -518,9 +545,6 @@ export default class ClientProcess extends EventEmitter {
       }
     }
 
-    // Clean up event handles
-    this.removeAllListeners();
-
     // Unregister process with processLinkedState
     processLinkedState.removeProcess(this);
 
@@ -529,6 +553,11 @@ export default class ClientProcess extends EventEmitter {
 
     // Let anyone know that this operation has completed
     this.emit(EVT_EXIT);
+
+    // Clean up event handles
+    // Important! This must be called after all other event emits have been
+    // called
+    this.removeAllListeners();
 
     // console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
   }
