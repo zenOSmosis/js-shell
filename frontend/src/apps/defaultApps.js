@@ -4,12 +4,12 @@
  * Important!  This file should only be included in the ShellDesktop core process.
  */
 
+import './FilesApp';
 import './HelloWorldApp';
+import './SourceCodeApp';
+import './SystemDetailApp';
 
-// import './FilesApp';
 // import './SettingsApp';
-// import './SourceCodeApp';
-// import './SystemDetailApp';
 // import './WindowManagerApp';
 // import './ScreenRecorderApp';
 // import './DocsApp';

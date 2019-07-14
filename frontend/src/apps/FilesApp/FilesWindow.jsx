@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import app from './app';
+import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 // import IFrame from 'components/IFrame';
 import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
@@ -49,6 +49,7 @@ export default class FilesWindow extends Component {
 
   componentDidMount() {
     // TODO: Use user's home directory, or decipher from prop
+    // TODO: Use directory separator constant
     this.chdir('/');
   }
 
@@ -63,8 +64,9 @@ export default class FilesWindow extends Component {
   }
 
   openPath(pathName) {
+    // TODO: Remove
     console.debug('rendering path name', pathName);
-    // app.addWindow(<Window title="Test Window" />);
+
     this.setState({
       renderFilePath: pathName
     });
@@ -152,7 +154,7 @@ export default class FilesWindow extends Component {
 
     return (
       <Window
-        app={app}
+        appRegistration={appRegistration}
         title={pathName}
         toolbar={
           <PathBreadcrumb filesWindow={this} pathParts={pathConstituents} />

@@ -2,23 +2,31 @@
 // socket.io server
 // The stream is playable via: play -r 16000 -b 16 -e signed-integer *.raw
 
-const { MicrophoneProcess, ClientAudioWorkerProcess, ClientGUIProcess, Component, components } = this;
+const {
+  MicrophoneProcess,
+  ClientAudioWorkerProcess,
+  ClientGUIProcess,
+  Component,
+  components
+} = this;
 const { IFrame, Window } = components;
 
 const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
+  // TODO: Bundle Socket.io directly in Worker
   importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
   const sttSocket = io(self.location.origin, {
+    // TODO: Replace hard-coded Socket.io path
     path: '/stt-socket'
   });
 
   /**
-   * Takes float32Array buffer, converts it to S16 and emits it over STT
-   * socket. 
+   * Converts [signed] Int16Array into an audio blob w/ audio/pcm mimetype, and
+   * emits it over the ttsSocket.
    */
   const sttSend = (i16Array) => {
     // const audioBlob = audioWorker.float32ToPCM16AudioBlob(float32Array);
-    const audioBlob =  new Blob([i16Array], {
+    const audioBlob = new Blob([i16Array], {
       type: 'audio/pcm'
     });
 
@@ -29,13 +37,13 @@ const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
   sttSocket.on('transcription', (transcription) => {
     // console.debug('transcription data', transcription);
 
-    const {message} = transcription;
+    const { message } = transcription;
 
     if (message) {
-      const {result} = message;
-      
+      const { result } = message;
+
       if (result) {
-        const {hypotheses} = result;
+        const { hypotheses } = result;
 
         if (hypotheses) {
           const totalHypotheses = hypotheses.length;
@@ -56,7 +64,6 @@ const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
     const db = audioWorker.getDB(rms);
 
     sttSend(i16Array);
-    // console.debug(i16);
 
     /*
     console.debug({
@@ -71,8 +78,8 @@ const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
     });
   });
 }, {
-  // inputSampleRate: 48000 // Should be overridden by passed options
-});
+    // inputSampleRate: 48000 // Should be overridden by passed options
+  });
 
 const mic = new MicrophoneProcess(process,
   async (mic) => {
@@ -119,7 +126,7 @@ const vuMeter = new ClientGUIProcess(process, (guiProcess) => {
       }
 
       componentDidMount() {
-        console.debug('IFRAME', this._iFrame);
+        // console.debug('IFRAME', this._iFrame);
 
         // TODO: Debug why this is not working inside of arrow functions in Babel
         const vuMeter = this;

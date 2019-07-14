@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import app from './app';
+import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import { Button, ButtonGroup } from 'components/ButtonGroup';
 import { Layout, Content, Footer } from 'components/Layout';
@@ -30,9 +30,13 @@ const ConnectedClientPressure = hocConnect(ClientPressure, CPUTimeLinkedState, (
 });
 
 export default class SystemDetailWindow extends Component {
-  state = {
-    activeTab: TAB_SYSTEM_OVERVIEW
-  };
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      activeTab: TAB_SYSTEM_OVERVIEW
+    };
+  }
 
   switchToTab(tab) {
     this.setState({
@@ -47,7 +51,7 @@ export default class SystemDetailWindow extends Component {
     return (
       <Window
         {...propsRest}
-        app={app}
+        appRegistration={appRegistration}
         toolbar={
           <ButtonGroup style={{ whiteSpace: 'nowrap' }}>
             <Button

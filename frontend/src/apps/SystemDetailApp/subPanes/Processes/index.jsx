@@ -32,24 +32,10 @@ class Processes extends Component {
       <div>
         <div style={{ overflow: 'auto' }}>
           <div style={{ display: 'inline-block' }}>
-            {
-              // TODO: Remove readOnly after checkbox is wired up
-            }
-            <input type="checkbox" checked readOnly />Include Client Processes
-          </div>
-
-          {
-            // TODO: Replace w/ CSS styling
-          }
-          &nbsp;&nbsp;&nbsp;&nbsp;
-
-          <div style={{ display: 'inline-block' }}>
-          {
-              // TODO: Remove readOnly after checkbox is wired up
-            }
-            <input type="checkbox" readOnly />Include Server Processes
+            <button>Hide Current Processes</button>
           </div>
         </div>
+
         <table style={{ width: '100%', textAlign: 'left' }}>
           <thead>
             <tr>

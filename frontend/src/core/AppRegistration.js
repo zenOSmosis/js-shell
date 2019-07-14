@@ -4,11 +4,11 @@ import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 
 /**
- * An app registration creates a new app available in any app menus in the
- * Desktop.
+ * Creates a registration which automatically populates app menus and the Dock
+ * (if apps are launched, or they're pinned).
  * 
- * The items in the Dock represent a filtered subset of all available
- * registrations.
+ * TODO: Move this comment to the Dock; The items in the Dock represent a
+ * filtered subset of all available registrations.
  * 
  * An app registration is an in-memory object, so this class should be
  * instantiated, per referenced app, each time the Desktop loads.
@@ -38,10 +38,6 @@ export default class AppRegistration extends EventEmitter {
     commonAppRegistryLinkedState.addAppRegistration(this);
   }
 
-  getIsLaunched() {
-    return this._isLaunched;
-  }
-
   async launchApp() {
     try {
       if (this._appRuntime) {
@@ -60,6 +56,7 @@ export default class AppRegistration extends EventEmitter {
   
       this._isLaunched = true;
   
+      // Handle cleanup when the app exits
       this._appRuntime.on(EVT_BEFORE_EXIT, () => {
         this._isLaunched = false;
         this._appRuntime = null;
@@ -67,6 +64,10 @@ export default class AppRegistration extends EventEmitter {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  getIsLaunched() {
+    return this._isLaunched;
   }
   
   getAppRuntime() {
@@ -99,8 +100,13 @@ export default class AppRegistration extends EventEmitter {
     return this._mainWindow;
   }
 
+  /**
+   * Removes this app from the Desktop registry.
+   * 
+   * Important!  Once the app is unregistered, it is no longer available in the
+   * Dock or any app menus.
+   */
   unregister() {
-    // Remove this app registration from the registry
     commonAppRegistryLinkedState.removeAppRegistration(this);
   }
 }

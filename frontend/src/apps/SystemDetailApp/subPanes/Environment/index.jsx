@@ -11,10 +11,14 @@ const MODE_CLIENT = 'client';
 const MODE_HOST = 'host';
 
 export default class Environment extends Component {
-  state = {
-    mode: MODE_CLIENT,
-    remoteEnv: {}
-  };
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      mode: MODE_CLIENT,
+      remoteEnv: {}
+    };
+  }
 
   componentDidMount() {
     this.fetchRemoteEnv();

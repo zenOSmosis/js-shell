@@ -6,6 +6,10 @@ import config from 'config';
 export default registerApp({
   allowMultipleWindows: true,
   title: 'Files',
-  mainWindow: <FilesWindow />,
+  mainWindow: (props) => {
+    return (
+      <FilesWindow />
+    );
+  },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}folder/folder.svg`
 });

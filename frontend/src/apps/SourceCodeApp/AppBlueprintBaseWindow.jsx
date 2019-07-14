@@ -2,7 +2,7 @@
 // Path for VSCode icons:  file:///usr/share/code/resources/app/out/vs/workbench/browser/parts/editor/media
 
 import React, { Component } from 'react';
-import app from './app';
+import appRegistration from './appRegistration';
 import Box3D, { BOX3D_SIDES } from 'components/Box3D';
 import Cover from 'components/Cover';
 // import Full from 'components/Full';
@@ -39,23 +39,27 @@ const SLIDER_ACTIONS = [
 */
 
 export default class AppBlueprintBaseWindow extends Component {
-  state = {
-    code: '// type your code...',
+  constructor(...args) {
+    super(...args);
 
-    monacoLanguage: 'html',
-
-    // horizontalSliderVal: 0,
-    // verticalSliderVal: 0,
-
-    // isLiveRendering: true,
-
-    // renderAxisX: 0,
-    // renderAxisY: 0,
-    // renderAxisZ: 0,
-
-    // renderPositionX: 0,
-    // renderPositionY: 0
-  };
+    this.state = {
+      code: '// type your code...',
+  
+      monacoLanguage: 'html',
+  
+      // horizontalSliderVal: 0,
+      // verticalSliderVal: 0,
+  
+      // isLiveRendering: true,
+  
+      // renderAxisX: 0,
+      // renderAxisY: 0,
+      // renderAxisZ: 0,
+  
+      // renderPositionX: 0,
+      // renderPositionY: 0
+    };
+  }
 
   /*
   setEditorLanguage(language) {
@@ -89,7 +93,7 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        app={app}
+        appRegistration={appRegistration}
       >
         <SplitEditor />
         
@@ -121,7 +125,7 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        app={app}
+        appRegistration={appRegistration}
         toolbarRight={
           <Popover
             // overlayStyle={{color: '#000'}}
@@ -194,7 +198,7 @@ export default class AppBlueprintBaseWindow extends Component {
               // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
             }
             <Editor
-              appBlueprintBaseWindow={this}
+              appBlueprintBaseWindow={this} // TODO: Rename to relevant name
               box3D={this._renderBox}
               code={this.state.code}
               monacoOptions={monacoOptions}
