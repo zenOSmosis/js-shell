@@ -31,6 +31,8 @@ export default class AppRegistration extends EventEmitter {
     this._iconSrc = iconSrc;
     this._mainWindow = mainWindow;
 
+    this._isUnregistered = false;
+
     // Convert to boolean from run property
     // this._allowMultipleWindows = (propsAllowMultipleWindows ? true : false);
 
@@ -70,6 +72,11 @@ export default class AppRegistration extends EventEmitter {
     return this._isLaunched;
   }
   
+  /**
+   * Retrieves the launched app's process runtime, if available.
+   * 
+   * @return {AppRuntime}
+   */
   getAppRuntime() {
     return this._appRuntime;
   }
@@ -108,5 +115,7 @@ export default class AppRegistration extends EventEmitter {
    */
   unregister() {
     commonAppRegistryLinkedState.removeAppRegistration(this);
+
+    this._isUnregistered = true;
   }
 }

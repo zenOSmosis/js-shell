@@ -21,6 +21,11 @@ import VersionLabel from './VersionLabel';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import ClientGUIProcesses from './ClientGUIProcesses';
 
+// Registers default Shell Desktop apps
+// TODO: If refactoring this to another location, update the reference to that
+// location in apps/defaultApps.js comments
+import 'apps/defaultApps';
+
 import $ from 'jquery';
 
 class Desktop extends Component {

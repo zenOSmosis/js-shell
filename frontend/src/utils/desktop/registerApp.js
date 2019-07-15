@@ -7,19 +7,17 @@ import AppRegistration from 'core/AppRegistration';
 // Note: When hot module replacement (HMR) is run, this function is executed
 // again.  This includes internal provisions for handling of HMR situations.
 const registerApp = (appProps) => {
-
   // TODO: Verify appProps for API compatibility
 
   // TODO: Don't create new app process until the app is launched
   const newAppRegistration = new AppRegistration(appProps); // AppRuntime should be when the app is launched, not registered
 
-  const existingAppRegistration = getExistingHMRApp(newAppRegistration);
+  const existingAppRegistration = getExistingHMRAppRegistration(newAppRegistration);
 
    // Don't re-add if app is already existing
   if (existingAppRegistration) {
-    // Remove new app registration
-    console.warn('Skipping existing app registration unregister'); // TODO: Remove
-    // newAppRegistration.unregister();
+    // Remove new app registration 
+    newAppRegistration.unregister();
 
     // Existing app registration (via HMR)
     // TODO: Move this out of here into a more centralized handler
@@ -29,58 +27,34 @@ const registerApp = (appProps) => {
   return existingAppRegistration || newAppRegistration;
 };
 
-/**
- * TODO: Document, exactly, what this does
- * 
- * @param {Window} appWindow 
- */
-const getWindowFilename = (appWindow) => {
-  if (!appWindow) {
-    return;
-  }
-
-  const {_source: appSource} = appWindow;
-  if (!appSource) {
-    return;
-  }
-
-  const {fileName: appFilename} = appSource;
-
-  return appFilename;
-};
-
 // TODO: Document, exactly, what this does
 // Note, currently this checks by looking at getMainWindow, and then
 // backtracking to the window's filename.  This would be more robust by not
 // requiring a window to be set.
-const getExistingHMRApp = (app) => {
+const getExistingHMRAppRegistration = (appRegistration) => {
   if (!module.hot) {
     return;
   }
 
-  console.warn('TODO: Re-implement existing HMR detection based on icon, instead of window');
-  return;
+  const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
+  const lenAppRegistrations = appRegistrations.length;
 
-  const apps = commonAppRegistryLinkedState.getAppRegistrations();
+  for (let i = 0; i < lenAppRegistrations; i++) {
+    const testAppRegistration = appRegistrations[i];
 
-  const appMainWindow = app.getMainWindow();
-  const appFilename = getWindowFilename(appMainWindow);
-  if (!appFilename) {
-    // No app found; return void
-    return;
-  }
+    // Skip checking if test app registration is the current app registration
+    if (Object.is(testAppRegistration, appRegistration)) {
+      continue;
+    }
 
-  for (let i = 0; i < apps.length; i++) {
-    const testApp = apps[i];
-    const testAppMainWindow = testApp.getMainWindow();
-    const testAppFilename = getWindowFilename(testAppMainWindow);
-
-    if (appFilename === testAppFilename) {
-      return testApp;
+    // Check if icon src is the same
+    // TODO: Implement more versatile checking
+    const testIconSrc = testAppRegistration.getIconSrc();
+    const iconSrc = appRegistration.getIconSrc();
+    if (testIconSrc === iconSrc) {
+      return testAppRegistration;
     }
   }
-
-  return;
 };
 
 export default registerApp;

@@ -3,11 +3,6 @@ import ReactDOM from 'react-dom';
 import App from 'App';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
-// Registers default Shell Desktop apps
-// TODO: If refactoring this to another location, update the reference to that
-// location in apps/defaultApps.js comments
-import 'apps/defaultApps';
-
 import registerCommonDesktopEventsHandler from 'utils/desktop/registerCommonEventsHandler';
 import ClientGUIProcess from 'process/ClientGUIProcess';
 
