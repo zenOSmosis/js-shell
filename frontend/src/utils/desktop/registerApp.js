@@ -39,6 +39,7 @@ const getExistingHMRAppRegistration = (appRegistration) => {
   const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   const lenAppRegistrations = appRegistrations.length;
 
+  // TODO: Switch to reverse while, for performance
   for (let i = 0; i < lenAppRegistrations; i++) {
     const testAppRegistration = appRegistrations[i];
 
