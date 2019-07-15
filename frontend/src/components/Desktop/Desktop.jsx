@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
-import WindowDrawLayer from './WindowDrawLayer';
 import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
@@ -38,7 +37,7 @@ class Desktop extends Component {
   }
 
   _handleFocusUpdate = () => {
-    const {isFocused} = this.props;
+    const { isFocused } = this.props;
 
     if (typeof isFocused !== 'undefined') {
       const $body = $(window.document.body);
@@ -50,7 +49,7 @@ class Desktop extends Component {
       }
     }
   }
-  
+
   render() {
     return (
       <div ref={c => this._el = c}>
@@ -95,12 +94,7 @@ class Desktop extends Component {
                   // <AppRouteController />
                 }
 
-                <ClientGUIProcesses onOutsideProcessInteract={ evt => console.debug('Outside process interact', evt) } />
-
-                {
-                  // Renders windows
-                }
-                <WindowDrawLayer onDirectInteract={ evt => console.debug('Desktop Interact', evt) } />
+                <ClientGUIProcesses onOutsideProcessInteract={evt => console.debug('Outside process interact', evt)} />
 
                 <VersionLabel />
 
@@ -123,7 +117,7 @@ class Desktop extends Component {
 }
 
 export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
-  const {isFocused} = updatedState;
+  const { isFocused } = updatedState;
 
   let filteredState = {};
 
