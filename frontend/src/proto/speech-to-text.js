@@ -120,24 +120,31 @@ const vuMeter = new ClientGUIProcess(process, (guiProcess) => {
       constructor(...args) {
         super(...args);
 
+        this._handleAudioWorkerStdctrl = this._handleAudioWorkerStdctrl.bind(this);
+
         this._iFrame = null;
       }
 
       componentDidMount() {
         // console.debug('IFRAME', this._iFrame);
 
-        // TODO: Unbind on exit
-        audioWorker.stdctrl.on('data', (data) => {
-          const { ctrlName } = data;
+        audioWorker.stdctrl.on('data', this._handleAudioWorkerStdctrl);
+      }
 
-          if (ctrlName === 'vuLevel') {
-            const { ctrlData: vuLevel } = data;
+      componentWillUnmount() {
+        audioWorker.stdctrl.off('data', this._handleAudioWorkerStdctrl);
+      }
 
-            this._iFrame.postMessage({
-              vuLevel
-            });
-          }
-        });
+      _handleAudioWorkerStdctrl(data) {
+        const { ctrlName } = data;
+
+        if (ctrlName === 'vuLevel') {
+          const { ctrlData: vuLevel } = data;
+
+          this._iFrame.postMessage({
+            vuLevel
+          });
+        }
       }
 
       render() {
