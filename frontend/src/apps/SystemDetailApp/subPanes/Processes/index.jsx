@@ -21,18 +21,54 @@ const MainCPUUsagePercent = hocConnect(CPUUsagePercent, CPUTimeLinkedState, (upd
 });
 
 class Processes extends Component {
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      hiddenProcessIds: []
+    };
+  }
+
+  hideCurrentProcesses() {
+    const { processes } = this.props;
+
+    const hiddenProcessIds = processes.map((process) => {
+      return process.getPID();
+    });
+
+    this.setState({
+      hiddenProcessIds
+    });
+  }
+
+  showAllProcesses() {
+    this.setState({
+      hiddenProcessIds: []
+    });
+  }
+
   render() {
     let { processes } = this.props;
     processes = processes || [];
+
+    const { hiddenProcessIds } = this.state;
 
     // TODO: Add button to hide current processes / show all processes
 
     // TODO: Make table sortable
     return (
       <div>
-        <div style={{ overflow: 'auto' }}>
+        <div style={{ overflow: 'auto', margin: '5px 0px' }}>
           <div style={{ display: 'inline-block' }}>
-            <button>Hide Current Processes</button>
+            {
+              (hiddenProcessIds.length === 0) &&
+              <button onClick={ evt => this.hideCurrentProcesses() }>Hide Current Processes</button>
+            }
+
+            {
+              (hiddenProcessIds.length > 0) &&
+              <button onClick={ evt => this.showAllProcesses() }>Show All Processes</button>
+            }
           </div>
         </div>
 
@@ -74,13 +110,19 @@ class Processes extends Component {
                   return false;
                 }
 
+                const pid = process.getPID();
+
+                // Don't render hidden processes
+                if (hiddenProcessIds.includes(pid)) {
+                  return false;
+                }
+
                 const startDate = process.getStartDate();
                 const className = process.getClassName();
                 const title = process.getTitle();
                 const renderedName = title || className;
                 const threadType = process.getThreadType();
                 const serviceURI = process.getServiceURI();
-                const pid = process.getPID();
                 const parentPID = process.getParentPID();
 
                 return (
