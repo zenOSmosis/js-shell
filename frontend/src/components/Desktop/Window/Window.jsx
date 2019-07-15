@@ -193,10 +193,11 @@ export default class Window extends Component {
    * Internally called when component mounts and is updaated.
    */
   _handleProps = () => {
-    console.debug('Handling props', this.props);
+    // console.debug('Handling props', this.props);
 
-    // Prototype proc handling
+    // Prototype appRuntime handling
     // TODO: Implement
+    /*
     (() => {
       const { proc } = this.props;
 
@@ -206,6 +207,7 @@ export default class Window extends Component {
         });
       }
     })();
+    */
   }
 
   componentWillUnmount() {

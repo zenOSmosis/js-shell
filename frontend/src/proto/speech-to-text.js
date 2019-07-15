@@ -120,16 +120,11 @@ const vuMeter = new ClientGUIProcess(process, (guiProcess) => {
       constructor(...args) {
         super(...args);
 
-        this.setIFrame = this.setIFrame.bind(this);
-
         this._iFrame = null;
       }
 
       componentDidMount() {
         // console.debug('IFRAME', this._iFrame);
-
-        // TODO: Debug why this is not working inside of arrow functions in Babel
-        const vuMeter = this;
 
         // TODO: Unbind on exit
         audioWorker.stdctrl.on('data', (data) => {
@@ -138,21 +133,17 @@ const vuMeter = new ClientGUIProcess(process, (guiProcess) => {
           if (ctrlName === 'vuLevel') {
             const { ctrlData: vuLevel } = data;
 
-            vuMeter._iFrame.postMessage({
+            this._iFrame.postMessage({
               vuLevel
             });
           }
         });
       }
 
-      setIFrame(iFrame) {
-        this._iFrame = iFrame;
-      }
-
       render() {
         return (
           <Window>
-            <IFrame ref={this.setIFrame} src="/components/analog-vu-meter" />
+            <IFrame ref={ c => this._iFrame = c } src="/components/analog-vu-meter" />
           </Window>
         )
       }

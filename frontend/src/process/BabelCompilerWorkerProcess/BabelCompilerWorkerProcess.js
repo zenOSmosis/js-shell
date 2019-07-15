@@ -1,20 +1,12 @@
 import ClientWorkerProcess from '../ClientWorkerProcess/ClientWorkerProcess';
-const Babel = require('babel-standalone'); // babel-standalone is not an ES6 module
+const Babel = require('@babel/standalone'); // @babel/standalone is not an ES6 module
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 // TODO: Enable optional passing of presets from controller
 export const BABEL_REACT_PRESETS = [
   'react',
-  'es2015',
-
-  // Will this solve arrow functions not using proper scope?
-  // @see https://babeljs.io/docs/en/babel-plugin-transform-arrow-functions
-  // 'transform-arrow-functions'
-  
-  // Will this solve "__this__" string replacements?
-  // @see https://www.npmjs.com/package/babel-plugin-transform-require-context
-  // 'transform-require-context'
+  'es2015'
 ];
 
 export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
@@ -51,31 +43,13 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
    * @return {String} Transformed output 
    */
   compile(code) {
-    // Pre-process
-    // Weird hack to retain "this" keyword passing through compiler, or else all
-    // "this" references are compiled as "undefined"
-    // TODO: This needs extensive testing and is probably a very terrible hack
-    code = `
-      const ___this___ = {};
-      ${code}
-    `.split('this').join('___this___');
-
-    // TODO: Finish proto/compiler.js
-    // TODO: Remove Babel include in index.html
-    console.warn('TODO: Move code compilation to separate thread. Remove Babel compiler script inclusion from index.html');
-
     let compiledCode = Babel.transform(code, {
       // TODO: Make presets adjustable
-      presets: BABEL_REACT_PRESETS
+      presets: BABEL_REACT_PRESETS,
+      sourceType: 'script'
     }).code;
 
-    // Post-process
-    compiledCode = compiledCode.split('___this___').join('this');
-    // Remove compiled version of this (if targeting es2015)
-    compiledCode = compiledCode.split('var ___this___ = {};').join('');
-
-    // TODO: Generate dynamic code headers
-    console.debug('compiled code:\n--------------\n', compiledCode);
+    console.debug('compiled code:\n--------------\n\n', compiledCode);
 
     return compiledCode;
   }

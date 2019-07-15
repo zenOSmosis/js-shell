@@ -203,18 +203,17 @@ export default class ClientProcess extends EventEmitter {
         cmd = cmd.toString();
 
         evalInContext(`
-          let ___serializedCmd___ = ${cmd};
+          const ___serializedCmd___ = ${cmd};
     
-          console.debug('this', this);
+          // Patches Babel's _this binding to represent this process' scope
+          const _this = this;
           
-          // const setImmediate = this.setImmediate;
+          // Re-route setImmediate calls to this process
+          const setImmediate = this.setImmediate;
     
           // Evaluate serialized command in ClientProcess instance
           // context, as well as passing "this" as the parameter
           await ___serializedCmd___.call(this, this);
-    
-          // Cleanup
-          // ___serializedCmd___ = null;
         `, this);
       } else {
         console.warn('Unhandled cmd type:', (typeof cmd));
