@@ -49,7 +49,7 @@ export default class ClientProcess extends EventEmitter {
     if (this._parentProcess !== null) {
       this._parentPID = this._parentProcess.getPID();
     }
-    
+
     // Set to true after process has initialized
     this._isReady = false;
 
@@ -65,7 +65,7 @@ export default class ClientProcess extends EventEmitter {
 
     this._threadType = THREAD_TYPE_MAIN;
     this._title = null;
-    
+
     this._isGUIProcess = false;
     this._cmd = cmd;
     this._startDate = new Date(); // TODO: Rename, and rework, to _startTime
@@ -77,11 +77,11 @@ export default class ClientProcess extends EventEmitter {
     this.stdin = null; // Pipe
     this.stdout = null; // Pipe
     this.stderr = null; // Pipe
-  
+
     // Tick callstacks
     this._setImmediateCallStack = [];
     this._nextTickCallStack = [];
-  
+
     this._tickTimeout = null;
 
     if (typeof window !== 'undefined') {
@@ -151,11 +151,11 @@ export default class ClientProcess extends EventEmitter {
     });
   }
 
-    /**
-   * Determines whether the process is ready for consumption as a service.
-   * 
-   * @return {boolean}
-   */
+  /**
+ * Determines whether the process is ready for consumption as a service.
+ * 
+ * @return {boolean}
+ */
   getIsReady() {
     return this._isReady;
   }
@@ -312,7 +312,7 @@ export default class ClientProcess extends EventEmitter {
       }
 
       // console.debug(`Executing ${this.getClassName()}`, this);
-      
+
       if (typeof this._cmd !== 'function') {
         console.warn(
           `"cmd" is not a function, ignoring passed launch command.  If writing
@@ -433,22 +433,22 @@ export default class ClientProcess extends EventEmitter {
     // setTimeout with 0 timeout value emulates tick functionality as
     // it won't start until the current stack frames have run
     this._tickTimeout = setTimeout(async () => {
-      // Prevent tick if process is stopped
-      if (this._isShuttingDown || this._isExited) {
-        return;
-      }
-
-      // Create a local copy of the call stacks
-      const nextTickCallStack = this._nextTickCallStack;
-      const lenNextTickCallStack = nextTickCallStack.length;
-
-      const setImmediateCallStack = this._setImmediateCallStack;
-      const lenSetImmediateCallStack = setImmediateCallStack.length;
-
-      // Clear class property call stacks
-      this._clearCallStacks();
-
       try {
+        // Prevent tick if process is stopped
+        if (this._isShuttingDown || this._isExited) {
+          return;
+        }
+
+        // Create a local copy of the call stacks
+        const nextTickCallStack = this._nextTickCallStack;
+        const lenNextTickCallStack = nextTickCallStack.length;
+
+        const setImmediateCallStack = this._setImmediateCallStack;
+        const lenSetImmediateCallStack = setImmediateCallStack.length;
+
+        // Clear class property call stacks
+        this._clearCallStacks();
+
         // Execute all nextTick()
         for (let i = 0; i < lenNextTickCallStack; i++) {
           const { callback /*, error*/ } = nextTickCallStack[i];
