@@ -464,6 +464,9 @@ export default class ClientProcess extends EventEmitter {
         }
 
         // Tell listeners a tick has been performed
+        // TODO: This may be emitted in the wrong place in the code.  If this is moved,
+        // add another event in its place and reassociate any existing listeners to the
+        // new event name.
         this.emit(EVT_TICK);
       } catch (exc) {
         throw exc;
