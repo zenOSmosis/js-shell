@@ -29,59 +29,20 @@ export default class DesktopLinkedState extends LinkedState {
       // The most recent active Desktop window
       activeWindow: null,
 
+      focusedDesktopChildGUIProcess: null,
+
       // URL redirect location
       redirectLocation: '/',
 
       // A list of currently running apps
       // TODO: Remove this from this list; use a new Process/LinkedState, or etc.
-      launchedApps: [],
+      // launchedApps: [],
 
       // The background image location of the Desktop
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
+      // Whether the browser window is focused or not
       isFocused: true
-    });
-  }
-
-  /**
-   * Registers a launched Desktop app.
-   * 
-   * Note, technically, this launches an app, however it's best to call
-   * app.launch().
-   *
-   * @param {App} app 
-   */
-  registerLaunchedApp(app) {
-    const { launchedApps } = this.getState();
-
-    launchedApps.push(app);
-
-    this.setState({
-      launchedApps
-    });
-  }
-
-  /**
-   * Unregisters a launched Desktop app.
-   * 
-   * Note, technically, this closes an app, however it's best to call
-   * app.launch().
-   * 
-   * @param {*} app 
-   */
-  unregisterLaunchedApp(app) {
-    let { launchedApps } = this.getState();
-
-    const appUUID = app.getUUID();
-
-    launchedApps = launchedApps.filter((testApp) => {
-      const testUUID = testApp.getUUID();
-
-      return appUUID !== testUUID;
-    });
-
-    this.setState({
-      launchedApps
     });
   }
 
@@ -92,8 +53,11 @@ export default class DesktopLinkedState extends LinkedState {
    * conflicts w/ DOM Window. 
    */
   setActiveWindow(activeWindow) {
+    console.warn('TODO: Redo setActiveWindow() handling work with DesktopChildGUIProcess');
+
     const { activeWindow: prevActiveWindow } = this.getState();
 
+    // If previous active window is not the current active window
     if (!Object.is(activeWindow, prevActiveWindow)) {
       this.setState({
         activeWindow
@@ -102,6 +66,8 @@ export default class DesktopLinkedState extends LinkedState {
   }
 
   getActiveWindow() {
+    console.warn('TODO: Remove getActiveWindow()');
+
     const { activeWindow } = this.getState();
 
     return activeWindow;
@@ -127,6 +93,18 @@ export default class DesktopLinkedState extends LinkedState {
     this.setState({
       contextMenuIsTrapping
     });
+  }
+
+  setFocusedDesktopChildGUIProcess(focusedDesktopChildGUIProcess) {
+    this.setState({
+      focusedDesktopChildGUIProcess
+    });
+  }
+
+  getFocuedDesktopChildGUIProcess() {
+    const { focusedDesktopChildGUIProcess } = this.state;
+
+    return focusedDesktopChildGUIProcess;
   }
 
   /**

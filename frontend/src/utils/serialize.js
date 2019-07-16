@@ -1,3 +1,5 @@
+/* eslint no-eval: 0 */
+
 import serialize from 'serialize-javascript';
 
 // @see https://www.npmjs.com/package/serialize-javascript#deserializing

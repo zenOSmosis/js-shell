@@ -1,11 +1,11 @@
-import AppRuntimeGUIProcess from 'process/AppRuntimeGUIProcess';
+import DesktopChildGUIProcess from 'process/DesktopChildGUIProcess';
 // import Window from 'components/Desktop/Window';
 
 // export const EVT_CONTENT_UPDATE = 'content-update';
 // export const EVT_TITLE_UPDATE = 'title-update';
 // export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
 
-export default class AppRuntime extends AppRuntimeGUIProcess {
+export default class AppRuntime extends DesktopChildGUIProcess {
   // TODO: Replace runProps w/ process API
   constructor(runProps) {
     if (typeof runProps !== 'object') {

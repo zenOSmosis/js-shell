@@ -158,11 +158,19 @@ const _PROTO_MENUS = (() => {
 })();
 
 class Menubar extends Component {
-  state = {
-    activeIdx: null
-  };
+  constructor(...args) {
+    super(...args);
 
-  _visibleChangeBatchTimeout = null;
+    this.state = {
+      activeIdx: null
+    };
+  
+    // this._visibleChangeBatchTimeout = null;
+  }
+
+  componentDidUpdate() {
+    console.debug('focusedDesktopChildGUIProcess', this.props.focusedDesktopChildGUIProcess);
+  }
 
   handleVisibleChange(idx, isVisible) {
     this.setState({
@@ -183,7 +191,7 @@ class Menubar extends Component {
   */
 
   render() {
-    const {activeIdx} = this.state;
+    const { activeIdx } = this.state;
 
     return (
       <ul className="zd-menubar">
@@ -226,9 +234,13 @@ class Menubar extends Component {
 }
 
 export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
-  const {activeWindow} = updatedState;
+  const { focusedDesktopChildGUIProcess } = updatedState;
 
-  if (activeWindow) {
-    console.warn('TODO: Handle Menubar app update for active window', activeWindow);
+  if (focusedDesktopChildGUIProcess) {
+    console.warn('TODO: Handle Menubar app update for focusedDesktopChildGUIProcess', focusedDesktopChildGUIProcess);
+
+    return {
+      focusedDesktopChildGUIProcess
+    };
   }
 });

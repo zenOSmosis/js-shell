@@ -1,3 +1,5 @@
+/* eslint no-eval: 0 */
+
 import EventEmitter from 'events';
 
 export const DONE = 'done';

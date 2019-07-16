@@ -6,6 +6,9 @@ import './ClientGUIProcess.typedef';
 export const EVT_GUI_PROCESS_FOCUS = 'focus';
 export const EVT_GUI_PROCESS_BLUR = 'blur';
 
+// Emits the first time the process' React component renders
+export const EVT_FIRST_RENDER = 'firstRender';
+
 export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
     super(...args);
@@ -15,22 +18,27 @@ export default class ClientGUIProcess extends ClientProcess {
     this._mountedReactComponent = null;
     this._Content = null;
     this._isFocused = false;
-    this._desktopMenubarData = null;
+    this._desktopMenubarData = null; 
     this._renderProps = {};
 
     this._ReactComponent = createClientGUIProcessReactComponent({
       guiProc: this,
+
       onMount: (component) => {
         this.setImmediate(() => {
           this._mountedReactComponent = component;
         })
       },
-      onUnmount: (component) => {
+
+      onUnmount: () => {
         this.setImmediate(() => {
           this._mountedReactComponent = null;
         });
       },
+      
       onDirectInteract: (evt) => {
+        console.warn('TODO: Re-enable evt propagation for onDirectInteract, but only call onDirectInteract on highest child');
+
         evt.stopPropagation();
 
         // TODO: Remove
@@ -42,6 +50,7 @@ export default class ClientGUIProcess extends ClientProcess {
         });
         */
 
+        // Automatically focus on direct interact
         this.focus();
       }
     });
@@ -86,17 +95,29 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._desktopMenubarData;
   }
 
-  setReactRenderer(Content) {
-    this.setImmediate(() => {
-      this._Content = Content;
-    });
-  }
-
   /**
    * Alias of this.setReactRenderer().
+   * 
+   * TODO: Rename both setContent and setReactRenderer into something better.
    */
   setContent(...args) {
     this.setReactRenderer(...args);
+  }
+
+  setReactRenderer(Content) {
+    let firstRender = false;
+    
+    if (!this._Content) {
+      firstRender = true;
+    }
+
+    this.setImmediate(() => {
+      this._Content = Content;
+
+      if (firstRender) {
+        this.emit(EVT_FIRST_RENDER);
+      }
+    });
   }
 
   /**

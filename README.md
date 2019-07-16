@@ -1,6 +1,6 @@
-# Shell
+# JS Shell
 
-A general-purpose, prototype, Desktop environment for JavaScript.
+A general-purpose, multi-threaded Desktop environment prototype for JavaScript.
 
 ## Potential Usage Scenarios
 
@@ -30,9 +30,7 @@ These are prioritized by importance.
 
 #### Medium Priority
 
-- [TODO] Integration of Greenlet (https://www.npmjs.com/package/greenlet) library for client-side, sub-thread processing.
 - [TODO] Use shell command from system information, instead of hardcoded "xterm".
-- [TODO] Run script which launches backend and frontend, concurrently.
 - [TODO] Docker frontend option.
 - [TODO] QR connection codes (for each network interface).
 - [TODO] Ability to connect client GUI to multiple systems.

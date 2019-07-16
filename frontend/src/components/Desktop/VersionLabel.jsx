@@ -1,5 +1,7 @@
 import React from 'react';
 
+const year = new Date().getFullYear();
+
 const VersionLabel = () => {
   return (
     <div style={{
@@ -12,10 +14,9 @@ const VersionLabel = () => {
 
     // TODO: Make this all dynamic
     >
-      JS Shell Evaluation<br />
-      Copyright &copy; 2019 zenOSmosis<br />
-      TODO: Add licensing information<br />
-      TODO: Add current git hash, etc.<br />
+      JS Shell Prototype<br />
+      Copyright &copy; { year } zenOSmosis<br />
+      TODO: Add git hash / version
     </div>
   );
 };

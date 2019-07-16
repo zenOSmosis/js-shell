@@ -31,6 +31,10 @@ export default class ShellDesktop extends ClientGUIProcess {
 
       registerCommonDesktopEventsHandler();
 
+      // TODO: Include provisioning for working with DesktopChildGUIProcess
+      // focus / blur functionality, including automatically focusing the
+      // Desktop if all DesktopChildGUIProcess instances are closed
+
       // Initialize the super
       await super._init();
     } catch (exc) {
