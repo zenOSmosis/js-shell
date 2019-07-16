@@ -9,7 +9,7 @@ const {
   Component,
   components
 } = this;
-const { IFrame, Window } = components;
+const { Window, AnalogVUMeter } = components;
 
 const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
   // TODO: Bundle Socket.io directly in Worker
@@ -111,46 +111,50 @@ const mic = new MicrophoneProcess(process,
   }
 );
 
-const vuMeter = new ClientGUIProcess(process, (guiProcess) => {
-  guiProcess.setContent(
-    // TODO: Create AnalogVUMeterComponent in components directory, and use here
-    // Dynamically set props for the VULevel, and internally send the postMessage
-    // via the component
-    class VUMeter extends Component {
+new ClientGUIProcess(process, (vuMeterProcess) => {
+  vuMeterProcess.setTitle('Analog VU Meter');
+
+  vuMeterProcess.setContent(
+    class VUMeterWrapper extends Component {
       constructor(...args) {
         super(...args);
 
         this._handleAudioWorkerStdctrl = this._handleAudioWorkerStdctrl.bind(this);
 
-        this._iFrame = null;
+        this._analogVUMeter = null;
+      }
+
+      setAnalogVUMeter(analogVUMeter) {
+        this._analogVUMeter = analogVUMeter;
       }
 
       componentDidMount() {
-        // console.debug('IFRAME', this._iFrame);
-
         audioWorker.stdctrl.on('data', this._handleAudioWorkerStdctrl);
       }
 
       componentWillUnmount() {
+        this._analogVUMeter = null;
         audioWorker.stdctrl.off('data', this._handleAudioWorkerStdctrl);
       }
 
       _handleAudioWorkerStdctrl(data) {
+        if (!this._analogVUMeter) {
+          return;
+        }
+
         const { ctrlName } = data;
 
         if (ctrlName === 'vuLevel') {
           const { ctrlData: vuLevel } = data;
 
-          this._iFrame.postMessage({
-            vuLevel
-          });
+          this._analogVUMeter.setVULevel(vuLevel);
         }
       }
 
       render() {
         return (
           <Window>
-            <IFrame ref={ c => this._iFrame = c } src="/components/analog-vu-meter" />
+            <AnalogVUMeter onMount={analogVUMeter => this.setAnalogVUMeter(analogVUMeter)} />
           </Window>
         )
       }
