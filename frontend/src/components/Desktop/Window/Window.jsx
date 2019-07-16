@@ -20,38 +20,6 @@ import WindowHeader from './Header';
 import animate from 'utils/animate';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-import {
-  WindowLifecycleEvents,
-  EVT_WINDOW_CREATED,
-  EVT_WINDOW_MOUNTED,
-
-  EVT_WINDOW_TITLE_WILL_SET,
-  EVT_WINDOW_TITLE_DID_SET,
-
-  EVT_WINDOW_WILL_ACTIVATE,
-  EVT_WINDOW_DID_ACTIVATE,
-
-  EVT_WINDOW_WILL_DEACTIVATE,
-  EVT_WINDOW_DID_DEACTIVATE,
-
-  EVT_WINDOW_WILL_MINIMIZE,
-  EVT_WINDOW_DID_MINIMIZE,
-
-  EVT_WINDOW_WILL_MAXIMIZE,
-  EVT_WINDOW_DID_MAXIMIZE,
-
-  EVT_WINDOW_WILL_CLOSE,
-  EVT_WINDOW_DID_CLOSE,
-
-  EVT_WINDOW_WILL_HIDE,
-  EVT_WINDOW_DID_HIDE,
-
-  EVT_WINDOW_WILL_UNHIDE,
-  EVT_WINDOW_DID_UNHIDE,
-
-  EVT_WINDOW_WILL_RESIZE,
-  EVT_WINDOW_DID_RESIZE
-} from './windowLifecycleEvents';
 import config from 'config';
 import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
@@ -116,28 +84,6 @@ export default class Window extends Component {
     windowStack.push(this);
 
     this.startDate = new Date();
-
-    this.lifecycleEvents = (() => {
-      const lifecycleEvents = new WindowLifecycleEvents(this);
-
-      // Override default broadcast handler
-      lifecycleEvents.broadcast = (() => {
-        const oBroadcast = lifecycleEvents.broadcast;
-
-        return (...args) => {
-          const eventName = args[0];
-          if (typeof this.props[`on${eventName}`] === 'function') {
-            this.props[`on${eventName}`](this);
-          }
-
-          return oBroadcast.apply(this.lifecycleEvents, args);
-        };
-      })();
-
-      return lifecycleEvents;
-    })();
-
-    this.lifecycleEvents.broadcast(EVT_WINDOW_CREATED);
   }
 
   async componentDidMount() {
@@ -159,7 +105,7 @@ export default class Window extends Component {
 
       await this.animate(EFFECT_CREATE);
 
-      this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+      // this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
 
       this.setState({
         ready: true
@@ -238,11 +184,11 @@ export default class Window extends Component {
       return;
     }
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
     this.setState({
       title
     }, () => {
-      this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
+      // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
     });
   }
 
@@ -272,7 +218,7 @@ export default class Window extends Component {
       return false;
     }
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
     // TODO: Use constant for active
     $(this._resizableBody).addClass('active'); // Affects outer draw shadow
@@ -281,7 +227,7 @@ export default class Window extends Component {
     desktopLinkedState.setActiveWindow(this);
     this._isActive = true;
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   // TOD: Rename to blur()
@@ -290,14 +236,14 @@ export default class Window extends Component {
       return false;
     }
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
 
     // TODO: Use constant for active
     $(this._resizableBody).removeClass('active'); // Affects outer draw shadow
     $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
     this._isActive = false;
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
+   //  this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
   }
 
   async toggleHide() {
@@ -307,24 +253,24 @@ export default class Window extends Component {
   }
 
   async hide() {
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_HIDE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_HIDE);
 
     // TODO: display: none
 
     alert('hide');
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
   }
 
   async unhide() {
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_UNHIDE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_UNHIDE);
 
     // TODO: display: block
 
     // TODO: Handle accordingly
     alert('unhide');
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
   }
 
   async toggleMinimize() {
@@ -334,13 +280,13 @@ export default class Window extends Component {
   }
 
   async minimize() {
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
 
     await this.animate(EFFECT_MINIMIZE);
 
     await this.hide();
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
   }
 
   async toggleMaximize() {
@@ -350,7 +296,7 @@ export default class Window extends Component {
   }
 
   async maximize() {
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
     // TODO: Handle accordingly
     alert('maximize');
@@ -361,7 +307,7 @@ export default class Window extends Component {
     // Height = Background height - (Dock height + Dock buffer) - Upper panel height ( + Upper panel buffer)
     // Top = Upper panel height + (Upper panel buffer)
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MAXIMIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MAXIMIZE);
   }
 
   /**
@@ -425,7 +371,7 @@ export default class Window extends Component {
 
     // this.bodyCover.setIsVisible(true);
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
 
     $(this.windowBody).css({
       width: width,
@@ -434,7 +380,7 @@ export default class Window extends Component {
 
     // this.bodyCover.setIsVisible(false);
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
   }
 
   /*
@@ -635,11 +581,11 @@ export default class Window extends Component {
       return;
     }
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
 
     this.isClosed = true;
 
-    this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close event detach', {
       appRegistration
