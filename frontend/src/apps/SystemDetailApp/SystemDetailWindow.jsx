@@ -6,28 +6,11 @@ import { Layout, Content, Footer } from 'components/Layout';
 import Scrollable from 'components/Scrollable';
 import Environment from './subPanes/Environment';
 import Processes from './subPanes/Processes';
-import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
-import hocConnect from 'state/hocConnect';
+import SystemDetailFooter from './SystemDetailFooter';
 
 const TAB_SYSTEM_OVERVIEW = 'system-overview';
 const TAB_PROCESSES = 'processes';
 const TAB_ENVIRONMENT = 'environment';
-
-const ClientPressure = (props = {}) => {
-  return (
-    <span>{props.percent} %</span>
-  );
-}
-
-const ConnectedClientPressure = hocConnect(ClientPressure, CPUTimeLinkedState, (updatedState) => {
-  const { cpusLevels } = updatedState;
-
-  if (cpusLevels && cpusLevels[0]) {
-    return {
-      percent: cpusLevels[0]
-    }
-  }
-});
 
 export default class SystemDetailWindow extends Component {
   constructor(...args) {
@@ -98,7 +81,7 @@ export default class SystemDetailWindow extends Component {
             </Scrollable>
           </Content>
           <Footer>
-            Main Thread CPU Usage: <ConnectedClientPressure />
+            <SystemDetailFooter />
           </Footer>
         </Layout>
       </Window>
