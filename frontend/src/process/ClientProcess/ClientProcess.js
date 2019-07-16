@@ -265,7 +265,7 @@ export default class ClientProcess extends EventEmitter {
   }
 
   getTitle() {
-    return this._title;
+    return this._title || this.getClassName();
   }
 
   /**

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ClientGUIProcess from './ClientGUIProcess';
+import './ClientGUIProcess.typedef';
 
 /**
  * Dynamically creates a ClientGUIProcessReactComponent class using the given
@@ -8,26 +9,30 @@ import ClientGUIProcess from './ClientGUIProcess';
  * Note: This is dynamically created as a HOC component in order to use the
  * resulting component as a <ClientGUIProcessReactComponent /> tag.
  * 
- * @param {ClientGUIProcess} proc 
+ * @param {GUIProcessReactComponentParams} procParams 
  */
-const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
-  if (!(proc instanceof ClientGUIProcess)) {
-    throw new Error('proc must be a ClientGUIProcess instance');
+const createClientGUIProcessReactComponent = (procParams) => {
+  const { guiProc, onMount, onUnmount, onDirectInteract } = procParams;
+
+  if (!(guiProc instanceof ClientGUIProcess)) {
+    throw new Error('guiProc must be a ClientGUIProcess instance');
   }
+
+  const pid = guiProc.getPID();
 
   /**
    * React rendering component for ClientGUIProcess instances.
    */
   class ClientGUIProcessReactComponent extends Component {
-    state = {
-      Content: null
-    };
-
     constructor(props) {
       super(props);
 
-      if (typeof props.handleDirectInteract !== 'function') {
-        console.warn('handleDirectInteract not available as a function');
+      this.state = {
+        Content: null
+      };
+
+      if (typeof onDirectInteract !== 'function') {
+        console.warn('onDirectInteract not available as a function');
       }
 
       this._Content = null;
@@ -37,7 +42,7 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
     componentDidMount() {
       this._isMounted = true;
 
-      console.warn('TODO: Handle process notification of mount', proc);
+      console.warn('TODO: Handle process notification of mount', guiProc);
 
       if (typeof onMount === 'function') {
         onMount(this);
@@ -47,7 +52,7 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
     componentWillUnmount() {
       this._isMounted = false;
 
-      console.warn('TODO: Handle process notification of unmount', proc);
+      console.warn('TODO: Handle process notification of unmount', guiProc);
 
       if (typeof onUnmount === 'function') {
         onUnmount(this);
@@ -69,7 +74,6 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
 
     render() {
       const {
-        handleDirectInteract,
         ...propsRest
       } = this;
 
@@ -78,10 +82,11 @@ const createClientGUIProcessReactComponent = (proc, onMount, onUnmount) => {
       return (
         <div
           // ref={c => this._el = c}
-          onMouseDown={handleDirectInteract}
-          onTouchStart={handleDirectInteract}
+          onMouseDown={onDirectInteract}
+          onTouchStart={onDirectInteract}
           style={{ display: 'inline-block' }}
-          data-proc-pid={proc.getPID()}
+
+          data-proc-pid={pid} // For debugging
         >
           {
             Content &&

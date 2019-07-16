@@ -1,6 +1,10 @@
 // import React, { Component } from 'react';
 import ClientProcess, { EVT_TICK } from '../ClientProcess';
 import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
+import './ClientGUIProcess.typedef';
+
+export const EVT_GUI_PROCESS_FOCUS = 'focus';
+export const EVT_GUI_PROCESS_BLUR = 'blur';
 
 export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
@@ -14,20 +18,33 @@ export default class ClientGUIProcess extends ClientProcess {
     this._desktopMenubarData = null;
     this._renderProps = {};
 
-    // TODO: Move this to _init
-    this._ReactComponent = createClientGUIProcessReactComponent(this,
-      /* onMount */ (component) => {
+    this._ReactComponent = createClientGUIProcessReactComponent({
+      guiProc: this,
+      onMount: (component) => {
         this.setImmediate(() => {
           this._mountedReactComponent = component;
-        });
+        })
       },
-      
-      /* onUnmount */ (component) => {
+      onUnmount: (component) => {
         this.setImmediate(() => {
           this._mountedReactComponent = null;
         });
+      },
+      onDirectInteract: (evt) => {
+        evt.stopPropagation();
+
+        // TODO: Remove
+        /*
+        console.debug('direct interact', {
+          evt,
+          guiProcess: this,
+          title: this.getTitle()
+        });
+        */
+
+        this.focus();
       }
-    );
+    });
 
     this.on(EVT_TICK, () => {
       // Mount Content, if available, and not already mounted
@@ -36,16 +53,6 @@ export default class ClientGUIProcess extends ClientProcess {
       }
     });
   }
-
-  /*
-  async _init() {
-    try {
-      await super._init();
-    } catch (exc) {
-      throw exc;
-    } 
-  }
-  */
 
   /*
   setIcon(iconComponent) {
@@ -132,7 +139,7 @@ export default class ClientGUIProcess extends ClientProcess {
    * Sets whether or not this process' React.Component has top priority in the
    * UI (e.g. if a Window, this Window would be the currently focused Window).
    * 
-   * IMPORTANT: Handling of dynamically blurring other instances is not handled
+   * Important! Handling of dynamically blurring other instances is not handled
    * directly in here.
    * 
    * @param {boolean} isFocused 
@@ -151,6 +158,12 @@ export default class ClientGUIProcess extends ClientProcess {
 
     this.setImmediate(() => {
       this._isFocused = isFocused;
+
+      if (isFocused) {
+        this.emit(EVT_GUI_PROCESS_FOCUS);
+      } else {
+        this.emit(EVT_GUI_PROCESS_BLUR);
+      }
     });
   }
 
@@ -172,7 +185,7 @@ export default class ClientGUIProcess extends ClientProcess {
     // Allow view to unset before calling super.kill().
     // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
     // this.setImmediate(async () => {
-      await super.kill(killSignal);
+    await super.kill(killSignal);
     // });
   }
 }
