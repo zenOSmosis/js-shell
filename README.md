@@ -1,66 +1,18 @@
 # JS Shell
 
-A general-purpose, multi-threaded Desktop environment prototype for JavaScript.
+General-purpose, multi-threaded, computing environment for web browsers and tablets, with stdio bindings into a Node.js server over a Socket.io bridge.
 
-## Potential Usage Scenarios
+It is like a virtual desktop into a Docker / Linux server, though the desktop is not streamed (only file / data I/O), and the execution context is pure JavaScript.
 
- - "See inside" a Docker container / remote server.
- - Launch applications with custom environment (e.g. launch Linux applications attached to a GPU).
- - Launch and control remote applications on a remote device.
- - Control hardware / software configuration remotely.
- - Use a computer remotely.
- - Desktop application streaming.
+The Shell GUI frontend will have full local user privileges (and can be elevated) into the Docker / Linux server it is bound to.
 
-## Current State
+## Current Development State
 
-Redundant & messy.
+Sloppy.
 
-## TODO / Bugs
+## Building
 
-These are prioritized by importance.
-
-### General
-
-#### High Priority
-
-- [TODO] Decide proper package license; update package.json accordingly.
-- [TODO] Implement user account security!
-- [TODO] Implement HTTPS encryption for web interface (w/ user account security).
-- [TODO] Attribution screen.
-
-#### Medium Priority
-
-- [TODO] Use shell command from system information, instead of hardcoded "xterm".
-- [TODO] Docker frontend option.
-- [TODO] QR connection codes (for each network interface).
-- [TODO] Ability to connect client GUI to multiple systems.
-- [TODO] Finish implementing system information library.
-- [TODO] Navigate and open Chrome bookmarks.
-- [TODO] Implement ability to open app with options (e.g. Chrome: Regular / Chrome Incognito Modes).
-- [TODO] Implement ability to monitor and close processes.
-- [TODO] Include more directories for freedesktop scans (not currently grabbing base Chrome & Firefox apps).
-- [TODO] Implement sending of file name (as header) as specified in file request.
-
-#### Low Priority 
-
-- [TODO] Dual desktop
-- [TODO] Use logger (e.g. Winston)
-- [TODO] Sniffing environment variables of a currently opened program.
-- [TODO] Implement 3D transition library.
-- [TODO] Audio mixing (Ubuntu: amixer / pactl / pacmd; https://unix.stackexchange.com/questions/21089/how-to-use-command-line-to-change-volume)
-- [TODO] Multimedia controls & viewing
-- [TODO] Client microphone capture / server audio redirection.
-
-#### Missing icons
-
-- [TODO] Hard disk icon: https://www.flaticon.com/free-icon/hard-disk_64481#term=disk&page=2&position=10
-- [TODO] Network icon
-
-## Features
-
-- Freedesktop.org-based menu parser and automated icon selector.
-- Ability to select a GPU to run a program with (if available).
-- Ability to launch, and monitor execution of, programs from a phone, tablet, or other computer.
+Build instructions are not avialable at this time, however it uses a Docker Compose configuration.
 
 ## Optional
 
