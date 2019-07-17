@@ -1,4 +1,4 @@
-const {fetchSystemInformation, SYSINFO_MODE_BLOCKDEVICES, SYSINFO_MODE_DISKSIO, SYSINFO_MODE_FSSIZE, SYSINFO_MODE_FSSTATS, SYSINFO_MODES} = require('../utils/systemInformation');
+const {fetchSystemInformation, SYSINFO_MODE_BLOCKDEVICES, SYSINFO_MODE_DISKSIO, SYSINFO_MODE_FSSIZE, SYSINFO_MODE_FSSTATS, SYSINFO_MODES} = require('../src/utils/systemInformation');
 
 (async () => {
   try {

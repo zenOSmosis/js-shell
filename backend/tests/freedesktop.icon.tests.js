@@ -1,4 +1,4 @@
-const iconUtils = require('../utils/freedesktop.org/iconUtils');
+const iconUtils = require('../src/utils/freedesktop.org/iconUtils');
 
 /*
 (async () => {

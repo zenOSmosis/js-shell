@@ -1,4 +1,4 @@
-const {ls, chdir} = require('../utils/fileSystem');
+const {ls, chdir} = require('../src/utils/fileSystem');
 
 (async () => {
   const paths = await ls('/home/jeremy');
