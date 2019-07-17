@@ -3,8 +3,8 @@ import ClientGUIProcess from './ClientGUIProcess';
 import './ClientGUIProcess.typedef';
 
 /**
- * Dynamically creates a ClientGUIProcessReactComponent class using the given
- * ClientGUIProcess.
+ * Dynamically creates a ClientGUIProcessReactComponent class as a HOC using
+ * the given ClientGUIProcess.
  * 
  * Note: This is dynamically created as a HOC component in order to use the
  * resulting component as a <ClientGUIProcessReactComponent /> tag.
