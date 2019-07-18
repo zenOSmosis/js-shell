@@ -16,6 +16,14 @@ Sloppy.
 
 Build instructions are not avialable at this time, however it uses a Docker Compose configuration.
 
+It can be preliminarily spun up by executing:
+
+```
+docker-compose up
+```
+
+However, currently, it is all configured for development, and there are currently no install scripts, so npm packages need to manually installed in the relevant directories (e.g. backend / frontend).
+
 ## Optional
 
 ### Linux (Ubuntu / Debian) Temperature
