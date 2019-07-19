@@ -219,6 +219,9 @@ export default class ClientProcess extends EventEmitter {
         console.warn('Unhandled cmd type:', (typeof cmd));
       }
     } catch (exc) {
+      // TODO: Determine if uncaughtException or unhandledRejection & emit
+      // corresponding process event with the error
+      // TODO: Don't rethrow
       throw exc;
     }
   }

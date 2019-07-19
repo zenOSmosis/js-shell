@@ -1,6 +1,6 @@
 # TODO: Use these strictly in development (extend from production config)
 
-# Linux Shell Docker Compose Development Configuration
+# JS Shell Docker Compose Development Configuration
 
 version: '3.1'
 services:

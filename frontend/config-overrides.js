@@ -1,3 +1,7 @@
+// @see https://github.com/zertosh/v8-compile-cache#readme
+// @see [further reading] https://medium.com/@felixrieseberg/javascript-on-the-desktop-fast-and-slow-2b744dfb8b55
+require('v8-compile-cache');
+
 // Override create-react-app webpack configs without ejecting
 // @see https://github.com/timarney/react-app-rewired
 

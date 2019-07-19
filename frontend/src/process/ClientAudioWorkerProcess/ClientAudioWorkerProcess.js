@@ -26,8 +26,9 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
     return audioBlob;
   }
 
-  // TODO: Doc from Amazon Lex(?)
   /**
+   * Converts Float32Array to signed Int16Array.
+   * 
    * @param {Float32Array} float32Array A mono (1 channel) RAW audio container
    */
   float32ToInt16(float32Array) {
@@ -41,12 +42,16 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
     return i16.buffer;
   }
 
-  // TODO: Doc from IBM Watson
-  // TODO: Acquire inputSampleRate & outputSampleRate from this.options, if they are
-  // not set throw an error
   /**
+   * Downsamples given Float32Array to this class' outputSampleRate options.
+   * 
+   * TODO: Force outputSampleRate to be 16000 for filtering?
+   * 
+   * Code implementation borrowed from IBM Watson:
+   * @see https://github.com/watson-developer-cloud/speech-javascript-sdk/blob/master/speech-to-text/webaudio-l16-stream.js
    * 
    * @param {Float32Array} float32Array A mono (1 channel) RAW audio container
+   * @return {Float32Array} Downsampled audio data
    */
   downsampleL16(float32Array) {
     const { inputSampleRate, outputSampleRate } = this._options;
@@ -78,7 +83,7 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
     }
     // Downsampling and low-pass filter:
     // Input audio is typically 44.1kHz or 48kHz, this downsamples it to 16kHz.
-    // It uses a FIR (finite impulse response) Filter to remove (or, at least attinuate) 
+    // It uses a FIR (finite impulse response) filter to remove (or, at least attinuate) 
     // audio frequencies > ~8kHz because sampled audio cannot accurately represent  
     // frequiencies greater than half of the sample rate. 
     // (Human voice tops out at < 4kHz, so nothing important is lost for transcription.)
@@ -148,7 +153,7 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
   }
 
   // TODO: Verify this is the correct algorithm
-  // @see // @see https://stackoverflow.com/questions/2917762/android-pcm-bytes
+  // @see https://stackoverflow.com/questions/2917762/android-pcm-bytes
   getDB(rms) {
     const db = 20 * Math.log(rms) / Math.log(10);
 
@@ -156,6 +161,7 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
   }
 
   /**
+   * Retrieves the maximum value in the given Int16Array.
    * 
    * @param {Int16Array} i16Array 
    */

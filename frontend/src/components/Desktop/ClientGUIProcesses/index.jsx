@@ -4,6 +4,7 @@ import ProcessLinkedState from 'state/ProcessLinkedState';
 import hocConnect from 'state/hocConnect';
 import Cover from 'components/Cover';
 import ShellDesktop from 'core/ShellDesktop';
+import equal from 'equals';
 
 // import Window from 'components/Desktop/Window';
 
@@ -57,11 +58,29 @@ class ClientGUIProcesses extends Component {
   }
 }
 
-// @see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/withRouter.md
-export default hocConnect(ClientGUIProcesses, ProcessLinkedState, (updatedState, fullState) => {
-  const { guiProcesses } = fullState;
+export default (() => {
+  let prevPIDs = [];
 
-  return {
-    guiProcesses,
-  };
-});
+  return hocConnect(ClientGUIProcesses, ProcessLinkedState, (updatedState) => {
+    const { guiProcesses } = updatedState;
+
+    if (typeof guiProcesses !== 'undefined') {
+      const guiProcessIDs = guiProcesses.map(guiProc => {
+        return guiProc.getPID();
+      });
+
+      console.warn({
+        prevPIDs,
+        guiProcessIDs
+      });
+    
+      if (!equal(prevPIDs, guiProcessIDs)) {
+        prevPIDs = guiProcessIDs;
+
+        return {
+          guiProcesses
+        };
+      }
+    }
+  });
+})();

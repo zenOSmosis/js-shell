@@ -27,6 +27,7 @@ export default class DesktopLinkedState extends LinkedState {
       },
 
       // The most recent active Desktop window
+      // TODO: Merge handling of active Window & focusedDesktopChildGUIProcess
       activeWindow: null,
 
       focusedDesktopChildGUIProcess: null,

@@ -1,5 +1,8 @@
 import RegistryLinkedState, { EVT_LINKED_STATE_UPDATE } from './RegistryLinkedState';
-import AppRegistration from 'core/AppRegistration';
+
+// This is not includable as it would introduce a circular dependency
+// TODO: How to validate against this type w/o actually including this type?
+// import AppRegistration from 'core/AppRegistration';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -22,9 +25,11 @@ export default class AppRegistryLinkedState extends RegistryLinkedState {
    */
   addAppRegistration(appRegistration) {
     // Validate appRegistration type
+    /*
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration must be an AppRegistration');
     }
+    */
 
     super.addRegistration(appRegistration);
   }

@@ -98,7 +98,8 @@ export default class ClientGUIProcess extends ClientProcess {
   /**
    * Alias of this.setReactRenderer().
    * 
-   * TODO: Rename both setContent and setReactRenderer into something better.
+   * TODO: Rename both setContent and setReactRenderer to setReactComponent,
+   * and don't use alias method
    */
   setContent(...args) {
     this.setReactRenderer(...args);

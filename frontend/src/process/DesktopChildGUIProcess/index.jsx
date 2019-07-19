@@ -2,6 +2,7 @@ import ClientGUIProcess, {
   EVT_GUI_PROCESS_FOCUS,
   EVT_FIRST_RENDER
 } from '../ClientGUIProcess';
+import { EVT_BEFORE_EXIT } from '../ClientProcess';
 import { commonDesktopLinkedState } from 'state/commonLinkedStates';
 
 let focusedGUIProcess = null;
@@ -34,8 +35,14 @@ export default class DesktopChildGUIProcess extends ClientGUIProcess {
         }
   
         focusedGUIProcess = this;
-  
         commonDesktopLinkedState.setFocusedDesktopChildGUIProcess(this);
+      });
+
+      this.once(EVT_BEFORE_EXIT, () => {
+        if (Object.is(this, focusedGUIProcess)) {
+          focusedGUIProcess = null;
+          commonDesktopLinkedState.setFocusedDesktopChildGUIProcess(null);
+        }
       });
 
       await super._init();

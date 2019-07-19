@@ -12,6 +12,7 @@
     "bootstrap": "^4.3.1",
     "browserslist": "^4.6.3",
     "caniuse-lite": "^1.0.30000974",
+    "equals": "^1.0.5",
     "fast-safe-stringify": "^2.0.6",
     "jquery": "^3.4.1",
     "jsoneditor": "^5.32.5",
@@ -38,6 +39,7 @@
     "stacktrace-js": "^2.0.0",
     "text-ellipsis": "^1.0.3",
     "uuid": "^3.3.2",
+    "v8-compile-cache": "^2.0.3",
     "webamp": "^1.4.0",
     "worker-loader": "^2.0.0",
     "xterm": "^3.13.1"

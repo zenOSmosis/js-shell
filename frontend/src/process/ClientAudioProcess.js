@@ -143,7 +143,6 @@ export default class ClientAudioProcess extends ClientProcess {
     });
   }
 
-
   /**
    * @return {Promise<{}>}
    */

@@ -6,15 +6,28 @@
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from './DesktopLinkedState';
 import AppRegistryLinkedState from './AppRegistryLinkedState';
 import SocketLinkedState from './SocketLinkedState';
-import blockLinkedStateDestruction from 'utils/blockLinkedStateDestruction';
+
+/**
+ * Prevents a LinkedState instance from being able to be destroyed, by
+ * overriding the destroy method usage with a thrown error.
+ * 
+ * @param {LinkedState} linkedStateInstance 
+ */
+const blockLinkedStateDestruction = (linkedStateInstance) => {
+  linkedStateInstance.destroy = () => {
+    throw new Error('Cannot destroy this LinkedState instance', linkedStateInstance);
+  };
+};
 
 /**
  * Constructs a new LinkedState instance, blocking it from being able to be
  * destructed.
  * 
- * TODO: Replace blockLinkedStateDestruction w/ this function.
+ * TODO: Replace blockLinkedStateDestruction (if present elsewhere) w/ this function.
  * 
- * @param {*} LinkedStateClass 
+ * @param {LinkedState} LinkedStateClass Important!  This should NOT be an
+ * instance of LinkedState, but the class itself.
+ * @return {LinkedState} A constructed instance of the LinkedState
  */
 const createPersistentLinkedState = (LinkedStateClass) => {
   const instance = new LinkedStateClass();
