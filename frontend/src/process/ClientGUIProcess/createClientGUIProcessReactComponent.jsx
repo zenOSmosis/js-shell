@@ -68,6 +68,17 @@ const createClientGUIProcessReactComponent = (procParams) => {
       });
     }
 
+    /**
+     * Replaces the content w/ an empty div tag.
+     */
+    empty() {
+      this.setContent(() => {
+        return (
+          <div></div>
+        );
+      });
+    }
+
     render() {
       const {
         ...propsRest

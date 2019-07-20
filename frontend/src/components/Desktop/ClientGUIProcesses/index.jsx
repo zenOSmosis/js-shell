@@ -15,16 +15,6 @@ import equal from 'equals';
  * Note: This should be treated as a singleton, having only one instance.
  */
 class ClientGUIProcesses extends Component {
-  _onInteract = (evt) => {
-    const { onDirectInteract } = this.props;
-
-    if (typeof onDirectInteract === 'function') {
-      if (evt.target === this._el) {
-        onDirectInteract(evt);
-      }
-    }
-  }
-
   render() {
     let { guiProcesses } = this.props;
     guiProcesses = guiProcesses || [];
@@ -37,6 +27,8 @@ class ClientGUIProcesses extends Component {
     return (
       <Cover>
         {
+          // TODO: Append to container from a different lifecycle method if
+          // this causes unnecessary rendering cycles
           guiProcesses.map((proc) => {
             const ProcessRenderComponent = proc.getReactComponent();
             if (!ProcessRenderComponent) {
@@ -48,7 +40,6 @@ class ClientGUIProcesses extends Component {
             return (
               <ProcessRenderComponent
                 key={pid}
-                // style={{position: 'absolute'}}
               />
             )
           })

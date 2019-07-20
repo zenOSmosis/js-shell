@@ -15,7 +15,7 @@ export default class ClientGUIProcess extends ClientProcess {
 
     this._isGUIProcess = true;
     this._ReactComponent = null;
-    this._mountedReactComponent = null;
+    this._mountedReactComponent = null; // TODO: Rename to wrappedReactComponent, or something similar
     this._Content = null;
     this._isFocused = false;
     this._desktopMenubarData = null; 
@@ -27,7 +27,7 @@ export default class ClientGUIProcess extends ClientProcess {
       onMount: (component) => {
         this.setImmediate(() => {
           this._mountedReactComponent = component;
-        })
+        });
       },
 
       onUnmount: () => {
@@ -200,14 +200,20 @@ export default class ClientGUIProcess extends ClientProcess {
   }
 
   async kill(killSignal = 0) {
-    // TODO: Remove the component from the DOM
-    console.warn('TODO: Remove the component from the DOM');
-    // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
-
-    // Allow view to unset before calling super.kill().
-    // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
-    // this.setImmediate(async () => {
-    await super.kill(killSignal);
-    // });
+    try {
+      if (this._mountedReactComponent) {
+        this._mountedReactComponent.empty();
+      }
+  
+      // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
+  
+      // Allow view to unset before calling super.kill().
+      // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
+      // this.setImmediate(async () => {
+      await super.kill(killSignal);
+      // }); 
+    } catch (exc) {
+      throw exc;
+    }
   }
 }
