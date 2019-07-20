@@ -41,7 +41,7 @@ export default class ClientJITRuntime extends ClientProcess {
   /**
    * Sets the context (scope) of the code.
    * 
-   * @param {Object} context 
+   * @param {object} context 
    */
   setContext(context) {
     if (Object.keys(this._context).length) {
@@ -62,7 +62,7 @@ export default class ClientJITRuntime extends ClientProcess {
   }
 
   /**
-   * @param {String} code
+   * @param {string} code
    * @return {Promise<String>} Transformed output 
    */
   async compile(code, babelCompilerWorker) {
@@ -123,7 +123,7 @@ export default class ClientJITRuntime extends ClientProcess {
   /**
    * Wraps code in an enclosure w/ modified access to the outer scope.
    * 
-   * @param {String} code
+   * @param {string} code
    */
   _evalInProtectedContext(code) {
     const context = this._context;

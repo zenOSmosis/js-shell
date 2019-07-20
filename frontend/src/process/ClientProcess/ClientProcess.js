@@ -2,9 +2,12 @@
 
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
+import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import ClientProcessPipe from './ClientProcessPipe';
+import CPUThreadTimer, { EVT_CYCLE as CPU_THREAD_CLOCK_CYCLE } from './CPUThreadTimer';
 import makeCallback from './makeCallback';
 import evalInContext from 'utils/evalInContext';
+import getNow from 'utils/time/getNow';
 
 import {
   EVT_READY,
@@ -18,31 +21,61 @@ import {
   PIPE_NAMES
 } from './constants';
 
+// Keeps track of running processes
 const processLinkedState = new ProcessLinkedState();
 
-// The process id of the next process
-let nextPID = 0;
+const cpuTimeLinkedState = new CPUTimeLinkedState();
+
+// The process id of the next process (auto-incremented in the ClientProcess
+// constructor)
+let nextPID = 1;
+
+// The first process in the thread
+let rootProcess = null;
 
 /**
- * TODO: Document...
+ * An object-oriented way of managing client-side processes, somewhat
+ * resembling a simplified version of Node.js processes.
+ * 
+ * Multiple, green-threaded, ClientProcess instances can be run on the main
+ * thread, and ClientProcess extensions such as ClientWorkerProcess act
+ * a server-client model when running Web Workers, where the controller runs
+ * on the main thread, which controls the relevant Worker thread.
  */
 export default class ClientProcess extends EventEmitter {
+  /**
+   * 
+   * @param {ClientProcess | boolean} parentProcess If false is passed and
+   * there is already a root process, the root process will be utilized as
+   * the parent. 
+   * @param {Function} cmd 
+   * @param {object} options 
+   */
   constructor(parentProcess, cmd, options = {}) {
     super();
 
-    this._pid = (() => {
-      nextPID++;
+    if (!rootProcess) {
+      rootProcess = this;
+    }
 
-      return nextPID;
-    })();
+    this._isRootProcess = (Object.is(this, rootProcess));
+    this._rootThreadTimer = null;
+    this._handleCPUThreadCycle = this._handleCPUThreadCycle.bind(this);
+
+    this._pid = nextPID;
+
+    // Increment nextPID for the next process
+    ++nextPID;
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
       throw new Error('Cannot fork from an exited process');
     } else if (typeof parentProcess === 'undefined') {
       throw new Error('parentProcess must be set');
+    } else if (!rootProcess) {
+      throw new Error('rootProcess not internally set!');
     } else if (parentProcess === false) {
-      parentProcess = null;
+      parentProcess = rootProcess;
     }
 
     this._parentProcess = parentProcess;
@@ -68,9 +101,8 @@ export default class ClientProcess extends EventEmitter {
 
     this._isGUIProcess = false;
     this._cmd = cmd;
-    this._startDate = new Date(); // TODO: Rename, and rework, to _startTime
+    this._startTime = getNow();
     this._options = options;
-    this._startDate = null;
     this._serviceURI = null;
 
     // STDIO pipes
@@ -123,6 +155,10 @@ export default class ClientProcess extends EventEmitter {
     try {
       return await new Promise(async (resolve, reject) => {
         try {
+          if (this._isRootProcess) {
+            await this._initRootProcess();
+          }
+
           // Automatically launch
           await this._launch();
 
@@ -140,6 +176,77 @@ export default class ClientProcess extends EventEmitter {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * Initializes the first process in a thread.  Called internally by
+   * this._init() if first process.
+   */
+  async _initRootProcess() {
+    try {
+      if (!this._isRootProcess) {
+        throw new Error('_initRootProcess called on non-root process');
+      }
+
+      // Init root thread timer
+      (() => {
+        this._rootThreadTimer = new CPUThreadTimer();
+
+        this._rootThreadTimer.on(CPU_THREAD_CLOCK_CYCLE, this._handleCPUThreadCycle);
+
+        this._initCPUThreadRootProcess();
+  
+        // Automatically stop the timer when exiting the process
+        this.on(EVT_BEFORE_EXIT, () => {
+          this._rootThreadTimer.stop();
+  
+          this._rootThreadTimer = null;
+        });
+      })();
+
+      // Main thread handling
+      /*
+      if (this._threadType === THREAD_TYPE_MAIN) {
+        this.on(EVT_BEFORE_EXIT, () => {
+           // Automatically reload window, if DOM & closing root process
+          window.location.reload();
+        });
+      }
+      */
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * Important!  This should only be called from the first process, and any
+   * Worker controller processes.
+   */
+  _initCPUThreadRootProcess() {
+    cpuTimeLinkedState.addThreadRootProcess(this);
+
+    this.on(EVT_BEFORE_EXIT, () => {
+      cpuTimeLinkedState.removeThreadRootProcess(this);
+    });
+  }
+
+  /**
+   * Internally called in the root process, as well as Web Worker controllers,
+   * in order to pass CPU usage for relevant threads to LinkedState.
+   * 
+   * Important!  This should only be called from the first process, and any
+   * Worker controller processes.
+   * 
+   * @param {Number} cpuThreadUsagePercent 
+   */
+  _handleCPUThreadCycle(cpuThreadUsagePercent) {
+    // TODO: Build out
+    /*console.debug({
+      root: this,
+      cpuThreadUsagePercent
+    });
+    */
+    cpuTimeLinkedState.setCPUThreadUsagePercent(this, cpuThreadUsagePercent);
   }
 
   /**
@@ -181,6 +288,10 @@ export default class ClientProcess extends EventEmitter {
         reject(exc);
       }
     });
+  }
+
+  getIsRootProcess() {
+    return this._isRootProcess;
   }
 
   /**
@@ -229,7 +340,7 @@ export default class ClientProcess extends EventEmitter {
   /**
    * Sets process options, merging new options into existing.
    * 
-   * @param {Object} options 
+   * @param {object} options 
    */
   setOptions(options = {}) {
     // Set options on current tick
@@ -242,7 +353,7 @@ export default class ClientProcess extends EventEmitter {
   /**
    * Retrieves current process options.
    * 
-   * @return {Object}
+   * @return {object}
    */
   getOptions() {
     return this._options;
@@ -295,7 +406,7 @@ export default class ClientProcess extends EventEmitter {
    * 
    * Note, GUI processes are only available on the main thread.
    * 
-   * @return {Boolean}
+   * @return {boolean}
    */
   getIsGUIProcess() {
     return this._isGUIProcess;
@@ -493,8 +604,14 @@ export default class ClientProcess extends EventEmitter {
     return this._serviceURI;
   }
 
-  getStartDate() {
-    return this._startDate;
+  getStartTime() {
+    return this._startTime;
+  }
+
+  getUptime() {
+    const now = getNow();
+
+    return now - this._startTime;
   }
 
   /*
@@ -508,12 +625,24 @@ export default class ClientProcess extends EventEmitter {
     return className;
   }
 
-  /**
-   * Alias for this.kill().
-   */
   async close() {
     try {
-      return await this.kill();
+      // TODO: Handle any checks to determine if process can be safely closed
+      // this.emit(EVT_CLOSE_REQUEST);
+
+      /**
+       * A Promise is awaited for here to help ensure the proper value of this._shouldImmediatelyClose 
+       * @return {Promise<boolean>} Whether the process should close
+       */
+       const shouldClose = await new Promise((resolve) => {  
+        console.warn('TODO: Implement shouldClose functionality');
+        return resolve(true);
+        // return resolve(this._shouldImmediatelyClose);
+      });
+      
+      if (shouldClose) {
+        return await this.kill();
+      }
     } catch (exc) {
       throw exc;
     }
@@ -529,14 +658,14 @@ export default class ClientProcess extends EventEmitter {
       return;
     }
 
+    // Tell anyone that this operation is about to complete
+    this.emit(EVT_BEFORE_EXIT);
+
     this._isShuttingDown = true;
 
     this._clearCallStacks();
 
     // console.debug(`Shutting down ${this.getClassName()}`, this);
-
-    // Tell anyone that this operation is about to complete
-    this.emit(EVT_BEFORE_EXIT);
 
     // Remove child processes
     const children = this.getChildren();
@@ -570,7 +699,7 @@ export default class ClientProcess extends EventEmitter {
   /**
    * Retrieves whether if the process is exited.
    * 
-   * @return {Boolean}
+   * @return {boolean}
    */
   getIsExited() {
     return this._isExited;

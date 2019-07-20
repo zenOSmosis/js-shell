@@ -33,7 +33,7 @@ export default class ClientAudioProcess extends ClientProcess {
       outputAudioBufferSize: 256 * 4 * 8
     };
 
-    options = Object.assign({}, defOptions, options);
+    options = {...defOptions, ...options};
     
     super(parentProcess, cmd, options);
 

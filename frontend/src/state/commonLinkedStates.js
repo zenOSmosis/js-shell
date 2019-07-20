@@ -1,4 +1,7 @@
 /**
+ * TODO: Remove this; some code here can't be shared between main thread and worker
+ * threads
+ * 
  * A collection of LinkedState instances which are intended to be shared
  * between various core services.
  */

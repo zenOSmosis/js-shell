@@ -7,7 +7,7 @@ const { ClientWorkerProcess, DependencyFetcherWorker } = this;
  * 
  * TODO: Move into its own utility
  * 
- * @param {string || string[]} uris
+ * @param {string | string[]} uris
  * @return {Promise<string>}
  */
 const fetchScripts = async (uris) => {

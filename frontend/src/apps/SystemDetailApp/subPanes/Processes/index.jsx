@@ -5,17 +5,22 @@ import hocConnect from 'state/hocConnect';
 import moment from 'moment';
 
 const CPUUsagePercent = (props = {}) => {
+  const { usagePercent } = props;
+
   return (
-    <span>{props.percent} %</span>
+    <span>{ usagePercent } %</span>
   );
 }
 
 const MainCPUUsagePercent = hocConnect(CPUUsagePercent, CPUTimeLinkedState, (updatedState) => {
-  const { cpusLevels } = updatedState;
+  const { cpuThreads } = updatedState;
 
-  if (cpusLevels && cpusLevels[0]) {
+  if (cpuThreads && cpuThreads[0]) {
+
+    const { usagePercent } = cpuThreads[0];
+
     return {
-      percent: cpusLevels[0]
+      usagePercent
     }
   }
 });
@@ -25,8 +30,27 @@ class Processes extends Component {
     super(...args);
 
     this.state = {
-      hiddenProcessIds: []
+      hiddenProcessIds: [],
+      pollRefreshIdx: -1
     };
+
+    this._refreshInterval = null;
+  }
+
+  componentDidMount() {
+    let { pollRefreshIdx } = this.state;
+
+    this._refreshInterval = setInterval(() => {
+      pollRefreshIdx++;
+
+      this.setState({
+        pollRefreshIdx
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._refreshInterval);
   }
 
   hideCurrentProcesses() {
@@ -62,17 +86,17 @@ class Processes extends Component {
           <div style={{ display: 'inline-block' }}>
             {
               (hiddenProcessIds.length === 0) &&
-              <button onClick={ evt => this.hideCurrentProcesses() }>Hide Current Processes</button>
+              <button onClick={evt => this.hideCurrentProcesses()}>Hide Current Processes</button>
             }
 
             {
               (hiddenProcessIds.length > 0) &&
-              <button onClick={ evt => this.showAllProcesses() }>Show All Processes</button>
+              <button onClick={evt => this.showAllProcesses()}>Show All Processes</button>
             }
           </div>
         </div>
 
-        <table style={{ width: '100%', textAlign: 'left' }}>
+        <table style={{ width: '100%', textAlign: 'center' }}>
           <thead>
             <tr>
               <td>
@@ -94,7 +118,7 @@ class Processes extends Component {
                 Service URI
               </td>
               <td>
-                Start Time
+                Uptime
               </td>
               <td>
                 f(x)
@@ -117,7 +141,7 @@ class Processes extends Component {
                   return false;
                 }
 
-                const startDate = process.getStartDate();
+                const uptime = process.getUptime();
                 const className = process.getClassName();
                 const title = process.getTitle();
                 const renderedName = title || className;
@@ -148,12 +172,12 @@ class Processes extends Component {
                     <td style={{ maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                       {
                         (() => {
-                          if (startDate) {
-                            return moment(startDate).format('YYYY-MM-DD hh:mm:ss A'); 
+                          if (uptime) {
+                            return new Date(uptime).toISOString().substr(11, 8);
                           }
                         })()
                       }
-                      
+
                     </td>
                     <td>
                       <button onClick={evt => process.kill()}>Close</button>

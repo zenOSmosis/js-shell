@@ -61,6 +61,11 @@ const createClientGUIProcessReactComponent = (procParams) => {
      * @param {Component} Content 
      */
     setContent(Content) {
+      if (!this._isMounted) {
+        console.warn('Ignoring setContent() call on unmounted ClientGUIProcess component');
+        return;
+      }
+
       // console.warn('TODO: Verify the integrity of the content');
 
       this.setState({

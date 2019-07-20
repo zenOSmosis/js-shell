@@ -37,7 +37,7 @@ export default class LinkedState extends EventEmitter {
    * Retrieves this particular instance's UUID.  Note, this UUID is different
    * on each reference to this LinkedState scope.
    * 
-   * @return {String}
+   * @return {string}
    */
   getUUID() {
     return this._uuid;
@@ -46,7 +46,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Retrieves this class' name (e.g. "LinkedState").
    * 
-   * @return {String}
+   * @return {string}
    */
   getClassName() {
     const { constructor } = this;
@@ -85,7 +85,7 @@ export default class LinkedState extends EventEmitter {
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getLinkedScopeName() {
     return this._linkedScopeName;
@@ -101,7 +101,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Sets a common state across all shared LinkedState instances.
    * 
-   * @param {Object} updatedState 
+   * @param {object} updatedState 
    * @param {Function} onSet [default = null] Optional callback to be
    * performed after state has been updated
    */
@@ -131,7 +131,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Retrieves a common state across all shared link state instances.
    * 
-   * @return {Object}
+   * @return {object}
    */
   getState() {
     // return sharedStates[this._linkedScopeName];
@@ -141,7 +141,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Broadcasts an events across all shared linked state instances.
    * 
-   * @param {String} eventName 
+   * @param {string} eventName 
    * @param {any} args
    */
   broadcast(eventName, ...args) {

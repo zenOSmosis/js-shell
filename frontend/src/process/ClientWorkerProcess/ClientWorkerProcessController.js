@@ -1,3 +1,5 @@
+// TODO: Implement _handleCPUThreadCycle and utilize via Worker message passing
+
 /**
  * This module runs on the main thread, and acts as a controller to the remote
  * native Web Worker process (extended from ClientWorkerProcess).
@@ -15,7 +17,7 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
    * 
    * @param {ClientProcess} parentProcess 
    * @param {Function} cmd 
-   * @param {Object} options [optional]
+   * @param {object} options [optional]
    */
   constructor(parentProcess, cmd = null, options = {}) {
     const defOptions = {
@@ -24,7 +26,7 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
       DispatchWorker: ClientWorkerProcess
     };
 
-    options = Object.assign({}, defOptions, options);
+    options = {...defOptions, ...options};
 
     super(
       parentProcess,
@@ -58,6 +60,18 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     this.setImmediate(() => {
       this._workerCmd = cmd;
     });
+
+    (() => {
+      this._initCPUThreadRootProcess();
+
+      // Handle CPU thread usage notifications from Worker
+      this.stdctrl.on('data', (data) => {
+        const { cpuThreadUsagePercent } = data;
+        if (typeof cpuThreadUsagePercent !== 'undefined') {
+          this._handleCPUThreadCycle(cpuThreadUsagePercent);
+        }
+      });
+    })();
   }
 
   /**

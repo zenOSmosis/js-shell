@@ -11,6 +11,7 @@ import DesktopChildGUIProcess from 'process/DesktopChildGUIProcess';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
+import CPUThreadTimer from 'process/ClientProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
 import Window from 'components/Desktop/Window';
@@ -34,7 +35,8 @@ export default class UI_JITRuntime extends ClientJITRuntime {
       // FilesystemProcess,
       // DependencyFetcherWorker,
       React,
-      Component,
+      Component,      
+      CPUThreadTimer,
 
       // (e.g. reference this.zdComponents in evaluated scripting)
       components: {

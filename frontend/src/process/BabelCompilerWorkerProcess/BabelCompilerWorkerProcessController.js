@@ -9,7 +9,7 @@ export default class BabelCompilerWorkerProcessController extends ClientWorkerPr
       DispatchWorker: BabelCompilerWorkerProcess,
     };
 
-    options = Object.assign({}, defOptions, options);
+    options = {...defOptions, ...options};
 
     super(parentProcess, cmd, options);
   }

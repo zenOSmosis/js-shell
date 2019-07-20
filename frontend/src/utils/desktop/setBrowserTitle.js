@@ -3,7 +3,7 @@ let defaultTitle = document.title;
 /**
  * Overrides the defaultTitle with a new default.
  * 
- * @param {String} title 
+ * @param {string} title 
  */
 const setDefaultTitle = (title) => {
   defaultTitle = title;
@@ -12,7 +12,7 @@ const setDefaultTitle = (title) => {
 /**
  * Sets the browser's title.
  * 
- * @param {String} title 
+ * @param {string} title 
  */
 const setBrowserTitle = (title = null) => {
   if (title) {

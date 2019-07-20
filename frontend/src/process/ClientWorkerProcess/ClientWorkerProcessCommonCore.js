@@ -8,6 +8,8 @@ import ClientWorkerDispatchPipe from './ClientWorkerDispatchPipe';
 import createClientWorkerInitProcess from './ClientWorkerInitProcess/createClientWorkerInitProcess';
 import serialize, { deserialize } from 'utils/serialize';
 
+export const CTRL_NAME_SET_OPTIONS = 'setOptions';
+
 /**
  * Common class which ClientWorkerProcess and ClientWorkerProcessController
  * extend from.
@@ -56,20 +58,8 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     }
   }
 
-  _initOptionsReceiver() {
-    this.stdctrl.on('data', (data) => {
-      const { ctrlName } = data;
-      
-      if (ctrlName === 'setOptions') {
-        const {ctrlData: options } = data;
-
-        this.setOptions(deserialize(options), false);
-      }
-    });
-  }
-
   /**
-   * @return {Boolean} If true: Web Worker. If false: controller (main thread)
+   * @return {boolean} If true: Web Worker. If false: controller (main thread)
    */
   getIsNativeWorker() {
     if (this._isNativeWorker === null) {
@@ -145,6 +135,19 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     });
   }
 
+  // TODO: Utilize w/ _routeMessage; refactor to perform trapping here
+  _initOptionsReceiver() {
+    this.stdctrl.on(EVT_PIPE_DATA, (data) => {
+      const { ctrlName } = data;
+
+      if (ctrlName === CTRL_NAME_SET_OPTIONS) {
+        const {ctrlData: options } = data;
+
+        this.setOptions(deserialize(options), false);
+      }
+    });
+  }
+
   /**
    * Routes messages received via postMessage() calls from the process host to
    * this process stdio.
@@ -156,6 +159,9 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
       
     // Route to stdio
     const { pipeName, data: writeData } = data;
+
+    // TODO: Handle (and trap) private stdctrl messages.  Not all messages will
+    // be private.  Route the ones which are not private up to public stdctrl.
 
     if (pipeName && this[pipeName]) {
       // Write local (don't use pipe.write() as it sends as postMessage())

@@ -46,6 +46,22 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
   }
 
   /**
+   * @override
+   */
+  _initCPUThreadRootProcess() {
+    console.warn('Skipping _initCPUThreadRootProcess');
+  }
+
+  /**
+   * @override
+   */
+  _handleCPUThreadCycle(cpuThreadUsagePercent) {
+    this.stdctrl.write({
+      cpuThreadUsagePercent
+    });
+  }
+
+  /**
    * Attaches native Web Worker postMessage() handling to process lifecycle.
    */
   _initMessageReceiver() {

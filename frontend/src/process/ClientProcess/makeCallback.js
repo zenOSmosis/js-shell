@@ -7,7 +7,7 @@
  * Note, callback is optional due to less if/then checking across
  * implementations.
  *
- * @param {Object} scope 
+ * @param {object} scope 
  * @param {Function} callback [optional]
  */
 const makeCallback = (scope, callback = null) => {

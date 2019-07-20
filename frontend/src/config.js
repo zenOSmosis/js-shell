@@ -7,7 +7,6 @@
 // import getRequestURI from './utils/fileSystem/getRequestURI';
 
 import parseURL from './utils/parseURL';
-const parsedWinURL = parseURL(window.href);
 
 let config = {
   DOM_ROOT_ID: 'root',
@@ -15,9 +14,14 @@ let config = {
   // HOST_PORT: 443
 };
 
-config = Object.assign(config, {
-  HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
-});
+// TODO: Enable this to work w/o window
+if (typeof window !== 'undefined') {
+  const parsedWinURL = parseURL(window.href);
+
+  config = Object.assign(config, {
+    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
+  }); 
+}
 
 config = Object.assign(config, {
   SOCKET_IO_URI: config.HOST_REST_URI,

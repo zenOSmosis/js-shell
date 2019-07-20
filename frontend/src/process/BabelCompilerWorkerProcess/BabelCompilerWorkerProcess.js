@@ -39,8 +39,8 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
   }
 
   /**
-   * @param {String} code The code to compile
-   * @return {String} Transformed output 
+   * @param {string} code The code to compile
+   * @return {string} Transformed output 
    */
   compile(code) {
     let compiledCode = Babel.transform(code, {

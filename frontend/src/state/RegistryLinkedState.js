@@ -11,7 +11,7 @@ export {
  */
 export default class RegistryLinkedState extends LinkedState {
   /**
-   * @param {String} registryName This value reflects the property name of
+   * @param {string} registryName This value reflects the property name of
    * the registry state array (e.g. if the registry name is "apps", it can be
    * deduced from the state by calling: const { apps } = this.getState() ). 
    */
@@ -26,7 +26,7 @@ export default class RegistryLinkedState extends LinkedState {
   }
 
    /**
-   * @param {Object} registration Object to add to this registry.
+   * @param {object} registration Object to add to this registry.
    */
   addRegistration(registration) {
     const state = this.getState();
@@ -55,7 +55,7 @@ export default class RegistryLinkedState extends LinkedState {
 
   /**
    * 
-   * @param {Object} registration Object to remove from this
+   * @param {object} registration Object to remove from this
    * registry. 
    */
   removeRegistration(registration) {

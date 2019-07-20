@@ -28,7 +28,7 @@ export default class ClientAudioWorkerProcessController extends ClientWorkerProc
       // inputSampleRate: 48000 // Should be overridden by passed options
     };
 
-    options = Object.assign({}, defOptions, options);
+    options = {...defOptions, ...options};
 
     super(parentProcess, cmd, options);
   }

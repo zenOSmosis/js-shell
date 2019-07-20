@@ -32,7 +32,7 @@ export default class TabbedPane extends Component {
   /**
    * Retrieves the code in the editor.
    * 
-   * @return {String} The code 
+   * @return {string} The code 
    */
   getEditorValue() {
     const { monacoEditor } = this.state;
