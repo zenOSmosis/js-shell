@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Source Code',
-  mainWindow: (props) => {
+  mainView: (props) => {
     return (
       <AppBlueprintBaseWindow />
     );

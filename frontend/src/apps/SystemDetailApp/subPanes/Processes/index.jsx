@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ProcessLinkedState from 'state/ProcessLinkedState';
 // import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import hocConnect from 'state/hocConnect';
-// import moment from 'moment';
+import secondsToHHMMSS from 'utils/time/secondsToHHMMSS';
 
 /*
 const CPUUsagePercent = (props = {}) => {
@@ -171,7 +171,7 @@ class Processes extends Component {
                       {
                         (() => {
                           if (uptime) {
-                            return new Date(uptime).toISOString().substr(11, 8);
+                            return secondsToHHMMSS(uptime);
                           }
                         })()
                       }

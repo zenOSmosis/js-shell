@@ -44,7 +44,7 @@ new ClientGUIProcess((proc) => {
     proc.emit('update');
   });
 
-  proc.setReactRenderer((props) => {
+  proc.setView((props) => {
     return (
       <Window
         title={`Total Presses: ${buffer.length}`}

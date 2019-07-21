@@ -20,7 +20,8 @@ export default class AppRegistration extends EventEmitter {
     const {
         title,
         iconSrc,
-        mainWindow,
+        mainView,
+        cmd: appCmd,
         // allowMultipleWindows: propsAllowMultipleWindows
     } = runProps;
 
@@ -29,7 +30,8 @@ export default class AppRegistration extends EventEmitter {
 
     this._title = title;
     this._iconSrc = iconSrc;
-    this._mainWindow = mainWindow;
+    this._mainView = mainView;
+    this._appCmd = appCmd;
 
     this._isUnregistered = false;
 
@@ -51,7 +53,8 @@ export default class AppRegistration extends EventEmitter {
       this._appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
-        mainWindow: this._mainWindow
+        mainView: this._mainView,
+        appCmd: this._appCmd
       });
 
       await this._appRuntime.onceReady();
@@ -104,7 +107,7 @@ export default class AppRegistration extends EventEmitter {
   }
 
   getMainWindow() {
-    return this._mainWindow;
+    return this._mainView;
   }
 
   /**

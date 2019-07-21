@@ -60,9 +60,9 @@ const createClientGUIProcessReactComponent = (procParams) => {
      * 
      * @param {Component} Content 
      */
-    setContent(Content) {
+    setView(Content) {
       if (!this._isMounted) {
-        console.warn('Ignoring setContent() call on unmounted ClientGUIProcess component');
+        console.warn('Ignoring setView() call on unmounted ClientGUIProcess component');
         return;
       }
 
@@ -77,7 +77,7 @@ const createClientGUIProcessReactComponent = (procParams) => {
      * Replaces the content w/ an empty div tag.
      */
     empty() {
-      this.setContent(() => {
+      this.setView(() => {
         return (
           <div></div>
         );

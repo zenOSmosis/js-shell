@@ -17,11 +17,12 @@ export default class AppRuntime extends DesktopChildGUIProcess {
 
     this._defaultTitle = null;
     this._iconSrc = null;
-    this._mainWindow = null;
+    this._mainView = null;
+    this._appCmd = null;
 
     // TODO: Move these to app registration
     (() => {
-      const { title, iconSrc, mainWindow } = runProps;
+      const { title, iconSrc, mainView, appCmd } = runProps;
 
       if (title) {
         this.setTitle(title);
@@ -31,8 +32,14 @@ export default class AppRuntime extends DesktopChildGUIProcess {
         this.setIconSrc(iconSrc);
       }
 
-      if (mainWindow) {
-        this.setMainWindow(mainWindow);
+      if (mainView) {
+        this.setMainWindow(mainView);
+      }
+
+      if (appCmd) {
+        this.setImmediate(() => {
+          this.evalInProcessContext(appCmd);
+        });
       }
     })();
   }
@@ -56,7 +63,7 @@ export default class AppRuntime extends DesktopChildGUIProcess {
     return this._iconSrc;
   }
 
-  setMainWindow(mainWindow) {
-    this.setContent(mainWindow);
+  setMainWindow(mainView) {
+    this.setView(mainView);
   }
 }

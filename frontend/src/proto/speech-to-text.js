@@ -114,7 +114,7 @@ const mic = new MicrophoneProcess(process,
 new ClientGUIProcess(process, (vuMeterProcess) => {
   vuMeterProcess.setTitle('Analog VU Meter');
 
-  vuMeterProcess.setContent(
+  vuMeterProcess.setView(
     class VUMeterWrapper extends Component {
       constructor(...args) {
         super(...args);

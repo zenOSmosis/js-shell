@@ -10,6 +10,7 @@
 import './FilesApp';
 import './HelloWorldApp';
 import './SourceCodeApp';
+import './VoiceInputApp';
 import './SystemDetailApp';
 
 // import './SettingsApp';

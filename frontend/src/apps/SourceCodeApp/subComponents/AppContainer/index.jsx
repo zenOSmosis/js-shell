@@ -27,19 +27,19 @@ export default class AppContainer extends Component {
       log: (msg = null) => {
         console.log(msg);
 
-        app.setContent(<JSONEditor value={msg} />);
+        app.setView(<JSONEditor value={msg} />);
       }
     };
     */
 
     /*
     * const setTitle = (...args) => { this.setTitle(...args) };
-        const setContent = (...args) => { this.setContent(...args) };
+        const setView = (...args) => { this.setView(...args) };
 
         const console = this.console;
         const render = (content) => {
           if (typeof content === 'string' || typeof content === 'number') {
-            this.setContent(content);
+            this.setView(content);
           } else {
             this.console.log(content);
           }

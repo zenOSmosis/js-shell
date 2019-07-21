@@ -79,11 +79,9 @@ export default class Window extends Component {
     this._uuid = uuidv4();
     this._isActive = false;  // TODO: Rename to isFocused
 
-    this.isClosed = false;
+    this.isClosed = false; // TODO: Rename to _isClosed
 
     windowStack.push(this);
-
-    this.startDate = new Date();
   }
 
   async componentDidMount() {
@@ -91,8 +89,6 @@ export default class Window extends Component {
       if (this.isClosed) {
         return;
       }
-
-      this._handleProps();
 
       // Set Window title either from props or from app
       // TODO: Remove app here; use passed props
@@ -127,33 +123,10 @@ export default class Window extends Component {
 
     this.autosetTitle();
 
-    this._handleProps();
-
     // TODO: Rework this
     $(this._el).css({
       zIndex: this.state.zStack
     });
-  }
-
-  /**
-   * Internally called when component mounts and is updaated.
-   */
-  _handleProps = () => {
-    // console.debug('Handling props', this.props);
-
-    // Prototype appRuntime handling
-    // TODO: Implement
-    /*
-    (() => {
-      const { proc } = this.props;
-
-      if (proc) {
-        console.debug('Connected window process', {
-          proc
-        });
-      }
-    })();
-    */
   }
 
   componentWillUnmount() {
@@ -522,10 +495,19 @@ export default class Window extends Component {
                       ref={c => this.windowBodyWrapper = c}
                       className="zd-window-body-wrapper"
                     >
+                      
+                      {
+                        // Window background
+                      }
                       <Cover className="zd-window-body-background">
-
+                        {
+                          // This is the background of the window
+                        }
                       </Cover>
 
+                      {
+                        // Window foreground
+                      }
                       <Cover
                         ref={c => this.windowBody = c}
                         className="zd-window-body"
@@ -545,12 +527,14 @@ export default class Window extends Component {
                       <Cover
                         ref={c => this.bodyCover = c}
 
-                        // TODO: Activate to true when window is inactive, being moved, or resized.
+                        // TODO: Activate to true when window is inactive,
+                        // being moved, or resized.
+                        // This is to prevent the window's contents from being
+                        // interacted w/ when moving
+                        // TODO: Consider using [ TOTAL WINDOW COVER ] below,
+                        // instead(?)
                         isVisible={false}
                       >
-                        {
-                          // TODO: Remove this
-                        }
                       </Cover>
                     </div>
 

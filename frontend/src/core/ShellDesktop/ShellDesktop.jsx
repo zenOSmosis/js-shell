@@ -22,7 +22,7 @@ export default class ShellDesktop extends ClientGUIProcess {
       ReactDOM.render(<ReactComponent />, rootEl);
 
       // Mounts the App component to the base ReactComponent
-      this.setReactRenderer(App);
+      this.setView(App);
 
       // If you want your app to work offline and load faster, you can change
       // unregister() to register() below. Note this comes with some pitfalls.

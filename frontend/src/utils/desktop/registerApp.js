@@ -16,8 +16,11 @@ const registerApp = (appProps) => {
 
    // Don't re-add if app is already existing
   if (existingAppRegistration) {
-    // Remove new app registration 
-    newAppRegistration.unregister();
+    // Remove existing app registration
+    existingAppRegistration.unregister();
+    
+    // TODO: If existing app is already open, re-associate existing views w/
+    // new app(?)
 
     // Existing app registration (via HMR)
     // TODO: Move this out of here into a more centralized handler
@@ -39,8 +42,7 @@ const getExistingHMRAppRegistration = (appRegistration) => {
   const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   const lenAppRegistrations = appRegistrations.length;
 
-  // TODO: Switch to reverse while, for performance
-  for (let i = 0; i < lenAppRegistrations; i++) {
+  for (let i = 0; i < lenAppRegistrations; ++i) {
     const testAppRegistration = appRegistrations[i];
 
     // Skip checking if test app registration is the current app registration

@@ -6,7 +6,7 @@ import config from 'config';
 export default registerApp({
   allowMultipleWindows: true,
   title: 'Files',
-  mainWindow: (props) => {
+  mainView: (props) => {
     return (
       <FilesWindow />
     );

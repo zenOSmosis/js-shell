@@ -14,9 +14,14 @@ export default class ClientGUIProcess extends ClientProcess {
     super(...args);
 
     this._isGUIProcess = true;
+    
+    // Wrapping ReactComponent view
     this._ReactComponent = null;
     this._mountedReactComponent = null; // TODO: Rename to wrappedReactComponent, or something similar
-    this._Content = null;
+    
+    // Externally set view (used by this.setView())
+    this._View = null;
+    
     this._isFocused = false;
     this._desktopMenubarData = null; 
     this._renderProps = {};
@@ -56,9 +61,9 @@ export default class ClientGUIProcess extends ClientProcess {
     });
 
     this.on(EVT_TICK, () => {
-      // Mount Content, if available, and not already mounted
-      if (this._Content && this._mountedReactComponent !== null) {
-        this._mountedReactComponent.setContent(this._Content);
+      // Mount View, if available, and not already mounted
+      if (this._View && this._mountedReactComponent !== null) {
+        this._mountedReactComponent.setView(this._View);
       }
     });
   }
@@ -95,31 +100,27 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._desktopMenubarData;
   }
 
-  /**
-   * Alias of this.setReactRenderer().
-   * 
-   * TODO: Rename both setContent and setReactRenderer to setReactComponent,
-   * and don't use alias method
-   */
-  setContent(...args) {
-    this.setReactRenderer(...args);
-  }
-
-  setReactRenderer(Content) {
+  setView(View) {
     let firstRender = false;
     
-    if (!this._Content) {
+    if (!this._View) {
       firstRender = true;
     }
 
     this.setImmediate(() => {
-      this._Content = Content;
+      this._View = View;
 
       if (firstRender) {
         this.emit(EVT_FIRST_RENDER);
       }
     });
   }
+
+  /*
+  setViewProps(props) {
+
+  }
+  */
 
   /**
    * Retrieves the wrapping React component which represents this process.

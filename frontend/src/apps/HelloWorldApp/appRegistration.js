@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Hello World',
-  mainWindow: (props) => {
+  mainView: (props) => {
     return (
       <HelloWorldWindow />
     )

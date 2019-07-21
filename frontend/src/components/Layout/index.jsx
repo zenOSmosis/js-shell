@@ -1,3 +1,6 @@
+// TODO: Create Header, Content, Footer w/ Row/Column, as the handling seems
+// more robust
+
 import React from 'react';
 import { Layout as AntdLayout } from 'antd';
 import { Row, Column } from '../RowColumn';

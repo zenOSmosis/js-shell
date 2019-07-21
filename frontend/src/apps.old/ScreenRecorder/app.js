@@ -5,6 +5,6 @@ import config from 'config';
 
 export default registerApp({
   title: 'Screen Recorder',
-  mainWindow: <ScreenRecorderWindow />,
+  mainView: <ScreenRecorderWindow />,
   iconSrc: `${config.HOST_ICON_URI_PREFIX}record/record.svg`
 });

@@ -38,7 +38,7 @@ new ClientGUIProcess(
       console.debug('about to exit xterm', proc);
     });
 
-    proc.setReactRenderer(
+    proc.setView(
       (props) => {
         return (
           <Window
