@@ -19,10 +19,14 @@ Build instructions are not avialable at this time, however it uses a Docker Comp
 It can be preliminarily spun up by executing:
 
 ```
-docker-compose up
+$ git submodule init
+$ git submodule update
+$ docker-compose up
 ```
 
-However, currently, it is all configured for development, and there are no install scripts, so npm packages need to manually installed in the relevant directories (e.g. backend / frontend).
+However, currently, it is all configured for development, and there are no install scripts, so git submodules and npm packages need to manually installed in the relevant directories (e.g. backend / frontend).
+
+Note: One of the git submodules links to a private Bitbucket repository (stt-socket), and is utilized for doing speech-to-text handling.  This particular submodule can be safely ignored for all other functionality.
 
 ## Optional
 
