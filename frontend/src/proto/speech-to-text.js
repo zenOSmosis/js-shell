@@ -22,7 +22,7 @@ const audioWorker = new ClientAudioWorkerProcess(process, (audioWorker) => {
 
   /**
    * Converts [signed] Int16Array into an audio blob w/ audio/pcm mimetype, and
-   * emits it over the ttsSocket.
+   * emits it over the sttSocket.
    */
   const sttSend = (i16Array) => {
     // const audioBlob = audioWorker.float32ToPCM16AudioBlob(float32Array);

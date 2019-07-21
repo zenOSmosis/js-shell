@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import ProcessLinkedState from 'state/ProcessLinkedState';
-import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
+// import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import hocConnect from 'state/hocConnect';
-import moment from 'moment';
+// import moment from 'moment';
 
+/*
 const CPUUsagePercent = (props = {}) => {
   const { usagePercent } = props;
 
@@ -11,7 +12,9 @@ const CPUUsagePercent = (props = {}) => {
     <span>{ usagePercent } %</span>
   );
 }
+*/
 
+/*
 const MainCPUUsagePercent = hocConnect(CPUUsagePercent, CPUTimeLinkedState, (updatedState) => {
   const { cpuThreads } = updatedState;
 
@@ -24,6 +27,7 @@ const MainCPUUsagePercent = hocConnect(CPUUsagePercent, CPUTimeLinkedState, (upd
     }
   }
 });
+*/
 
 class Processes extends Component {
   constructor(...args) {
@@ -109,9 +113,6 @@ class Processes extends Component {
                 Name
               </td>
               <td>
-                CPU
-              </td>
-              <td>
                 Thread Type
               </td>
               <td>
@@ -159,9 +160,6 @@ class Processes extends Component {
                     </td>
                     <td>
                       {renderedName}
-                    </td>
-                    <td>
-                      <MainCPUUsagePercent />
                     </td>
                     <td>
                       {threadType}
