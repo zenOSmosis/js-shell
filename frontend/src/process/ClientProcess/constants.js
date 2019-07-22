@@ -20,6 +20,8 @@ export const EVT_TICK = 'tick';
 export const EVT_BEFORE_EXIT = 'beforeExit';
 export const EVT_EXIT = 'exit';
 
+export const EVT_STATE_UPDATE = 'stateUpdate';
+
 // Typically used for IPC w/ native Web Workers
 export const EVT_MESSAGE = 'message';
 

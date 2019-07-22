@@ -56,16 +56,16 @@ export default class AppRegistration extends EventEmitter {
         mainView: this._mainView,
         appCmd: this._appCmd
       });
-
-      await this._appRuntime.onceReady();
-  
-      this._isLaunched = true;
   
       // Handle cleanup when the app exits
       this._appRuntime.on(EVT_BEFORE_EXIT, () => {
         this._isLaunched = false;
         this._appRuntime = null;
       });
+
+      await this._appRuntime.onceReady();
+  
+      this._isLaunched = true;
     } catch (exc) {
       throw exc;
     }
@@ -116,9 +116,21 @@ export default class AppRegistration extends EventEmitter {
    * Important!  Once the app is unregistered, it is no longer available in the
    * Dock or any app menus.
    */
-  unregister() {
-    commonAppRegistryLinkedState.removeAppRegistration(this);
-
-    this._isUnregistered = true;
+  async unregister() {
+    try {
+      /*
+      if (this.getIsLaunched()) {
+        const appRuntime = this.getAppRuntime();
+  
+        await appRuntime.kill();
+      }
+      */
+  
+      commonAppRegistryLinkedState.removeAppRegistration(this);
+  
+      this._isUnregistered = true;
+    } catch (exc) {
+      throw exc;
+    }
   }
 }

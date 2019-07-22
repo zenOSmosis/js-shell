@@ -7,7 +7,7 @@ export default registerApp({
   title: 'System Detail',
   mainView: (props) => {
     return (
-      <SystemDetailWindow />
+      <SystemDetailWindow {...props} />
     );
   },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}system/system.svg`

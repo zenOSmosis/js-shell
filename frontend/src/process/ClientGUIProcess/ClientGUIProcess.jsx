@@ -18,7 +18,8 @@ export default class ClientGUIProcess extends ClientProcess {
     // Wrapping ReactComponent view
     this._ReactComponent = null;
     this._mountedReactComponent = null; // TODO: Rename to wrappedReactComponent, or something similar
-    
+    this._viewProps = {}; // Serves as a cache until the component is mounted
+
     // Externally set view (used by this.setView())
     this._View = null;
     
@@ -30,30 +31,19 @@ export default class ClientGUIProcess extends ClientProcess {
       guiProc: this,
 
       onMount: (component) => {
-        this.setImmediate(() => {
-          this._mountedReactComponent = component;
-        });
+        this._mountedReactComponent = component;
+
+        this.setViewProps(this._viewProps);
       },
 
       onUnmount: () => {
-        this.setImmediate(() => {
-          this._mountedReactComponent = null;
-        });
+        this._mountedReactComponent = null;
       },
       
       onDirectInteract: (evt) => {
         console.warn('TODO: Re-enable evt propagation for onDirectInteract, but only call onDirectInteract on highest child');
 
         evt.stopPropagation();
-
-        // TODO: Remove
-        /*
-        console.debug('direct interact', {
-          evt,
-          guiProcess: this,
-          title: this.getTitle()
-        });
-        */
 
         // Automatically focus on direct interact
         this.focus();
@@ -116,11 +106,17 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
-  /*
-  setViewProps(props) {
+  setViewProps(viewProps) {
+    const currentViewProps = this._viewProps;
 
+    const mergedViewProps = {...currentViewProps, ...viewProps};
+
+    this._viewProps = mergedViewProps;
+
+    if (this._mountedReactComponent) {
+      this._mountedReactComponent.setViewProps(viewProps);  
+    }
   }
-  */
 
   /**
    * Retrieves the wrapping React component which represents this process.
