@@ -65,6 +65,7 @@ export default registerApp({
                       // TODO: Use EVT_BEFORE_EXIT
                       mic.on('beforeExit', () => {
                         appProcess.setState({
+                          isMicRequested: false,
                           isMicOn: false
                         });
                       });
@@ -90,8 +91,15 @@ export default registerApp({
                     if (!audioWorker) {
                       audioWorker = createAudioWorker(appProcess);
 
-                      mic.on('beforeExit', () => {
-                        audioWorker.kill();
+                      // TODO: Use EVT_BEFORE_EXIT
+                      mic.on('beforeExit', async () => {
+                        try {
+                          await audioWorker.kill();
+
+                          audioWorker = null;
+                        } catch (exc) {
+                          throw exc;
+                        }
                       });
 
                       // TODO: Properly handle stdctrl messages

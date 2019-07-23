@@ -1,3 +1,5 @@
+// TODO: Implement ability to pause (if no watchers are running)
+
 import EventEmitter from 'events';
 import getNow from 'utils/time/getNow';
 

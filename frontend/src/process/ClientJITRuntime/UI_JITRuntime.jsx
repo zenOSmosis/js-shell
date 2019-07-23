@@ -18,6 +18,7 @@ import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import IFrame from 'components/IFrame';
 import AnalogVUMeter from 'components/AnalogVUMeter';
+import beep from 'utils/audio/beep';
 
 export default class UI_JITRuntime extends ClientJITRuntime {
   constructor(parentProcess, code, options = {}) {
@@ -44,6 +45,10 @@ export default class UI_JITRuntime extends ClientJITRuntime {
         Center,
         IFrame,
         AnalogVUMeter
+      },
+
+      audio: {
+        beep
       },
 
       utils: {

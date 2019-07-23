@@ -263,6 +263,11 @@ export default class ClientProcess extends EventEmitter {
   }
 
   setState(nextState, onSet = null) {
+    if (this._isShuttingDown || this._isExited) {
+      console.error('Ignoring state set on shut down process.  This could indicate a memory leak somewhere in the application.');
+      return;
+    }
+
     const prevState = this._state;
     const mergedState = {...prevState, ...nextState};
     this._state = mergedState;
@@ -273,6 +278,10 @@ export default class ClientProcess extends EventEmitter {
 
     // Emit with updated state
     this.emit(EVT_STATE_UPDATE, nextState);
+  }
+
+  getState() {
+    return this._state;
   }
 
   /**
