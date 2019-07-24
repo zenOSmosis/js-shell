@@ -3,9 +3,18 @@
 import EventEmitter from 'events';
 import './MenubarMenu.typedef';
 
+/**
+ * TODO: Document event object
+ * 
+ * @event {Object} EVT_UPDATE Emits with updated menuData
+ */
+export const EVT_UPDATE = 'update';
+
 export default class MenubarMenu extends EventEmitter {
-  constructor(menuData) {
+  constructor(menubar) {
     super();
+
+    this._menubar = menubar;
   }
 
   setData(menuData) {
@@ -23,8 +32,18 @@ export default class MenubarMenu extends EventEmitter {
       items: items || []
     };
 
-    console.warn('set menudata', this._menuData);
+    // Emit update event w/ menuData
+    this.emit(EVT_UPDATE, this._menuData);
+  }
 
+  getMenubar() {
+    return this._menubar;
+  }
+
+  getGUIProcess() {
+    const menubar = this.getMenubar();
+
+    return menubar.getGUIProcess();
   }
 
   getMenuData() {

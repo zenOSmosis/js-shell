@@ -1,13 +1,18 @@
 // import React, { Component } from 'react';
-import ClientProcess, { EVT_TICK } from '../ClientProcess';
+import ClientProcess, { EVT_TICK, EVT_BEFORE_EXIT } from '../ClientProcess';
+// import ClientGUIProcessMenubar from './ClientGUIProcessMenubar';
 import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
 import './ClientGUIProcess.typedef';
 
-export const EVT_GUI_PROCESS_FOCUS = 'focus';
-export const EVT_GUI_PROCESS_BLUR = 'blur';
-
 // Emits the first time the process' React component renders
 export const EVT_FIRST_RENDER = 'firstRender';
+
+export const EVT_DIRECT_INTERACT = 'directInteract';
+
+export {
+  EVT_TICK,
+  EVT_BEFORE_EXIT
+};
 
 export default class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
@@ -42,11 +47,9 @@ export default class ClientGUIProcess extends ClientProcess {
       
       onDirectInteract: (evt) => {
         console.warn('TODO: Re-enable evt propagation for onDirectInteract, but only call onDirectInteract on highest child');
-
         evt.stopPropagation();
 
-        // Automatically focus on direct interact
-        this.focus();
+        this.emit(EVT_DIRECT_INTERACT);
       }
     });
 
@@ -58,38 +61,7 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
-  /*
-  setIcon(iconComponent) {
-    this.nextTick();
-  }
-  */
-
-  /*
-  getIcon() {
-  }
-  */
-
-  /**
-   * Sets the UI's upper menubar data, for this process.
-   * 
-   * @param {object[]} menubarData TODO: Define a structure in comments for this
-   */
-  setDesktopMenubarData(menubarData) {
-    // TODO: Verify integrity of menubarData, throwing error if invalid
-
-    this._desktopMenubarData = menubarData;
-
-    // TODO: Should we utilize a better state handling system here?
-    this.nextTick();
-  }
-
-  /**
-   * Retrieves the UI's upper menubar data, for this process.
-   */
-  getDesktopMenubarData() {
-    return this._desktopMenubarData;
-  }
-
+  // TODO: Rename to setMainView
   setView(View) {
     let firstRender = false;
     
@@ -106,6 +78,7 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
+  // TODO: Rename to setMainViewProps
   setViewProps(viewProps) {
     const currentViewProps = this._viewProps;
 
@@ -126,74 +99,6 @@ export default class ClientGUIProcess extends ClientProcess {
    */
   getReactComponent() {
     return this._ReactComponent;
-  }
-
-  /**
-   * Notifies all listeners that this process is the one the user is
-   * interacting with directly.
-   * 
-   * TODO: Allow optional focus context so we can have independent channels
-   * of focus.
-   * 
-   * Utilizes this.setIsFocused().
-   */
-  focus() {
-    this.setIsFocused(true);
-  }
-
-  /**
-   * Notifies all listeners that this process is no longer being interacted
-   * with directly.
-   * 
-   * TODO: Allow optional focus context so we can have independent channels
-   * of blur.
-   * 
-   * Utilizes this.setIsFocused().
-   */
-  blur() {
-    this.setIsFocused(false);
-  }
-
-  /**
-   * Sets whether or not this process' React.Component has top priority in the
-   * UI (e.g. if a Window, this Window would be the currently focused Window).
-   * 
-   * Important! Handling of dynamically blurring other instances is not handled
-   * directly in here.
-   * 
-   * @param {boolean} isFocused 
-   */
-  setIsFocused(isFocused) {
-    // Ignore duplicate
-    if (this._isFocused === isFocused) {
-      console.warn('isFocused is already set to:', isFocused);
-      return;
-    }
-
-    console.debug(`${isFocused ? 'Focusing' : 'Blurring'} process:`, {
-      guiProcess: this,
-      nativeProcess: process
-    });
-
-    this.setImmediate(() => {
-      this._isFocused = isFocused;
-
-      if (isFocused) {
-        this.emit(EVT_GUI_PROCESS_FOCUS);
-      } else {
-        this.emit(EVT_GUI_PROCESS_BLUR);
-      }
-    });
-  }
-
-  /**
-   * Retrieves whether or not this process is currently being interacted with
-   * directly by the user.
-   * 
-   * @return {boolean}
-   */
-  getIsFocused() {
-    return this._isFocused;
   }
 
   async kill(killSignal = 0) {

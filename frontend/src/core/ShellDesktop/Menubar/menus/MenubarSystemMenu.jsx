@@ -1,10 +1,10 @@
 import React from 'react';
-import MenubarMenu from './MenubarMenu';
+import MenubarMenu from '../MenubarMenu';
 import { Icon } from 'antd';
 
 export default class MenubarSystemMenu extends MenubarMenu {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     
     this.setData({
       title: <Icon type="deployment-unit" />,

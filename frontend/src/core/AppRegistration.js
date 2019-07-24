@@ -10,8 +10,8 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
  * TODO: Move this comment to the Dock; The items in the Dock represent a
  * filtered subset of all available registrations.
  * 
- * An app registration is an in-memory object, so this class should be
- * instantiated, per referenced app, each time the Desktop loads.
+ * In order to populate the Dock, and any relevant app menus, this class should
+ * be instantiated for each referenced app.
  */
 export default class AppRegistration extends EventEmitter {
   constructor(runProps) {
