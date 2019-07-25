@@ -10,8 +10,8 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
  * TODO: Move this comment to the Dock; The items in the Dock represent a
  * filtered subset of all available registrations.
  * 
- * An app registration is an in-memory object, so this class should be
- * instantiated, per referenced app, each time the Desktop loads.
+ * In order to populate the Dock, and any relevant app menus, this class should
+ * be instantiated for each referenced app.
  */
 export default class AppRegistration extends EventEmitter {
   constructor(runProps) {
@@ -56,16 +56,16 @@ export default class AppRegistration extends EventEmitter {
         mainView: this._mainView,
         appCmd: this._appCmd
       });
-
-      await this._appRuntime.onceReady();
-  
-      this._isLaunched = true;
   
       // Handle cleanup when the app exits
       this._appRuntime.on(EVT_BEFORE_EXIT, () => {
         this._isLaunched = false;
         this._appRuntime = null;
       });
+
+      await this._appRuntime.onceReady();
+  
+      this._isLaunched = true;
     } catch (exc) {
       throw exc;
     }
@@ -116,9 +116,21 @@ export default class AppRegistration extends EventEmitter {
    * Important!  Once the app is unregistered, it is no longer available in the
    * Dock or any app menus.
    */
-  unregister() {
-    commonAppRegistryLinkedState.removeAppRegistration(this);
-
-    this._isUnregistered = true;
+  async unregister() {
+    try {
+      /*
+      if (this.getIsLaunched()) {
+        const appRuntime = this.getAppRuntime();
+  
+        await appRuntime.kill();
+      }
+      */
+  
+      commonAppRegistryLinkedState.removeAppRegistration(this);
+  
+      this._isUnregistered = true;
+    } catch (exc) {
+      throw exc;
+    }
   }
 }

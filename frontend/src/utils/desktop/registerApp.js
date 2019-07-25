@@ -16,8 +16,20 @@ const registerApp = (appProps) => {
 
    // Don't re-add if app is already existing
   if (existingAppRegistration) {
-    // Remove existing app registration
-    existingAppRegistration.unregister();
+    /*
+    (async () => {
+      try {
+        // TODO: If app is not open, unregister
+
+        // Remove existing app registration
+        await existingAppRegistration.unregister();
+
+        createDesktopNotification(`Existing ${existingAppRegistration.getTitle()} unregistered`);
+      } catch (exc) {
+        throw exc;
+      }
+    })();
+    */
     
     // TODO: If existing app is already open, re-associate existing views w/
     // new app(?)

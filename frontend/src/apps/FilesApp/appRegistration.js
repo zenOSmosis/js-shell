@@ -8,7 +8,7 @@ export default registerApp({
   title: 'Files',
   mainView: (props) => {
     return (
-      <FilesWindow />
+      <FilesWindow {...props} />
     );
   },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}folder/folder.svg`

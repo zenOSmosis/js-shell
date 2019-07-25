@@ -6,6 +6,8 @@ import {
 
   EVT_PIPE_DATA,
 
+  EVT_STATE_UPDATE,
+
   EVT_BEFORE_EXIT,
   EVT_EXIT,
 
@@ -31,6 +33,8 @@ export {
 
   ClientProcessPipe,
   EVT_PIPE_DATA,
+
+  EVT_STATE_UPDATE,
 
   EVT_BEFORE_EXIT,
   EVT_EXIT,
