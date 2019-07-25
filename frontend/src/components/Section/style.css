@@ -1,0 +1,10 @@
+.zd-section {
+  margin: 10px;
+  padding: 10px;
+  text-align: left;
+}
+
+.zd-section input,
+.zd-section textarea {
+  width: 100%;
+}

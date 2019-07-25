@@ -23,9 +23,6 @@ const PublicGitSignature = () => {
 };
 
 const VersionLabel = () => {
-  // TODO: Remove
-  console.warn('process.env', process.env);
-
   return (
     <div style={{
       position: 'absolute',

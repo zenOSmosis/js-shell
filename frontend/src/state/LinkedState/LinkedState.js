@@ -19,7 +19,7 @@ export default class LinkedState extends EventEmitter {
 
     // Whether this is the original instance in the collective scope
     // LinkedState's share the same "scope" across multiple instances
-    this._isScopeOriginalInstance = false;
+    this._isScopeOriginalInstance = null; // Set to boolean later
 
     this._uuid = uuidv4();
 
@@ -29,6 +29,8 @@ export default class LinkedState extends EventEmitter {
     this._linkedScopeName = linkedScopeName;
 
     mlscs.addLinkedState(this, initialDefaultState);
+
+    this._initialDefaultState = initialDefaultState;
 
     // this.setState(initialDefaultState);
   }
@@ -146,6 +148,13 @@ export default class LinkedState extends EventEmitter {
    */
   broadcast(eventName, ...args) {
     mlscs.broadcast(this, eventName, ...args);
+  }
+
+  /**
+   * Resets the state to the initial default state.
+   */
+  reset() {
+    this.setState(this._initialDefaultState);
   }
 
   /**

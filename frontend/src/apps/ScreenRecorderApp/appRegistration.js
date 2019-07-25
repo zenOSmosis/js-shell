@@ -39,7 +39,7 @@ export default registerApp({
 
       const displayMediaOptions = {
         video: {
-          cursor: "never"
+          cursor: 'never'
         },
         audio: false
       };
@@ -54,7 +54,7 @@ export default registerApp({
           isCapturing: true
         });
       } catch (err) {
-        console.error("Error: " + err);
+        console.error('Error: ' + err);
       }
     };
 
@@ -74,9 +74,9 @@ export default registerApp({
     const dumpOptionsInfo = () => {
       const videoTrack = videoElem.srcObject.getVideoTracks()[0];
 
-      console.info("Track settings:");
+      console.info('Track settings:');
       console.info(JSON.stringify(videoTrack.getSettings(), null, 2));
-      console.info("Track constraints:");
+      console.info('Track constraints:');
       console.info(JSON.stringify(videoTrack.getConstraints(), null, 2));
     };
     

@@ -1,19 +1,20 @@
-const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'request-disconnect';
-const SOCKET_API_ROUTE_ECHO = 'echo';
-const SOCKET_API_ROUTE_ENV = 'env';
-const SOCKET_API_ROUTE_DEBUG_ERROR = 'debug:error';
-const SOCKET_API_ROUTE_PING = 'host:ping'; // ping is a reserved Socket.io word
-const SOCKET_API_ROUTE_FILESYSTEM = 'fileSystem';
-const SOCKET_API_ROUTE_FETCH_SYSTEM_TIME = 'fetch-system-time';
-const SOCKET_API_ROUTE_FETCH_X_APPS = 'fetch-apps';
-const SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES = 'fetch-app-categories';
-const SOCKET_API_ROUTE_SYSTEM_COMMAND = 'system-command';
-const SOCKET_API_ROUTE_FETCH_SYS_INFO = 'fetch-sys-info';
-const SOCKET_API_ROUTE_FETCH_SYS_INFO_MODES = 'fetch-sys-info-modes';
-const SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES = 'port-audio:fetch-devices';
-const SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS = 'port-audio:fetch-host-apis';
+const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
+const SOCKET_API_ROUTE_ECHO = 'api/echo';
+const SOCKET_API_ROUTE_ENV = 'api/env';
+const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
+const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
+const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
+const SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS = 'api/fetch-server-connections';
+const SOCKET_API_ROUTE_FETCH_SYSTEM_TIME = 'api/fetch-system-time';
+const SOCKET_API_ROUTE_FETCH_X_APPS = 'api/fetch-apps';
+const SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES = 'api/fetch-app-categories';
+const SOCKET_API_ROUTE_SYSTEM_COMMAND = 'api/system-command';
+const SOCKET_API_ROUTE_FETCH_SYS_INFO = 'api/fetch-sys-info';
+const SOCKET_API_ROUTE_FETCH_SYS_INFO_MODES = 'api/fetch-sys-info-modes';
+const SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES = 'api/port-audio:fetch-devices';
+const SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS = 'api/port-audio:fetch-host-apis';
 // TODO: Rename to SOCKET_API_ROUTE_FETCH_WALLPAPER_PATHS
-const SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS = 'wallpapers:fetch-wallpaper-paths';
+const SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS = '/api/wallpapers:fetch-wallpaper-paths';
 
 module.exports = {
   SOCKET_API_ROUTE_REQUEST_DISCONNECT,
@@ -22,6 +23,7 @@ module.exports = {
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
+  SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS,
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,

@@ -17,6 +17,12 @@ import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import IFrame from 'components/IFrame';
 import AnalogVUMeter from 'components/AnalogVUMeter';
+import socketQuery from 'utils/socketQuery';
+
+// Note: Currently commented-out due to inconsistent exports
+// import socketAPIRoutes from 'utils/socketAPIRoutes';
+// import socketAPIEvents from 'utils/socketAPIEvents';
+
 import beep from 'utils/audio/beep';
 
 export default class UI_JITRuntime extends ClientJITRuntime {
@@ -45,13 +51,15 @@ export default class UI_JITRuntime extends ClientJITRuntime {
         AnalogVUMeter
       },
 
-      audio: {
-        beep
-      },
-
       utils: {
+        audio: {
+          beep
+        },
         getLogicalProcessors,
-        getPrototypeChain
+        getPrototypeChain,
+        socketQuery,
+        // socketAPIRoutes,
+        // socketAPIEvents
       }
     };
 
