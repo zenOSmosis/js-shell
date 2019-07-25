@@ -33,7 +33,18 @@ export default class MicrophoneProcess extends ClientAudioProcess {
   // TODO: @see https://github.com/saebekassebil/microphone-stream#readme
   async _startMic() {
     try {
-      this._outputStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // TODO: Make these options confiurable via this._options
+      // Borrowed from screen capture tutorial (even though this class is fully audio)
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+      const mediaOptions = {
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100
+        }
+      };
+
+      this._outputStream = await navigator.mediaDevices.getUserMedia(mediaOptions);
     } catch (exc) {
       throw exc;
     }

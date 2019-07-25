@@ -60,11 +60,13 @@ export default (() => {
         return guiProc.getPID();
       });
 
+      // TODO: Remove this
       console.warn({
         prevPIDs,
         guiProcessIDs
       });
     
+      // @see https://www.npmjs.com/package/equals
       if (!equal(prevPIDs, guiProcessIDs)) {
         prevPIDs = guiProcessIDs;
 

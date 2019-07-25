@@ -27,10 +27,10 @@ export default class DesktopLinkedState extends LinkedState {
       },
 
       // The most recent active Desktop window
-      // TODO: Merge handling of active Window & focusedDesktopChildGUIProcess
+      // TODO: Merge handling of active Window & focusedAppRuntime
       activeWindow: null,
 
-      focusedDesktopChildGUIProcess: null,
+      focusedAppRuntime: null,
 
       // URL redirect location
       redirectLocation: '/',
@@ -96,16 +96,16 @@ export default class DesktopLinkedState extends LinkedState {
     });
   }
 
-  setFocusedDesktopChildGUIProcess(focusedDesktopChildGUIProcess) {
+  setFocusedAppRuntme(focusedAppRuntime) {
     this.setState({
-      focusedDesktopChildGUIProcess
+      focusedAppRuntime
     });
   }
 
-  getFocuedDesktopChildGUIProcess() {
-    const { focusedDesktopChildGUIProcess } = this.state;
+  getFocusedAppRuntime() {
+    const { focusedAppRuntime } = this.state;
 
-    return focusedDesktopChildGUIProcess;
+    return focusedAppRuntime;
   }
 
   /**

@@ -1,19 +1,51 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import { Row, Column } from 'components/RowColumn';
 import AnalogVUMeter from 'components/AnalogVUMeter';
 
-export default class HelloWorldWindow extends Component {
+export default class VoiceInputWindow extends Component {
+  constructor(...args) {
+    super(...args);
+
+    this._appRuntime = appRegistration.getAppRuntime();
+  }
+
+  startMicrophone() {
+    this._appRuntime.setState({
+      isMicRequested: true
+    });
+  }
+
+  stopMicrophone() {
+    this._appRuntime.setState({
+      isMicRequested: false
+    });
+  }
+
   render() {
-    const {...propsRest} = this.props;
+    const {
+      isMicRequested,
+      isMicOn,
+
+      micSampleDuration,
+      micSampleLength,
+      micNumberOfChannels,
+      micSampleRate,
+
+      isAudioWorkerOnline,
+      connectedSTTBackends,
+
+      ...propsRest
+    } = this.props;
+
     return (
       <Window
         {...propsRest}
         appRegistration={appRegistration}
       >
-        <Row style={{height: '100%'}}>
+        <Row style={{ height: '100%' }}>
           <Column>
             <Row>
               <Column>
@@ -24,95 +56,109 @@ export default class HelloWorldWindow extends Component {
               </Column>
             </Row>
 
-            <Row style={{height: '100%'}}>
+            <Row style={{ height: '100%' }}>
               <Column>
                 <Center>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Mic sample duration
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Mic sample length
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Mic sample rate
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Audio level RMS
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Audio level DB
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Mic channels
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Microphone Bitrate
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Downsample Bitrate
-                        </td>
-                        <td>
-                          N/A
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {
+                    !isMicOn &&
+                    <div>
+                      <button onClick={(evt) => this.startMicrophone()}>
+                        Start Microphone
+                      </button>
+                    </div>
+                  }
+
+                  {
+                    isMicOn &&
+                    <div>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <td>
+                              Mic sample duration
+                            </td>
+                            <td>
+                              {micSampleDuration}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Mic sample length
+                            </td>
+                            <td>
+                              {micSampleLength}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Mic sample rate
+                            </td>
+                            <td>
+                              {micSampleRate}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Audio level RMS
+                            </td>
+                            <td>
+                              N/A
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Audio level DB
+                            </td>
+                            <td>
+                              N/A
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Mic channels
+                            </td>
+                            <td>
+                              {micNumberOfChannels}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Downsample Rate
+                            </td>
+                            <td>
+                              N/A
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  }
                 </Center>
               </Column>
             </Row>
-            
-            <Row>
-              <Column>
-                <div style={{position: 'absolute', bottom: 0, width: '100%', overflow: 'auto'}}>
-                  <div style={{float: 'left'}}>
-                    <button>
-                      Stop Microphone
-                    </button>
+
+            {
+              isMicOn &&
+              <Row>
+                <Column>
+                  <div style={{ overflow: 'auto' }}>
+                    <div style={{ float: 'left' }}>
+
+                      <button onClick={(evt) => this.stopMicrophone()}>
+                        Stop Microphone
+                      </button>
+                    </div>
+                    {
+                      /*
+                      <div style={{ float: 'right' }}>
+                        00:00:00
+                      </div>
+                      */
+                    }
                   </div>
-                  <div style={{float: 'right'}}>
-                    00:00:00
-                  </div>
-                </div>
-              </Column>
-            </Row>
+                </Column>
+              </Row>
+            }
 
           </Column>
         </Row>

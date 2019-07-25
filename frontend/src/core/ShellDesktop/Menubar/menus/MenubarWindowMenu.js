@@ -1,9 +1,9 @@
 // import React from 'react';
-import MenubarMenu from './MenubarMenu';
+import MenubarMenu from '../MenubarMenu';
 
 export default class MenubarSystemMenu extends MenubarMenu {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     
     this.setData({
       title: 'Window',

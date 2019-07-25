@@ -28,7 +28,8 @@ const createClientGUIProcessReactComponent = (procParams) => {
       super(props);
 
       this.state = {
-        Content: null
+        Content: null,
+        viewProps: {} // Props for the wrapped view
       };
 
       if (typeof onDirectInteract !== 'function') {
@@ -73,6 +74,16 @@ const createClientGUIProcessReactComponent = (procParams) => {
       });
     }
 
+    setViewProps(viewProps) {
+      const { viewProps: currentViewProps } = this.state;
+
+      const mergedViewProps = {...currentViewProps, ...viewProps};
+
+      this.setState({
+        viewProps: mergedViewProps
+      });
+    }
+
     /**
      * Replaces the content w/ an empty div tag.
      */
@@ -85,11 +96,16 @@ const createClientGUIProcessReactComponent = (procParams) => {
     }
 
     render() {
+      /*
       const {
         ...propsRest
       } = this;
+      */
 
       const { Content } = this.state;
+
+      const { viewProps: stateViewProps } = this.state;
+      const wrappedViewProps = {...this.props, ...stateViewProps};
 
       return (
         <div
@@ -103,7 +119,7 @@ const createClientGUIProcessReactComponent = (procParams) => {
           {
             Content &&
             <Content
-              {...propsRest} // Pass all props from hoc
+              {...wrappedViewProps} // Pass all props from hoc
             />
           }
         </div>

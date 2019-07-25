@@ -3,21 +3,42 @@ import { Icon, Dropdown } from 'antd';
 import { Menu, MenuDivider, MenuItem, SubMenu } from 'components/Menu';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import './style.css';
-import { Menubar as MenubarModel } from 'core/ShellDesktop';
+// import { Menubar as MenubarModel } from 'core/ShellDesktop';
 
 class Menubar extends Component {
   constructor(...args) {
     super(...args);
 
     // TODO: Pass this via hocConnect
-    this._menubarModel = new MenubarModel;
+    // this._menubarModel = new MenubarModel;
 
     this.state = {
       activeIdx: null,
-      menus: this._menubarModel.getMenus()
+      menus: []
     };
 
     // this._visibleChangeBatchTimeout = null;
+  }
+
+  componentDidUpdate(prevProps) {
+    // Don't contiune if props haven't updated
+    if (Object.is(prevProps, this.props)) {
+      return;
+    }
+
+    // TODO: Handle accordingly
+    console.debug('Menubar component updated', this.props);
+
+    const { focusedAppRuntime } = this.props;
+    if (focusedAppRuntime) {
+      const menubar = focusedAppRuntime.getMenubar();
+
+      const menus = menubar.getMenus();
+
+      this.setState({
+        menus
+      });
+    }
   }
 
   handleVisibleChange(idx, isVisible) {
@@ -97,6 +118,19 @@ class Menubar extends Component {
   }
 }
 
+export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
+  console.debug('updated state', updatedState);
+
+  const { focusedAppRuntime } = updatedState;
+
+  if (typeof focusedAppRuntime !== 'undefined') {
+    return {
+      focusedAppRuntime
+    };
+  }
+});
+
+// Old menu code
 /*
   menus.map((menuData, idx) => {
     // TODO: Extract Menubar Menu component
@@ -130,13 +164,3 @@ class Menubar extends Component {
     )
   })
   */
-
-export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
-  const { focusedDesktopChildGUIProcess } = updatedState;
-
-  if (typeof focusedDesktopChildGUIProcess !== 'undefined') {
-    return {
-      focusedDesktopChildGUIProcess
-    };
-  }
-});

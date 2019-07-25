@@ -13,6 +13,8 @@ import {
   EVT_READY,
   EVT_TICK,
 
+  EVT_STATE_UPDATE,
+
   EVT_BEFORE_EXIT,
   EVT_EXIT,
 
@@ -115,6 +117,8 @@ export default class ClientProcess extends EventEmitter {
     this._nextTickCallStack = [];
 
     this._tickTimeout = null;
+
+    this._state = {};
 
     if (typeof window !== 'undefined') {
       // TODO: Can a service worker use this, somehow?
@@ -256,6 +260,28 @@ export default class ClientProcess extends EventEmitter {
     PIPE_NAMES.forEach(pipeName => {
       this[pipeName] = new ClientProcessPipe(this, pipeName);
     });
+  }
+
+  setState(nextState, onSet = null) {
+    if (this._isShuttingDown || this._isExited) {
+      console.error('Ignoring state set on shut down process.  This could indicate a memory leak somewhere in the application.');
+      return;
+    }
+
+    const prevState = this._state;
+    const mergedState = {...prevState, ...nextState};
+    this._state = mergedState;
+
+    if (typeof onSet === 'function') {
+      onSet();
+    }
+
+    // Emit with updated state
+    this.emit(EVT_STATE_UPDATE, nextState);
+  }
+
+  getState() {
+    return this._state;
   }
 
   /**

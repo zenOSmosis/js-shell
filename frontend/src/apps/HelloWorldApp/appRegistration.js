@@ -7,7 +7,7 @@ export default registerApp({
   title: 'Hello World',
   mainView: (props) => {
     return (
-      <HelloWorldWindow />
+      <HelloWorldWindow {...props} />
     )
   },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}hello/hello.svg`

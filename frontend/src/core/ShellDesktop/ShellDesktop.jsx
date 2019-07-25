@@ -1,3 +1,7 @@
+/**
+ * This serves as the root component of the overall Shell Desktop application.
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'App';
@@ -16,13 +20,13 @@ export default class ShellDesktop extends ClientGUIProcess {
     try {
       const rootEl = document.getElementById(DOM_ROOT_ID);
 
+      // Mounts the App component to the base ReactComponent
+      this.setView(App);
+
       const ReactComponent = this.getReactComponent();
       
       // Mounts the base ReactComponent to the DOM
       ReactDOM.render(<ReactComponent />, rootEl);
-
-      // Mounts the App component to the base ReactComponent
-      this.setView(App);
 
       // If you want your app to work offline and load faster, you can change
       // unregister() to register() below. Note this comes with some pitfalls.

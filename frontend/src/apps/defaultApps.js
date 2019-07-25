@@ -11,11 +11,11 @@ import './FilesApp';
 import './HelloWorldApp';
 import './SourceCodeApp';
 import './VoiceInputApp';
+import './ScreenRecorderApp';
 import './SystemDetailApp';
 
 // import './SettingsApp';
 // import './WindowManagerApp';
-// import './ScreenRecorderApp';
 // import './DocsApp';
 // import './AboutApp';
 // import './ProcessTesterApp';
