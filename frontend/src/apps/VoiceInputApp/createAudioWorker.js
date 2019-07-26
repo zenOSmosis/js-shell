@@ -5,14 +5,13 @@ import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 
 export const EVT_TRANSCRIPTION = 'transcription';
 
-// Worker code is evaluated inline, and importScripts must be set in order to
-// not raise any warnings in the compiler
-const importScripts = () => null;
+// Worker code is evaluated inline, so any functions available in Worker thread
+// must be declared externally in order to compile w/o warnings
+const importScripts = () => null; // Not evaluated within Worker
+const io = () => null; // Not evaulated within Worker
 
 const createAudioWorker = (appProcess) => {
   const audioWorker = new ClientAudioWorkerProcess(appProcess, (audioWorker) => {
-    let io;
-
     // TODO: Bundle Socket.io directly in Worker
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
