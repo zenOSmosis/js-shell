@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Icon, Dropdown } from 'antd';
-import { Menu, MenuDivider, MenuItem, SubMenu } from 'components/Menu';
+import { /* Icon, */ Dropdown } from 'antd';
+import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Menu';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import './style.css';
 // import { Menubar as MenubarModel } from 'core/ShellDesktop';

@@ -55,7 +55,7 @@ export default class CPUThreadTimer extends EventEmitter {
       const currentCycleStartTime = getNow();
 
       if (prevCycleStartTime) {
-        const elapsed = currentCycleStartTime - prevCycleStartTime;
+        let elapsed = currentCycleStartTime - prevCycleStartTime;
 
         // Prevent possible division by 0
         if (elapsed === 0) {

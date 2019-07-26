@@ -3,9 +3,9 @@ import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import hocConnect from 'state/hocConnect';
 
 const SystemDetailFooter = (props = {}) => {
-  let { cpuThreads, lenCPUThreads, totalCPUUsage, children } = props;
+  let { /* cpuThreads, */ lenCPUThreads, totalCPUUsage, children } = props;
 
-  cpuThreads = cpuThreads || [];
+  // cpuThreads = cpuThreads || [];
 
   return (
     <div>

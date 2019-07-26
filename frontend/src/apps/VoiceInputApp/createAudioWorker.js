@@ -1,9 +1,18 @@
+// Allow self keyword
+/* eslint no-restricted-globals: 0 */
+
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 
 export const EVT_TRANSCRIPTION = 'transcription';
 
+// Worker code is evaluated inline, and importScripts must be set in order to
+// not raise any warnings in the compiler
+const importScripts = () => null;
+
 const createAudioWorker = (appProcess) => {
   const audioWorker = new ClientAudioWorkerProcess(appProcess, (audioWorker) => {
+    let io;
+
     // TODO: Bundle Socket.io directly in Worker
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
