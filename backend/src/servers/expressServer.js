@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const expressWs = require('express-ws')(app);
 const session = require('express-session');
 const server = require('http').Server(app);
 const httpProxy = require('http-proxy');
@@ -9,12 +8,9 @@ const expressRoutes = require('../api/express/routes');
 const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
-const config = require('../config');
-const { PATH_PUBLIC, FRONTEND_PROXY_URI, FRONTEND_WS_PROXY_URI, HTTP_LISTEN_PORT } = config;
-
+const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
 // Apply custom reponse headers
 app.all('*', (req, res, next) => {
-  const { EXPRESS_CUSTOM_RESPONSE_HEADERS } = config;
   for (const [header, value] of Object.entries(EXPRESS_CUSTOM_RESPONSE_HEADERS)) {
     res.header(header, value);
   }
@@ -110,37 +106,11 @@ app.use(express.static(PATH_PUBLIC));
 // Express API routes
 app.use('/', expressRoutes);
 
-// Proto generic WSS proxy
-/*
-(() => {
-  const genProxyWS = httpProxy.createProxyServer({ws: true});
-  // genProxy
-
-  app.all('/ws-proxy', (req, res, next) => {
-    const { wsProxyAddress } = req.query;
-
-    // res.send('...');
-
-    console.log('ws proxy address', wsProxyAddress);
-
-    genProxyWS.web(req, res, {target: wsProxyAddress}, (err) => {
-      console.error(err);
-      next();
-    });
-  });
-})();
-*/
-
 // React Frontend Proxy
+// Note: Development /sockjs-node proxying is handled directly by nginx
+// reverse proxy, at time of writing
 (() => {
   const reactProxy = httpProxy.createProxyServer();
-  const reactProxyWS = httpProxy.createProxyServer({ ws: true });
-
-  /*
-  reactProxy.on('upgrade', () => {
-    console.debug('upgrading proxy...');
-  });
-  */
 
   app.get('/*', (req, res) => {
     reactProxy.web(req, res, { target: FRONTEND_PROXY_URI }, (err) => {
@@ -150,34 +120,6 @@ app.use('/', expressRoutes);
     });
   });
 
-  app.all('/sockjs-node/*', (req, res, next) => {
-    const pathName = req.originalUrl;
-
-    console.log('regular', FRONTEND_PROXY_URI + pathName);
-
-    // res.send(FRONTEND_PROXY_URI + pathName);
-
-    reactProxy.web(req, res, { target: FRONTEND_PROXY_URI + pathName }, (err) => {
-      console.error(err);
-      next();
-    });
-
-    // next();
-  });
-
-  // TODO: Prototype w/: wscat -n --connect wss://0.0.0.0/sockjs-node/842/htbc4sby/websocket
-  expressWs.app.ws('/sockjs-node/*', (ws, res, next) => {
-    console.log('ws', ws);
-
-    const pathName = ws.originalUrl;
-
-    reactProxyWS.ws(ws, res, { target: FRONTEND_WS_PROXY_URI + pathName }, (err) => {
-      console.error(err);
-      next();
-    });
-
-    // next();
-  });
 })();
 
 /**
