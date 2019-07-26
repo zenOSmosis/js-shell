@@ -21,11 +21,16 @@ module.exports = function override(config, env) {
     new MonacoWebpackPlugin()
   );
 
-  // Configure hot loading
-  config.resolve.alias = Object.assign({}, config.resolve.alias, {
-    'react-dom': '@hot-loader/react-dom'
-  });
-  config = rewireReactHotLoader(config, env);
+  // Utilize HMR hot loading
+  (() => {
+    // Overwrite react-dom w/ hot loader
+    config.resolve.alias = Object.assign({}, config.resolve.alias, {
+      'react-dom': '@hot-loader/react-dom'
+    });
+
+    // Overwrite the exiting config w/ the hot loader configuration
+    config = rewireReactHotLoader(config, env);
+  })();
 
   // @see https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
   // @see https://www.npmjs.com/package/worker-loader
@@ -38,8 +43,7 @@ module.exports = function override(config, env) {
     }
   });
 
-  // Fix window not defined error in worker
-  // TODO: Cite why this is needed
+  // Fix window not defined error in Web Worker
   // @see https://medium.com/@vincentdnl/just-did-all-the-steps-in-the-article-on-a-fresh-cra-install-and-i-get-a-referenceerror-window-is-e200541533d0
   config.output['globalObject'] = 'this';
 

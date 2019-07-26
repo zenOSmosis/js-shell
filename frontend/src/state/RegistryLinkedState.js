@@ -8,6 +8,9 @@ export {
 
 /**
  * A simple add / remove object management system.
+ * 
+ * Note: AppRegistryLinkedState extends this, and is an example of how to use
+ * this.
  */
 export default class RegistryLinkedState extends LinkedState {
   /**

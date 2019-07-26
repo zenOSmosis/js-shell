@@ -2,6 +2,26 @@ import React from 'react';
 
 const year = new Date().getFullYear();
 
+const PublicGitSignature = () => {
+  let {REACT_APP_PUBLIC_GIT_SIGNATURE: publicGitSignature} = process.env;
+
+  if (!publicGitSignature) {
+    console.warn('Unable to aquire public git signature');
+    return false;
+  }
+
+  return (
+    <div>
+      Build info:<br />
+      {
+        publicGitSignature.split('\n').map((line, idx) => {
+          return <div key={idx}>{line}</div>
+        })
+      }
+    </div>
+  );
+};
+
 const VersionLabel = () => {
   return (
     <div style={{
@@ -16,7 +36,7 @@ const VersionLabel = () => {
     >
       JS Shell Prototype<br />
       Copyright &copy; { year } zenOSmosis<br />
-      TODO: Add git hash / version
+      <PublicGitSignature />
     </div>
   );
 };

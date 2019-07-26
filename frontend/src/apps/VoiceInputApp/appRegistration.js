@@ -33,7 +33,9 @@ export default registerApp({
       micSampleRate: null,
 
       isAudioWorkerOnline: false,
-      connectedSTTBackends: []
+
+      // STT API connection status
+      wsBackendStatus: null
     });
 
     let micProcess = null;
@@ -104,7 +106,30 @@ export default registerApp({
 
                       // TODO: Properly handle stdctrl messages
                       audioWorker.stdctrl.on('data', (data) => {
-                        console.debug('received stdctrl data', data);
+                        // Derive backend ws status from data
+                        // TODO: Refactor this accordingly
+                        (() => {
+                          let wsBackendStatus = null;
+                          // console.debug('received stdctrl data', data);
+                          const { wsConnecting, wsOpen, wsClose, wsError } = data;
+
+                          if (wsConnecting) {
+                            wsBackendStatus = 'Connecting';
+                          } else if (wsOpen) {
+                            wsBackendStatus = 'Connected';
+                          } else if (wsClose) {
+                            wsBackendStatus = 'Closed';
+                          } else if (wsError) {
+                            console.error(wsError);
+                            wsBackendStatus = 'Error: ' + JSON.stringify(wsError);
+                          }
+
+                          if (wsBackendStatus) {
+                            appProcess.setState({
+                              wsBackendStatus
+                            });
+                          }
+                        })();
                       });
                     }
 
@@ -121,8 +146,6 @@ export default registerApp({
                     mic.stdout.on('data', (float32Array) => {
                       // Pass the buffer as a transfer object
                       audioWorker.stdin.write(float32Array, [float32Array.buffer]);
-
-                      // console.debug(float32Array);
                     });
 
                   } catch (exc) {

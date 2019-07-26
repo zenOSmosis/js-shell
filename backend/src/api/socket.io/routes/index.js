@@ -1,4 +1,5 @@
 const echo = require('./echo');
+const serverConnections = require('./serverConnections');
 const env = require('./env');
 const ping = require('./ping');
 const fileSystem = require('./fileSystem');
@@ -19,6 +20,7 @@ const {
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
+  SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS,
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,
@@ -49,6 +51,9 @@ const initSocket = (socket) => {
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
+  socket.on(SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS, async (options = null, ack) => {
+    return serverConnections(socket, ack);
+  });
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APPS, xApps);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);

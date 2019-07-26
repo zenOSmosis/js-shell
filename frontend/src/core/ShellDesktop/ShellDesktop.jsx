@@ -18,6 +18,8 @@ const { DOM_ROOT_ID } = config;
 export default class ShellDesktop extends ClientGUIProcess {
   async _init() {
     try {
+      this.setTitle('Shell Desktop');
+
       const rootEl = document.getElementById(DOM_ROOT_ID);
 
       // Mounts the App component to the base ReactComponent

@@ -1,6 +1,15 @@
-const LinuxGPUChildProcess = require('../../../../utils/linux/LinuxGPUChildProcess');
+// TODO: Consider re-implementing either here, or in a separate Docker container
+
+// const LinuxGPUChildProcess = require('../../../../utils/linux/LinuxGPUChildProcess');
 
 const systemCommand = (commandData, ack) => {
+  console.error('Ignoring system command', commandData);
+
+  ack({
+    error: 'Ignored'
+  });
+
+  /*
   const {command, args, options = {}} = commandData;
   const {linuxGPUNumber = 0} = options;
 
@@ -10,6 +19,7 @@ const systemCommand = (commandData, ack) => {
   child.on('spawn', () => {
     ack('Cool!  Spawned!');
   });
+  */
 
   /*
   const child = exec(command, (error, stdout, stderr) => {

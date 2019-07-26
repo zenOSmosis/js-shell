@@ -8,11 +8,15 @@
  */
 
 import './FilesApp';
-import './HelloWorldApp';
+// import './HelloWorldApp';
+import './UserProfileApp';
+import './P2PConnectionApp';
 import './SourceCodeApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './SystemDetailApp';
+
+// Non-ported apps
 
 // import './SettingsApp';
 // import './WindowManagerApp';
