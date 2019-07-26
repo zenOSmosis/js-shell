@@ -1,3 +1,4 @@
+# TODO: Use node:12
 FROM node:10
 
 # Specifically used during development (TODO: Run from package instead?)

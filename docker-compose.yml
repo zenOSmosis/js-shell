@@ -27,8 +27,7 @@ services:
     volumes:
       - ./backend:/shell/backend # Only during development
     environment:
-      # TODO: Verify this is correct variable
-      - NODE_ENV="DEVELOPMENT"
+      - NODE_ENV="development"
     links:
       - frontend
       - dev_proxy # During development
@@ -42,11 +41,12 @@ services:
     volumes:
       # Backend is mapped w/ frontend because of shared object in utils/bind
       # jh: Not yet sure how this will work in production environment
-      - ./frontend:/shell/frontend # Only during development
-      - ./backend:/shell/backend # Only during development
+      # - ./frontend:/shell/frontend # Only during development
+      # - ./backend:/shell/backend # Only during development
+      # - ./cli:/shell/cli # Only during development
+      - ./:/shell # Only during development
     environment:
-      # TODO: Verify this is correct variable
-      - NODE_ENV="DEVELOPMENT"
+      - NODE_ENV="development"
       # - HTTPS=true
     command: ["npm", "run", "start"]
     ports:

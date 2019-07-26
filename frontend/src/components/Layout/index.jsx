@@ -4,13 +4,16 @@
 import React from 'react';
 import { Layout as AntdLayout } from 'antd';
 import { Row, Column } from '../RowColumn';
+import Section from '../Section';
 // import {Layout as AntdLayout, Header as AntdHeader, Sider as AntdSider, Content as AntdContent, Footer as AntdFooter} from 'antd';
 import './style.css';
 const { Header: AntdHeader, Sider: AntdSider, Content: AntdContent, Footer: AntdFooter} = AntdLayout;
 
 export {
   Row,
-  Column
+  Column,
+
+  Section
 };
 
 export const Layout = (props) => {

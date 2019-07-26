@@ -35,7 +35,7 @@ export default class VoiceInputWindow extends Component {
       micSampleRate,
 
       isAudioWorkerOnline,
-      connectedSTTBackends,
+      wsBackendStatus,
 
       ...propsRest
     } = this.props;
@@ -75,6 +75,14 @@ export default class VoiceInputWindow extends Component {
                         <tbody>
                           <tr>
                             <td>
+                              STT API connection status
+                            </td>
+                            <td>
+                              {wsBackendStatus}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
                               Mic sample duration
                             </td>
                             <td>
@@ -99,6 +107,14 @@ export default class VoiceInputWindow extends Component {
                           </tr>
                           <tr>
                             <td>
+                              Mic channels
+                            </td>
+                            <td>
+                              {micNumberOfChannels}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
                               Audio level RMS
                             </td>
                             <td>
@@ -111,14 +127,6 @@ export default class VoiceInputWindow extends Component {
                             </td>
                             <td>
                               N/A
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              Mic channels
-                            </td>
-                            <td>
-                              {micNumberOfChannels}
                             </td>
                           </tr>
                           <tr>

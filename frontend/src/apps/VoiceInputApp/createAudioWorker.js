@@ -1,9 +1,17 @@
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 
+export const EVT_TRANSCRIPTION = 'transcription';
+
 const createAudioWorker = (appProcess) => {
   const audioWorker = new ClientAudioWorkerProcess(appProcess, (audioWorker) => {
     // TODO: Bundle Socket.io directly in Worker
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
+
+    // TODO: Enable passing of external variables to WorkerProcess
+    const EVT_BACKEND_WS_CONNECTING = 'wsConnecting';
+    const EVT_BACKEND_WS_OPEN = 'wsOpen';
+    const EVT_BACKEND_WS_CLOSE = 'wsClose';
+    const EVT_BACKEND_WS_ERROR = 'wsError';
   
     const sttSocket = io(self.location.origin, {
       // TODO: Replace hard-coded Socket.io path
@@ -23,7 +31,7 @@ const createAudioWorker = (appProcess) => {
       sttSocket.emit('audioBlob', audioBlob);
     };
 
-    sttSocket.on('wsConnecting', () => {
+    sttSocket.on(EVT_BACKEND_WS_CONNECTING, () => {
       console.debug('Backend STT web socket connecting');
 
       audioWorker.stdctrl.write({
@@ -31,7 +39,7 @@ const createAudioWorker = (appProcess) => {
       });
     });
 
-    sttSocket.on('wsOpen', () => {
+    sttSocket.on(EVT_BACKEND_WS_OPEN, () => {
       console.debug('Backend STT web socket open');
 
       audioWorker.stdctrl.write({
@@ -39,7 +47,7 @@ const createAudioWorker = (appProcess) => {
       });
     });
 
-    sttSocket.on('wsClose', () => {
+    sttSocket.on(EVT_BACKEND_WS_CLOSE, () => {
       console.debug('Backend STT web socket closed');
 
       audioWorker.stdctrl.write({
@@ -47,7 +55,7 @@ const createAudioWorker = (appProcess) => {
       });
     });
 
-    sttSocket.on('wsError', (err) => {
+    sttSocket.on(EVT_BACKEND_WS_ERROR, (err) => {
       console.error('Backend STT web socket error', err);
 
       // Or should we write to stderr?

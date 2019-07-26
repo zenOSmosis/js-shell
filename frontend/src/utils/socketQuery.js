@@ -4,6 +4,9 @@
 import socket from './socket.io';
 import socketAPIRoutes from './socketAPIRoutes';
 
+/**
+ * @return {Promise<any>} Response from Socket connection.
+ */
 const socketQuery = (eventName, requestData = null) => {
   return new Promise((resolve, reject) => {
     socket.emit(eventName, requestData, (resp) => {
