@@ -53,7 +53,7 @@ class Dock extends Component {
                 <div
                   key={idx}
                   // effect="wobble" // TODO: Use variable
-                  style={{/*borderBottom: '5px blue solid',*/ margin: '0px 5px', display: 'inline-block' }}
+                  className="zd-desktop-dock-item"
                 >
                   <Tooltip title={title}>
                     <button
