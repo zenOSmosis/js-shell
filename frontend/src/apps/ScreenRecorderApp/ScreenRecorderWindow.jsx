@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import Cover from 'components/Cover';
@@ -11,12 +10,14 @@ export default class ScreenRecorderWindow extends Component {
     super(...args);
 
     this._videoElem = null;
-
-    this._appRuntime = appRegistration.getAppRuntime();
+    this._app = null;
   }
 
   componentDidMount() {
-    this._appRuntime.setState({
+    const { app } = this.props;
+    this._app = app;
+
+    this._app.setState({
       videoElem: this.getVideoElem(),
       viewComponent: this
     });
@@ -31,7 +32,7 @@ export default class ScreenRecorderWindow extends Component {
   }
 
   startCapture() {
-    this._appRuntime.setState({
+    this._app.setState({
       isCapturingRequested: true
     });
   }
@@ -48,11 +49,13 @@ export default class ScreenRecorderWindow extends Component {
 
   render() {
     const {
-      isCapturing
+      isCapturing,
+      ...propsRest
     } = this.props;
+
     return (
       <Window
-        appRegistration={appRegistration}
+        {...propsRest}
       >
         <Cover>
           <video
@@ -60,7 +63,7 @@ export default class ScreenRecorderWindow extends Component {
             ref={c => this._videoElem = c}
           />
         </Cover>
-        
+
         {
           !isCapturing &&
           <div>
@@ -78,7 +81,7 @@ export default class ScreenRecorderWindow extends Component {
                   <h1>Video Capture Options</h1>
                   <div>
                     Cursor:
-                    
+
                     <select>
                       {
                         CURSOR_OPTIONS.map((cursorOption, idx) => {
@@ -117,7 +120,7 @@ export default class ScreenRecorderWindow extends Component {
             </Cover>
           </div>
         }
-        
+
       </Window>
     );
   }

@@ -1,5 +1,3 @@
-// TODO: Replace appRegistration w/ app
-
 // TODO: Enable optional debugger:  https://github.com/redsunsoft/react-render-visualizer
 
 // Note: Window is not currently set as a HOC component due to it conflicting
@@ -141,8 +139,8 @@ export default class Window extends Component {
    */
   autosetTitle() {
     const { title: existingTitle } = this.state;
-    const { appRegistration, title: propsTitle } = this.props;
-    const newTitle = (appRegistration ? appRegistration.getTitle() : propsTitle);
+    const { app, title: propsTitle } = this.props;
+    const newTitle = (app ? app.getTitle() : propsTitle);
     if (newTitle !== existingTitle) {
       this.setTitle(newTitle);
     }
@@ -406,7 +404,7 @@ export default class Window extends Component {
 
   render() {
     let {
-      appRegistration,
+      app,
       children,
       className,
       description,
@@ -555,7 +553,7 @@ export default class Window extends Component {
   }
 
   close() {
-    const { appRegistration } = this.props;
+    const { app } = this.props;
 
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
@@ -569,11 +567,11 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close event detach', {
-      appRegistration
+      app
     });
 
-    if (appRegistration) {
-      appRegistration.closeApp();
+    if (app) {
+      app.close();
     }
   }
 }

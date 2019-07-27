@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import { Row, Column } from 'components/RowColumn';
 import AnalogVUMeter from 'components/AnalogVUMeter';
 
 export default class VoiceInputWindow extends Component {
-  constructor(...args) {
-    super(...args);
-
-    this._appRuntime = appRegistration.getAppRuntime();
+  componentDidMount() {
+    const { app } = this.props;
+    this._app = app;
   }
 
   startMicrophone() {
-    this._appRuntime.setState({
+    this._app.setState({
       isMicRequested: true
     });
   }
 
   stopMicrophone() {
-    this._appRuntime.setState({
+    this._app.setState({
       isMicRequested: false
     });
   }
@@ -43,7 +41,6 @@ export default class VoiceInputWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appRegistration={appRegistration}
       >
         <Row style={{ height: '100%' }}>
           <Column>
