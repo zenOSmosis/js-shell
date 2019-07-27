@@ -4,84 +4,110 @@ import createDesktopNotification from './createDesktopNotification';
 import AppRegistration from 'core/AppRegistration';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 
-// Registers an app for use w/ the system / Dock
-// Note: When hot module replacement (HMR) is run, this function is executed
-// again.  This includes internal provisions for handling of HMR situations.
+/**
+ * Registers an app for use w/ the system / Dock.
+ * 
+ * Note: When hot module replacement (HMR) is run, this function is executed
+ * again.  This includes internal provisions for handling of HMR situations.
+ * 
+ * @param {object} appProps Props to create the AppRegistration
+ * @return {AppRegistration} Constructed AppRegistration instance
+ */
 const registerApp = (appProps) => {
   // TODO: Verify appProps for API compatibility
 
   // TODO: Don't create new app process until the app is launched
   const newAppRegistration = new AppRegistration(appProps); // AppRuntime should be when the app is launched, not registered
 
-  const existingAppRegistration = getExistingHMRAppRegistration(newAppRegistration);
+  // Existing applications already in memory, as a result of source code edits during runtime
+  const hmrMatchedRegistrations = getMatchedAppRegistrations(newAppRegistration);
 
-  // Don't re-add if app is already existing
-  if (existingAppRegistration) {
-    const existingAppTitle = existingAppRegistration.getTitle();
+  if (hmrMatchedRegistrations.length) {
+    const lenHMRMatchedRegistrations = hmrMatchedRegistrations.length;
 
-    // TODO: If existing app is already open, re-associate existing views w/
-    // new app(?)
+    const existingAppTitle = hmrMatchedRegistrations[0].getTitle();
 
-    // Existing app registration (via HMR)
-    // TODO: Move this out of here into a more centralized handler
+    // Let users know which app has been updated
     createDesktopNotification(`"${existingAppTitle}" app source code updated`);
 
-    const unregister = async () => {
-      try {
-        // Remove existing app registration
-        await existingAppRegistration.unregister();
-
-        createDesktopNotification(`Existing ${existingAppTitle} unregistered`);
-      } catch (exc) {
-        throw exc;
-      }
-    };
-
-    (async () => {
-      try {
-        // If app is not launched...
-        if (!existingAppRegistration.getIsLaunched()) {
-          // Unregister existing app (because it is replaced w/ updated code via HMR)
-          await unregister();
-        } else {
-          // app is launched...
-
-          // Defer unload until close
-          // TODO: Prompt user after close if existing should be unregisterd
-          // TODO: Dynamically update "existing" app icon indicating that it is stale
-
-          createDesktopNotification(`Deferring existing ${existingAppTitle} unregistration until close`);
-
-          const app = existingAppRegistration.getAppRuntime();
-
-          app.once(EVT_BEFORE_EXIT, async () => {
-            try {
-              await unregister();
-            } catch (exc) {
-              throw exc;
-            }
-          });
+    for (let i = 0; i < lenHMRMatchedRegistrations; i++) {
+      const hmrMatchedRegistration = hmrMatchedRegistrations[i];
+  
+      // TODO: Break out into its own function
+      (async () => {
+        try {
+          // If app is not launched...
+          if (!hmrMatchedRegistration.getIsLaunched()) {
+            // Unregister existing app (because it is replaced w/ updated code via HMR)
+            await unregister(hmrMatchedRegistration);
+          } else {
+            // app is launched...
+            
+            // TODO: Prompt user after close if existing should be unregisterd
+            // TODO: Dynamically update "existing" app icon indicating that it is stale
+  
+            createDesktopNotification(`Deferring existing ${existingAppTitle} unregistration until close`);
+  
+            const app = hmrMatchedRegistration.getAppRuntime();
+  
+            // Defer unload until close
+            app.once(EVT_BEFORE_EXIT, async () => {
+              try {
+                await unregister(hmrMatchedRegistration);
+              } catch (exc) {
+                throw exc;
+              }
+            });
+          }
+        } catch (exc) {
+          throw exc;
         }
-      } catch (exc) {
-
-      }
-    })();
+      })();
+    }
   }
 
-  return existingAppRegistration || newAppRegistration;
+  // return hmrMatchedRegistrations[0] || newAppRegistration;
+  return newAppRegistration;
 };
 
-// TODO: Document, exactly, what this does
-// Note, currently this checks by looking at getMainWindow, and then
-// backtracking to the window's filename.  This would be more robust by not
-// requiring a window to be set.
-const getExistingHMRAppRegistration = (appRegistration) => {
+/**
+ * Internally handles unregistration of existing apps which have been updated
+ * via HMR.
+ *
+ * @param {AppRegistration} hmrMatchedRegistration 
+ * @return {Promise<void>}
+ */
+const unregister = async (hmrMatchedRegistration) => {
+  try {
+    const existingAppTitle = hmrMatchedRegistration.getTitle();
+
+    // Remove existing app registration
+    await hmrMatchedRegistration.unregister();
+
+    createDesktopNotification(`Existing ${existingAppTitle} unregistered`);
+  } catch (exc) {
+    throw exc;
+  }
+};
+
+/**
+ * Retrieves matched app registrations based on the given app registration.
+ * 
+ * (e.g. ~ if the icons are the same, assume the app is the same)
+ * 
+ * @param {AppRegistration} appRegistration
+ * @return {AppRegistration[]}
+ */
+const getMatchedAppRegistrations = (appRegistration) => {
   if (!module.hot) {
     return;
   }
 
   const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   const lenAppRegistrations = appRegistrations.length;
+
+  // TODO: Rename
+  const hmrMatchedRegistrations = [];
 
   for (let i = 0; i < lenAppRegistrations; ++i) {
     const testAppRegistration = appRegistrations[i];
@@ -96,9 +122,11 @@ const getExistingHMRAppRegistration = (appRegistration) => {
     const testIconSrc = testAppRegistration.getIconSrc();
     const iconSrc = appRegistration.getIconSrc();
     if (testIconSrc === iconSrc) {
-      return testAppRegistration;
+      hmrMatchedRegistrations.push(testAppRegistration);
     }
   }
+
+  return hmrMatchedRegistrations;
 };
 
 export default registerApp;
