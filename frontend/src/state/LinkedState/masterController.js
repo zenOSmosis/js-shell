@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
-import LinkedState, { EVT_LINKED_STATE_UPDATE } from '../LinkedState';
-import { isNull } from 'util';
+import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
 
 // Master controller events
 export const EVT_ADDED_LINKED_STATE = 'added-linked-state';
@@ -16,6 +15,8 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
   constructor() {
     if (_mlscsIsInstantiated) {
       throw new Error('MasterLinkedStateControllerSingleton can only be instantiated once');
+    } else {
+      _mlscsIsInstantiated = true;
     }
 
     super();
@@ -24,11 +25,9 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     this._sharedStates = {};
     this._masterLinkedStateListener = null;
 
-    this._mlscsIsInstantiated = true;
-
     // Script needs to instantiate before master linked state listener is present
     setTimeout(() => {
-      if (isNull(this._masterLinkedStateListener)) {
+      if (!this._masterLinkedStateListener) {
         throw new Error('No MasterLinkedStateListener set');
       }
     }, 0);
@@ -67,6 +66,13 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     linkedState.mlscs_setIsScopeOriginalInstance(isScopeOriginalInstance, this);
 
     if (this._masterLinkedStateListener) {
+      // Update MasterLinkedStateListener count
+      this._masterLinkedStateListener.setState({
+        lenLengthStates: this._linkedStateInstances.length
+      });
+    }
+
+    if (this._masterLinkedStateListener) {
       this._masterLinkedStateListener.broadcast(EVT_ADDED_LINKED_STATE, {
         linkedState,
         _rawDate: new Date(),
@@ -86,6 +92,13 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
 
       return (linkedStateUUID !== uuid);
     });
+
+    if (this._masterLinkedStateListener) {
+      // Update MasterLinkedStateListener count
+      this._masterLinkedStateListener.setState({
+        lenLengthStates: this._linkedStateInstances.length
+      });
+    }
   }
 
   // TODO: Document differences between using this and broadcast; or privatize broadcast

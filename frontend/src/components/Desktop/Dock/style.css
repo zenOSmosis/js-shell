@@ -29,6 +29,19 @@
   white-space: nowrap;
 }
 
+.zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item {
+  /*border-bottom: 5px blue solid*/
+  margin: -4px 5px;
+  display: inline-block;
+  border: 1px transparent solid;
+  border-radius: 20%;
+  padding: 4px;
+}
+
+.zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item:hover {
+  border: 1px #ccc dashed;
+}
+
 .zd-desktop-dock .zd-desktop-dock-items button {
   background-color: transparent;
   border: 0px;

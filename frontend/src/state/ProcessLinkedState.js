@@ -16,6 +16,8 @@ export default class ProcessLinkedState extends LinkedState {
       processes: [],
 
       guiProcesses: [],
+
+      // TODO: Differentiate between this and DesktopLinkedState.focusedAppRuntime
       focusedGUIProcess: null,
 
       // The last process which was updated

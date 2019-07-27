@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 // import IFrame from 'components/IFrame';
 import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
 // import {Menu, MenuItem} from 'components/Menu';
 import { Row, Column } from 'components/RowColumn';
-import  Switch from 'components/Switch';
+import Switch from 'components/Switch';
 // import DirectoryTree from './subComponents/DirectoryTree';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
 import IconLayout from './subComponents/IconLayout';
@@ -152,9 +151,11 @@ export default class FilesWindow extends Component {
       });
     }
 
+    const { ...propsRest } = this.props;
+
     return (
       <Window
-        appRegistration={appRegistration}
+        {...propsRest}
         title={pathName}
         toolbar={
           <PathBreadcrumb filesWindow={this} pathParts={pathConstituents} />
@@ -164,7 +165,7 @@ export default class FilesWindow extends Component {
             defaultChecked={showHidden}
             checkedChildren={<span>Hide Hidden</span>}
             unCheckedChildren={<span>Show Hidden</span>}
-            onChange={ showHidden => this.setShowHidden(showHidden) }
+            onChange={showHidden => this.setShowHidden(showHidden)}
           />
         }
         subToolbar={
@@ -176,20 +177,20 @@ export default class FilesWindow extends Component {
               </ButtonGroup>
             </Column>
 
-            <Column style={{ textAlign: 'center'}}>
+            <Column style={{ textAlign: 'center' }}>
               {
                 // Layout options (grid or list)
                 <ButtonGroup>
                   <Button
                     disabled={layoutType === LAYOUT_TYPE_ICON}
-                    onClick={ evt => this.setLayoutType(LAYOUT_TYPE_ICON) }
+                    onClick={evt => this.setLayoutType(LAYOUT_TYPE_ICON)}
                   >
                     <AntdIcon type="table" />
                   </Button>
-                  
+
                   <Button
                     disabled={layoutType === LAYOUT_TYPE_TABLE}
-                    onClick={ evt => this.setLayoutType(LAYOUT_TYPE_TABLE) }
+                    onClick={evt => this.setLayoutType(LAYOUT_TYPE_TABLE)}
                   >
                     <AntdIcon type="unordered-list" />
                   </Button>

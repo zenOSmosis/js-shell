@@ -36,6 +36,7 @@ const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 let windowStack = [];
 
 // TODO: Refactor elsewhere
+// TODO: Implement always-on-top
 export const getWindowStack = () => {
   return windowStack.filter((window) => {
     return !(window.isClosed);
@@ -55,7 +56,7 @@ export const getWindowStack = () => {
         const isActive = Object.is(activeWindow, desktopWindow);
 
         if (!isActive) {
-          desktopWindow.deactivate();
+          desktopWindow.blur();
         }
       });
     }
@@ -97,7 +98,7 @@ export default class Window extends Component {
       // this.setTitle(title);
       this.autosetTitle();
 
-      this.activate();
+      this.focus();
 
       await this.animate(EFFECT_CREATE);
 
@@ -134,17 +135,22 @@ export default class Window extends Component {
   }
 
   /**
-   * Automatically sets title based on configuration.
+   * Automatically sets Window title based on configuration.
    */
   autosetTitle() {
     const { title: existingTitle } = this.state;
-    const { appRegistration, title: propsTitle } = this.props;
-    const newTitle = (appRegistration ? appRegistration.getTitle() : propsTitle);
+    const { app, title: propsTitle } = this.props;
+    const newTitle = (app ? app.getTitle() : propsTitle);
     if (newTitle !== existingTitle) {
       this.setTitle(newTitle);
     }
   }
 
+  /**
+   * Sets the Window title.
+   * 
+   * @param {string} title 
+   */
   setTitle(title) {
     if (!title) {
       console.warn('Ignoring empty title');
@@ -165,6 +171,11 @@ export default class Window extends Component {
     });
   }
 
+  /**
+   * Retrieves the Window title.
+   * 
+   * @return {string}
+   */
   getTitle() {
     const { title } = this.state;
 
@@ -180,13 +191,12 @@ export default class Window extends Component {
       return;
     }
 
-    // Activate window if touched
-    this.activate();
+    // Focus window if touched
+    this.focus();
   };
 
-  // TODO: Rename to focus()
-  activate() {
-    // Check if window is already activated
+  focus() {
+    // Check if window is already focused
     if (this._isActive) {
       return false;
     }
@@ -203,8 +213,7 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
-  // TOD: Rename to blur()
-  deactivate() {
+  blur() {
     if (!this._isActive) {
       return false;
     }
@@ -356,12 +365,6 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
   }
 
-  /*
-  getCalculatedWindowSize() {
-
-  }
-  */
-
   getCalculatedBodySize() {
     const bodyCalcStyle = window.getComputedStyle(this.windowBodyWrapper);
 
@@ -371,7 +374,7 @@ export default class Window extends Component {
     return {
       width,
       height
-    }
+    };
   }
 
   /**
@@ -401,7 +404,7 @@ export default class Window extends Component {
 
   render() {
     let {
-      appRegistration,
+      app,
       children,
       className,
       description,
@@ -423,14 +426,6 @@ export default class Window extends Component {
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
 
     const { title } = this.state;
-
-    // TODO: Remove hardcoded position
-    /*
-    const pos = {
-      x: 50,
-      y: 50
-    };
-    */
 
     if (this.isClosed) {
       return (
@@ -558,7 +553,7 @@ export default class Window extends Component {
   }
 
   close() {
-    const { appRegistration } = this.props;
+    const { app } = this.props;
 
     if (this.isClosed) {
       console.warn('Window is already closed. Skipping close.');
@@ -572,11 +567,11 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
 
     console.warn('TODO: Handle window close event detach', {
-      appRegistration
+      app
     });
 
-    if (appRegistration) {
-      appRegistration.closeApp();
+    if (app) {
+      app.close();
     }
   }
 }

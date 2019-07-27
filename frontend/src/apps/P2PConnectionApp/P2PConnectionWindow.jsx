@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 import Window from 'components/Desktop/Window';
@@ -10,13 +9,12 @@ const { Search } = Input;
 class PeopleConnectionWindow extends Component {
   render() {
     let { socketPeers, p2pConnections, ...propsRest } = this.props;
-    
+
     socketPeers = socketPeers || [];
-    
+
     return (
       <Window
         {...propsRest}
-        appRegistration={appRegistration}
         toolbar={
           <Search
             size="small"
@@ -40,7 +38,7 @@ class PeopleConnectionWindow extends Component {
                       return (
                         <li key={idx} style={{ border: '1px #fff solid' }}>
                           <div>
-                            { peer }
+                            {peer}
                           </div>
                           <div>
                             OS: ... | ... | ...

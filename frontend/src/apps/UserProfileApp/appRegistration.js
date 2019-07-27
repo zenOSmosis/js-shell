@@ -4,7 +4,7 @@ import HelloWorldWindow from './UserProfileWindow';
 import config from 'config';
 
 export default registerApp({
-  title: 'User Profile',
+  title: 'User Profile Hello',
   mainView: (props) => {
     return (
       <HelloWorldWindow {...props} />

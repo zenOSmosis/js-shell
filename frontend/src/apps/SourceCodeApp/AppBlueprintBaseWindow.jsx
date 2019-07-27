@@ -2,7 +2,6 @@
 // Path for VSCode icons:  file:///usr/share/code/resources/app/out/vs/workbench/browser/parts/editor/media
 
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import Box3D, { BOX3D_SIDES } from 'components/Box3D';
 import Cover from 'components/Cover';
 // import Full from 'components/Full';
@@ -44,18 +43,18 @@ export default class AppBlueprintBaseWindow extends Component {
 
     this.state = {
       code: '// type your code...',
-  
+
       monacoLanguage: 'html',
-  
+
       // horizontalSliderVal: 0,
       // verticalSliderVal: 0,
-  
+
       // isLiveRendering: true,
-  
+
       // renderAxisX: 0,
       // renderAxisY: 0,
       // renderAxisZ: 0,
-  
+
       // renderPositionX: 0,
       // renderPositionY: 0
     };
@@ -93,10 +92,9 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appRegistration={appRegistration}
       >
         <SplitEditor />
-        
+
       </Window>
     )
   }
@@ -125,7 +123,6 @@ export default class AppBlueprintBaseWindow extends Component {
     return (
       <Window
         {...propsRest}
-        appRegistration={appRegistration}
         toolbarRight={
           <Popover
             // overlayStyle={{color: '#000'}}
@@ -189,159 +186,159 @@ export default class AppBlueprintBaseWindow extends Component {
             </Aside>
             */
           }
-          <Header style={{height: 20}}>
+          <Header style={{ height: 20 }}>
             [ header ]
           </Header>
           <Layout>
-          <Aside width={500} style={{ height: '100%' }}>
-            {
-              // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
-            }
-            <Editor
-              appBlueprintBaseWindow={this} // TODO: Rename to relevant name
-              box3D={this._renderBox}
-              code={this.state.code}
-              monacoOptions={monacoOptions}
-            />
-          </Aside>
-          <Content>
-            <Layout>
-              <Content>
-                <Layout>
-                  <Content>
-                    {
-                      // Render view
-                    }
-                    <GridBackground>
-                      <Cover>
-                        <Layout style={{ height: '100%' }}>
-                          <Content style={{ textAlign: 'left', fontSize: '1.2rem' }}>
-                            TODO: Place project requirements here
-                          </Content>
-                          <Footer style={{ textAlign: 'right' }}>
-                            <div>
-                              <span style={{ fontWeight: 'bold' }}>Scene Base Object:</span> Box3D
-                            </div>
-                          </Footer>
-                        </Layout>
-                      </Cover>
-                      <Cover>
-                        <Center>
-                          {
-                            // TODO: Pass face / rotation / zoom props to Box3D
-                          }
-                          <div ref={c => this._renderBoxContainer = c} style={{ width: '100%', height: '100%' }}>
-                            <Box3D
-                              ref={c => this._renderBox = c}
-                            />
-                          </div>
-                        </Center>
-                      </Cover>
-                    </GridBackground>
-                  </Content>
-                  <Footer style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                      <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
-                        <Option value="">Choose animation...</Option>
-                        <OptGroup label="OptGroup">
-                          {
-                            ANIMATIONS.map((animation, idx) => {
-                              return (
-                                <Option key={idx} value={animation}>{animation}</Option>
-                              );
-                            })
-                          }
-                        </OptGroup>
-                      </Select>
-                      <Button size="small">Animate</Button>
-                    </div>
-                  </Footer>
-                </Layout>
-              </Content>
-            </Layout>
-          </Content>
-          {
-            // End of main content
-          }
-          <Aside width={90} style={{ height: '100%' }}>
-            <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+            <Aside width={500} style={{ height: '100%' }}>
               {
                 // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
               }
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={-179}
-                  max={179}
-                  defaultValue={this.state.verticalSliderVal}
-                  onChange={this.handleVerticalSliderChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                X axis
+              <Editor
+                appBlueprintBaseWindow={this} // TODO: Rename to relevant name
+                box3D={this._renderBox}
+                code={this.state.code}
+                monacoOptions={monacoOptions}
+              />
+            </Aside>
+            <Content>
+              <Layout>
+                <Content>
+                  <Layout>
+                    <Content>
+                      {
+                        // Render view
+                      }
+                      <GridBackground>
+                        <Cover>
+                          <Layout style={{ height: '100%' }}>
+                            <Content style={{ textAlign: 'left', fontSize: '1.2rem' }}>
+                              TODO: Place project requirements here
+                          </Content>
+                            <Footer style={{ textAlign: 'right' }}>
+                              <div>
+                                <span style={{ fontWeight: 'bold' }}>Scene Base Object:</span> Box3D
+                            </div>
+                            </Footer>
+                          </Layout>
+                        </Cover>
+                        <Cover>
+                          <Center>
+                            {
+                              // TODO: Pass face / rotation / zoom props to Box3D
+                            }
+                            <div ref={c => this._renderBoxContainer = c} style={{ width: '100%', height: '100%' }}>
+                              <Box3D
+                                ref={c => this._renderBox = c}
+                              />
+                            </div>
+                          </Center>
+                        </Cover>
+                      </GridBackground>
+                    </Content>
+                    <Footer style={{ textAlign: 'center' }}>
+                      <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                        <Select onChange={effect => animate(this._renderBoxContainer, effect)} defaultValue="" size="small" style={{ width: '15rem' }}>
+                          <Option value="">Choose animation...</Option>
+                          <OptGroup label="OptGroup">
+                            {
+                              ANIMATIONS.map((animation, idx) => {
+                                return (
+                                  <Option key={idx} value={animation}>{animation}</Option>
+                                );
+                              })
+                            }
+                          </OptGroup>
+                        </Select>
+                        <Button size="small">Animate</Button>
+                      </div>
+                    </Footer>
+                  </Layout>
+                </Content>
+              </Layout>
+            </Content>
+            {
+              // End of main content
+            }
+            <Aside width={90} style={{ height: '100%' }}>
+              <div style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+                {
+                  // TODO: Add resize bindings to Full and trigger monacoEditor w/ changes
+                }
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={-179}
+                    max={179}
+                    defaultValue={this.state.verticalSliderVal}
+                    onChange={this.handleVerticalSliderChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  X axis
                     </div>
 
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={-179}
-                  max={179}
-                  defaultValue={this.state.horizontalSliderVal}
-                  onChange={this.handleHorizontalSliderChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                Y axis
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={-179}
+                    max={179}
+                    defaultValue={this.state.horizontalSliderVal}
+                    onChange={this.handleHorizontalSliderChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  Y axis
                     </div>
 
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={0}
-                  max={100}
-                  defaultValue={100}
-                  onChange={this.handleZTranslationChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                Z axis
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={0}
+                    max={100}
+                    defaultValue={100}
+                    onChange={this.handleZTranslationChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  Z axis
                     </div>
 
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={0}
-                  max={2000}
-                  defaultValue={200}
-                  onChange={this.handlePerspectiveChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                Perspective
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={0}
+                    max={2000}
+                    defaultValue={200}
+                    onChange={this.handlePerspectiveChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  Perspective
                     </div>
 
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={0}
-                  max={2000}
-                  defaultValue={200}
-                  // onChange={this.handlePerspectiveChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                Scale X
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={0}
+                    max={2000}
+                    defaultValue={200}
+                    // onChange={this.handlePerspectiveChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  Scale X
                     </div>
 
-              <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
-                <Knob
-                  // tipFormatter={null}
-                  min={0}
-                  max={2000}
-                  defaultValue={200}
-                  // onChange={this.handlePerspectiveChange}
-                  style={{ display: 'inline-block' }}
-                /><br />
-                Scale Y
+                <div style={{ display: 'inline-block', margin: '0px 5px', verticalAlign: 'middle' }}>
+                  <Knob
+                    // tipFormatter={null}
+                    min={0}
+                    max={2000}
+                    defaultValue={200}
+                    // onChange={this.handlePerspectiveChange}
+                    style={{ display: 'inline-block' }}
+                  /><br />
+                  Scale Y
                     </div>
 
-            </div>
-          </Aside>
+              </div>
+            </Aside>
           </Layout>
         </Layout>
       </Window>

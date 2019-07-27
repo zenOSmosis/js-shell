@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import appRegistration from './appRegistration';
 import Window from 'components/Desktop/Window';
 import { Button, ButtonGroup } from 'components/ButtonGroup';
 import { Layout, Content, Footer } from 'components/Layout';
@@ -29,12 +28,11 @@ export default class SystemDetailWindow extends Component {
 
   render() {
     const { activeTab } = this.state;
-
     const { ...propsRest } = this.props;
+  
     return (
       <Window
         {...propsRest}
-        appRegistration={appRegistration}
         toolbar={
           <ButtonGroup style={{ whiteSpace: 'nowrap' }}>
             <Button
@@ -66,13 +64,13 @@ export default class SystemDetailWindow extends Component {
                   switch (activeTab) {
                     case TAB_SYSTEM_OVERVIEW:
                       return 'System Overview';
-                    
+
                     case TAB_PROCESSES:
                       return <Processes />;
 
                     case TAB_ENVIRONMENT:
                       return <Environment />;
-                    
+
                     default:
                       return null;
                   }

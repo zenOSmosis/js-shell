@@ -3,15 +3,17 @@ import { EVT_LINKED_STATE_UPDATE } from '../LinkedState';
 
 /**
  * Connects LinkedState (or derivative) to a React component's lifecycle.
+ * 
+ * TODO: Document stateUpdateFilter arguments.
  *
  * @see https://reactjs.org/docs/higher-order-components.html
  * 
  * @param {Component} WrappedComponent 
  * @param {LinkedState} LinkedState A passed LinkeState class, or extension of.
- * @param {Function} stateUpdateFilter [default = null] Applies this filtered
+ * @param {Function | null} stateUpdateFilter [default = null] Applies this filtered
  * value to the component props when the state is updated.
  */
-const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null, onConstruct = null) => {
+const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* onConstruct = null */) => {
   // Enables ref to be obtained from stateful components, ignoring ref if not.
   // (e.g. if WrappedComponent extends React.Component the ref can be referenced here)
   const RefForwardedComponent = React.forwardRef((props, ref) => {
@@ -58,13 +60,6 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null, onC
 
         // Set initial state
         this._handleLinkedStateUpdate(state);
-
-        if (typeof onConstruct === 'function') {
-          onConstruct({
-            component: this._wrappedComponent,
-            linkedState: this._linkedStateInstance
-          });
-        }
       })();
     }
 
@@ -91,10 +86,8 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null, onC
 
     _handleLinkedStateUpdate = (changedState) => {
       if (typeof stateUpdateFilter === 'function') {
-        const fullState = this._linkedStateInstance.getState();
-
         // Overwrite updatedState w/ filter response
-        changedState = stateUpdateFilter(changedState, fullState) || {};
+        changedState = stateUpdateFilter(changedState, this._linkedStateInstance) || {};
       }
 
       if (Object.keys(changedState).length) {      

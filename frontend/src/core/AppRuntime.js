@@ -51,10 +51,7 @@ export default class AppRuntime extends ClientGUIProcess {
       }
     })();
 
-    // Focus when interacted with
-    this.on(EVT_DIRECT_INTERACT, () => {
-      this.focus();
-    });
+    
   }
 
   async _init() {
@@ -79,11 +76,22 @@ export default class AppRuntime extends ClientGUIProcess {
         commonDesktopLinkedState.setFocusedAppRuntme(this);
       });
 
+      // Focus when interacted with
+      this.on(EVT_DIRECT_INTERACT, () => {
+        this.focus();
+      });
+
       this.once(EVT_BEFORE_EXIT, () => {
         if (Object.is(this, focusedAppRuntime)) {
           focusedAppRuntime = null;
           commonDesktopLinkedState.setFocusedAppRuntme(null);
         }
+      });
+
+      // Register app w/ view
+      // Refer to components/Desktop/Window for example usage of app prop
+      this.setViewProps({
+        app: this
       });
 
       await super._init();

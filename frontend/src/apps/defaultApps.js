@@ -11,9 +11,9 @@ import './FilesApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
 import './P2PConnectionApp';
-import './SourceCodeApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
+import './SourceCodeApp';
 import './SystemDetailApp';
 
 // Non-ported apps

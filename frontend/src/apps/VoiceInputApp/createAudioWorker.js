@@ -1,6 +1,14 @@
+// Allow self keyword
+/* eslint no-restricted-globals: 0 */
+
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 
 export const EVT_TRANSCRIPTION = 'transcription';
+
+// Worker code is evaluated inline, so any functions available in Worker thread
+// must be declared externally in order to compile w/o warnings
+const importScripts = () => null; // Not evaluated within Worker
+const io = () => null; // Not evaulated within Worker
 
 const createAudioWorker = (appProcess) => {
   const audioWorker = new ClientAudioWorkerProcess(appProcess, (audioWorker) => {

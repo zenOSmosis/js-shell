@@ -1,19 +1,27 @@
 import LinkedState from './LinkedState';
-import mlscs from './controller/MasterLinkedStateController';
+import mlscs from './masterController';
+
+export const MASTER_LINKED_STATE_LISTENER_SCOPE_NAME = 'masterLinkedStateListenerScopeName';
 
 /**
- * Obtains an overview of all of LinkedState instances.
+ * Obtains an overview of all LinkedState instances.
  */
 export default class MasterLinkedStateListener extends LinkedState {
   constructor() {
-    // TODO: Use constant for super name
-    super('master-linked-state-listener', {
-      mlscs
+    super(MASTER_LINKED_STATE_LISTENER_SCOPE_NAME, {
+      mlscs,
+      lenLengthStates: 0
     });
   }
 
   getLinkedStateInstances() {
     return mlscs.getLinkedStateInstances();
+  }
+
+  getLinkedStateCount() {
+    const { lenLengthStates } = this.getState();
+
+    return lenLengthStates;
   }
 
   getLinkedStateInstancesByScopeName(linkedScopeName) {
