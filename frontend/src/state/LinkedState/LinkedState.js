@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import mlscs, {MasterLinkedStateControllerSingleton} from './controller/MasterLinkedStateController';
+import mlscs, { MasterLinkedStateControllerSingleton } from './masterController';
 // import MasterLinkedStateListener from './MasterLinkedStateListener';
 import uuidv4 from 'uuid/v4';
 
@@ -7,8 +7,8 @@ import uuidv4 from 'uuid/v4';
 
 // This emits when the current state scope has updated
 export const EVT_LINKED_STATE_UPDATE = 'update';
-// export const EVT_LINKED_STATE_WILL_UPDATE = 'will-update';
-// export const EVT_LINKED_STATE_DID_UPDATE = 'did-update';
+// export const EVT_LINKED_STATE_WILL_UPDATE = 'willUpdate';
+// export const EVT_LINKED_STATE_DID_UPDATE = 'didUpdate';
 
 // TODO: Renamed to id(...?)
 export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
@@ -30,7 +30,11 @@ export default class LinkedState extends EventEmitter {
 
     mlscs.addLinkedState(this, initialDefaultState);
 
-    this._initialDefaultState = initialDefaultState;
+    // Important! Initial state is kept as a clone so it isn't altered
+    this._initialDefaultState = Object.freeze({
+      ...{},
+      ...initialDefaultState
+    });
 
     // this.setState(initialDefaultState);
   }
@@ -64,7 +68,8 @@ export default class LinkedState extends EventEmitter {
    * Note, this should not be directly called from this class.
    * 
    * @param {boolean} isScopeOriginalInstance 
-   * @param {MasterLinkedStateControllerSingleton} mlscs 
+   * @param {MasterLinkedStateControllerSingleton} mlscs
+   *
    * @throws {Error} An exception is thrown if not called from
    * MasterLinkedStateControllerSingleton
    */
@@ -154,6 +159,8 @@ export default class LinkedState extends EventEmitter {
    * Resets the state to the initial default state.
    */
   reset() {
+    console.error(this._initialDefaultState);
+
     this.setState(this._initialDefaultState);
   }
 

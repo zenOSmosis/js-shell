@@ -1,16 +1,30 @@
 import React from 'react';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
+import { MasterLinkedStateListener } from 'state/LinkedState';
 import hocConnect from 'state/hocConnect';
+import { Divider } from 'antd';
 
 const SystemDetailFooter = (props = {}) => {
-  let { /* cpuThreads, */ lenCPUThreads, totalCPUUsage, children } = props;
+  let { /* cpuThreads, */ lenLinkedStates, lenCPUThreads, totalCPUUsage, children } = props;
 
   // cpuThreads = cpuThreads || [];
 
   return (
     <div>
       <div style={{display: 'inline-block'}}>
-        Total CPU Usage: { totalCPUUsage }% / { `${lenCPUThreads} Thread${lenCPUThreads !== 1 ? 's' : ''}` }
+        Total CPU Usage: { totalCPUUsage }% 
+      </div>
+
+      <Divider type="vertical" />
+
+      <div style={{display: 'inline-block'}}>
+        { `${lenCPUThreads} Thread${lenCPUThreads !== 1 ? 's' : ''}` }
+      </div>
+
+      <Divider type="vertical" />
+
+      <div style={{display: 'inline-block'}}>
+        { `${ lenLinkedStates } Linked State${lenLinkedStates !== 1 ? 's' : ''}` }
       </div>
       {
         /*
@@ -37,7 +51,7 @@ const SystemDetailFooter = (props = {}) => {
   );
 };
 
-const ConnectedSystemDetailFooter = hocConnect(SystemDetailFooter, CPUTimeLinkedState, (updatedState) => {
+const CPUTimeSystemDetailFooter = hocConnect(SystemDetailFooter, CPUTimeLinkedState, (updatedState) => {
   const { cpuThreads } = updatedState;
 
   if (cpuThreads) {
@@ -55,4 +69,10 @@ const ConnectedSystemDetailFooter = hocConnect(SystemDetailFooter, CPUTimeLinked
   }
 });
 
-export default ConnectedSystemDetailFooter;
+const MasterLinkedStateSystemDetailFooter = hocConnect(CPUTimeSystemDetailFooter, MasterLinkedStateListener, (updatedState, linkedStateInstance) => {
+  return {
+    lenLinkedStates: linkedStateInstance.getLinkedStateCount()
+  };
+});
+
+export default MasterLinkedStateSystemDetailFooter;

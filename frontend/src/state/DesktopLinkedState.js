@@ -30,6 +30,7 @@ export default class DesktopLinkedState extends LinkedState {
       // TODO: Merge handling of active Window & focusedAppRuntime
       activeWindow: null,
 
+      // TODO: Differentiate between this and ProcessLinkedState.focusedGUIProcess
       focusedAppRuntime: null,
 
       // URL redirect location

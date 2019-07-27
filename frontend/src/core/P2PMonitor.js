@@ -21,17 +21,18 @@ export default class P2PMonitor extends ClientProcess {
 
       this._p2pLinkedState = new P2PLinkedState();
 
-      socket.on(SOCKET_API_EVT_PEER_CONNECT, (socketId) => {
-        this._p2pLinkedState.addSocketPeer(socketId);
-      });
-
-      socket.on(SOCKET_API_EVT_PEER_DISCONNECT, (socketId) => {
-        this._p2pLinkedState.removeSocketPeer(socketId);
-      });
+      socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handlePeerConnect);
+      socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handlePeerDisconnect);
 
       this.on(EVT_BEFORE_EXIT, () => {
-        this._p2pLinkedState.destroy();
+        socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handlePeerConnect);
+        socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handlePeerDisconnect);
 
+        // Reset so that any UI views / etc. don't show connected peers
+        this._p2pLinkedState.reset();
+
+        // Unlink P2PLinkedState
+        this._p2pLinkedState.destroy();
         this._p2pLinkedState = null;
       });
 
@@ -50,6 +51,18 @@ export default class P2PMonitor extends ClientProcess {
       });
     } catch (exc) {
       throw exc;
+    }
+  }
+
+  _handlePeerConnect = (socketId) => {
+    if (this._p2pLinkedState) {
+      this._p2pLinkedState.addSocketPeer(socketId);
+    }
+  }
+
+  _handlePeerDisconnect = (socketId) => {
+    if (this._p2pLinkedState) {
+      this._p2pLinkedState.removeSocketPeer(socketId);
     }
   }
 }

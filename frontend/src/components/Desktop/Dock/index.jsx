@@ -1,3 +1,5 @@
+// TODO: Highlight opened apps
+
 // TODO: Add badge capability to Dock icons
 // https://ant.design/components/badge/#header
 
