@@ -3,9 +3,12 @@
 // @see https://www.npmjs.com/package/ogg
 
 import EventEmitter from 'events';
-import { EVT_PIPE_DATA, EVT_BEFORE_EXIT } from './constants';
+import { EVT_PIPE_DATA, EVT_PIPE_END, EVT_BEFORE_EXIT } from './constants';
 
-export default class ClientProcessPipe extends EventEmitter {
+/**
+ * A data pipe!
+ */
+class ClientProcessPipe extends EventEmitter {
   constructor(clientProcess, pipeName) {
     if (!clientProcess) {
       throw new Error('clientProcess must be passed to ClientProcessPipe constructor');
@@ -19,20 +22,49 @@ export default class ClientProcessPipe extends EventEmitter {
 
     this._clientProcess = clientProcess;
     this._pipeName = pipeName;
+    this._isEnded = false;
 
     // Automatically destruct pipe before exiting process
     this._clientProcess.once(EVT_BEFORE_EXIT, () => {
-      this.destruct();
+      this.destroy();
     });
   }
 
-  write(data) {
-    return this.emit(EVT_PIPE_DATA, data);
+  /**
+   * 
+   * @param {string} eventType 
+   * @param {any[] | any} eventData 
+   */
+  emit(eventType, eventData = undefined) {
+    if (this._isEnded) {
+      console.error('Trying to perform write operation on an ended pipe.  This is a no-op and indicates a potential memory leak in the application.');
+      return;
+    }
+
+    super.emit(eventType, eventData)
   }
 
-  destruct() {
-    // console.debug('Shutting down pipe', this);
+  /**
+   * Writes the given data to the pipe.
+   * 
+   * @param {any} data
+   */
+  write(data) {
+    this.emit(EVT_PIPE_DATA, data);
+  }
+
+  // TODO: Rename to destroy()
+  destroy() {
+    if (this._isEnded) {
+      return;
+    }
+
+    this.emit(EVT_PIPE_END);
 
     this.removeAllListeners();
+
+    this._isEnded = true;
   }
 }
+
+export default ClientProcessPipe;

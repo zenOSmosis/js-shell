@@ -5,6 +5,7 @@ import {
   EVT_TICK,
 
   EVT_PIPE_DATA,
+  EVT_PIPE_END,
 
   EVT_STATE_UPDATE,
 
@@ -33,6 +34,7 @@ export {
 
   ClientProcessPipe,
   EVT_PIPE_DATA,
+  EVT_PIPE_END,
 
   EVT_STATE_UPDATE,
 

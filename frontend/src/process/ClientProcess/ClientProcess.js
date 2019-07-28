@@ -44,7 +44,7 @@ let rootProcess = null;
  * a server-client model when running Web Workers, where the controller runs
  * on the main thread, which controls the relevant Worker thread.
  */
-export default class ClientProcess extends EventEmitter {
+class ClientProcess extends EventEmitter {
   /**
    * 
    * @param {ClientProcess | boolean} parentProcess If false is passed and
@@ -731,3 +731,5 @@ export default class ClientProcess extends EventEmitter {
     return this._isExited;
   }
 }
+
+export default ClientProcess;

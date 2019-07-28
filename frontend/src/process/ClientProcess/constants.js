@@ -13,6 +13,7 @@ export const PIPE_NAMES = [
 ];
 
 export const EVT_PIPE_DATA = 'data';
+export const EVT_PIPE_END = 'end';
 
 export const EVT_READY = 'ready';
 export const EVT_TICK = 'tick';
