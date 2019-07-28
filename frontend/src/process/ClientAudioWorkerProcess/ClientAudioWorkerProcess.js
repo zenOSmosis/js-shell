@@ -1,9 +1,11 @@
 import ClientWorkerProcess from '../ClientWorkerProcess/ClientWorkerProcess';
 
 /**
- * Native process ClientAudioWorkerProcess.
+ * Prototype Worker process w/ audio algorithms.
+ * 
+ * @extends ClientWorkerProcess
  */
-export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
+class ClientAudioWorkerProcess extends ClientWorkerProcess {
   constructor(...args) {
     super(...args);
 
@@ -176,3 +178,5 @@ export default class ClientAudioWorkerProcess extends ClientWorkerProcess {
     return max;
   }
 }
+
+export default ClientAudioWorkerProcess;

@@ -11,8 +11,10 @@ export {
  * 
  * Note: AppRegistryLinkedState extends this, and is an example of how to use
  * this.
+ * 
+ * @extends LinkedState
  */
-export default class RegistryLinkedState extends LinkedState {
+class RegistryLinkedState extends LinkedState {
   /**
    * @param {string} registryName This value reflects the property name of
    * the registry state array (e.g. if the registry name is "apps", it can be
@@ -29,7 +31,7 @@ export default class RegistryLinkedState extends LinkedState {
   }
 
    /**
-   * @param {object} registration Object to add to this registry.
+   * @param {Object} registration Object to add to this registry.
    */
   addRegistration(registration) {
     const state = this.getState();
@@ -58,7 +60,7 @@ export default class RegistryLinkedState extends LinkedState {
 
   /**
    * 
-   * @param {object} registration Object to remove from this
+   * @param {Object} registration Object to remove from this
    * registry. 
    */
   removeRegistration(registration) {
@@ -86,3 +88,5 @@ export default class RegistryLinkedState extends LinkedState {
     return registrations;
   }
 }
+
+export default RegistryLinkedState;

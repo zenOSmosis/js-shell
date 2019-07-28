@@ -7,8 +7,8 @@
  * Note, callback is optional due to less if/then checking across
  * implementations.
  *
- * @param {object} scope 
- * @param {Function} callback [optional]
+ * @param {Object} scope 
+ * @param {function} callback [optional]
  */
 const makeCallback = (scope, callback = null) => {
   if (typeof scope !== 'object') {

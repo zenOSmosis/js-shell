@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
-import mlscs, { MasterLinkedStateControllerSingleton } from './masterController';
-// import MasterLinkedStateListener from './MasterLinkedStateListener';
+import mlscs, { MasterLinkedStateControllerSingleton } from './_masterController';
 import uuidv4 from 'uuid/v4';
 
 // TODO: Add linked list for state history?
@@ -13,7 +12,16 @@ export const EVT_LINKED_STATE_UPDATE = 'update';
 // TODO: Renamed to id(...?)
 export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 
-export default class LinkedState extends EventEmitter {
+/**
+ * A multi-channeled state management engine.
+ * 
+ * @extends EventEmitter
+ */
+class LinkedState extends EventEmitter {
+  /**
+   * @param {string} linkedScopeName The name of the shared linked scope.
+   * @param {Object} initialDefaultState The default state of the instance. 
+   */
   constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState = {}) {
     super();
 
@@ -108,8 +116,8 @@ export default class LinkedState extends EventEmitter {
   /**
    * Sets a common state across all shared LinkedState instances.
    * 
-   * @param {object} updatedState 
-   * @param {Function} onSet [default = null] Optional callback to be
+   * @param {Object} updatedState 
+   * @param {function} onSet [default = null] Optional callback to be
    * performed after state has been updated
    */
   setState(updatedState = {}, onSet = null) {
@@ -138,7 +146,7 @@ export default class LinkedState extends EventEmitter {
   /**
    * Retrieves a common state across all shared link state instances.
    * 
-   * @return {object}
+   * @return {Object}
    */
   getState() {
     // return sharedStates[this._linkedScopeName];
@@ -183,3 +191,5 @@ export default class LinkedState extends EventEmitter {
     this.destroy();
   }
 }
+
+export default LinkedState;

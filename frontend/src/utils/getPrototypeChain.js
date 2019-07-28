@@ -3,7 +3,7 @@
  * 
  * @see https://stackoverflow.com/questions/2242518/how-can-i-see-a-javascript-objects-prototype-chain
  * 
- * @param {object} object A class or instance. 
+ * @param {Object} object A class or instance. 
  */
 const getPrototypeChain = (object) => {
   const _chain = [];

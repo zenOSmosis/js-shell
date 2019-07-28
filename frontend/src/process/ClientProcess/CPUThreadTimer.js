@@ -9,9 +9,11 @@ export const EVT_CYCLE = 'cycle'; // TODO: Rename to EVT_UPDATE
 let _threadHasCPUTimer = false;
 
 /**
+ * @extends EventEmitter
+ * 
  * Heuristical reasoning of CPU thread usage. Not an exact science as we don't have direct access into CPU core.
  */
-export default class CPUThreadTimer extends EventEmitter {
+class CPUThreadTimer extends EventEmitter {
   constructor() {
     if (_threadHasCPUTimer) {
       console.error(`Thread already has CPU timer. A duplicate instance is about
@@ -120,3 +122,5 @@ export default class CPUThreadTimer extends EventEmitter {
     this.emit(EVT_STOP);
   }
 }
+
+export default CPUThreadTimer;

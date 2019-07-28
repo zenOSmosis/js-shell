@@ -9,8 +9,10 @@ const LINKED_SCOPE_NAME = 'zd-client-processes';
 
 /**
  * A registry of all registered running processes in the Desktop.
+ * 
+ * @extends LinkedState
  */
-export default class ProcessLinkedState extends LinkedState {
+class ProcessLinkedState extends LinkedState {
   constructor() {
     super(LINKED_SCOPE_NAME, {
       processes: [],
@@ -62,6 +64,11 @@ export default class ProcessLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @param {ClientProcess} process 
+   */
   removeProcess(process) {
     if (!(process instanceof ClientProcess)) {
       throw new Error('process must be a ClientProcess instance');
@@ -116,3 +123,5 @@ export default class ProcessLinkedState extends LinkedState {
     return guiProcesses;
   }
 }
+
+export default ProcessLinkedState;

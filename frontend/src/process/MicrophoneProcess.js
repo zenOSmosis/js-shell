@@ -1,13 +1,14 @@
 import ClientAudioProcess from './ClientAudioProcess';
-// TODO: Rename to ClientMicrophoneProcess
 
 /**
- * Binds the native microphone to a ClientProcess.
+ * Binds the native microphone to a ClientAudioProcess.
  * 
  * Note, the microphone will attempt to turn on when this class is instantiated
  * and will throw an exception if it cannot do that.
+ *
+ * @extends ClientAudioProcess
  */
-export default class MicrophoneProcess extends ClientAudioProcess {
+class MicrophoneProcess extends ClientAudioProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     super(parentProcess, cmd, options);
 
@@ -85,3 +86,5 @@ export default class MicrophoneProcess extends ClientAudioProcess {
     }
   }
 }
+
+export default MicrophoneProcess;

@@ -7,12 +7,14 @@ import {
 export const EVT_CLIENT_WORKER_MESSAGE = 'message';
 
 /**
+ * @extends ClientProcessPipe
+ * 
  * Adapts Pipe to work with native Web Worker.
  * 
  * It acts as a router for the native Web Worker's postMessage() and 'message'
  * events handling.
  */
-export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
+class ClientWorkerDispatchPipe extends ClientProcessPipe {
   /**
    * Overrides ClientProcessPipe's write() method w/ handling to dispatch
    * across the native Web Worker's postMessage() method.
@@ -37,3 +39,5 @@ export default class ClientWorkerDispatchPipe extends ClientProcessPipe {
     this._clientProcess.postMessage(message, transfer);
   }
 }
+
+export default ClientWorkerDispatchPipe;

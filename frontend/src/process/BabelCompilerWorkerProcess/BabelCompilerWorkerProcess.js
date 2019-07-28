@@ -9,7 +9,12 @@ export const BABEL_REACT_PRESETS = [
   'es2015'
 ];
 
-export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
+/**
+ * A dedicated Web Worker which handles runtime Babel compilations.
+ * 
+ * @extends ClientWorkerProcess
+ */
+class BabelCompilerWorkerProcess extends ClientWorkerProcess {
   constructor(...args) {
     super(...args);
 
@@ -54,3 +59,5 @@ export default class BabelCompilerWorkerProcess extends ClientWorkerProcess {
     return compiledCode;
   }
 }
+
+export default BabelCompilerWorkerProcess;

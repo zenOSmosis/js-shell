@@ -38,6 +38,12 @@
   padding: 4px;
 }
 
+.zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0px 2px;
+}
+
 .zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item:hover {
   border: 1px #ccc dashed;
 }

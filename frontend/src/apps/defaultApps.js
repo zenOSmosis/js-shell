@@ -15,6 +15,7 @@ import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './SourceCodeApp';
 import './SystemDetailApp';
+import './DocsApp';
 
 // Non-ported apps
 

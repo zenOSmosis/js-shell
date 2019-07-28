@@ -10,7 +10,7 @@ class DoneNotifier extends EventEmitter {};
 /**
  * 
  * @param {string | Function | any} cmd 
- * @param {object} context [default={}] The context in which the code will
+ * @param {Object} context [default={}] The context in which the code will
  * be executed.
  * @return {Promise<void>}
  */

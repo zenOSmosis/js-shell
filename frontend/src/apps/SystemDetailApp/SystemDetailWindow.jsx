@@ -3,8 +3,12 @@ import Window from 'components/Desktop/Window';
 import { Button, ButtonGroup } from 'components/ButtonGroup';
 import { Layout, Content, Footer } from 'components/Layout';
 import Scrollable from 'components/Scrollable';
-import Environment from './subPanes/Environment';
-import Processes from './subPanes/Processes';
+
+// TODO: Rename these with "Tab" suffix
+import SystemOverviewTab from './tabs/SystemOverviewTab';
+import EnvironmentTab from './tabs/EnvironmentTab';
+import ProcessesTab from './tabs/ProcessesTab';
+
 import SystemDetailFooter from './SystemDetailFooter';
 
 const TAB_SYSTEM_OVERVIEW = 'system-overview';
@@ -63,13 +67,13 @@ export default class SystemDetailWindow extends Component {
                 (() => {
                   switch (activeTab) {
                     case TAB_SYSTEM_OVERVIEW:
-                      return 'System Overview';
+                      return <SystemOverviewTab />;
 
                     case TAB_PROCESSES:
-                      return <Processes />;
+                      return <ProcessesTab />;
 
                     case TAB_ENVIRONMENT:
-                      return <Environment />;
+                      return <EnvironmentTab />;
 
                     default:
                       return null;

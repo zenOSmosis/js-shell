@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ClientGUIProcess from './ClientGUIProcess';
-import './ClientGUIProcess.typedef';
+import './GUIProcessReactComponentParams.typedef';
 
 /**
  * Dynamically creates a ClientGUIProcessReactComponent class as a HOC using

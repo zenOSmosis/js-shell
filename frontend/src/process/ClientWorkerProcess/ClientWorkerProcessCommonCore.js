@@ -11,10 +11,12 @@ import serialize, { deserialize } from 'utils/serialize';
 export const CTRL_NAME_SET_OPTIONS = 'setOptions';
 
 /**
+ * @extends ClientProcess
+ * 
  * Common class which ClientWorkerProcess and ClientWorkerProcessController
  * extend from.
  */
-export default class ClientWorkerProcessCommonCore extends ClientProcess {
+class ClientWorkerProcessCommonCore extends ClientProcess {
   constructor(...args) {
     super(...args);
 
@@ -89,7 +91,7 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
    * Important!  This does not dynamically set instructions during run-time,
    * only during compilation.
    * 
-   * @param {object} commands All commands are currently optional.
+   * @param {Object} commands All commands are currently optional.
    * @return {Promise<void>} Resolves once the respective command, depending on
    * environment (Web Worker or main-threaded controller), is run.
    */
@@ -171,3 +173,5 @@ export default class ClientWorkerProcessCommonCore extends ClientProcess {
     }
   }
 }
+
+export default ClientWorkerProcessCommonCore;

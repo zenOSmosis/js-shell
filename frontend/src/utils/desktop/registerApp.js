@@ -1,8 +1,10 @@
-import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
+import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import createDesktopNotification from './createDesktopNotification';
 // import AppRuntime from 'core/AppRuntime';
 import AppRegistration from 'core/AppRegistration';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+
+const commonAppRegistryLinkedState = new AppRegistryLinkedState();
 
 /**
  * Registers an app for use w/ the system / Dock.
@@ -10,7 +12,7 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
  * Note: When hot module replacement (HMR) is run, this function is executed
  * again.  This includes internal provisions for handling of HMR situations.
  * 
- * @param {object} appProps Props to create the AppRegistration
+ * @param {Object} appProps Props to create the AppRegistration
  * @return {AppRegistration} Constructed AppRegistration instance
  */
 const registerApp = (appProps) => {

@@ -9,9 +9,7 @@
 import parseURL from './utils/parseURL';
 
 let config = {
-  DOM_ROOT_ID: 'root',
-
-  // HOST_PORT: 443
+  DOM_ROOT_ID: 'root'
 };
 
 // TODO: Enable this to work w/o window
@@ -26,7 +24,7 @@ if (typeof window !== 'undefined') {
 config = Object.assign(config, {
   SOCKET_IO_URI: config.HOST_REST_URI,
 
-  HOST_ICON_URI_PREFIX: `${config.HOST_REST_URI}/icons?iconName=`,
+  HOST_ICON_URI_PREFIX: `/icons/`,
 
   // TODO: Replace hardcded path here
   DESKTOP_DEFAULT_BACKGROUND_URI: '/dev/null', // TODO: Debug issue where Chrome displays border around page if this is set to null

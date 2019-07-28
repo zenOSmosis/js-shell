@@ -59,7 +59,7 @@ class Dock extends Component {
                     <button
                       onClick={ evt => this.handleDockItemClick(appRegistration) }
                     >
-                      <Image src={iconSrc} height="40px" style={{ padding: '0px 2px' }} />
+                      <Image className="zd-desktop-dock-item-icon" src={iconSrc} />
                     </button>
                   </Tooltip>
                 </div>

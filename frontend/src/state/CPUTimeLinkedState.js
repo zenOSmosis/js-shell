@@ -6,7 +6,12 @@ export {
 
 export const CPU_TIME_LINKED_STATE_SCOPE_NAME = 'CPUTimeLinkedState';
 
-export default class CPUTimeLinkedState extends LinkedState {
+/**
+ * Maintains state regarding CPU usage.
+ * 
+ * @extends LinkedState
+ */
+class CPUTimeLinkedState extends LinkedState {
   constructor() {
     super(CPU_TIME_LINKED_STATE_SCOPE_NAME, {
       cpuThreads: []
@@ -75,3 +80,5 @@ export default class CPUTimeLinkedState extends LinkedState {
     }
   }
 }
+
+export default CPUTimeLinkedState;

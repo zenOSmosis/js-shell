@@ -26,7 +26,12 @@ import socketQuery from 'utils/socketQuery';
 
 import beep from 'utils/audio/beep';
 
-export default class UI_JITRuntime extends ClientJITRuntime {
+/**
+ * @extends ClientJITRuntime
+ * 
+ * JITRuntime for the main thread (has access to the DOM).
+ */
+class UI_JITRuntime extends ClientJITRuntime {
   constructor(parentProcess, code, options = {}) {
     let { context } = options;
 
@@ -102,3 +107,5 @@ export default class UI_JITRuntime extends ClientJITRuntime {
     super._evalInProtectedContext(code);
   }
 }
+
+export default UI_JITRuntime;

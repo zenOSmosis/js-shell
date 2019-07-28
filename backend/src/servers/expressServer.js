@@ -4,7 +4,7 @@ const session = require('express-session');
 const server = require('http').Server(app);
 const httpProxy = require('http-proxy');
 const requestIp = require('request-ip');
-const expressRoutes = require('../api/express/routes');
+const expressAPIRoutes = require('../api/express/routes');
 const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
@@ -98,13 +98,13 @@ app.all('*', (req, res, next) => {
   }));
 })();
 
+// Express API routes
+app.use('/', expressAPIRoutes);
+
 // Backend static routes
 // Note: The React frontend Shell application's public files are not located
 // here
 app.use(express.static(PATH_PUBLIC));
-
-// Express API routes
-app.use('/', expressRoutes);
 
 // React Frontend Proxy
 // Note: Development /sockjs-node proxying is handled directly by nginx
@@ -137,7 +137,7 @@ const start = () => {
 
 module.exports = {
   app,
-  expressRoutes,
+  expressAPIRoutes,
   start,
   HTTP_LISTEN_PORT
 };

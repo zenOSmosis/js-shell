@@ -9,9 +9,11 @@ import evalInContext from 'utils/evalInContext';
 export const THIS_REP = '%___THIS___%';
 
 /**
+ * @extends ClientProcess
+ * 
  * Process-driven JS code runtime.
  */
-export default class ClientJITRuntime extends ClientProcess {
+class ClientJITRuntime extends ClientProcess {
   constructor(parentProcess = false, code = null, options = {}) {
     const { context } = options;
 
@@ -41,7 +43,7 @@ export default class ClientJITRuntime extends ClientProcess {
   /**
    * Sets the context (scope) of the code.
    * 
-   * @param {object} context 
+   * @param {Object} context 
    */
   setContext(context) {
     if (Object.keys(this._context).length) {
@@ -142,3 +144,4 @@ export default class ClientJITRuntime extends ClientProcess {
   }
 }
 
+export default ClientJITRuntime;

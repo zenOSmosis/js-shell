@@ -1,12 +1,14 @@
 import LinkedState from './LinkedState';
-import mlscs from './masterController';
+import mlscs from './_masterController';
 
 export const MASTER_LINKED_STATE_LISTENER_SCOPE_NAME = 'masterLinkedStateListenerScopeName';
 
 /**
  * Obtains an overview of all LinkedState instances.
+ * 
+ * @extends LinkedState
  */
-export default class MasterLinkedStateListener extends LinkedState {
+class MasterLinkedStateListener extends LinkedState {
   constructor() {
     super(MASTER_LINKED_STATE_LISTENER_SCOPE_NAME, {
       mlscs,
@@ -48,3 +50,5 @@ export default class MasterLinkedStateListener extends LinkedState {
 };
 
 mlscs.setMasterLinkedStateListenerClass(MasterLinkedStateListener);
+
+export default MasterLinkedStateListener;

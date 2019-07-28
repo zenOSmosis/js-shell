@@ -1,8 +1,8 @@
 // import React, { Component } from 'react';
 import ClientProcess, { EVT_TICK, EVT_BEFORE_EXIT } from '../ClientProcess';
 // import ClientGUIProcessMenubar from './ClientGUIProcessMenubar';
-import createClientGUIProcessReactComponent from './createClientGUIProcessReactComponent';
-import './ClientGUIProcess.typedef';
+import createClientGUIProcessReactComponent from './_createClientGUIProcessReactComponent';
+import './GUIProcessReactComponentParams.typedef';
 
 // Emits the first time the process' React component renders
 export const EVT_FIRST_RENDER = 'firstRender';
@@ -14,7 +14,12 @@ export {
   EVT_BEFORE_EXIT
 };
 
-export default class ClientGUIProcess extends ClientProcess {
+/**
+ * TODO: Document
+ * 
+ * @extends ClientProcess
+ */
+class ClientGUIProcess extends ClientProcess {
   constructor(...args) {
     super(...args);
 
@@ -61,7 +66,11 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
-  // TODO: Rename to setMainView
+  /**
+   * TODO: Document
+   * 
+   * @param {React.Component} View 
+   */
   setView(View) {
     let firstRender = false;
     
@@ -78,7 +87,11 @@ export default class ClientGUIProcess extends ClientProcess {
     });
   }
 
-  // TODO: Rename to setMainViewProps
+  /**
+   * TODO: Document
+   * 
+   * @param {Object} viewProps 
+   */
   setViewProps(viewProps) {
     const currentViewProps = this._viewProps;
 
@@ -101,6 +114,12 @@ export default class ClientGUIProcess extends ClientProcess {
     return this._ReactComponent;
   }
 
+  /**
+   * Unmounts the view and kills the process.
+   * 
+   * @param {number} killSignal
+   * @return {Promise<void>}
+   */
   async kill(killSignal = 0) {
     try {
       if (this._mountedReactComponent) {
@@ -119,3 +138,5 @@ export default class ClientGUIProcess extends ClientProcess {
     }
   }
 }
+
+export default ClientGUIProcess;

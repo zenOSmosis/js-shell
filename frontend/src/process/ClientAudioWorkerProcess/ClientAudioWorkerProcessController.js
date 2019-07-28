@@ -16,8 +16,10 @@ import ClientAudioWorkerProcess from './dispatch.worker';
  * 
  * For endianess, etc:
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView#Endianness
+ * 
+ * @extends ClientWorkerProcessController
  */
-export default class ClientAudioWorkerProcessController extends ClientWorkerProcessController {
+class ClientAudioWorkerProcessController extends ClientWorkerProcessController {
   constructor(parentProcess, cmd = null, options = {}) {
     // Default options
     const defOptions = {
@@ -33,3 +35,5 @@ export default class ClientAudioWorkerProcessController extends ClientWorkerProc
     super(parentProcess, cmd, options);
   }
 }
+
+export default ClientAudioWorkerProcessController;

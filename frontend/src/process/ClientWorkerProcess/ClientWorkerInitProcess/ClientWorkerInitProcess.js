@@ -5,11 +5,13 @@ const STAGE_1_CTRL_COMMAND = '[INIT COMMAND FROM WORKER HOST CONTROLLER]';
 const STAGE_2_WORKER_READY = '[WORKER PROCESS READY]';
 
 /**
+ * @extends ClientProcess
+ * 
  * Provides initial sync of Web Worker and controller.
  * 
  * Note: This runs in both the Web Worker and the controller process.
  */
-export default class ClientWorkerAuthInitProcess extends ClientProcess {
+class ClientWorkerInitProcess extends ClientProcess {
   /**
    * @param {ClientWorkerProcessController | ClientWorkerProcess} clientWorkerHostOrNativeProcess 
    */
@@ -246,3 +248,5 @@ export default class ClientWorkerAuthInitProcess extends ClientProcess {
     }
   }
 }
+
+export default ClientWorkerInitProcess;

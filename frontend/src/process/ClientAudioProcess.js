@@ -17,14 +17,11 @@ export const OUTPUT_DATA_TYPES = [
 export const EVT_AUDIO_BUFFER_OUTPUT = 'audioBuffer';
 
 /**
- * Binds the native microphone to a ClientProcess.
+ * @extends ClientProcess
  * 
- * Note, the microphone will attempt to turn on when this class is instantiated
- * and will throw an exception if it cannot do that.
+ * Base class for Web Audio API / ClientProcess bridging.
  */
-
-// TODO: Implement context here
-export default class ClientAudioProcess extends ClientProcess {
+class ClientAudioProcess extends ClientProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     // Default options
     const defOptions = {
@@ -183,3 +180,5 @@ export default class ClientAudioProcess extends ClientProcess {
     });
   }
 }
+
+export default ClientAudioProcess;

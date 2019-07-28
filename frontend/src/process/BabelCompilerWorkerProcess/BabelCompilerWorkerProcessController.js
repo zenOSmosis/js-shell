@@ -1,7 +1,12 @@
 import ClientWorkerProcessController from '../ClientWorkerProcess';
 import BabelCompilerWorkerProcess from './dispatch.worker';
 
-export default class BabelCompilerWorkerProcessController extends ClientWorkerProcessController {
+/**
+ * Main-threaded controller for the BabelCompilerWorkerProcess.
+ * 
+ * @extends ClientWorkerProcessController
+ */
+class BabelCompilerWorkerProcessController extends ClientWorkerProcessController {
   constructor(parentProcess, cmd = null, options = {}) {
     // Default options
     const defOptions = {
@@ -14,3 +19,5 @@ export default class BabelCompilerWorkerProcessController extends ClientWorkerPr
     super(parentProcess, cmd, options);
   }
 }
+
+export default BabelCompilerWorkerProcessController;

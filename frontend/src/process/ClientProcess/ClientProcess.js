@@ -5,7 +5,7 @@ import ProcessLinkedState from 'state/ProcessLinkedState';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import ClientProcessPipe from './ClientProcessPipe';
 import CPUThreadTimer, { EVT_CYCLE as CPU_THREAD_CLOCK_CYCLE } from './CPUThreadTimer';
-import makeCallback from './makeCallback';
+import makeCallback from './_makeCallback';
 import evalInContext from 'utils/evalInContext';
 import getNow from 'utils/time/getNow';
 
@@ -30,12 +30,14 @@ const cpuTimeLinkedState = new CPUTimeLinkedState();
 
 // The process id of the next process (auto-incremented in the ClientProcess
 // constructor)
-let nextPID = 1;
+let _nextPID = 1;
 
 // The first process in the thread
-let rootProcess = null;
+let _rootProcess = null;
 
 /**
+ * @extends EventEmitter
+ * 
  * An object-oriented way of managing client-side processes, somewhat
  * resembling a simplified version of Node.js processes.
  * 
@@ -50,34 +52,34 @@ class ClientProcess extends EventEmitter {
    * @param {ClientProcess | boolean} parentProcess If false is passed and
    * there is already a root process, the root process will be utilized as
    * the parent. 
-   * @param {Function} cmd 
-   * @param {object} options 
+   * @param {function} cmd
+   * @param {Object} options 
    */
   constructor(parentProcess, cmd, options = {}) {
     super();
 
-    if (!rootProcess) {
-      rootProcess = this;
+    if (!_rootProcess) {
+      _rootProcess = this;
     }
 
-    this._isRootProcess = (Object.is(this, rootProcess));
+    this._isRootProcess = (Object.is(this, _rootProcess));
     this._rootThreadTimer = null;
     this._handleCPUThreadCycle = this._handleCPUThreadCycle.bind(this);
 
-    this._pid = nextPID;
+    this._pid = _nextPID;
 
-    // Increment nextPID for the next process
-    ++nextPID;
+    // Increment _nextPID for the next process
+    ++_nextPID;
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
       throw new Error('Cannot fork from an exited process');
     } else if (typeof parentProcess === 'undefined') {
       throw new Error('parentProcess must be set');
-    } else if (!rootProcess) {
+    } else if (!_rootProcess) {
       throw new Error('rootProcess not internally set!');
     } else if (parentProcess === false) {
-      parentProcess = rootProcess;
+      parentProcess = _rootProcess;
     }
 
     this._parentProcess = parentProcess;
@@ -366,7 +368,7 @@ class ClientProcess extends EventEmitter {
   /**
    * Sets process options, merging new options into existing.
    * 
-   * @param {object} options 
+   * @param {Object} options 
    */
   setOptions(options = {}) {
     // Set options on current tick
@@ -379,7 +381,7 @@ class ClientProcess extends EventEmitter {
   /**
    * Retrieves current process options.
    * 
-   * @return {object}
+   * @return {Object}
    */
   getOptions() {
     return this._options;
@@ -622,35 +624,60 @@ class ClientProcess extends EventEmitter {
     this._setImmediateCallStack = [];
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {string}
+   */
   getThreadType() {
     return this._threadType;
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {string}
+   */
   getServiceURI() {
     return this._serviceURI;
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {number}
+   */
   getStartTime() {
     return this._startTime;
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {number}
+   */
   getUptime() {
     const now = getNow();
 
     return now - this._startTime;
   }
 
-  /*
-  getUptime() {
-  }
-  */
-
+  /**
+   * TODO: Document
+   * 
+   * @return {string}
+   */
   getClassName() {
     const { name: className } = this.constructor;
 
     return className;
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {Promise<void>}
+   */
   async close() {
     try {
       // TODO: Handle any checks to determine if process can be safely closed
@@ -675,7 +702,9 @@ class ClientProcess extends EventEmitter {
   }
 
   /**
-   * TODO: Handle optional signal
+   * TODO: Document
+   * 
+   * @return {Promise<void>}
    */
   async kill(killSignal = 0) {
     // Prevent trying to kill an already exited process
@@ -712,11 +741,11 @@ class ClientProcess extends EventEmitter {
     this._isExited = true;
 
     // Let anyone know that this operation has completed
-    this.emit(EVT_EXIT);
+    this.emit(EVT_EXIT, killSignal);
 
     // Clean up event handles
     // Important! This must be called after all other event emits have been
-    // called
+    // called (including EVT_EXIT!)
     this.removeAllListeners();
 
     // console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);

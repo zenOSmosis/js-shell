@@ -6,7 +6,9 @@ import EventEmitter from 'events';
 import { EVT_PIPE_DATA, EVT_PIPE_END, EVT_BEFORE_EXIT } from './constants';
 
 /**
- * A data pipe!
+ * @extends EventEmitter
+ * 
+ * An event-based data pipe, used for STDIO w/ ClientProcess.
  */
 class ClientProcessPipe extends EventEmitter {
   constructor(clientProcess, pipeName) {

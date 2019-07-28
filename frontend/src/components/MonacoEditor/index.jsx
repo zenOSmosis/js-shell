@@ -32,7 +32,7 @@ export default class MonacoEditor extends Component {
    * @see https://github.com/Microsoft/monaco-editor/issues/270
    * @see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
    * 
-   * @param {object} modelOptions 
+   * @param {Object} modelOptions 
    */
   updateModelOptions(modelOptions) {
     const model = this._editor.getModel();

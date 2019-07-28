@@ -1,9 +1,10 @@
 import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_DIRECT_INTERACT } from 'process/ClientGUIProcess';
-// import Window from 'components/Desktop/Window';
-import { commonDesktopLinkedState } from 'state/commonLinkedStates';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import Menubar from './ShellDesktop/Menubar';
 
-let focusedAppRuntime = null;
+const commonDesktopLinkedState = new DesktopLinkedState();
+
+let _focusedAppRuntime = null;
 
 // export const EVT_CONTENT_UPDATE = 'content-update';
 // export const EVT_TITLE_UPDATE = 'title-update';
@@ -12,7 +13,12 @@ let focusedAppRuntime = null;
 export const EVT_FOCUS = 'focus';
 export const EVT_BLUR = 'blur';
 
-export default class AppRuntime extends ClientGUIProcess {
+/**
+ * Application runtime for Shell Desktop.
+ * 
+ * @extends ClientGUIProcess
+ */
+class AppRuntime extends ClientGUIProcess {
   // TODO: Replace runProps w/ process API
   constructor(runProps) {
     if (typeof runProps !== 'object') {
@@ -63,16 +69,16 @@ export default class AppRuntime extends ClientGUIProcess {
 
       this.on(EVT_FOCUS, () => {
         // Ignore if already focused
-        if (Object.is(this, focusedAppRuntime)) {
+        if (Object.is(this, _focusedAppRuntime)) {
           return;
         }
   
         // Blur existing GUI process, if present
-        if (focusedAppRuntime) {
-          focusedAppRuntime.blur();
+        if (_focusedAppRuntime) {
+          _focusedAppRuntime.blur();
         }
   
-        focusedAppRuntime = this;
+        _focusedAppRuntime = this;
         commonDesktopLinkedState.setFocusedAppRuntme(this);
       });
 
@@ -82,8 +88,8 @@ export default class AppRuntime extends ClientGUIProcess {
       });
 
       this.once(EVT_BEFORE_EXIT, () => {
-        if (Object.is(this, focusedAppRuntime)) {
-          focusedAppRuntime = null;
+        if (Object.is(this, _focusedAppRuntime)) {
+          _focusedAppRuntime = null;
           commonDesktopLinkedState.setFocusedAppRuntme(null);
         }
       });
@@ -193,3 +199,5 @@ export default class AppRuntime extends ClientGUIProcess {
     return this._isFocused;
   }
 }
+
+export default AppRuntime;

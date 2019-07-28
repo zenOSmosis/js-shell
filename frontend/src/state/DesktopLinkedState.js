@@ -13,7 +13,12 @@ export {
 
 const DESKTOP_LINKED_SCOPE_NAME = `desktop-linked-state-${uuidv4()}`;
 
-export default class DesktopLinkedState extends LinkedState {
+/**
+ * Maintains state directly related to the Shell Desktop.
+ * 
+ * @extends LinkedState;
+ */
+class DesktopLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_LINKED_SCOPE_NAME, {
       // Whether, or not, the Desktop should capture right-click context menu
@@ -51,7 +56,7 @@ export default class DesktopLinkedState extends LinkedState {
   /**
    * Sets the currently active Desktop window.
    *
-   * @param {object} activeWindow TODO: Use Window property.  It currently
+   * @param {Object} activeWindow TODO: Use Window property.  It currently
    * conflicts w/ DOM Window. 
    */
   setActiveWindow(activeWindow) {
@@ -155,3 +160,5 @@ export default class DesktopLinkedState extends LinkedState {
     });
   });
 })();
+
+export default DesktopLinkedState;

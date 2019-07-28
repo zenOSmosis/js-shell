@@ -11,13 +11,22 @@
 import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 import ClientWorkerProcess from './dispatch.worker';
 
-export default class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
+/**
+ * @extends ClientWorkerProcessCommonCore
+ * 
+ * Controller for ClientWorkerProcess.
+ * 
+ * Note, this controller runs on the main thread, and provides I/O and control
+ * data to the Web Worker.  This relationship is a 1:1 between controller and
+ * Worker.
+ */
+class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
   /**
    * Note, cmd gets executed directly in the worker, instead of in the main thread.
    * 
    * @param {ClientProcess} parentProcess 
-   * @param {Function} cmd 
-   * @param {object} options [optional]
+   * @param {function} cmd 
+   * @param {Object} options [optional]
    */
   constructor(parentProcess, cmd = null, options = {}) {
     const defOptions = {
@@ -118,6 +127,11 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     }
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {string | Function}
+   */
   getWorkerCmd() {
     if (this._workerCmd === -1) {
       throw new Error('workerCmd has not initialized');
@@ -184,6 +198,11 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     this._nativeWorker.postMessage(message, transfer);
   }
 
+  /**
+   * Kills the native Worker.
+   * 
+   * @param {number} killSignal 
+   */
   async kill(killSignal = 0) {
     if (this._nativeWorker) {
       // TODO: Send signal to remote worker before terminating
@@ -194,3 +213,5 @@ export default class ClientWorkerProcessController extends ClientWorkerProcessCo
     await super.kill(killSignal);
   }
 }
+
+export default ClientWorkerProcessController;

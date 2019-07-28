@@ -13,8 +13,10 @@ const { SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS } = socketAPIRoutes;
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
+ * 
+ * @extends ClientProcess
  */
-export default class P2PMonitor extends ClientProcess {
+class P2PMonitor extends ClientProcess {
   async _init() {
     try {
       this.setTitle('P2P Monitor');
@@ -66,3 +68,5 @@ export default class P2PMonitor extends ClientProcess {
     }
   }
 }
+
+export default P2PMonitor;

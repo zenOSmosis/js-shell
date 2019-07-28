@@ -9,7 +9,12 @@ import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
 
 const nativeWorker = self;
 
-export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
+/**
+ * @extends ClientWorkerProcessCommonCore
+ * 
+ * ClientProcess which runs directly on a dedicated Web Worker.
+ */
+class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
   constructor(...args) {
     // As this process is running natively in its own thread on the host OS,
     // it's not extending a previous ClientProcess on its own.
@@ -121,3 +126,5 @@ export default class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     // nativeWorker.terminate();
   }
 }
+
+export default ClientWorkerProcess;

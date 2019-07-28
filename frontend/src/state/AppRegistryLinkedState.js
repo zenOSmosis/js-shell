@@ -12,8 +12,10 @@ export const APP_REGISTRATIONS_LINKED_SCOPE_NAME = 'appRegistrations';
 
 /**
  * A registry of all registered app registrations for the Desktop.
+ * 
+ * @extends RegistryLinkedState
  */
-export default class AppRegistryLinkedState extends RegistryLinkedState {
+class AppRegistryLinkedState extends RegistryLinkedState {
   constructor() {
     super(APP_REGISTRATIONS_LINKED_SCOPE_NAME);
   }
@@ -46,3 +48,5 @@ export default class AppRegistryLinkedState extends RegistryLinkedState {
     return appRegistrations;
   }
 }
+
+export default AppRegistryLinkedState;

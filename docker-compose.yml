@@ -25,7 +25,8 @@ services:
   backend:
     build: ./backend
     volumes:
-      - ./backend:/shell/backend # Only during development
+      # - ./backend:/shell/backend # Only during development
+      - ./:/shell # Only during development
     environment:
       - NODE_ENV="development"
     links:

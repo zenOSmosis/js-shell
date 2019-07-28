@@ -1,7 +1,10 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
-import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
+import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
+// import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+
+const commonAppRegistryLinkedState = new AppRegistryLinkedState();
 
 /**
  * Creates a registration which automatically populates app menus and the Dock
@@ -12,8 +15,10 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
  * 
  * In order to populate the Dock, and any relevant app menus, this class should
  * be instantiated for each referenced app.
+ * 
+ * @extends EventEmitter
  */
-export default class AppRegistration extends EventEmitter {
+class AppRegistration extends EventEmitter {
   constructor(runProps) {
     super();
 
@@ -134,3 +139,5 @@ export default class AppRegistration extends EventEmitter {
     }
   }
 }
+
+export default AppRegistration;
