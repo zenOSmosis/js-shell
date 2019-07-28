@@ -3,7 +3,7 @@ import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 import Window from 'components/Desktop/Window';
 import { Layout, Content, Footer, Row, Column, Section } from 'components/Layout';
-import { Input } from 'antd';
+import { Avatar, Input } from 'antd';
 const { Search } = Input;
 
 class PeopleConnectionWindow extends Component {
@@ -30,18 +30,25 @@ class PeopleConnectionWindow extends Component {
               TODO: Implement spaces
             </Section>
             <Row>
-              <Column>
+              <Column style={{border: '1px #ccc solid'}}>
                 <h1>Available</h1>
                 <ul style={{ listStyle: 'none', width: '100%' }}>
                   {
                     socketPeers.map((peer, idx) => {
                       return (
-                        <li key={idx} style={{ border: '1px #fff solid' }}>
+                        <li key={idx}>
+                          <div style={{display: 'inline-block'}}>
+                            <Avatar size={48} icon="user" />
+                          </div>
+                          hello
                           <div>
                             {peer}
                           </div>
                           <div>
                             OS: ... | ... | ...
+                          </div>
+                          <div>
+                            <button>Connect</button>
                           </div>
                         </li>
                       )
