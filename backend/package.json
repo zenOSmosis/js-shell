@@ -1,7 +1,7 @@
 {
   "name": "shell",
   "version": "0.0.1",
-  "description": "A web-based program launcher, with GPU selector, for Linux.",
+  "description": "Server for JS shell, a web-based desktop environment for JavaScript.",
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js -L",
