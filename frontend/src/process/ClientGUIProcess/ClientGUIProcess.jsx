@@ -7,8 +7,6 @@ import './GUIProcessReactComponentParams.typedef';
 // Emits the first time the process' React component renders
 export const EVT_FIRST_RENDER = 'firstRender';
 
-export const EVT_DIRECT_INTERACT = 'directInteract';
-
 export {
   EVT_TICK,
   EVT_BEFORE_EXIT
@@ -48,13 +46,6 @@ class ClientGUIProcess extends ClientProcess {
 
       onUnmount: () => {
         this._mountedReactComponent = null;
-      },
-      
-      onDirectInteract: (evt) => {
-        console.warn('TODO: Re-enable evt propagation for onDirectInteract, but only call onDirectInteract on highest child');
-        evt.stopPropagation();
-
-        this.emit(EVT_DIRECT_INTERACT);
       }
     });
 

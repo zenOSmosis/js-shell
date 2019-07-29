@@ -12,7 +12,7 @@ import './GUIProcessReactComponentParams.typedef';
  * @param {GUIProcessReactComponentParams} procParams 
  */
 const createClientGUIProcessReactComponent = (procParams) => {
-  const { guiProc, onMount, onUnmount, onDirectInteract } = procParams;
+  const { guiProc, onMount, onUnmount } = procParams;
 
   if (!(guiProc instanceof ClientGUIProcess)) {
     throw new Error('guiProc must be a ClientGUIProcess instance');
@@ -31,10 +31,6 @@ const createClientGUIProcessReactComponent = (procParams) => {
         Content: null,
         viewProps: {} // Props for the wrapped view
       };
-
-      if (typeof onDirectInteract !== 'function') {
-        console.warn('onDirectInteract not available as a function');
-      }
 
       this._Content = null;
       this._isMounted = false;
@@ -110,10 +106,7 @@ const createClientGUIProcessReactComponent = (procParams) => {
       return (
         <div
           // ref={c => this._el = c}
-          onMouseDown={onDirectInteract}
-          onTouchStart={onDirectInteract}
           style={{ display: 'inline-block' }}
-
           data-proc-pid={pid} // For debugging
         >
           {

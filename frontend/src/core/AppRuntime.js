@@ -1,4 +1,4 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_DIRECT_INTERACT } from 'process/ClientGUIProcess';
+import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER /*, REMOVE_THIS*/ } from 'process/ClientGUIProcess';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import Menubar from './ShellDesktop/Menubar';
 
@@ -56,10 +56,13 @@ class AppRuntime extends ClientGUIProcess {
         });
       }
     })();
-
-    
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {Promise<void>}
+   */
   async _init() {
     try {
       this.on(EVT_FIRST_RENDER, () => {
@@ -82,11 +85,6 @@ class AppRuntime extends ClientGUIProcess {
         commonDesktopLinkedState.setFocusedAppRuntme(this);
       });
 
-      // Focus when interacted with
-      this.on(EVT_DIRECT_INTERACT, () => {
-        this.focus();
-      });
-
       this.once(EVT_BEFORE_EXIT, () => {
         if (Object.is(this, _focusedAppRuntime)) {
           _focusedAppRuntime = null;
@@ -106,12 +104,19 @@ class AppRuntime extends ClientGUIProcess {
     }
   }
 
+  /**
+   * TODO: Document
+   * 
+   * @return {Menubar}
+   */
   getMenubar() {
     return this._menubar;
   }
 
   /**
    * Retrieves the original title, before any modifications.
+   * 
+   * @return {string}
    */
   getDefaultTitle() {
     return this._defaultTitle;
@@ -129,6 +134,7 @@ class AppRuntime extends ClientGUIProcess {
     return this._iconSrc;
   }
 
+  // TODO: Rename to setView
   setMainWindow(mainView) {
     this.setView(mainView);
   }
