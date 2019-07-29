@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import Menubar from '../Menubar';
 import { Icon, /*Menu, Dropdown*/ } from 'antd';
+import SocketLinkedState from 'state/SocketLinkedState';
+import hocConnect from 'state/hocConnect';
 import './style.css';
 
-export default class Panel extends Component {
+class Panel extends Component {
   render() {
-    const {activeWindow, className, ...propsRest} = this.props;
+    const {activeWindow, className, isConnected, ...propsRest} = this.props;
 
     return (
       <div
@@ -17,7 +19,15 @@ export default class Panel extends Component {
         </div>
 
         <div className="zd-desktop-panel-column-right">
-          <button style={{backgroundColor: 'transparent', padding: 0, color: '#fff', border: 0}}>
+          <button>
+            {
+              ((isConnected) => {
+                return `[ ${!isConnected ? 'no ' : ''}signal ]`;
+              })(isConnected)
+            }
+          </button>
+          
+          <button>
             <Icon type="menu-unfold" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
           </button>
         </div>
@@ -25,3 +35,11 @@ export default class Panel extends Component {
     );
   }
 }
+
+export default hocConnect(Panel, SocketLinkedState, (updatedState, socketState) => {
+  const { isConnected } = socketState.getState();
+
+  return {
+    isConnected
+  };
+});
