@@ -1,3 +1,5 @@
+// TODO: Re-purpose for AppRuntime usage
+
 import React, { Component } from 'react';
 import ProcessLinkedState from 'state/ProcessLinkedState';
 // import ClientGUIProcess from 'process/ClientGUIProcess';
@@ -5,9 +7,6 @@ import hocConnect from 'state/hocConnect';
 import Cover from 'components/Cover';
 import ShellDesktop from 'core/ShellDesktop';
 import equal from 'equals';
-
-// import Window from 'components/Desktop/Window';
-
 
 /**
  * Render area for all desktop windows.

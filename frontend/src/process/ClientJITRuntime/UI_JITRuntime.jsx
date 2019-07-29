@@ -14,10 +14,11 @@ import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 import CPUThreadTimer from 'process/ClientProcess';
 // import FilesystemProcess from 'process/FilesystemProcess';
 // import DependencyFetcherWorker from 'process/DependencyFetcherWorker';
-import Window from 'components/Desktop/Window';
-import Center from 'components/Center';
-import IFrame from 'components/IFrame';
 import AnalogVUMeter from 'components/AnalogVUMeter';
+import Center from 'components/Center';
+import Cover from 'components/Cover';
+import IFrame from 'components/IFrame';
+import Window from 'components/Desktop/Window';
 import socketQuery from 'utils/socketQuery';
 
 // Note: Currently commented-out due to inconsistent exports
@@ -52,10 +53,11 @@ class UI_JITRuntime extends ClientJITRuntime {
 
       // (e.g. reference this.zdComponents in evaluated scripting)
       components: {
-        Window,
+        AnalogVUMeter,
         Center,
+        Cover,
         IFrame,
-        AnalogVUMeter
+        Window
       },
 
       utils: {

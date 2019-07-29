@@ -12,7 +12,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Cover from 'components/Cover';
 import Moveable from 'components/Moveable';
 // import ViewTransition from 'components/ViewTransition';
-import Resizable from 'components/Resizable';
+import DragResizable from 'components/DragResizable';
 import StackingContext from 'components/StackingContext';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
@@ -24,9 +24,6 @@ import config from 'config';
 import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
-// Note, currently is unable to share state/commonLinkedStates usage
-const desktopLinkedState = new DesktopLinkedState();
-
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
@@ -35,27 +32,33 @@ const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
 let windowStack = [];
 
-// TODO: Refactor elsewhere
-// TODO: Implement always-on-top
+/**
+ * TODO: Refactor elsewhere
+ * TODO: Implement always-on-top
+ * 
+ * @return {Window[]} An array of Window instances
+ */
 export const getWindowStack = () => {
   return windowStack.filter((window) => {
-    return !(window.isClosed);
+    return !window.getIsClosed();
   });
 }
 
-// Handle deactivation of non-active windows
+const commonDesktopLinkedState = new DesktopLinkedState();
+
+// Handle blurring of non-focused windows
 // Only a single window can be "active" at a time (that is, the focused window)
 (() => {
-  desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+  commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
     const { activeWindow } = updatedState;
 
     if (typeof activeWindow !== 'undefined') {
       const windowStack = getWindowStack();
 
       windowStack.forEach((desktopWindow) => {
-        const isActive = Object.is(activeWindow, desktopWindow);
+        const isFocusedWindow = Object.is(activeWindow, desktopWindow);
 
-        if (!isActive) {
+        if (!isFocusedWindow) {
           desktopWindow.blur();
         }
       });
@@ -69,27 +72,38 @@ export default class Window extends Component {
 
     this.state = {
       title: null,
-      // isActive: false,
-      // zStack: zStack + 1
-  
-      // Is automatically set to true once the window is ready to be utilized
-      // via external handlers
-      ready: false // TODO: Rename to isReady
     };
 
     this._uuid = uuidv4();
-    this._isActive = false;  // TODO: Rename to isFocused
 
-    this.isClosed = false; // TODO: Rename to _isClosed
+    // Base DOM element for the Window
+    this._el = null;
+
+    this._moveableComponent = null;
+    this._resizableComponent = null;
+    this._paintedComponent = null;
+    this._windowHeaderComponent = null;
+    this._windowBodyComponent = null;
+    this._bodyCoverComponent = null;
+
+    this._isFocused = false;
+    this._isActiveHeaderGesture = false;
+    this._isResizing = false;
+
+    this._isClosed = false;
 
     windowStack.push(this);
   }
 
   async componentDidMount() {
     try {
-      if (this.isClosed) {
+      /*
+      if (this._isClosed) {
         return;
       }
+      */
+
+      this._protoIsMounted = true;
 
       // Set Window title either from props or from app
       // TODO: Remove app here; use passed props
@@ -103,22 +117,13 @@ export default class Window extends Component {
       await this.animate(EFFECT_CREATE);
 
       // this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
-
-      this.setState({
-        ready: true
-      }, () => {
-        const { onReady } = this.props;
-        if (typeof onReady === 'function') {
-          onReady(this);
-        }
-      });
     } catch (exc) {
       throw exc;
     }
   }
 
   componentDidUpdate() {
-    if (this.isClosed) {
+    if (this._isClosed) {
       return;
     }
 
@@ -166,9 +171,9 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
     this.setState({
       title
-    }, () => {
+    }/*, () => {
       // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
-    });
+    }*/);
   }
 
   /**
@@ -182,12 +187,16 @@ export default class Window extends Component {
     return title;
   }
 
+  getIsClosed() {
+    return this._isClosed;
+  }
+
   getUUID() {
     return this._uuid;
   }
 
   _onInteract = (evt) => {
-    if (this.isClosed) {
+    if (this._isClosed) {
       return;
     }
 
@@ -197,35 +206,39 @@ export default class Window extends Component {
 
   focus() {
     // Check if window is already focused
-    if (this._isActive) {
+    if (this._isFocused) {
       return false;
     }
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
-    // TODO: Use constant for active
-    $(this._resizableBody).addClass('active'); // Affects outer draw shadow
-    $(this._drawRef).addClass('active'); // Affects window assets (e.g. dot colors)
+    this._isFocused = true;
 
-    desktopLinkedState.setActiveWindow(this);
-    this._isActive = true;
+    commonDesktopLinkedState.setActiveWindow(this);
+    
+    // TODO: Use constant for active
+    $(this._el).addClass('active'); // Affects outer draw shadow
+
+    this.doCoverIfShould();
+    
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
   blur() {
-    if (!this._isActive) {
+    if (!this._isFocused) {
       return false;
     }
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
+    this._isFocused = false;
 
     // TODO: Use constant for active
-    $(this._resizableBody).removeClass('active'); // Affects outer draw shadow
-    $(this._drawRef).removeClass('active'); // Affects window assets (e.g. dot colors)
-    this._isActive = false;
+    $(this._el).removeClass('active'); // Affects outer draw shadow
 
-   //  this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
+    this.doCoverIfShould();
+
+    //  this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
   }
 
   async toggleHide() {
@@ -297,6 +310,7 @@ export default class Window extends Component {
    * 
    * @param {string} effect The effect name, per
    * https://daneden.github.io/animate.css/
+   * @return {Promise<void>}
    */
   async animate(effect) {
     try {
@@ -307,11 +321,11 @@ export default class Window extends Component {
   }
 
   getPosition() {
-    return this._moveable.getPosition();
+    return this._moveableComponent.getPosition();
   }
 
   moveTo(posX, posY) {
-    this._moveable.moveTo(posX, posY);
+    this._moveableComponent.moveTo(posX, posY);
   }
 
   /**
@@ -322,12 +336,12 @@ export default class Window extends Component {
    */
   /*
   setOuterSize(width, height) {
-    $(this._moveable).css({
+    $(this._moveableComponent).css({
       width,
       height
     });
 
-    const $header = $(this._windowHeader);
+    const $header = $(this._windowHeaderComponent);
     const headerHeight = $header.outerHeight();
 
     const bodyHeight = height - headerHeight;
@@ -349,20 +363,12 @@ export default class Window extends Component {
    * @param {number | string} height 
    */
   setBodySize(width, height) {
-    // const { onWindowResize } = this.props;
-
-    // this.bodyCover.setIsVisible(true);
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_RESIZE);
-
-    $(this.windowBody).css({
-      width: width,
-      height: height
+    window.requestAnimationFrame(() => {
+      $(this._windowBodyComponent).css({
+        width: width,
+        height: height
+      });
     });
-
-    // this.bodyCover.setIsVisible(false);
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_RESIZE);
   }
 
   getCalculatedBodySize() {
@@ -378,29 +384,60 @@ export default class Window extends Component {
   }
 
   /**
-   * Called when the <Resizable /> layer has been resized.
+   * Determines whether the Window should be overlaid with <Cover /> (a
+   * transparent <div> tag), in order to prevent inadvertent interaction of
+   * child DOM elements inside the Window body.
+   * 
+   * @return {boolean}
+   */
+  getShouldCover() {
+    if (!this._isFocused) {
+      return true;
+    } else if (this._isActiveHeaderGesture || this._isResizing) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  doCoverIfShould() {
+    const shouldCover = this.getShouldCover();
+
+    this._bodyCoverComponent.setIsVisible(shouldCover);
+  }
+
+  _handleWindowHeaderGestureStart = (evt) => {
+    this._isActiveHeaderGesture = true;
+
+    this.doCoverIfShould();
+  }
+
+  _handleWindowHeaderGestureEnd = (evt) => {
+    this._isActiveHeaderGesture = false;
+
+    this.doCoverIfShould();
+  }
+
+  _handleResizeStart = (evt) => {
+    this._isResizing = true;
+
+    this.doCoverIfShould();
+  }
+
+  /**
+   * Called when the <DragResizable /> layer has been resized.
    */
   _handleResize = (resizeData) => {
-    setTimeout(() => {
-      // console.debug('window resize data', resizeData);
+    const { width: bodyWidth, height: bodyHeight } = this.getCalculatedBodySize();
 
-      // const $windowBodyWrapper = $(this.windowBodyWrapper);
-
-      const bodyCalcSize = this.getCalculatedBodySize();
-      /*
-      const bodyCalcSize = {
-        width: $windowBodyWrapper.width(),
-        height: $windowBodyWrapper.height()
-      };
-      */
-      this.setBodySize(bodyCalcSize.width, bodyCalcSize.height);
-
-      // const {width, height, mainWidth, mainHeight} = resizeData;
-
-      // this.setOuterSize(width, height);
-    }, 20);
-
+    this.setBodySize(bodyWidth, bodyHeight);
   };
+
+  _handleResizeEnd = (evt) => {
+    this._isResizing = false;
+    
+    this.doCoverIfShould();
+  }
 
   render() {
     let {
@@ -427,7 +464,7 @@ export default class Window extends Component {
 
     const { title } = this.state;
 
-    if (this.isClosed) {
+    if (this._isClosed) {
       return (
         <span></span>
       );
@@ -438,22 +475,27 @@ export default class Window extends Component {
         ref={c => this._el = c}
         onMouseDown={this._onInteract}
         onTouchStart={this._onInteract}
+        // TODO: Keyboard events for this?  (also, ClientGUIProcess has its own
+        // "onInteract" handler)
+
         // Note: The width & height of the transition layer are intentionally
         // kept at 0 width / height
-        style={{ position: 'absolute', width: 0, height: 0 }}
+        className="zd-window"
       >
 
         <Moveable
-          ref={c => this._moveable = c}
+          ref={c => this._moveableComponent = c}
         // initialX={...}
         // initialY={...}
         >
           <ContextMenu>
 
-            <Resizable
-              ref={c => this._resizable = c}
+            <DragResizable
+              ref={c => this._resizableComponent = c}
+              onResizeStart={this._handleResizeStart}
               onResize={this._handleResize}
-              moveableComponent={this._moveable}
+              onResizeEnd={this._handleResizeEnd}
+              moveableComponent={this._moveableComponent}
               minWidth={minWidth}
               minHeight={minHeight}
               bodyClassName="zd-window-resizable"
@@ -465,9 +507,9 @@ export default class Window extends Component {
                 <StackingContext>
                   <div
                     {...propsRest}
-                    ref={c => this._drawRef = c}
+                    ref={c => this._paintedComponent = c}
                     // className={`Window ${this.state.isActive ? 'Active' : ''}`}
-                    className="zd-window"
+                    className="zd-window-painted"
                   >
 
                     {
@@ -475,12 +517,14 @@ export default class Window extends Component {
                     }
 
                     <WindowHeader
-                      ref={c => this._windowHeader = c}
+                      ref={c => this._windowHeaderComponent = c}
                       desktopWindow={this}
                       title={title}
                       toolbar={toolbar}
                       toolbarRight={toolbarRight}
                       subToolbar={subToolbar}
+                      onGestureStart={this._handleWindowHeaderGestureStart}
+                      onGestureEnd={this._handleWindowHeaderGestureEnd}
                     />
 
                     {
@@ -490,7 +534,7 @@ export default class Window extends Component {
                       ref={c => this.windowBodyWrapper = c}
                       className="zd-window-body-wrapper"
                     >
-                      
+
                       {
                         // Window background
                       }
@@ -504,7 +548,7 @@ export default class Window extends Component {
                         // Window foreground
                       }
                       <Cover
-                        ref={c => this.windowBody = c}
+                        ref={c => this._windowBodyComponent = c}
                         className="zd-window-body"
                         style={bodyStyle}
                       >
@@ -520,15 +564,14 @@ export default class Window extends Component {
                         // Body cover
                       }
                       <Cover
-                        ref={c => this.bodyCover = c}
+                        ref={c => this._bodyCoverComponent = c}
 
-                        // TODO: Activate to true when window is inactive,
-                        // being moved, or resized.
-                        // This is to prevent the window's contents from being
-                        // interacted w/ when moving
-                        // TODO: Consider using [ TOTAL WINDOW COVER ] below,
-                        // instead(?)
-                        isVisible={false}
+                      // TODO: Activate to true when window is inactive,
+                      // being moved, or resized.
+                      // This is to prevent the window's contents from being
+                      // interacted w/ when moving
+                      // TODO: Consider using [ TOTAL WINDOW COVER ] below,
+                      // instead(?)
                       >
                       </Cover>
                     </div>
@@ -545,33 +588,38 @@ export default class Window extends Component {
                 */
               }
 
-            </Resizable>
+            </DragResizable>
           </ContextMenu>
         </Moveable>
       </div>
     );
   }
 
-  close() {
-    const { app } = this.props;
+  async close() {
+    try {
+      const { app } = this.props;
 
-    if (this.isClosed) {
-      console.warn('Window is already closed. Skipping close.');
-      return;
-    }
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
-
-    this.isClosed = true;
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
-
-    console.warn('TODO: Handle window close event detach', {
-      app
-    });
-
-    if (app) {
-      app.close();
+      if (this._isClosed) {
+        console.warn('Window is already closed. Skipping close.');
+        return;
+      }
+  
+      // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+  
+  
+      // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
+  
+      console.warn('TODO: Handle window close event detach', {
+        app
+      });
+  
+      if (app) {
+        await app.close();
+      }
+  
+      this._isClosed = true;
+    } catch (exc) {
+      throw exc;
     }
   }
 }

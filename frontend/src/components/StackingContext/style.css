@@ -3,4 +3,11 @@
   z-index: 0;
   width: 100%;
   height: 100%;
+
+  /*
+	* Indicating that a new stacking context must be created.
+	* @see https://developer.mozilla.org/en-US/docs/Web/CSS/isolation
+	* IE does not support this property
+	*/
+	isolation: isolate;
 }

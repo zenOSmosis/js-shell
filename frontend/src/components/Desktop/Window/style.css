@@ -1,4 +1,10 @@
 .zd-window {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+}
+
+.zd-window-painted {
   width: 100%;
   height: 100%;
   color: #fff;
@@ -25,14 +31,14 @@
 * @see https://www.cssmatic.com/box-shadow
 */
 /* .zd-window.Active, */
-.zd-window-resizable.active {
+.zd-window.active .zd-window-resizable {
   -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
 }
 
 .zd-window .zd-window-header {
-  min-height: 22px;
+  min-height: 30px;
   
   position: relative;
   padding: 2px 0px;

@@ -3,10 +3,24 @@ import Full from '../Full';
 import './style.css';
 
 export default class Cover extends Component {
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      isVisible: true
+    };
+  }
+
+  setIsVisible(isVisible) {
+    this.setState({
+      isVisible
+    });
+  }
+
   render() {
-    const {children, className, isVisible: isVisibleProp, ...propsRest} = this.props;
+    const {children, className, ...propsRest} = this.props;
   
-    const isVisible = (typeof isVisibleProp === 'undefined' ? true : (isVisibleProp ? true : false));
+    const { isVisible } = this.state;
   
     return (
       <Full

@@ -1,0 +1,53 @@
+.zd-drag-resizable {
+  display: table;
+}
+
+.zd-drag-resizable .zd-drag-resizable-body {
+  width: 100%;
+  height: 100%;
+}
+
+.zd-drag-resizable .zd-drag-resizable-table-row {
+  display: table-row;
+}
+
+.zd-drag-resizable .zd-drag-resizable-table-cell {
+  display: table-cell;
+  position: relative;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control {
+  border: 3px transparent solid;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.top {
+  cursor: n-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.top-right {
+  cursor: ne-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.right {
+  cursor: e-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.bottom-right {
+  cursor: se-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.bottom {
+  cursor: s-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.bottom-left {
+  cursor: sw-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.left {
+  cursor: w-resize;
+}
+
+.zd-drag-resizable .zd-drag-resizable-control.top-left {
+  cursor: nw-resize;
+}
