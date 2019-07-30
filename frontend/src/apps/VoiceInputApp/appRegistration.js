@@ -16,6 +16,16 @@ export default registerApp({
     )
   },
   cmd: (appProcess) => {
+    // TODO: The current implementation is not efficient when actively
+    // transcribing and moving / resizing windows at the same time, as each
+    // render update messes with the Window rendering.
+    //
+    // Potential solutions to this are:
+    //    - 1. (ideal) Rework Window component so that state updates don't
+    //    mess with this
+    //    - 2. (easier) Create an inner Component view which handles the rapid
+    //    updates
+
     // Keeps view synced to runtime state
     // TODO: Use EVT_STATE_UPDATE
     appProcess.on('stateUpdate', (updatedState) => {
@@ -32,7 +42,14 @@ export default registerApp({
       micNumberOfChannels: null,
       micSampleRate: null,
 
+      micAudioLevelRMS: null,
+      micAudioLevelDB: null,
+
       isAudioWorkerOnline: false,
+
+      transcript: null,
+
+      audioWorkerDownsampleRate: null,
 
       // STT API connection status
       wsBackendStatus: null
@@ -104,12 +121,38 @@ export default registerApp({
                         }
                       });
 
+                      audioWorker.stdout.on('data', (data) => {
+                        const { audioLevels, downsampleRate, transcript } = data;
+
+                        if (typeof audioLevels !== 'undefined') {
+                          const { rms, db } = audioLevels;
+                          appProcess.setState({
+                            micAudioLevelRMS: rms,
+                            micAudioLevelDB: db
+                          });
+                        }
+
+                        if (typeof downsampleRate !== 'undefined') {
+                          appProcess.setState({
+                            audioWorkerDownsampleRate: downsampleRate
+                          });
+                        }
+
+                        if (typeof transcript !== 'undefined') {
+                          appProcess.setState({
+                            transcript
+                          });
+                        }
+                      });
+
                       // TODO: Properly handle stdctrl messages
                       audioWorker.stdctrl.on('data', (data) => {
                         // Derive backend ws status from data
                         // TODO: Refactor this accordingly
                         (() => {
+                          // Proper-cased status, for display purposes
                           let wsBackendStatus = null;
+                          
                           // console.debug('received stdctrl data', data);
                           const { wsConnecting, wsOpen, wsClose, wsError } = data;
 

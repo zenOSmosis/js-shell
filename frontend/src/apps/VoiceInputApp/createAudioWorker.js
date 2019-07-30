@@ -3,8 +3,6 @@
 
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 
-export const EVT_TRANSCRIPTION = 'transcription';
-
 // Worker code is evaluated inline, so any functions available in Worker thread
 // must be declared externally in order to compile w/o warnings
 const importScripts = () => null; // Not evaluated within Worker
@@ -20,6 +18,7 @@ const createAudioWorker = (appProcess) => {
     const EVT_BACKEND_WS_OPEN = 'wsOpen';
     const EVT_BACKEND_WS_CLOSE = 'wsClose';
     const EVT_BACKEND_WS_ERROR = 'wsError';
+    const EVT_TRANSCRIPTION = 'transcription';
   
     const sttSocket = io(self.location.origin, {
       // TODO: Replace hard-coded Socket.io path
@@ -73,7 +72,7 @@ const createAudioWorker = (appProcess) => {
     });
   
     // Handle the received transcription
-    sttSocket.on('transcription', (transcription) => {
+    sttSocket.on(EVT_TRANSCRIPTION, (transcription) => {
       // console.debug('transcription data', transcription);
   
       const { message } = transcription;
@@ -85,36 +84,92 @@ const createAudioWorker = (appProcess) => {
           const { hypotheses } = result;
   
           if (hypotheses) {
-            const totalHypotheses = hypotheses.length;
+            // const lenHypotheses = hypotheses.length;
   
             // console.debug('hypotheses', hypotheses);
-            hypotheses.forEach((singleHypotheses, idx) => {
-              console.debug(`hypotheses ${idx + 1} of ${totalHypotheses}`, singleHypotheses);
+            hypotheses.forEach((testHypotheses, idx) => {
+              // console.debug(`hypotheses ${idx + 1} of ${lenHypotheses}`, testHypotheses);
+
+              const { transcript } = testHypotheses;
+              // console.debug(`transcript`, transcript);
+              audioWorker.stdout.write({
+                transcript
+              });
             });
           }
         }
       }
     });
+
+    /**
+     * @typedef {Object} AudioLevels
+     * @property {number} rms
+     * @property {number} db 
+     */
+
+    /**
+     * Emits audio level data over stdout after timeout, in order to relax
+     * CPU time on the main thread.
+     * 
+     * @param {AudioLevels} audioLevels
+     */
+    let _bufferAudioLevelEmit = (() => {
+      const BUFFER_TIME = 500;
+
+      let _bufferMaxRMS = -Infinity;
+      let _bufferMaxDB = -Infinity;
+
+      let bufferInterval = setInterval(() => {
+        audioWorker.stdout.write({
+          audioLevels: {
+            rms: _bufferMaxRMS,
+            db: _bufferMaxDB
+          }
+        });
+
+        _bufferMaxRMS = -Infinity;
+        _bufferMaxDB = -Infinity;
+      }, BUFFER_TIME);
+
+      audioWorker.on('beforeExit', () => {
+        clearInterval(bufferInterval);
+      });
+
+      return (audioLevels) => {
+        const { rms, db } = audioLevels;
+
+        if (rms > _bufferMaxRMS) {
+          _bufferMaxRMS = rms;
+        }
+
+        if (db > _bufferMaxDB) {
+          _bufferMaxDB = db;
+        }
+      };
+    })();
   
     audioWorker.stdin.on('data', (float32Array) => {
       const f32Downsampled = audioWorker.downsampleL16(float32Array);
       const i16Array = audioWorker.float32ToInt16(f32Downsampled);
-      const rms = audioWorker.getRMS(i16Array);
-      const db = audioWorker.getDB(rms);
-  
+
+      // Send data out for STT processing
       sttSend(i16Array);
   
-      /*
-      console.debug({
-        db,
-        rms
-      });
-      */
-  
-      audioWorker.stdctrl.write({
-        ctrlName: 'vuLevel',
-        ctrlData: db
-      });
+      // Process audio levels
+      const rms = audioWorker.getRMS(i16Array);
+      const db = audioWorker.getDB(rms);
+     _bufferAudioLevelEmit({
+       // Both values are rounded up, as we don't need precision here (they
+       // are only for display)
+       rms: Math.ceil(rms),
+       db: Math.ceil(db)
+     });
+
+    });
+
+    // TODO: Remove hardcoding & obtain from ClientAudioWorker class
+    audioWorker.stdout.write({
+      downsampleRate: 16000
     });
   });
 

@@ -20,6 +20,12 @@ export default class AnalogVUMeter extends Component {
     this._iFrame = null;
   }
 
+  componentDidUpdate() {
+    const { vuLevel } = this.props;
+
+    this.setVULevel(vuLevel);
+  }
+
   // TODO: Document
   setVULevel(vuLevel) {
     if (this._iFrame) {
