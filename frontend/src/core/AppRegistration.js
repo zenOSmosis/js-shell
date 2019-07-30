@@ -1,8 +1,7 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
-// import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
-import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import { EVT_EXIT } from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
@@ -64,14 +63,20 @@ class AppRegistration extends EventEmitter {
       });
   
       // Handle cleanup when the app exits
-      this._appRuntime.on(EVT_BEFORE_EXIT, () => {
+      this._appRuntime.on(EVT_EXIT, () => {
         this._isLaunched = false;
         this._appRuntime = null;
+
+        // Emit to listeners that the app is closed
+        commonAppRegistryLinkedState.emitRegistrationsUpdate();
       });
 
       await this._appRuntime.onceReady();
   
       this._isLaunched = true;
+
+      // Emit to listeners that the app is launched
+      commonAppRegistryLinkedState.emitRegistrationsUpdate();
     } catch (exc) {
       throw exc;
     }
@@ -124,13 +129,11 @@ class AppRegistration extends EventEmitter {
    */
   async unregister() {
     try {
-      /*
       if (this.getIsLaunched()) {
         const appRuntime = this.getAppRuntime();
   
         await appRuntime.kill();
       }
-      */
   
       commonAppRegistryLinkedState.removeAppRegistration(this);
   

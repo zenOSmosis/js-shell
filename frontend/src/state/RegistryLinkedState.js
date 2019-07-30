@@ -34,8 +34,7 @@ class RegistryLinkedState extends LinkedState {
    * @param {Object} registration Object to add to this registry.
    */
   addRegistration(registration) {
-    const state = this.getState();
-    let registrations = state[this._registryName];
+    let registrations = this.getRegistrations();
     
     // Check for duplicates
     let hasDuplicate = false;
@@ -53,9 +52,17 @@ class RegistryLinkedState extends LinkedState {
 
     registrations.push(registration);
 
-    this.setState({
-      [this._registryName]: registrations
-    });
+    this.setRegistrations(registrations);
+  }
+
+  /**
+   * Utilized to update any listeners that one, or more, registrations have
+   * updated.
+   */
+  emitRegistrationsUpdate() {
+    let registrations = this.getRegistrations();
+
+    this.setRegistrations(registrations);
   }
 
   /**
@@ -64,8 +71,7 @@ class RegistryLinkedState extends LinkedState {
    * registry. 
    */
   removeRegistration(registration) {
-    const state = this.getState();
-    let registrations = state[this._registryName];
+    let registrations = this.getRegistrations();
     
     // Filter out given registration from the current registrations
     registrations = registrations.filter(testRegistration => {
@@ -73,9 +79,7 @@ class RegistryLinkedState extends LinkedState {
     });
 
     // Write the filtered registrations
-    this.setState({
-      [this._registryName]: registrations
-    });
+    this.setRegistrations(registrations);
   }
 
   /**
@@ -86,6 +90,12 @@ class RegistryLinkedState extends LinkedState {
     const registrations = state[this._registryName];
 
     return registrations;
+  }
+
+  setRegistrations(registrations) {
+    this.setState({
+      [this._registryName]: registrations
+    });
   }
 }
 

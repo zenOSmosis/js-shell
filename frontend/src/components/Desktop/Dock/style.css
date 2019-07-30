@@ -38,6 +38,10 @@
   padding: 4px;
 }
 
+.zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item.open {
+  background-color: #fff;
+}
+
 .zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item-icon {
   width: 40px;
   height: 40px;

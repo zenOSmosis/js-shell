@@ -40,6 +40,7 @@ class Dock extends Component {
         <div className="zd-desktop-dock-items">
           {
             appRegistrations.map((appRegistration, idx) => {
+              const isLaunched = appRegistration.getIsLaunched();
               const iconSrc = appRegistration.getIconSrc();
               const title = appRegistration.getTitle();
 
@@ -53,7 +54,7 @@ class Dock extends Component {
                 <div
                   key={idx}
                   // effect="wobble" // TODO: Use variable
-                  className="zd-desktop-dock-item"
+                  className={`zd-desktop-dock-item ${isLaunched ? 'open' : ''}`}
                 >
                   <Tooltip title={title}>
                     <button
@@ -72,18 +73,12 @@ class Dock extends Component {
   }
 }
 
-export default /*const appLinkeStateConnectedDock =*/ hocConnect(Dock, AppRegistryLinkedState, (updatedState) => {
-  const appRegistrations = updatedState[APP_REGISTRATIONS_LINKED_SCOPE_NAME];
+const AppRegistryDock = hocConnect(Dock, AppRegistryLinkedState, (updatedState, linkedScope) => {
+  const appRegistrations = linkedScope.getAppRegistrations();
 
-  if (appRegistrations) {
-    return {
-      appRegistrations
-    };
-  }
+  return {
+    appRegistrations
+  };
 });
 
-/*
-export default hocConnect(appLinkeStateConnectedDock, DesktopLinkedState, (updatedState) => {
-  console.warn('TODO: Handle Dock DesktopLinkedState binding', updatedState);
-});
-*/
+export default AppRegistryDock;
