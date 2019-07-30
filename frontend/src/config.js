@@ -37,4 +37,5 @@ config = Object.assign(config, {
   DESKTOP_WINDOW_MIN_HEIGHT: 460
 });
 
+// TODO: Implement named exports for config properties
 export default config;
