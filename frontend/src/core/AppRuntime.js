@@ -1,9 +1,11 @@
 import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER /*, REMOVE_THIS*/ } from 'process/ClientGUIProcess';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import Menubar from './ShellDesktop/Menubar';
+import './AppRuntime.typedef';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
 
+// TODO: Handle via DesktopLinkedState
 let _focusedAppRuntime = null;
 
 // export const EVT_CONTENT_UPDATE = 'content-update';
@@ -19,7 +21,9 @@ export const EVT_BLUR = 'blur';
  * @extends ClientGUIProcess
  */
 class AppRuntime extends ClientGUIProcess {
-  // TODO: Replace runProps w/ process API
+  /**
+   * @param {AppRuntimeRunProps} runProps 
+   */
   constructor(runProps) {
     if (typeof runProps !== 'object') {
       throw new Error('runProps is not an object');
@@ -36,7 +40,11 @@ class AppRuntime extends ClientGUIProcess {
     this._menubar = new Menubar(this);
 
     (() => {
-      const { title, iconSrc, mainView, appCmd } = runProps;
+      // TODO: Create AppRuntime.typedef.js
+      const { title, iconSrc, mainView, appCmd, cmd } = runProps;
+
+      // cmd || appCmd are synonymous of each other
+      const runCmd = appCmd || cmd;
 
       if (title) {
         this.setTitle(title);
@@ -50,9 +58,9 @@ class AppRuntime extends ClientGUIProcess {
         this.setMainWindow(mainView);
       }
 
-      if (appCmd) {
+      if (runCmd) {
         this.setImmediate(() => {
-          this.evalInProcessContext(appCmd);
+          this.evalInProcessContext(runCmd);
         });
       }
     })();
@@ -85,11 +93,21 @@ class AppRuntime extends ClientGUIProcess {
         commonDesktopLinkedState.setFocusedAppRuntme(this);
       });
 
+      // Register w/ DesktopLinkedState
+      // Note (as of the time of writing) the underlying ClientProcess also
+      // registers w/ ProcessLinkedState, however these usages are for
+      // different purposes
+      commonDesktopLinkedState.addLaunchedAppRuntime(this);
+
       this.once(EVT_BEFORE_EXIT, () => {
         if (Object.is(this, _focusedAppRuntime)) {
+          // TODO: Handle via DesktopLinkedState
           _focusedAppRuntime = null;
           commonDesktopLinkedState.setFocusedAppRuntme(null);
         }
+
+        // Unregister from DesktopLinkedState
+        commonDesktopLinkedState.removeLaunchedAppRuntime(this);
       });
 
       // Register app w/ view

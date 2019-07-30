@@ -18,7 +18,7 @@ import VersionLabel from './VersionLabel';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
-import ClientGUIProcesses from './ClientGUIProcesses';
+import AppRuntimeRenderProvider from './AppRuntimeRenderProvider';
 
 // Registers default Shell Desktop apps
 // TODO: If refactoring this to another location, update the reference to that
@@ -94,7 +94,7 @@ class Desktop extends Component {
                   // <AppRouteController />
                 }
 
-                <ClientGUIProcesses onOutsideProcessInteract={evt => console.debug('Outside process interact', evt)} />
+                <AppRuntimeRenderProvider />
 
                 <VersionLabel />
 

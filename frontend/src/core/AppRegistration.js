@@ -3,6 +3,7 @@ import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 // import { commonAppRegistryLinkedState } from 'state/commonLinkedStates';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import './AppRuntime.typedef';
 
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
 
@@ -19,6 +20,10 @@ const commonAppRegistryLinkedState = new AppRegistryLinkedState();
  * @extends EventEmitter
  */
 class AppRegistration extends EventEmitter {
+  /**
+   * 
+   * @param {AppRuntimeRunProps} runProps 
+   */
   constructor(runProps) {
     super();
 
@@ -27,7 +32,6 @@ class AppRegistration extends EventEmitter {
         iconSrc,
         mainView,
         cmd: appCmd,
-        // allowMultipleWindows: propsAllowMultipleWindows
     } = runProps;
 
     this._isLaunched = false;
@@ -39,9 +43,6 @@ class AppRegistration extends EventEmitter {
     this._appCmd = appCmd;
 
     this._isUnregistered = false;
-
-    // Convert to boolean from run property
-    // this._allowMultipleWindows = (propsAllowMultipleWindows ? true : false);
 
     // Add this app registration to the registry
     commonAppRegistryLinkedState.addAppRegistration(this);

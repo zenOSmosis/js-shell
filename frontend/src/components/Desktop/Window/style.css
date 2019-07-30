@@ -30,8 +30,8 @@
 *
 * @see https://www.cssmatic.com/box-shadow
 */
-/* .zd-window.Active, */
-.zd-window.active .zd-window-resizable {
+/* .zd-window.focus, */
+.zd-window.focus .zd-window-resizable {
   -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
@@ -81,19 +81,19 @@
   vertical-align: middle !important;
 }  
 
-.zd-window.active .zd-window-header {
+.zd-window.focus .zd-window-header {
   background-color: rgba(0,0,0,.6);
 }
 
-.zd-window.active .zd-window-header .zd-dot.red {
+.zd-window.focus .zd-window-header .zd-dot.red {
   background-color: #ED594A !important;
 }
 
-.zd-window.active .zd-window-header .zd-dot.yellow {
+.zd-window.focus .zd-window-header .zd-dot.yellow {
   background-color: #FDD800 !important;
 }
 
-.zd-window.active .zd-window-header .zd-dot.green {
+.zd-window.focus .zd-window-header .zd-dot.green {
   background-color: #5AC05A !important;
 }
 
@@ -115,6 +115,6 @@
   filter: blur(20px) grayscale(100%);
 }
 
-.zd-window.active .zd-window-body-background {
+.zd-window.focus .zd-window-body-background {
   filter: blur(4px);
 }

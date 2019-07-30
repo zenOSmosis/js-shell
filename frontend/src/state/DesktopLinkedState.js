@@ -3,7 +3,6 @@ import config from '../config';
 // import App from '../utils/desktop/registerApp';
 import hocConnect from './hocConnect';
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import uuidv4 from 'uuid/v4';
 import $ from 'jquery';
 
 export {
@@ -11,7 +10,7 @@ export {
   hocConnect
 };
 
-const DESKTOP_LINKED_SCOPE_NAME = `desktop-linked-state-${uuidv4()}`;
+const DESKTOP_LINKED_SCOPE_NAME = `desktopLinkedState`;
 
 /**
  * Maintains state directly related to the Shell Desktop.
@@ -35,6 +34,8 @@ class DesktopLinkedState extends LinkedState {
       // TODO: Merge handling of active Window & focusedAppRuntime
       activeWindow: null,
 
+      launchedAppRuntimes: [],
+
       // TODO: Differentiate between this and ProcessLinkedState.focusedGUIProcess
       focusedAppRuntime: null,
 
@@ -50,6 +51,38 @@ class DesktopLinkedState extends LinkedState {
 
       // Whether the browser window is focused or not
       isFocused: true
+    });
+  }
+
+  /**
+   * TODO: Document
+   * 
+   * @param {AppRuntime} appRuntime 
+   */
+  addLaunchedAppRuntime(appRuntime) {
+    let { launchedAppRuntimes } = this.getState();
+
+    launchedAppRuntimes.push(appRuntime);
+
+    this.setState({
+      launchedAppRuntimes
+    });
+  }
+
+  /**
+   * TODO: Document
+   * 
+   * @param {AppRuntime} appRuntime 
+   */
+  removeLaunchedAppRuntime(appRuntime) {
+    let { launchedAppRuntimes } = this.getState();
+
+    launchedAppRuntimes = launchedAppRuntimes.filter(testAppRuntime => {
+      return !Object.is(appRuntime, testAppRuntime);
+    });
+
+    this.setState({
+      launchedAppRuntimes
     });
   }
 

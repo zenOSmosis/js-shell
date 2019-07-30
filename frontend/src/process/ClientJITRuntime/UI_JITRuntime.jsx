@@ -7,7 +7,7 @@ import getPrototypeChain from 'utils/getPrototypeChain';
 
 import BabelCompilerWorkerProcess from 'process/BabelCompilerWorkerProcess';
 import ClientProcess from 'process/ClientProcess';
-import ClientGUIProcess from 'process/ClientGUIProcess';
+import AppRuntime from 'core/AppRuntime';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
@@ -41,7 +41,7 @@ class UI_JITRuntime extends ClientJITRuntime {
       
       BabelCompilerWorkerProcess,
       ClientProcess,
-      ClientGUIProcess,
+      AppRuntime,
       ClientWorkerProcess,
       MicrophoneProcess,
       ClientAudioWorkerProcess,

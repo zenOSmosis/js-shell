@@ -27,10 +27,14 @@ const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
-// TODO: Get rid of this
-// let zStack = 9999;
+const CLASS_NAME_FOCUS = 'focus';
 
-let windowStack = [];
+// The CSS z-index level the next focused Window will have
+// This value is automatically incremented internally
+let _nextZIndex = 0;
+
+// An array of windows
+let _windowStack = [];
 
 /**
  * TODO: Refactor elsewhere
@@ -39,7 +43,7 @@ let windowStack = [];
  * @return {Window[]} An array of Window instances
  */
 export const getWindowStack = () => {
-  return windowStack.filter((window) => {
+  return _windowStack.filter((window) => {
     return !window.getIsClosed();
   });
 }
@@ -53,9 +57,9 @@ const commonDesktopLinkedState = new DesktopLinkedState();
     const { activeWindow } = updatedState;
 
     if (typeof activeWindow !== 'undefined') {
-      const windowStack = getWindowStack();
+      const _windowStack = getWindowStack();
 
-      windowStack.forEach((desktopWindow) => {
+      _windowStack.forEach((desktopWindow) => {
         const isFocusedWindow = Object.is(activeWindow, desktopWindow);
 
         if (!isFocusedWindow) {
@@ -71,7 +75,7 @@ export default class Window extends Component {
     super(props);
 
     this.state = {
-      title: null,
+      title: null
     };
 
     this._uuid = uuidv4();
@@ -92,7 +96,8 @@ export default class Window extends Component {
 
     this._isClosed = false;
 
-    windowStack.push(this);
+    // Add this window to the stack
+    _windowStack.push(this);
   }
 
   async componentDidMount() {
@@ -128,11 +133,6 @@ export default class Window extends Component {
     }
 
     this.autosetTitle();
-
-    // TODO: Rework this
-    $(this._el).css({
-      zIndex: this.state.zStack
-    });
   }
 
   componentWillUnmount() {
@@ -216,12 +216,23 @@ export default class Window extends Component {
 
     commonDesktopLinkedState.setActiveWindow(this);
     
-    // TODO: Use constant for active
-    $(this._el).addClass('active'); // Affects outer draw shadow
+    $(this._el).addClass(CLASS_NAME_FOCUS);
 
     this.doCoverIfShould();
-    
 
+    /**
+     * The zIndex is directly applied to the base DOM element, instead of
+     * applied as state, because applying as state causes a re-render which
+     * messes with mouse / touch functionality when selecting another Window.
+     * e.g. if Window A is focused, and then the user tries to resize Window
+     * B, if a re-render has to occur, the user first has to select Window B
+     * before the resize will happen.
+     */
+    $(this._el).css({
+      zIndex: _nextZIndex
+    });
+    ++_nextZIndex;
+    
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
@@ -233,8 +244,7 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
     this._isFocused = false;
 
-    // TODO: Use constant for active
-    $(this._el).removeClass('active'); // Affects outer draw shadow
+    $(this._el).removeClass(CLASS_NAME_FOCUS);
 
     this.doCoverIfShould();
 
@@ -362,6 +372,7 @@ export default class Window extends Component {
    * @param {number | string} width 
    * @param {number | string} height 
    */
+  /*
   setBodySize(width, height) {
     window.requestAnimationFrame(() => {
       $(this._windowBodyComponent).css({
@@ -370,7 +381,9 @@ export default class Window extends Component {
       });
     });
   }
+  */
 
+  /*
   getCalculatedBodySize() {
     const bodyCalcStyle = window.getComputedStyle(this.windowBodyWrapper);
 
@@ -382,6 +395,7 @@ export default class Window extends Component {
       height
     };
   }
+  */
 
   /**
    * Determines whether the Window should be overlaid with <Cover /> (a
@@ -400,18 +414,35 @@ export default class Window extends Component {
     }
   }
 
+  /**
+   * Covers the entire Window body if this.getShouldCover() determines it
+   * should.  If the body should not be covered, and it is already covered,
+   * it will uncover the body.
+   */
   doCoverIfShould() {
     const shouldCover = this.getShouldCover();
 
     this._bodyCoverComponent.setIsVisible(shouldCover);
   }
 
+  /**
+   * Internally called when the Window Header has started to detect a gesture
+   * (e.g. a mouse or touch event).
+   * 
+   * TODO: Document evt parameter type
+   */
   _handleWindowHeaderGestureStart = (evt) => {
     this._isActiveHeaderGesture = true;
 
     this.doCoverIfShould();
   }
 
+  /**
+   * Internally called when the Window Header has stopped detecting a gesture
+   * (e.g. a mouse or touch event).
+   * 
+   * TODO: Document evt parameter type
+   */
   _handleWindowHeaderGestureEnd = (evt) => {
     this._isActiveHeaderGesture = false;
 
@@ -427,11 +458,13 @@ export default class Window extends Component {
   /**
    * Called when the <DragResizable /> layer has been resized.
    */
+  /*
   _handleResize = (resizeData) => {
     const { width: bodyWidth, height: bodyHeight } = this.getCalculatedBodySize();
 
-    this.setBodySize(bodyWidth, bodyHeight);
+    // this.setBodySize(bodyWidth, bodyHeight);
   };
+  */
 
   _handleResizeEnd = (evt) => {
     this._isResizing = false;
@@ -493,7 +526,7 @@ export default class Window extends Component {
             <DragResizable
               ref={c => this._resizableComponent = c}
               onResizeStart={this._handleResizeStart}
-              onResize={this._handleResize}
+              // onResize={this._handleResize}
               onResizeEnd={this._handleResizeEnd}
               moveableComponent={this._moveableComponent}
               minWidth={minWidth}
@@ -508,7 +541,6 @@ export default class Window extends Component {
                   <div
                     {...propsRest}
                     ref={c => this._paintedComponent = c}
-                    // className={`Window ${this.state.isActive ? 'Active' : ''}`}
                     className="zd-window-painted"
                   >
 
@@ -595,23 +627,28 @@ export default class Window extends Component {
     );
   }
 
+  /**
+   * Closes the underlying app, if available (which will unrender the Window).
+   * 
+   * @return {Promise<void>}
+   */
   async close() {
     try {
-      const { app } = this.props;
-
       if (this._isClosed) {
         console.warn('Window is already closed. Skipping close.');
         return;
       }
-  
+
+      const { app } = this.props;
+
       // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
-  
+
+      // Remove this window from the internal _windowStack
+      _windowStack = _windowStack.filter(testWindow => {
+        return !Object.is(this, testWindow);
+      });
   
       // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
-  
-      console.warn('TODO: Handle window close event detach', {
-        app
-      });
   
       if (app) {
         await app.close();

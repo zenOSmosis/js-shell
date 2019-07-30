@@ -17,12 +17,8 @@ class ProcessLinkedState extends LinkedState {
     super(LINKED_SCOPE_NAME, {
       processes: [],
 
-      guiProcesses: [],
-
-      // TODO: Differentiate between this and DesktopLinkedState.focusedAppRuntime
-      focusedGUIProcess: null,
-
       // The last process which was updated
+      // TODO: Rename to lastUpdatedProcess
       updatedProcess: null
     });
   }
@@ -37,8 +33,6 @@ class ProcessLinkedState extends LinkedState {
     const { processes } = this.getState();
 
     processes.push(process);
-    
-    const guiProcesses = this.getGUIProcesses(processes);
 
     process.on(EVT_TICK, this._handleProcessUpdate);
 
@@ -48,8 +42,7 @@ class ProcessLinkedState extends LinkedState {
     });
 
     this.setState({
-      processes,
-      guiProcesses
+      processes
     });
   }
 
@@ -83,11 +76,8 @@ class ProcessLinkedState extends LinkedState {
       return !Object.is(process, testProcess);
     });
 
-    const guiProcesses = this.getGUIProcesses(processes);
-
     this.setState({
-      processes,
-      guiProcesses
+      processes
     });
   }
 
@@ -98,29 +88,6 @@ class ProcessLinkedState extends LinkedState {
     const { processes } = this.getState();
 
     return processes;
-  }
-
-  /**
-   * Retrieves GUI processes.
-   * 
-   * If "processes" is not specified as an argument, it will use the class state. 
-   * 
-   * @param {ClientProcess[]} processes [optional] Overridden (over class
-   * property) processes.
-   * @return {ClientGUIProcess[]}
-   */
-  getGUIProcesses(processes = null) {
-    if (!processes) {
-      processes = this.getProcesses();
-    }
-
-    const guiProcesses = processes.filter((proc) => {
-      // TODO: Does checking for instance of ClientGUIProcess work, instead?
-
-      return proc.getIsGUIProcess();
-    });
-
-    return guiProcesses;
   }
 }
 
