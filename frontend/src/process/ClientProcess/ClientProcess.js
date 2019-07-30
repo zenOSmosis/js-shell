@@ -36,7 +36,6 @@ let _nextPID = 1;
 let _rootProcess = null;
 
 /**
- * @extends EventEmitter
  * 
  * An object-oriented way of managing client-side processes, somewhat
  * resembling a simplified version of Node.js processes.
@@ -45,6 +44,8 @@ let _rootProcess = null;
  * thread, and ClientProcess extensions such as ClientWorkerProcess act
  * a server-client model when running Web Workers, where the controller runs
  * on the main thread, which controls the relevant Worker thread.
+ * 
+ * @extends EventEmitter
  */
 class ClientProcess extends EventEmitter {
   /**
@@ -67,6 +68,8 @@ class ClientProcess extends EventEmitter {
     this._handleCPUThreadCycle = this._handleCPUThreadCycle.bind(this);
 
     this._pid = _nextPID;
+    this._parentProcess = parentProcess;
+    this._parentPID = null;
 
     // Increment _nextPID for the next process
     ++_nextPID;
@@ -78,12 +81,13 @@ class ClientProcess extends EventEmitter {
       throw new Error('parentProcess must be set');
     } else if (!_rootProcess) {
       throw new Error('rootProcess not internally set!');
-    } else if (parentProcess === false) {
-      parentProcess = _rootProcess;
+    } else if (parentProcess === false && this._isRootProcess) {
+      this._parentPID = -1;
+    } else if (!this._parentProcess) {
+      this._parentProcess = _rootProcess;
     }
 
-    this._parentProcess = parentProcess;
-    if (this._parentProcess !== null) {
+    if (!this._parentPID && this._parentProcess) {
       this._parentPID = this._parentProcess.getPID();
     }
 
@@ -325,7 +329,7 @@ class ClientProcess extends EventEmitter {
   /**
    * Evaluates the given command in the process' context.
    * 
-   * @param {Function | String} cmd 
+   * @param {Function | string} cmd 
    * @return {Promise<void>} Resolves after cmd stack frames have processed.
    */
   async evalInProcessContext(cmd) {
