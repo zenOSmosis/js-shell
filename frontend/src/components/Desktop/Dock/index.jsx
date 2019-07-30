@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import Image from 'components/Image';
 import { Tooltip } from 'antd';
 import hocConnect from 'state/hocConnect';
-import AppRegistryLinkedState, { APP_REGISTRATIONS_LINKED_SCOPE_NAME } from 'state/AppRegistryLinkedState';
+import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 // import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
 
