@@ -6,28 +6,28 @@
 // TODO: Enable resize / reposition of window (size / position) if screensize is changed
 
 import React, { Component } from 'react';
+import WindowHeader from './Header';
 // import Gesture from 'commponents/Gesture';
 import ContextMenu from 'components/ContextMenu';
-import ErrorBoundary from 'components/ErrorBoundary';
 import Cover from 'components/Cover';
-import Moveable from 'components/Moveable';
-// import ViewTransition from 'components/ViewTransition';
 import DragResizable from 'components/DragResizable';
+import ErrorBoundary from 'components/ErrorBoundary';
+import Moveable from 'components/Moveable';;
 import StackingContext from 'components/StackingContext';
-import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
+// import ViewTransition from 'components/ViewTransition'
+import './style.css';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
-import WindowHeader from './Header';
+import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
 import animate from 'utils/animate';
+import config from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-import config from 'config';
-import './style.css';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 
-const CLASS_NAME_FOCUS = 'focus';
+const CSS_CLASS_NAME_FOCUS = 'focus';
 
 // The CSS z-index level the next focused Window will have
 // This value is automatically incremented internally
@@ -216,7 +216,7 @@ export default class Window extends Component {
 
     commonDesktopLinkedState.setActiveWindow(this);
     
-    $(this._el).addClass(CLASS_NAME_FOCUS);
+    $(this._el).addClass(CSS_CLASS_NAME_FOCUS);
 
     this.doCoverIfShould();
 
@@ -244,7 +244,7 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
     this._isFocused = false;
 
-    $(this._el).removeClass(CLASS_NAME_FOCUS);
+    $(this._el).removeClass(CSS_CLASS_NAME_FOCUS);
 
     this.doCoverIfShould();
 
