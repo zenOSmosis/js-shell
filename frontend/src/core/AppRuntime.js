@@ -29,8 +29,10 @@ class AppRuntime extends ClientGUIProcess {
       throw new Error('runProps is not an object');
     }
 
-    // TODO: Fork from Shell Desktop process (or other common base)
-    super(false);
+    const shellDesktopProcess = commonDesktopLinkedState.getShellDesktopProcess();
+
+    // Fork apps from the Shell Desktop Process (for now)
+    super(shellDesktopProcess);
 
     this._defaultTitle = null;
     this._iconSrc = null;

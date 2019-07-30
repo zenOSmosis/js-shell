@@ -34,6 +34,8 @@ class DesktopLinkedState extends LinkedState {
       // TODO: Merge handling of active Window & focusedAppRuntime
       activeWindow: null,
 
+      shellDesktopProcess: null,
+
       launchedAppRuntimes: [],
 
       // TODO: Differentiate between this and ProcessLinkedState.focusedGUIProcess
@@ -52,6 +54,32 @@ class DesktopLinkedState extends LinkedState {
       // Whether the browser window is focused or not
       isFocused: true
     });
+  }
+
+  /**
+   * TODO: Document
+   * 
+   * @param {ShellDesktop} shellDesktopProcess
+   */
+  setShellDesktopProcess(shellDesktopProcess) {
+    const { shellDesktopProcess: existingShellDesktopProcess } = this.getState();
+
+    if (existingShellDesktopProcess) {
+      throw new Error('Existing Shell Desktop process already set');
+    }
+    
+    this.setState({
+      shellDesktopProcess
+    });
+  }
+
+  /** 
+   * @return {ShellDesktop}
+   */
+  getShellDesktopProcess() {
+    const { shellDesktopProcess } = this.getState();
+
+    return shellDesktopProcess;
   }
 
   /**
