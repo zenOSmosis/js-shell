@@ -12,7 +12,7 @@ import ContextMenu from 'components/ContextMenu';
 import Cover from 'components/Cover';
 import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
-import Moveable from 'components/Moveable';;
+import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
 // import ViewTransition from 'components/ViewTransition'
 import './style.css';
