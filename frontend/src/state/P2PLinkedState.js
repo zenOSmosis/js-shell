@@ -6,6 +6,11 @@ export {
 
 export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
+/**
+ * Manages peer-to-peer (P2P) connectivity.
+ * 
+ * @extends LinkedState
+ */
 export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
@@ -17,6 +22,9 @@ export default class P2PLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * TODO: Rename to setSocketPeerIds
+   */
   setSocketPeers(socketPeers = []) {
     if (!Array.isArray(socketPeers)) {
       throw new Error('socketPeers is not an array');
@@ -27,6 +35,11 @@ export default class P2PLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * TODO: Rename to addSocketPeer
+   * 
+   * @param {number} socketPeer 
+   */
   addSocketPeer(socketPeer) {
     let { socketPeers } = this.getState();
 
@@ -39,6 +52,11 @@ export default class P2PLinkedState extends LinkedState {
     });
   }
 
+  /**
+   * TODO: Rename to removeSocketPeerId
+   * 
+   * @param {number} socketPeer 
+   */
   removeSocketPeer(socketPeer) {
     let { socketPeers } = this.getState();
 

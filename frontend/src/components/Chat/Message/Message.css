@@ -1,0 +1,46 @@
+.zd-chat-message {
+  margin: 1em;
+}
+
+.zd-chat-message.remote {
+  text-align: left;
+}
+
+.zd-chat-message.local {
+  text-align: right;
+}
+
+.zd-chat-message-avatar {
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+}
+
+.zd-chat-message.remote .zd-chat-message-avatar {
+  margin-right: .4em;
+}
+
+.zd-chat-message.local .zd-chat-message-avatar {
+  margin-left: .4em;
+}
+
+.zd-chat-message-bubble {
+  display: inline-block;
+	position: relative;
+	background: #00aabb;
+  border-radius: 1em;
+  width: 80%;
+  padding: .5em;
+  color: #000;
+  text-align: left;
+}
+
+.zd-chat-message.remote .zd-chat-message-bubble {
+  margin-left: .2em;
+  border-top-left-radius: .4em;
+}
+
+.zd-chat-message.local .zd-chat-message-bubble {
+  margin-right: .2em;
+  border-top-right-radius: .4em;
+}
