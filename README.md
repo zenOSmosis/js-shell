@@ -1,3 +1,8 @@
+| Branch            | Status            |
+| ----------------- | ----------------- |
+| feature/travis-ci | [![Build Status](https://api.travis-ci.com/zenosmosis/js-shell.svg?branch=feature/travis-ci)](https://travis-ci.com/zenosmosis/js-shell?branch=feature/travis-ci) |
+
+
 # JS Shell
 
 **Note: This is currently prototype, and experimental code; it is not recommended for usage at all right now**
