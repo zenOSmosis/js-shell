@@ -1,5 +1,6 @@
 .zd-chat-text-composer {
   display: table;
+  width: 100%;
   margin: .4em 0em;
 }
 

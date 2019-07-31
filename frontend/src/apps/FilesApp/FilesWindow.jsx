@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
-// import IFrame from 'components/IFrame';
 import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
-// import {Menu, MenuItem} from 'components/Menu';
 import { Row, Column } from 'components/RowColumn';
+import LabeledComponent from 'components/LabeledComponent';
 import Switch from 'components/Switch';
+// import {Menu, MenuItem} from 'components/Menu';
+// import IFrame from 'components/IFrame';
 // import DirectoryTree from './subComponents/DirectoryTree';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
 import IconLayout from './subComponents/IconLayout';
@@ -41,7 +42,7 @@ export default class FilesWindow extends Component {
   state = {
     selectedNodes: [],
 
-    showHidden: true,
+    showHidden: false,
 
     // TODO: Rename to displayLayoutType
     layoutType: LAYOUT_TYPE_ICON,
@@ -196,12 +197,17 @@ export default class FilesWindow extends Component {
           <PathBreadcrumb filesWindow={this} pathParts={pathConstituents} />
         }
         toolbarRight={
-          <Switch
-            defaultChecked={showHidden}
-            checkedChildren={<span>Hide Hidden</span>}
-            unCheckedChildren={<span>Show Hidden</span>}
-            onChange={showHidden => this.setShowHidden(showHidden)}
-          />
+          <LabeledComponent
+            label="Hidden Files"
+          >
+            <Switch
+              defaultChecked={showHidden}
+              checkedChildren={<span>Show</span>}
+              unCheckedChildren={<span>Hide</span>}
+              onChange={showHidden => this.setShowHidden(showHidden)}
+            />
+          </LabeledComponent>
+          
         }
         subToolbar={
           <Row style={{ paddingTop: 4, paddingBottom: 4 }}>

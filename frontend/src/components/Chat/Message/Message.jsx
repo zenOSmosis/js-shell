@@ -3,6 +3,16 @@ import { Avatar } from 'antd';
 // import { Row, Column } from 'components/Layout';
 import './Message.css';
 
+const MessageAvatar = () => {
+  return (
+    <Avatar
+      size={48}
+      icon="user"
+      className="zd-chat-message-avatar"
+    />
+  )
+};
+
 const Message = (props = {}) => {
   const { children, fromLocal } = props;
 
@@ -10,7 +20,7 @@ const Message = (props = {}) => {
     <div className={`zd-chat-message ${fromLocal ? 'local' : 'remote'}`}>
       {
         !fromLocal &&
-        <Avatar icon="user" className="zd-chat-message-avatar" />
+        <MessageAvatar />
       }
 
       <div className="zd-chat-message-bubble">
@@ -21,7 +31,7 @@ const Message = (props = {}) => {
 
       {
         fromLocal &&
-        <Avatar icon="user" className="zd-chat-message-avatar" />
+        <MessageAvatar />
       }
     </div>
   );

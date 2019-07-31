@@ -1,0 +1,9 @@
+.zd-labeled-component {
+  display: inline-block;
+  text-align: center;
+}
+
+.zd-labeled-component .zd-labeled-component-label-wrapper {
+  font-size: .7rem;
+  text-align: center;
+}

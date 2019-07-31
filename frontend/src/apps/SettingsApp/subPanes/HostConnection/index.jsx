@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Button from 'components/Button';
-import LabeledSwitch, {Switch} from 'components/LabeledSwitch';
+import OLD_LabeledSwitch, {Switch} from 'components/OLD_LabeledSwitch';
 // import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 // import { Menu, MenuItem } from 'components/Menu';
 import { Select, Option } from 'components/Select';
@@ -120,7 +120,7 @@ class HostConnection extends Component {
           <div style={{textAlign: 'center', display: 'inline-block'}}>
             <Row>
               <Column>
-                <LabeledSwitch offLabel="REST" onLabel="Socket.io" checked  />
+                <OLD_LabeledSwitch offLabel="REST" onLabel="Socket.io" checked  />
               </Column>
             </Row>
             <Row>
@@ -208,7 +208,7 @@ class HostConnection extends Component {
                           // <TextArea onChange={(value) => this.updateSocketIOEventData(value)} placeholder="Message data" defaultValue="{}" />
                         }
 
-                        <LabeledSwitch onChange={(evt) => this.toggleInputMode()} offLabel={JSONEDITOR_MODE_CODE} onLabel={JSONEDITOR_MODE_TREE} />
+                        <OLD_LabeledSwitch onChange={(evt) => this.toggleInputMode()} offLabel={JSONEDITOR_MODE_CODE} onLabel={JSONEDITOR_MODE_TREE} />
                       </div>
 
                       {
