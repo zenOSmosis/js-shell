@@ -1,3 +1,9 @@
 [submodule "docker_modules/dev-ssl-proxy"]
 	path = docker_modules/dev-ssl-proxy
 	url = https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
+[submodule "docker_modules/stt-socket"]
+	path = docker_modules/stt-socket
+	url = https://zenOSmosis@bitbucket.org/zenOSmosis/stt-socket.git
+[submodule "docker_modules/docker-coturn"]
+	path = docker_modules/docker-coturn
+	url = https://github.com/zenOSmosis/docker-coturn.git

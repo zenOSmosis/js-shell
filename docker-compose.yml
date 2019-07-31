@@ -53,6 +53,15 @@ services:
     ports:
       - 3000:3000
 
+  coturn:
+    build: ./docker_modules/docker-coturn
+    volumes:
+      - ./docker_modules/docker-coturn:/app # Only during development
+    ports:
+      - 3478:3478
+      - 3478:3478/udp
+      - 65435-65535:65435-65535/udp
+
   # Prototype STT socket w/ Socket.io interface
   # stt-socket:
   #  build: ./docker_modules/stt-socket
