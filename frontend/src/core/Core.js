@@ -1,5 +1,5 @@
 import ClientProcess from 'process/ClientProcess';
-import P2PMonitor from './P2PMonitor';
+
 
 let _hasStarted = false;
 
@@ -24,8 +24,6 @@ class Core extends ClientProcess {
       const className = core.getClassName();
 
       console.debug(`Initializing ${className}`);
-
-      new P2PMonitor(core);
 
       // Important! If this is called, HMR support is broken at this point
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#Notes

@@ -35,6 +35,9 @@ export default class ShellDesktop extends ClientGUIProcess {
   async _init() {
     try {
       this._desktopLinkedState = new DesktopLinkedState();
+
+      this._desktopLinkedState.setShellDesktopProcess(this);
+
       this._socketLinkedState = new SocketLinkedState();
 
       this.on(EVT_BEFORE_EXIT, () => {
