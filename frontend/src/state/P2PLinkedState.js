@@ -15,6 +15,7 @@ export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
       // Peers which are connected over Socket.io (proxied through server)
+      // TODO: Rename to socketPeerIDs (or even just peerIDs)
       socketPeers: [],
 
       // Peers which are directly connected via P2P

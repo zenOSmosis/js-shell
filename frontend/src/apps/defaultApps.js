@@ -10,7 +10,7 @@
 import './FilesApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
-import './P2PConnectionApp';
+import './P2PConnectionsApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './SourceCodeApp';

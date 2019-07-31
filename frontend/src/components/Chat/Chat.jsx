@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Full from '../Full';
 import Scrollable from '../Scrollable';
 import ChatHeader from './Header';
-import {Layout, Content, Footer, Row, Column } from '../Layout';
+import {/* Layout, Content, Footer,*/ Row, Column } from '../Layout';
 import TextComposer from './TextComposer';
 import MessageList from './MessageList';
 import sendChatMessage from 'utils/p2p/sendChatMessage';

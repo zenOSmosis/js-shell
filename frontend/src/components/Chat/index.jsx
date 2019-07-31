@@ -1,9 +1,9 @@
 // @see https://developers.livechatinc.com/docs/react-chat-ui-kit/#chatlist
 
 import Chat from './Chat';
-import Chats from './Chats';
+import UserList from './UserList';
 
 export default Chat;
 export {
-  Chats
+  UserList
 };

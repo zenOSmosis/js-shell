@@ -12,8 +12,6 @@
 
 .zd-chat-message-avatar {
   display: inline-block;
-  width: 3em;
-  height: 3em;
 }
 
 .zd-chat-message.remote .zd-chat-message-avatar {
@@ -27,7 +25,7 @@
 .zd-chat-message-bubble {
   display: inline-block;
 	position: relative;
-	background: #00aabb;
+	background: #7a89ff;
   border-radius: 1em;
   width: 80%;
   padding: .5em;
