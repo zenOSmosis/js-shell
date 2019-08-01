@@ -1,5 +1,6 @@
 .zd-chat-message {
   margin: 1em;
+  overflow: auto;
 }
 
 .zd-chat-message.remote {
@@ -16,10 +17,12 @@
 
 .zd-chat-message.remote .zd-chat-message-avatar {
   margin-right: .4em;
+  float: left;
 }
 
 .zd-chat-message.local .zd-chat-message-avatar {
   margin-left: .4em;
+  float: right;
 }
 
 .zd-chat-message-bubble {
