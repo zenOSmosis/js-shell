@@ -9,7 +9,7 @@ import {
 
 // TODO: Use same import API as socketAPIEvents once updated on backend
 import socketAPIRoutes from 'utils/socketAPIRoutes';
-const { SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS } = socketAPIRoutes;
+const { SOCKET_API_ROUTE_FETCH_PEER_IDS } = socketAPIRoutes;
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -44,7 +44,7 @@ class P2PMonitor extends ClientProcess {
       // Post init; _init() has already finished when this starts
       this.setImmediate(async () => {
         try {
-          const socketPeerIDs = await socketQuery(SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS);
+          const socketPeerIDs = await socketQuery(SOCKET_API_ROUTE_FETCH_PEER_IDS);
           
           this._p2pLinkedState.setSocketPeerIDs(socketPeerIDs);
         } catch (exc) {
