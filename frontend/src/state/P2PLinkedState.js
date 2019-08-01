@@ -15,60 +15,59 @@ export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
       // Peers which are connected over Socket.io (proxied through server)
-      // TODO: Rename to socketPeerIDs (or even just peerIDs)
-      socketPeers: [],
+      socketPeerIDs: [],
 
-      // Peers which are directly connected via P2P
-      p2pConnections: []
+      // Peers which are directly connected via WebRTC
+      webRTCConnections: []
     });
   }
 
   /**
-   * TODO: Rename to setSocketPeerIds
+   * TODO: Rename to setSocketPeerIDIds
    */
-  setSocketPeers(socketPeers = []) {
-    if (!Array.isArray(socketPeers)) {
-      throw new Error('socketPeers is not an array');
+  setSocketPeerIDs(socketPeerIDs = []) {
+    if (!Array.isArray(socketPeerIDs)) {
+      throw new Error('socketPeerIDs is not an array');
     }
 
     this.setState({
-      socketPeers
+      socketPeerIDs
     });
   }
 
   /**
-   * TODO: Rename to addSocketPeer
+   * TODO: Rename to addSocketPeerID
    * 
-   * @param {number} socketPeer 
+   * @param {number} socketPeerID 
    */
-  addSocketPeer(socketPeer) {
-    let { socketPeers } = this.getState();
+  addSocketPeerID(socketPeerID) {
+    let { socketPeerIDs } = this.getState();
 
-    socketPeers = socketPeers || [];
+    socketPeerIDs = socketPeerIDs || [];
 
-    socketPeers.push(socketPeer);
+    socketPeerIDs.push(socketPeerID);
 
     this.setState({
-      socketPeers
+      socketPeerIDs
     });
   }
 
   /**
-   * TODO: Rename to removeSocketPeerId
+   * TODO: Rename to removeSocketPeerIDId
    * 
-   * @param {number} socketPeer 
+   * @param {number} socketPeerID 
    */
-  removeSocketPeer(socketPeer) {
-    let { socketPeers } = this.getState();
+  removeSocketPeerID(socketPeerID) {
+    let { socketPeerIDs } = this.getState();
 
-    socketPeers = socketPeers || [];
+    socketPeerIDs = socketPeerIDs || [];
 
-    socketPeers = socketPeers.filter(testSocketPeer => {
-      return !Object.is(socketPeer, testSocketPeer);
+    socketPeerIDs = socketPeerIDs.filter(testSocketPeerID => {
+      return !Object.is(socketPeerID, testSocketPeerID);
     });
 
     this.setState({
-      socketPeers
+      socketPeerIDs
     });
   }
 
