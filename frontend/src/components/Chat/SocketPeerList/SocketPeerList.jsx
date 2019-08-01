@@ -6,7 +6,7 @@ import { Avatar } from 'antd';
 import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 
-import fetchRandomUsers from 'utils/fetchRandomUsers';
+// import fetchRandomUsers from 'utils/fetchRandomUsers';
 
 /**
  * @typedef {Object} P2PUser
@@ -14,19 +14,12 @@ import fetchRandomUsers from 'utils/fetchRandomUsers';
  * @property {string} imageSrc
  */
 
-class UserList extends Component {
-  constructor(...args) {
-    super(...args);
-
-    this.state = {
-      users: []
-    }
-  }
-
+class SocketPeerList extends Component {
+  /*
   componentDidMount() {
     // Fetching of random users
     // TODO: Remove
-    
+
     (async () => {
       try {
         const randomUsers = await fetchRandomUsers();
@@ -51,12 +44,13 @@ class UserList extends Component {
       }
     })();
   }
+  */
 
-  _handleUserClick(user, evt) {
-    const { onUserClick } = this.props;
+ _handleSocketPeerClick(socketPeerID, evt) {
+    const { onSocketPeerClick } = this.props;
 
-    if (typeof onUserClick === 'function') {
-      onUserClick(user, evt);
+    if (typeof onSocketPeerClick === 'function') {
+      onSocketPeerClick(socketPeerID, evt);
     }
   }
 
@@ -64,19 +58,20 @@ class UserList extends Component {
     let { socketPeerIDs } = this.props;
     socketPeerIDs = socketPeerIDs || [];
 
-    const { users } = this.state;
-
     return (
       <TileList>
         {
-          users.map((user, idx) => {
+          socketPeerIDs.map((socketPeerID, idx) => {
             return (
               <Tile
                 key={idx}
-                title={user.nickname}
-                onClick={ evt => this._handleUserClick(user, evt) }
+                // title={user.nickname}
+                onClick={ evt => this._handleSocketPeerClick(socketPeerID, evt) }
               >
-                <img src={user.imageSrc} style={{width: '100%'}} />
+                {socketPeerID}
+                {
+                  // <img src={user.imageSrc} style={{width: '100%'}} />
+                }
               </Tile>
             );
           })
@@ -129,7 +124,7 @@ class UserList extends Component {
   }
 }
 
-export default hocConnect(UserList, P2PLinkedState, (updatedState) => {
+export default hocConnect(SocketPeerList, P2PLinkedState, (updatedState) => {
   const { socketPeerIDs } = updatedState;
 
   if (typeof socketPeerIDs !== 'undefined') {
@@ -140,5 +135,5 @@ export default hocConnect(UserList, P2PLinkedState, (updatedState) => {
 });
 
 export {
-  UserList
+  SocketPeerList
 };
