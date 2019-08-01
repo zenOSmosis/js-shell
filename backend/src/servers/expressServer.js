@@ -44,7 +44,7 @@ app.all('*', (req, res, next) => {
   console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
   // TODO: Use socket.io-adapter instead; this is rudimentary and not scalable
-  let socketConnections = [];
+  let peerIDs = [];
 
   io.on('connection', (socket) => {
     console.log(`Socket.io Client connected with id: ${socket.id}`);
@@ -52,19 +52,19 @@ app.all('*', (req, res, next) => {
     // Initialize the Socket Routes with the socket
     socketAPIRoutes.initSocket(socket);
 
-    // Add socket to socketConnections
-    socketConnections.push(socket);
+    // Add socket to peerIDs
+    peerIDs.push(socket);
 
     // Emit to everyone we're connected
     // TODO: Limit this to only namespaces the socket is connected to
     // @see https://socket.io/docs/emit-cheatsheet/
     socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
 
-    socket.fetchServerConnections = () => {
+    socket.fetchPeerIDs = () => {
       const socketId = socket.id;
 
-      // return socketConnections;
-      return socketConnections.map(connection => {
+      // return peerIDs;
+      return peerIDs.map(connection => {
         return connection.id;
       }).filter(connectionId => {
         return socketId !== connectionId;
@@ -72,9 +72,9 @@ app.all('*', (req, res, next) => {
     };
 
     socket.on('disconnect', () => {
-      // Remove socket from socketConnections
-      socketConnections = socketConnections.filter((socketConnection) => {
-        return (!Object.is(socket, socketConnection));
+      // Remove socket from peerIDs
+      peerIDs = peerIDs.filter((peerID) => {
+        return (!Object.is(socket, peerID));
       });
 
       // Emit to everyone we're disconnected

@@ -4,7 +4,7 @@ const SOCKET_API_ROUTE_ENV = 'api/env';
 const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
 const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
 const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
-const SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS = 'api/fetch-server-connections';
+const SOCKET_API_ROUTE_FETCH_PEER_IDS = 'api/fetch-peer-ids';
 const SOCKET_API_ROUTE_FETCH_SYSTEM_TIME = 'api/fetch-system-time';
 const SOCKET_API_ROUTE_FETCH_X_APPS = 'api/fetch-apps';
 const SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES = 'api/fetch-app-categories';
@@ -23,7 +23,7 @@ module.exports = {
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
-  SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS,
+  SOCKET_API_ROUTE_FETCH_PEER_IDS,
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,
