@@ -1,7 +1,7 @@
 const receiveChatMessage = async (message) => {
   try {
     // TODO: If message has a status receipt, send the status receipt (or 
-    // andle accordingly)
+    // handle accordingly)
   } catch (exc) {
     throw exc;
   }

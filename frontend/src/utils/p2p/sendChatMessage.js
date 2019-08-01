@@ -1,8 +1,15 @@
-const sendChatMessage = async (message) => {
+// import socket from 'utils/socket.io';
+
+const sendChatMessage = async (remoteSocketPeerID, messageBody) => {
   try {
     console.warn('TODO: Properly handle chat message sending', {
-      message
+      remoteSocketPeerID,
+      messageBody
     });
+
+    // socket.emit(...)
+
+    // TODO: Handle read receipt
   } catch (exc) {
     throw exc;
   }
