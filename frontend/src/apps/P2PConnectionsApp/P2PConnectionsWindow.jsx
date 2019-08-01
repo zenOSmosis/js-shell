@@ -11,14 +11,20 @@ import { Avatar, Input } from 'antd';
 const { Search } = Input;
 
 class P2PConnectionsWindow extends Component {
-  render() {
-    let { socketPeers, p2pConnections, ...propsRest } = this.props;
 
-    socketPeers = socketPeers || [];
+  _handleUserClick = (user) => {
+    const { app } = this.props;
+
+    app.handleUserClick(user);
+  };
+
+  render() {
+    const { ...propsRest } = this.props;
 
     return (
       <Window
         {...propsRest}
+        /*
         toolbar={
           // If user isn't in a chat room
           <div style={{ display: 'inline-block' }}>
@@ -30,12 +36,13 @@ class P2PConnectionsWindow extends Component {
             <Button>Join</Button>
           </div>
         }
+        */
+        
         toolbarRight={
           <LabeledComponent
             label="Messages"
           >
             <Switch
-              displayLabelOn="Show"
               checkedChildren="Show"
               unCheckedChildren="Hide"
               defaultChecked={true}
@@ -47,28 +54,37 @@ class P2PConnectionsWindow extends Component {
         <Full>
           <SplitterLayout secondaryInitialSize={320}>
             <Full>
-              <Row style={{ height: '100%' }}>
-                <Column>
-                  <Content>
-                    <UserList />
-                  </Content>
-
-                  <Footer>
-                    <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                      <Avatar size={56}>..</Avatar>
-                    </div>
-
-                    <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                      <Avatar size={56} />
-                    </div>
-
-                    <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                      <Avatar size={56} />
-                    </div>
-                  </Footer>
-                </Column>
-              </Row>
+              <UserList
+                onUserClick={ user => { this._handleUserClick(user) } }
+              />
             </Full>
+            {
+              /*
+              <Full>
+                <Row style={{ height: '100%' }}>
+                  <Column>
+                    <Content>
+                      <UserList />
+                    </Content>
+
+                    <Footer>
+                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
+                        <Avatar size={56}>..</Avatar>
+                      </div>
+
+                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
+                        <Avatar size={56} />
+                      </div>
+
+                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
+                        <Avatar size={56} />
+                      </div>
+                    </Footer>
+                  </Column>
+                </Row>
+              </Full>
+              */
+            }
 
             <Full>
               <Chat />

@@ -4,7 +4,7 @@ import Section from 'components/Section';
 import { Content, Layout, Footer } from 'components/Layout';
 import { Avatar } from 'antd';
 
-export default class HelloWorldWindow extends Component {
+export default class UserProfileWindow extends Component {
   render() {
     const { ...propsRest } = this.props;
 
@@ -30,16 +30,21 @@ export default class HelloWorldWindow extends Component {
               </Section>
 
               <Section>
-                ...<br />
-                ...<br />
-                ...<br />
-                ...<br />
-                ...<br />
-                ...<br />
+                <h2>Misc.</h2>
+
+                <div>
+                  Socket ID: ...
+                </div>
               </Section>
             </div>
           </Content>
           <Footer style={{ overflow: 'auto' }}>
+            <div style={{float: 'left'}}>
+              <button>
+                Randomize
+              </button>
+            </div>
+            
             <div style={{ float: 'right' }}>
               <button>Open P2P Connections</button>
             </div>

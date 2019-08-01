@@ -1,15 +1,90 @@
 import React, { Component } from 'react';
 import Center from 'components/Center';
 import Full from 'components/Full';
+import TileList, { Tile } from 'components/TileList';
 import { Avatar } from 'antd';
 import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 
+import fetchRandomUsers from 'utils/fetchRandomUsers';
+
+/**
+ * @typedef {Object} P2PUser
+ * @property {string} nickname
+ * @property {string} imageSrc
+ */
+
 class UserList extends Component {
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      users: []
+    }
+  }
+
+  componentDidMount() {
+    // Fetching of random users
+    // TODO: Remove
+    
+    (async () => {
+      try {
+        const randomUsers = await fetchRandomUsers();
+        const lenRandomUsers = randomUsers.length;
+
+        const users = [];
+
+        for (let i = 0; i < lenRandomUsers; i++) {
+          const randomUser = randomUsers[i];
+
+          users.push({
+            nickname: randomUser.name.first,
+            imageSrc: randomUser.picture.large
+          });
+        }
+
+        this.setState({
+          users
+        });
+      } catch (exc) {
+        throw exc;
+      }
+    })();
+  }
+
+  _handleUserClick(user, evt) {
+    const { onUserClick } = this.props;
+
+    if (typeof onUserClick === 'function') {
+      onUserClick(user, evt);
+    }
+  }
+
   render() {
     let { socketPeers } = this.props;
     socketPeers = socketPeers || [];
 
+    const { users } = this.state;
+
+    return (
+      <TileList>
+        {
+          users.map((user, idx) => {
+            return (
+              <Tile
+                key={idx}
+                title={user.nickname}
+                onClick={ evt => this._handleUserClick(user, evt) }
+              >
+                <img src={user.imageSrc} style={{width: '100%'}} />
+              </Tile>
+            );
+          })
+        }
+      </TileList>
+    );
+
+    /*
     return (
       <Full>
         {
@@ -19,6 +94,7 @@ class UserList extends Component {
           </Center>
         }
         {
+          // TODO: Replace with <TileList />
           socketPeers.length > 0 &&
           <ul style={{ listStyle: 'none', width: '100%' }}>
             {
@@ -49,6 +125,7 @@ class UserList extends Component {
         }
       </Full>
     )
+    */
   }
 }
 

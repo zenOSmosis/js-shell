@@ -39,7 +39,7 @@ class Grid extends Component {
 
     let {children, className} = this.props;
 
-    // Hack to enable iterable children, even if only one child
+    // Force children to be an array
     children = Array.isArray(children) ? children : [children];
     
     return (
