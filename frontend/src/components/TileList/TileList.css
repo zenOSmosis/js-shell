@@ -1,0 +1,29 @@
+.zd-tile-list
+  .zd-tile-list-tiles {
+  line-height: 0px;
+}
+
+.zd-tile-list
+  .zd-tile-list-tiles
+  button.zd-tile-list-tile {
+  position: relative;
+  display: inline-block;
+  line-height: 1rem;
+  border: 1px #ccc solid !important;
+  width: 160px;
+  height: 160px;
+  overflow: hidden;
+  padding: 0px !important;
+  margin: 2px !important;
+}
+
+.zd-tile-list
+  .zd-tile-list-tiles
+  button.zd-tile-list-tile
+  .title {
+  background-color: rgba(0,0,0,.7);
+  position: absolute;
+  bottom: 0px;
+  padding: .4rem;
+  font-weight: bold;
+}
