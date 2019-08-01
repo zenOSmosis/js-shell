@@ -1,25 +1,34 @@
 import React, { Component } from 'react';
-import Button from 'components/Button';
+// import Button from 'components/Button';
 import Window from 'components/Desktop/Window';
-import Chat, { UserList } from 'components/Chat';
-import { Content, Footer, Row, Column, Section } from 'components/Layout';
+import Chat, { SocketPeerList } from 'components/Chat';
+// import { Content, Footer, Row, Column, Section } from 'components/Layout';
 import Switch from 'components/Switch';
 import LabeledComponent from 'components/LabeledComponent';
 import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
-import { Avatar, Input } from 'antd';
-const { Search } = Input;
+// import { Avatar, Input } from 'antd';
+// const { Search } = Input;
 
 class P2PConnectionsWindow extends Component {
+  constructor(...args) {
+    super(...args);
 
-  _handleUserClick = (user) => {
-    const { app } = this.props;
+    this.state = {
+      selectedSocketPeerID: null
+    };
+  }
 
-    app.handleUserClick(user);
+  _handleSocketPeerClick = (socketPeerID) => {
+    this.setState({
+      selectedSocketPeerID: socketPeerID
+    });
   };
 
   render() {
     const { ...propsRest } = this.props;
+
+    const { selectedSocketPeerID } = this.state;
 
     return (
       <Window
@@ -54,8 +63,8 @@ class P2PConnectionsWindow extends Component {
         <Full>
           <SplitterLayout secondaryInitialSize={320}>
             <Full>
-              <UserList
-                onUserClick={ user => { this._handleUserClick(user) } }
+              <SocketPeerList
+                onSocketPeerClick={ socketPeerID => { this._handleSocketPeerClick(socketPeerID) } }
               />
             </Full>
             {
@@ -87,7 +96,12 @@ class P2PConnectionsWindow extends Component {
             }
 
             <Full>
-              <Chat />
+              {
+                selectedSocketPeerID &&
+                <Chat
+                  remoteSocketPeerID={selectedSocketPeerID}
+                />
+              }
             </Full>
           </SplitterLayout>
         </Full>

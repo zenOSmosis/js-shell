@@ -12,29 +12,5 @@ export default registerApp({
       <P2PConnectionsWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}people-connection/people-connection.svg`,
-  cmd: (app) => {
-    app.handleUserClick = (user) => {
-      console.warn('TODO: Handle user click', user);
-      // alert('TODO: Launch user chat with user');
-
-      /*
-      // Launch chat window
-      new AppRuntime({
-        title: `Chat w/ ${user.nickname}`,
-        mainView: (props) => {
-          return (
-            <Window
-              {...props}
-            >
-              <div>I am a chat!</div>
-            </Window>
-          );
-        },
-        // TODO: Make this the user's avatar
-        iconSrc: `${config.HOST_ICON_URI_PREFIX}people-connection/people-connection.svg`
-      });
-      */
-    };
-  }
+  iconSrc: `${config.HOST_ICON_URI_PREFIX}people-connection/people-connection.svg`
 });
