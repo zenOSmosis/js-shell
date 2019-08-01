@@ -18,21 +18,13 @@ const Message = (props = {}) => {
 
   return (
     <div className={`zd-chat-message ${fromLocal ? 'local' : 'remote'}`}>
-      {
-        !fromLocal &&
-        <MessageAvatar />
-      }
+      <MessageAvatar />
 
       <div className="zd-chat-message-bubble">
         {
           children
         }
       </div>
-
-      {
-        fromLocal &&
-        <MessageAvatar />
-      }
     </div>
   );
 };
