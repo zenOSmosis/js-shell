@@ -8,22 +8,28 @@ import MessageList from './MessageList';
 import sendChatMessage from 'utils/p2p/sendChatMessage';
 
 class Chat extends Component {
-  async _handleMessageSend(message) {
+  async _handleMessageSend(messageBody) {
     try {
-      await sendChatMessage(message);
+      const { remoteSocketPeerID } = this.props;
+
+      await sendChatMessage(remoteSocketPeerID, messageBody);
     } catch (exc) {
       throw exc;
     }
   }
 
   render() {
+    const { remoteSocketPeerID } = this.props;
+
     return (
       <Full style={{backgroundColor: 'rgba(255,255,255,.2)'}}>
         <Row style={{height: '100%'}}>
           <Column>
             <Row>
               <Column>
-                <ChatHeader />
+                <ChatHeader
+                  remoteSocketPeerID={remoteSocketPeerID}
+                />
               </Column>
             </Row>
             <Row style={{height: '100%'}}>
@@ -36,7 +42,7 @@ class Chat extends Component {
             <Row>
               <Column>
                 <TextComposer
-                  onMessageSend={this._handleMessageSend}
+                  onMessageSend={ messageBody => {this._handleMessageSend(messageBody)} }
                 />
               </Column>
             </Row>
