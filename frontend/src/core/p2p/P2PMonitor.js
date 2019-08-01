@@ -44,9 +44,9 @@ class P2PMonitor extends ClientProcess {
       // Post init; _init() has already finished when this starts
       this.setImmediate(async () => {
         try {
-          const socketPeers = await socketQuery(SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS);
+          const socketPeerIDs = await socketQuery(SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS);
           
-          this._p2pLinkedState.setSocketPeers(socketPeers);
+          this._p2pLinkedState.setSocketPeerIDs(socketPeerIDs);
         } catch (exc) {
           throw exc;
         }
@@ -56,15 +56,15 @@ class P2PMonitor extends ClientProcess {
     }
   }
 
-  _handlePeerConnect = (socketId) => {
+  _handlePeerConnect = (socketPeerID) => {
     if (this._p2pLinkedState) {
-      this._p2pLinkedState.addSocketPeer(socketId);
+      this._p2pLinkedState.addSocketPeerID(socketPeerID);
     }
   }
 
-  _handlePeerDisconnect = (socketId) => {
+  _handlePeerDisconnect = (socketPeerID) => {
     if (this._p2pLinkedState) {
-      this._p2pLinkedState.removeSocketPeer(socketId);
+      this._p2pLinkedState.removeSocketPeerID(socketPeerID);
     }
   }
 }

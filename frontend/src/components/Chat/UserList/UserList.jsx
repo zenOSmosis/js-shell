@@ -61,8 +61,8 @@ class UserList extends Component {
   }
 
   render() {
-    let { socketPeers } = this.props;
-    socketPeers = socketPeers || [];
+    let { socketPeerIDs } = this.props;
+    socketPeerIDs = socketPeerIDs || [];
 
     const { users } = this.state;
 
@@ -88,17 +88,17 @@ class UserList extends Component {
     return (
       <Full>
         {
-          socketPeers.length === 0 &&
+          socketPeerIDs.length === 0 &&
           <Center>
             <span style={{fontStyle: 'italic'}}>No connected peers...</span>
           </Center>
         }
         {
           // TODO: Replace with <TileList />
-          socketPeers.length > 0 &&
+          socketPeerIDs.length > 0 &&
           <ul style={{ listStyle: 'none', width: '100%' }}>
             {
-              socketPeers.map((peer, idx) => {
+              socketPeerIDs.map((peer, idx) => {
                 return (
                   <li
                     key={idx}
@@ -130,11 +130,11 @@ class UserList extends Component {
 }
 
 export default hocConnect(UserList, P2PLinkedState, (updatedState) => {
-  const { socketPeers } = updatedState;
+  const { socketPeerIDs } = updatedState;
 
-  if (typeof socketPeers !== 'undefined') {
+  if (typeof socketPeerIDs !== 'undefined') {
     return {
-      socketPeers
+      socketPeerIDs
     };
   }
 });
