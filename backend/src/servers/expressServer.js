@@ -7,6 +7,7 @@ const requestIp = require('request-ip');
 const expressAPIRoutes = require('../api/express/routes');
 const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
+const { addSocketID, removeSocketID } = require('../api/socket.io/utils/socketIDs');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
 const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
 // Apply custom reponse headers
@@ -43,39 +44,22 @@ app.all('*', (req, res, next) => {
 
   console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
-  // TODO: Use socket.io-adapter instead; this is rudimentary and not scalable
-  let peerIDs = [];
-
   io.on('connection', (socket) => {
     console.log(`Socket.io Client connected with id: ${socket.id}`);
 
     // Initialize the Socket Routes with the socket
     socketAPIRoutes.initSocket(socket);
 
-    // Add socket to peerIDs
-    peerIDs.push(socket);
+    addSocketID(socket.id);
 
     // Emit to everyone we're connected
     // TODO: Limit this to only namespaces the socket is connected to
     // @see https://socket.io/docs/emit-cheatsheet/
     socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
 
-    socket.fetchPeerIDs = () => {
-      const socketId = socket.id;
-
-      // return peerIDs;
-      return peerIDs.map(connection => {
-        return connection.id;
-      }).filter(connectionId => {
-        return socketId !== connectionId;
-      });
-    };
-
     socket.on('disconnect', () => {
       // Remove socket from peerIDs
-      peerIDs = peerIDs.filter((peerID) => {
-        return (!Object.is(socket, peerID));
-      });
+      removeSocketID(socket.id);
 
       // Emit to everyone we're disconnected
       // TODO: Limit this to only namespaces the socket was connected to
