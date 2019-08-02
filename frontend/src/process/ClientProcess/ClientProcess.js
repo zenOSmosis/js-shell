@@ -53,10 +53,10 @@ class ClientProcess extends EventEmitter {
    * @param {ClientProcess | boolean} parentProcess If false is passed and
    * there is already a root process, the root process will be utilized as
    * the parent. 
-   * @param {function} cmd
-   * @param {Object} options 
+   * @param {function} cmd?
+   * @param {Object} options? 
    */
-  constructor(parentProcess, cmd, options = {}) {
+  constructor(parentProcess, cmd = null, options = {}) {
     super();
 
     if (!_rootProcess) {
@@ -68,11 +68,11 @@ class ClientProcess extends EventEmitter {
     this._handleCPUThreadCycle = this._handleCPUThreadCycle.bind(this);
 
     this._pid = _nextPID;
-    this._parentProcess = parentProcess;
-    this._parentPID = null;
-
     // Increment _nextPID for the next process
     ++_nextPID;
+
+    this._parentProcess = parentProcess;
+    this._parentPID = null;
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
@@ -474,6 +474,8 @@ class ClientProcess extends EventEmitter {
 
   /**
    * Executes this._cmd.
+   * 
+   * @return {Promise<void>}
    */
   async _launch() {
     try {
@@ -488,17 +490,12 @@ class ClientProcess extends EventEmitter {
       // console.debug(`Executing ${this.getClassName()}`, this);
 
       if (typeof this._cmd !== 'function') {
-        console.warn(
-          `"cmd" is not a function, ignoring passed launch command.  If writing
-          multithreaded code anything executed outside of "cmd" will be run on
-          the main thread.`
-        );
+        console.debug('No command passed to ClientProcess.  Ignoring eval.');
         return;
+      } else {
+        // Run cmd in this process scope
+        return await this.evalInProcessContext(this._cmd);
       }
-
-      // Run cmd in this process scope
-      await this.evalInProcessContext(this._cmd);
-
     } catch (exc) {
       // Automatically kill if crashed
       // TODO: Use killSignal constant for error
