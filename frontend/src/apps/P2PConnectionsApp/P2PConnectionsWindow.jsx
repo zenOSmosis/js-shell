@@ -58,6 +58,10 @@ class P2PConnectionsWindow extends Component {
             />
           </LabeledComponent>
         }
+
+        subToolbar={
+          <div>TODO: Remove local peer from list</div>
+        }
       >
 
         <Full>
