@@ -23,7 +23,7 @@ Sloppy.
 
 ## Building / Running
 
-**Important: Production builds are not currently immplmented**
+**Important: Production builds are not currently implemented**
 
 Build instructions are not avialable at this time, however it uses a Docker Compose configuration.
 
