@@ -10,7 +10,7 @@ The Shell GUI frontend will have full local user privileges (and can be elevated
 
 ## Current Development State
 
-Sloppy.
+Pre-initial prototype.
 
 ## Building / Running
 
@@ -27,6 +27,49 @@ $ docker-compose up
 However, currently, it is all configured for development, and there are no install scripts, so git submodules and npm packages need to manually installed in the relevant directories (e.g. backend / frontend).
 
 Note: One of the git submodules links to a private Bitbucket repository (stt-socket), and is utilized for doing speech-to-text handling.  This particular submodule can be safely ignored for all other functionality.
+
+## System Design
+
+### Docker Modules
+
+The {root}/docker_modules directory specifies additional Docker packages which help form the infrastructure of the Shell and its related services.
+
+### Backend
+
+Currently developed with Node 10, run straight from source (not compiled) and supports ES5 require statements.
+
+- Source file compilation: None
+- Module import syntax:
+  ```
+  import package from 'module-name';
+  ```
+
+- JS Module path resolution definitions: backend/package.json (_moduleAliases)
+
+### Frontend
+
+Currently developed with Node 10, compiled with WebPack, and supports ES6+ / CommonJS import statements.
+
+- Built on: [Facebook's Create React App](https://github.com/facebook/create-react-app)
+- Source file compilation: WebPack
+- Additional configuration: frontend/config-overrides.js
+- HMR (Hot Module Replacement) supported: Yes
+- Module import syntax (ES6+ / CommonJS):
+  ```
+  const package = require('module-name');
+  ```
+- JS Module path resolution definitions: frontend/jsonconfig.json (compilerOptions.paths)
+
+Path resolutions:
+
+- TODO: Define "apps"
+- TODO: Define "components"
+- TODO: Define "core"
+- TODO: Define "icons"
+- TODO: Define "process"
+- TODO: Define "shared"
+- TODO: Define "state"
+- TODO: Define "utils"
 
 ## Optional
 
