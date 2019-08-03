@@ -1,4 +1,4 @@
-import socketQuery from 'utils/socketQuery';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 const { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } = socketAPIRoutes;
 
@@ -12,7 +12,7 @@ const { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } = socketAPIRoutes;
  */
 const fetchSocketPeerIDs = async () => {
   try {
-    const socketPeerIDs = await socketQuery(SOCKET_API_ROUTE_FETCH_SOCKET_IDS);
+    const socketPeerIDs = await socketAPIQuery(SOCKET_API_ROUTE_FETCH_SOCKET_IDS);
 
     return socketPeerIDs;
   } catch (exc) {

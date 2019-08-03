@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
 import config from './../config';
-import socketQuery from './socketQuery';
 import SocketLinkedState from '../state/SocketLinkedState';
 import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 
@@ -65,6 +64,5 @@ socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
 
 export default socket;
 export {
-  socketQuery,
   SocketLinkedState
 };

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Scrollable from 'components/Scrollable';
 import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 import { Layout, Header, Content, Footer } from 'components/Layout';
-import socketQuery, { socketAPIRoutes } from 'utils/socketQuery';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 // import DesktopLinkedState from 'state/DesktopLinkedState';
 // import SocketLinkedState from 'state/SocketLinkedState';
 // import hocConnect from 'state/hocConnect';
@@ -26,7 +27,7 @@ export default class Environment extends Component {
 
   async fetchRemoteEnv() {
     try {
-      const remoteEnv = await socketQuery(socketAPIRoutes.SOCKET_API_ROUTE_ENV);
+      const remoteEnv = await socketAPIQuery(socketAPIRoutes.SOCKET_API_ROUTE_ENV);
 
       this.setState({
         remoteEnv

@@ -12,8 +12,6 @@ import config from 'config';
 
 const { DOM_ROOT_ID } = config;
 
-console.warn('TODO: Implement @apps, @... directory aliasing');
-
 let _hasStarted = false;
 
 /**

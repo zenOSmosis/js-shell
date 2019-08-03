@@ -1,7 +1,7 @@
-import socketQuery from '../socketQuery';
+import socketAPIQuery from '../socketAPI/socketAPIQuery';
 
 const fetchWallpaperPaths = async () => {
-  return await socketQuery('wallpapers:fetch-wallpaper-paths');
+  return await socketAPIQuery('wallpapers:fetch-wallpaper-paths');
 }
 
 export default fetchWallpaperPaths;
