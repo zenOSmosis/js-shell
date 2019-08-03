@@ -10,6 +10,7 @@ const fetchStackTrace = require('stacktrace-js');
  * @param {Function} serviceCall The serviceCall function to run. 
  * @param {Function} ack Data passed to this function is returned to the
  * client.
+ * @return {Promise<void>}
  */
 const handleSocketRoute = async (serviceCall, ack) => {
   try {

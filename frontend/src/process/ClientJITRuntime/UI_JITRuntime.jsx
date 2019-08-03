@@ -22,7 +22,7 @@ import Window from 'components/Desktop/Window';
 import socketQuery from 'utils/socketQuery';
 
 // Note: Currently commented-out due to inconsistent exports
-// import socketAPIRoutes from 'utils/socketAPIRoutes';
+// import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 // import socketAPIEvents from 'utils/socketAPIEvents';
 
 import beep from 'utils/audio/beep';

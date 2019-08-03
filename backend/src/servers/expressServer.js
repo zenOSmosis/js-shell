@@ -7,7 +7,7 @@ const requestIp = require('request-ip');
 const expressAPIRoutes = require('../api/express/routes');
 const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
-const { addSocketID, removeSocketID } = require('../api/socket.io/utils/socketIDs');
+const { addSocketID, removeSocketID } = require('../utils/p2p/socketIDs');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
 const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
 

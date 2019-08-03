@@ -1,0 +1,1 @@
+This directory contains shared resources between the backend and the frontend.
