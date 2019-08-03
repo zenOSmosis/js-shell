@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Center from 'components/Center';
-import Full from 'components/Full';
+// import Center from 'components/Center';
+// import Full from 'components/Full';
 import TileList, { Tile } from 'components/TileList';
-import { Avatar } from 'antd';
+// import { Avatar } from 'antd';
 import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 
