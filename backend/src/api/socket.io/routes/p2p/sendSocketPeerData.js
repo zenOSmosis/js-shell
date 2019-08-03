@@ -1,5 +1,5 @@
-const handleSocketRoute = require('../../utils/handleSocketRoute');
-require('../../../../utils/p2p/SocketPeerDataPacket.typedef');
+const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+require('utils/p2p/SocketPeerDataPacket.typedef');
 
 /**
  * 
@@ -7,7 +7,7 @@ require('../../../../utils/p2p/SocketPeerDataPacket.typedef');
  * @param {function} ack 
  */
 const sendSocketPeerData = async(socketPeerDataPacket, ack) => {
-  return handleSocketRoute( () => {
+  return handleSocketAPIRoute( () => {
     const {
       toSocketPeerID,
       fromSocketPeerID,

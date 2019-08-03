@@ -1,4 +1,4 @@
-const { getSocketIDs } = require('../../../../utils/p2p/socketIDs');
+const { getSocketIDs } = require('utils/p2p/socketIDs');
 
 // TODO: Utilize utils/fetchPeerIDs and don't use this different implementation
 const fetchSocketIDs = /* async */ (options = {}, ack) => {

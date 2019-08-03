@@ -1,7 +1,7 @@
-const handleSocketRoute = require('../../utils/handleSocketRoute');
+const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
 
 const systemTime = async(options = {}, ack) => {
-  return  handleSocketRoute(() => {
+  return  handleSocketAPIRoute(() => {
     return new Date();
   }, ack);
 };

@@ -6,7 +6,7 @@
 const path = require('path');
 const fetchRecursiveFilePaths = require('../fileSystem/fetchRecursiveFilePaths');
 
-const config = require('../../config');
+const config = require('config');
 
 const fetchAllParsedIconPaths = async (readDirectories = config.FREEDESKTOP_ICON_READ_DIRECTORIES) => {
   try {

@@ -1,8 +1,8 @@
-const handleSocketRoute = require('../../utils/handleSocketRoute');
-const {fetchWallpaperPaths: doFetchWallpaperPaths} = require('../../../../utils/freedesktop.org/wallpapers');
+const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+const {fetchWallpaperPaths: doFetchWallpaperPaths} = require('utils/freedesktop.org/wallpapers');
 
 const fetchWallpaperPaths = async (options = {}, ack) => {
-  return await handleSocketRoute(async (options) => {
+  return await handleSocketAPIRoute(async (options) => {
     try {
       console.log('..');
       const wallpaperPaths = await doFetchWallpaperPaths();

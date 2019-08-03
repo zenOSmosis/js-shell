@@ -1,5 +1,5 @@
-const config = require('../../config');
-const fetchRecursiveFilePaths = require('../../utils/fileSystem/fetchRecursiveFilePaths');
+const config = require('config');
+const fetchRecursiveFilePaths = require('utils/fileSystem/fetchRecursiveFilePaths');
 
 const fetchWallpaperPaths = async (readDirectories = config.WALLPAPER_LOCATIONS) => {
   try {
