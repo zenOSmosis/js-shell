@@ -15,7 +15,7 @@ The Shell GUI frontend will have full local user privileges (and can be elevated
 
 ## Current Development State
 
-Sloppy.
+Pre-initial prototype.
 
 ## TODO: Document frontend / backend components
 
@@ -50,6 +50,49 @@ $ ./build.dev.sh
 # Running
 $ docker-compose up
 ```
+
+## System Design
+
+### Docker Modules
+
+The {root}/docker_modules directory specifies additional Docker packages which help form the infrastructure of the Shell and its related services.
+
+### Backend
+
+Currently developed with Node 10, run straight from source (not compiled) and supports ES5 require statements.
+
+- Source file compilation: None
+- Module import syntax:
+  ```
+  import package from 'module-name';
+  ```
+
+- JS Module path resolution definitions: backend/package.json (_moduleAliases)
+
+### Frontend
+
+Currently developed with Node 10, compiled with WebPack, and supports ES6+ / CommonJS import statements.
+
+- Built on: [Facebook's Create React App](https://github.com/facebook/create-react-app)
+- Source file compilation: WebPack
+- Additional configuration: frontend/config-overrides.js
+- HMR (Hot Module Replacement) supported: Yes
+- Module import syntax (ES6+ / CommonJS):
+  ```
+  const package = require('module-name');
+  ```
+- JS Module path resolution definitions: frontend/jsonconfig.json (compilerOptions.paths)
+
+Path resolutions:
+
+- TODO: Define "apps"
+- TODO: Define "components"
+- TODO: Define "core"
+- TODO: Define "icons"
+- TODO: Define "process"
+- TODO: Define "shared"
+- TODO: Define "state"
+- TODO: Define "utils"
 
 ## Optional
 The following serve as notes for additional server monitoring, though their API implementations are not currently developed on the server.
