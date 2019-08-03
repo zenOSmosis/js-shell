@@ -9,7 +9,7 @@ import LoadingSpinner from 'components/spinners/LoadingSpinner';
 import Cover from 'components/Cover';
 import Center from 'components/Center';
 import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from 'components/JSONEditor';
-import socketAPIRoutes from 'utils/socketAPIRoutes';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 import socket, {socketQuery, SocketLinkedState} from 'utils/socket.io';
 import hocConnect from 'state/hocConnect';
 

@@ -1,4 +1,4 @@
-import socketAPIRoutes from '../socketAPIRoutes';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 import socketQuery from '../socketQuery';
 
 const chdir = async (dirName) => {

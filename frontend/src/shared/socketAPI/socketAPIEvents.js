@@ -1,8 +1,7 @@
-import socketAPIEvents from './bind/socketAPIEvents';
-const {
+import {
   SOCKET_API_EVT_PEER_CONNECT,
   SOCKET_API_EVT_PEER_DISCONNECT
-} = socketAPIEvents;
+} from '../_bind/_origin/_backend/_backend_socketAPIEvents';
 
 export {
   SOCKET_API_EVT_PEER_CONNECT,

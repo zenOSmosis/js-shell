@@ -1,6 +1,5 @@
-const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
 const SOCKET_API_ROUTE_ECHO = 'api/echo';
-const SOCKET_API_ROUTE_ENV = 'api/env';
+const SOCKET_API_ROUTE_ENV = 'api/env'; // TODO: Rename to fetchEnv
 const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
 const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
 const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
@@ -16,11 +15,13 @@ const SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS = 'api/port-audio:fetch-host-a
 // TODO: Rename to SOCKET_API_ROUTE_FETCH_WALLPAPER_PATHS
 const SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS = '/api/wallpapers:fetch-wallpaper-paths';
 
+// P2P
 const SOCKET_API_ROUTE_FETCH_SOCKET_IDS = 'api/fetch-peer-ids';
-const SOCKET_API_ROUTE_SEND_PEER_MESSAGE = 'api/send-peer-message';
+const SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA = 'api/send-peer-message';
+
+const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
 
 module.exports = {
-  SOCKET_API_ROUTE_REQUEST_DISCONNECT,
   SOCKET_API_ROUTE_ECHO,
   SOCKET_API_ROUTE_ENV,
   SOCKET_API_ROUTE_DEBUG_ERROR,
@@ -36,6 +37,9 @@ module.exports = {
   SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS,
   SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS,
 
+  // P2P
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
-  SOCKET_API_ROUTE_SEND_PEER_MESSAGE
+  SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
+
+  SOCKET_API_ROUTE_REQUEST_DISCONNECT
 };

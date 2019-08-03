@@ -1,10 +1,14 @@
+// TODO: Rename to socketAPIQuery
+
 // TODO: Implement ability to cancel running query.  If the availability is not
 // implemented directly in socket.io, proxy it
 
 import socket from './socket.io';
-import socketAPIRoutes from './socketAPIRoutes';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 
 /**
+ * @param {string} eventName
+ * @param {any} requestData?
  * @return {Promise<any>} Response from Socket connection.
  */
 const socketQuery = (eventName, requestData = null) => {

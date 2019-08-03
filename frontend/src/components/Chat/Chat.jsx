@@ -5,14 +5,15 @@ import ChatHeader from './Header';
 import {/* Layout, Content, Footer,*/ Row, Column } from '../Layout';
 import TextComposer from './TextComposer';
 import MessageList from './MessageList';
-import sendChatMessage from 'utils/p2p/sendChatMessage';
+import sendSocketPeerData from 'utils/p2p/socket.io/sendSocketPeerData';
 
 class Chat extends Component {
+  // TODO: Convert messageBody to socketPeerDataPacket
   async _handleMessageSend(messageBody) {
     try {
       const { remoteSocketPeerID } = this.props;
 
-      await sendChatMessage(remoteSocketPeerID, messageBody);
+      await sendSocketPeerData(remoteSocketPeerID, messageBody);
     } catch (exc) {
       throw exc;
     }
@@ -22,8 +23,8 @@ class Chat extends Component {
     const { remoteSocketPeerID } = this.props;
 
     return (
-      <Full style={{backgroundColor: 'rgba(255,255,255,.2)'}}>
-        <Row style={{height: '100%'}}>
+      <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
+        <Row style={{ height: '100%' }}>
           <Column>
             <Row>
               <Column>
@@ -32,7 +33,7 @@ class Chat extends Component {
                 />
               </Column>
             </Row>
-            <Row style={{height: '100%'}}>
+            <Row style={{ height: '100%' }}>
               <Column>
                 <Scrollable>
                   <MessageList />
@@ -42,7 +43,7 @@ class Chat extends Component {
             <Row>
               <Column>
                 <TextComposer
-                  onMessageSend={ messageBody => {this._handleMessageSend(messageBody)} }
+                  onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
                 />
               </Column>
             </Row>

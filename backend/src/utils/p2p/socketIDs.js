@@ -5,6 +5,7 @@ const addSocketID = (socketID) => {
 };
 
 const removeSocketID = (socketID) => {
+  // TODO: Remove in place
   _socketIDs = _socketIDs.filter(testSocketID => {
     return socketID !== testSocketID;
   });

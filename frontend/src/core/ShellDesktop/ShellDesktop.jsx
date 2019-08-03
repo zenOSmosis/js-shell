@@ -50,9 +50,7 @@ export default class ShellDesktop extends ClientGUIProcess {
 
       this.setTitle('Shell Desktop');
 
-      // Display temporary "Launching" notice
       const rootEl = document.getElementById(DOM_ROOT_ID);
-      rootEl.innerHTML = 'Launching Core & Desktop services';
 
       // Mounts the App component to the base ReactComponent
       this.setView(App);
