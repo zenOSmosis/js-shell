@@ -1,5 +1,5 @@
 // @see https://www.npmjs.com/package/systeminformation
-const {fetchSystemInformation: fSI, SYSINFO_MODES} = require('../../../../utils/systemInformation');
+const {fetchSystemInformation: fSI, SYSINFO_MODES} = require('utils/systemInformation');
 
 const fetchSystemInformationModes = async (options = {}, ack) => {
   ack(SYSINFO_MODES);

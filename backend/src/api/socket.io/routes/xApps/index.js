@@ -1,8 +1,8 @@
-const handleSocketRoute = require('../../utils/handleSocketRoute');
-const {fetchFreedesktopApps} = require('../../../../utils/freedesktop.org/appUtils');
+const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+const {fetchFreedesktopApps} = require('utils/freedesktop.org/appUtils');
 
 const requestXApps = async(options = {}, ack) => {
-  return handleSocketRoute(async () => {
+  return handleSocketAPIRoute(async () => {
     try {
       const apps = await fetchFreedesktopApps();
 

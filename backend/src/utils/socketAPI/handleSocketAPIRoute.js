@@ -1,3 +1,5 @@
+// TODO: Rename to handleSocketAPIRoute
+
 const fetchStackTrace = require('stacktrace-js');
 
 /**
@@ -12,7 +14,7 @@ const fetchStackTrace = require('stacktrace-js');
  * client.
  * @return {Promise<void>}
  */
-const handleSocketRoute = async (serviceCall, ack) => {
+const handleSocketAPIRoute = async (serviceCall, ack) => {
   try {
     if (typeof ack !== 'function') {
       ack = () => null;
@@ -56,4 +58,4 @@ const handleSocketRoute = async (serviceCall, ack) => {
   }
 };
 
-module.exports = handleSocketRoute;
+module.exports = handleSocketAPIRoute;
