@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "apps/*": ["./apps/*"],
+      "common/*": ["./common/*"],
+      "components/*": ["./components/*"],
+      "core/*": ["./core/*"],
+      "icons/*": ["./icons/*"],
+      "process/*": ["./process/*"],
+      "state/*": ["./state/*"],
+      "utils/*": ["./utils/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

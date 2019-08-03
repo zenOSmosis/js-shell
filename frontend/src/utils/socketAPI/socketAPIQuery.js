@@ -1,17 +1,17 @@
-// TODO: Rename to socketAPIQuery
-
 // TODO: Implement ability to cancel running query.  If the availability is not
-// implemented directly in socket.io, proxy it
+// implemented directly in socket.io, proxy it.
+// Bluebird promises?
 
-import socket from './socket.io';
-import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import socket from 'utils/socket.io';
 
 /**
+ * A Promise-based wrapper around Socket.io's emit and ack() callback.
+ * 
  * @param {string} eventName
  * @param {any} requestData?
  * @return {Promise<any>} Response from Socket connection.
  */
-const socketQuery = (eventName, requestData = null) => {
+const socketAPIQuery = (eventName, requestData = null) => {
   return new Promise((resolve, reject) => {
     socket.emit(eventName, requestData, (resp) => {
       if (!resp) {
@@ -34,7 +34,4 @@ const socketQuery = (eventName, requestData = null) => {
   });
 };
 
-export default socketQuery;
-export {
-  socketAPIRoutes
-};
+export default socketAPIQuery;

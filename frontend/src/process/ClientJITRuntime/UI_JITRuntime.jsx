@@ -19,7 +19,7 @@ import Center from 'components/Center';
 import Cover from 'components/Cover';
 import IFrame from 'components/IFrame';
 import Window from 'components/Desktop/Window';
-import socketQuery from 'utils/socketQuery';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 
 // Note: Currently commented-out due to inconsistent exports
 // import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
@@ -66,7 +66,7 @@ class UI_JITRuntime extends ClientJITRuntime {
         },
         getLogicalProcessors,
         getPrototypeChain,
-        socketQuery,
+        socketAPIQuery,
         // socketAPIRoutes,
         // socketAPIEvents
       }
