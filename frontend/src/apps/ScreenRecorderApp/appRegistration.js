@@ -10,7 +10,7 @@ export default registerApp({
   mainView: (props) => {
     return (
       <ScreenRecorderWindow {...props} />
-    )
+    );
   },
   cmd: (appProcess) => {
     let videoElem = null;

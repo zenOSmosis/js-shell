@@ -13,7 +13,7 @@ export default registerApp({
   mainView: (props) => {
     return (
       <VoiceInputWindow {...props} />
-    )
+    );
   },
   cmd: (appProcess) => {
     // TODO: The current implementation is not efficient when actively
