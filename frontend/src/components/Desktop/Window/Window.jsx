@@ -22,6 +22,7 @@ import animate from 'utils/animate';
 import config from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
+import { runInThisContext } from 'vm';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
@@ -83,6 +84,11 @@ export default class Window extends Component {
     // Base DOM element for the Window
     this._el = null;
 
+    this._app = this.props.app;
+    const self = this;
+    this._app.on('focus',()=>{
+      self.focus();
+    })
     this._moveableComponent = null;
     this._resizableComponent = null;
     this._paintedComponent = null;
@@ -210,6 +216,7 @@ export default class Window extends Component {
       return false;
     }
 
+    this._app.focus();
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
 
     this._isFocused = true;
