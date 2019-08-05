@@ -16,10 +16,6 @@ The Shell GUI frontend will have full local user privileges (and can be elevated
 
 Pre-initial prototype.
 
-## TODO: Document frontend / backend components
-
-## TODO: Document architecture
-
 ## Building / Running
 
 **Important: Production builds are not currently implemented**
@@ -51,6 +47,8 @@ $ docker-compose up
 ```
 
 ## System Design
+
+TODO: Document out further
 
 ### Backend
 
