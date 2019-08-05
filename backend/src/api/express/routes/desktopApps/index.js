@@ -15,7 +15,7 @@ const sendFile = (req, res) => {
   if (!filePath) {
     res.status(404);
   } else {
-    res.sendFile(path.resolve(__dirname, '../../../../../frontend/src/apps', filePath));
+    res.sendFile(path.resolve(__dirname, 'TEST../../TEST../../../frontend/src/apps', filePath));
   }
 };
 

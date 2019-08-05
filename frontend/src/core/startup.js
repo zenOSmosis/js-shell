@@ -8,8 +8,9 @@
 import Core from './Core';
 import ShellDesktop from './ShellDesktop';
 import P2PMonitor from './p2p/P2PMonitor';
+import config from 'config';
 
-console.warn('TODO: Implement @apps, @... directory aliasing');
+const { DOM_ROOT_ID } = config;
 
 let _hasStarted = false;
 
@@ -22,6 +23,10 @@ const startup = () => {
     console.warn('Client system has already started');
     return;
   } else {
+    // Display temporary "Launching" notice
+    const rootEl = document.getElementById(DOM_ROOT_ID);
+    rootEl.innerHTML = 'Launching Core & Desktop services';
+
     const core = new Core();
 
     // Mount the Shell Desktop

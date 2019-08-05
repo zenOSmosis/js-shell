@@ -1,10 +1,15 @@
 import io from 'socket.io-client';
 import config from './../config';
-import socketQuery from './socketQuery';
 import SocketLinkedState from '../state/SocketLinkedState';
-import socketAPIRoutes from './socketAPIRoutes';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
 
 const socketLinkedState = new SocketLinkedState();
+
+// Important!  These should not be renamed as they are specific to Socket.io
+export const EVT_SOCKET_CONNECT = 'connect';
+export const EVT_SOCKET_DISCONNECT = 'disconnect';
+export const EVT_SOCKET_CONNECT_ERROR = 'connect_error';
+export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 
 // TODO: Wrap w/ LinkedState
 // TODO: Enable multiple connections
@@ -19,7 +24,8 @@ socket.disconnect = () => {
   socket.emit(socketAPIRoutes.SOCKET_API_ROUTE_REQUEST_DISCONNECT);
 };
 
-socket.on('connect', () => {
+// Socket connect
+socket.on(EVT_SOCKET_CONNECT, () => {
   console.debug('Socket.io connected', socket);
 
   const {id: socketId} = socket;
@@ -30,7 +36,8 @@ socket.on('connect', () => {
   });
 });
 
-socket.on('disconnect', () => {
+// Socket disconnect
+socket.on(EVT_SOCKET_DISCONNECT, () => {
   console.debug('Socket.io disconnected', socket);
 
   socketLinkedState.setState({
@@ -39,7 +46,8 @@ socket.on('disconnect', () => {
   });
 });
 
-socket.on('connect_error', (socketConnectError) => {
+// Socket connect error
+socket.on(EVT_SOCKET_CONNECT_ERROR, (socketConnectError) => {
   console.warn('Socket.io connect error', socketConnectError);
 
   socketLinkedState.setState({
@@ -47,7 +55,8 @@ socket.on('connect_error', (socketConnectError) => {
   });
 });
 
-socket.on('reconnect_attempt', (reconnectAttemptNumber) => {
+// Socket reconnect attempt
+socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
   socketLinkedState.setState({
     reconnectAttemptNumber
   });
@@ -55,6 +64,5 @@ socket.on('reconnect_attempt', (reconnectAttemptNumber) => {
 
 export default socket;
 export {
-  socketQuery,
   SocketLinkedState
 };

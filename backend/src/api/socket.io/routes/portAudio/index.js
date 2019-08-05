@@ -1,5 +1,5 @@
 // @see https://github.com/Streampunk/naudiodon#readme
-const portAudio = require('../../../../utils/portAudio');
+const portAudio = require('utils/portAudio');
 
 const fetchDevices = async (options = {}, ack) => {
   try {

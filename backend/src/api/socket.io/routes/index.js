@@ -1,5 +1,9 @@
+/**
+ * API routing for the client Socket.io connection.
+ */
+
 const echo = require('./echo');
-const serverConnections = require('./serverConnections');
+const p2p = require('./p2p');
 const env = require('./env');
 const ping = require('./ping');
 const fileSystem = require('./fileSystem');
@@ -16,11 +20,9 @@ const routes = require('./routes');
 const {
   SOCKET_API_ROUTE_ECHO,
   SOCKET_API_ROUTE_ENV,
-  SOCKET_API_ROUTE_REQUEST_DISCONNECT,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
-  SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS,
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,
@@ -29,7 +31,13 @@ const {
   // SOCKET_API_ROUTE_FETCH_SYS_INFO_MODES,
   // SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES,
   // SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS,
-  SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS
+  SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS,
+
+  // P2P
+  SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
+  SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
+
+  SOCKET_API_ROUTE_REQUEST_DISCONNECT
 } = routes;
 
 /**
@@ -43,22 +51,21 @@ const {
 const initSocket = (socket) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
-  // TODO: Remove this
-  // socket = _convertSocket(socket);
-
   socket.on(SOCKET_API_ROUTE_ECHO, echo);
   socket.on(SOCKET_API_ROUTE_ENV, env);
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
-  socket.on(SOCKET_API_ROUTE_FETCH_SERVER_CONNECTIONS, async (options = null, ack) => {
-    return serverConnections(socket, ack);
-  });
+  
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APPS, xApps);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);
 
   socket.on(SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS, wallpapers.fetchWallpaperPaths);
+
+  // P2P
+  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2p.fetchSocketIDs);
+  socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, p2p.sendSocketPeerData);
 
   // Handle client disconnect request
   socket.on(SOCKET_API_ROUTE_REQUEST_DISCONNECT, () => {

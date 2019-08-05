@@ -1,7 +1,7 @@
 // Freedesktop text files
 // @see https://specifications.freedesktop.org/menu-spec/latest/
 
-const config = require('../../config');
+const config = require('config');
 const fs = require('fs');
 const fetchRecursiveFilePaths = require('../fileSystem/fetchRecursiveFilePaths');
 const {fetchIconPath} = require('./iconUtils');

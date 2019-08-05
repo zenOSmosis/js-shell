@@ -1,5 +1,5 @@
-import socketAPIRoutes from '../socketAPIRoutes';
-import socketQuery from '../socketQuery';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import socketAPIQuery from '../socketAPI/socketAPIQuery';
 
 const ls = async (dirName) => {
   try {
@@ -8,7 +8,7 @@ const ls = async (dirName) => {
       dirName
     };
     
-    return await socketQuery(socketAPIRoutes.SOCKET_API_ROUTE_FILESYSTEM, requestData);
+    return await socketAPIQuery(socketAPIRoutes.SOCKET_API_ROUTE_FILESYSTEM, requestData);
   } catch (exc) {
     throw exc;
   }

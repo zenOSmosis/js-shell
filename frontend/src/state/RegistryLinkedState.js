@@ -1,4 +1,5 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
+import removeArrayValue from 'utils/array/removeArrayValue';
 
 export const DEFAULT_REGISTRY_LINKED_SCOPE_NAME = 'registrations';
 
@@ -71,12 +72,9 @@ class RegistryLinkedState extends LinkedState {
    * registry. 
    */
   removeRegistration(registration) {
-    let registrations = this.getRegistrations();
+    const registrations = this.getRegistrations();
     
-    // Filter out given registration from the current registrations
-    registrations = registrations.filter(testRegistration => {
-      return !Object.is(registration, testRegistration);
-    });
+    removeArrayValue(registrations, registration);
 
     // Write the filtered registrations
     this.setRegistrations(registrations);

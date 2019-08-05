@@ -7,6 +7,7 @@ const requestIp = require('request-ip');
 const expressAPIRoutes = require('../api/express/routes');
 const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
+const { addSocketID, removeSocketID } = require('../utils/p2p/socketIDs');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
 const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
 // Apply custom reponse headers
@@ -43,39 +44,22 @@ app.all('*', (req, res, next) => {
 
   console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
-  // TODO: Use socket.io-adapter instead; this is rudimentary and not scalable
-  let socketConnections = [];
-
   io.on('connection', (socket) => {
     console.log(`Socket.io Client connected with id: ${socket.id}`);
 
     // Initialize the Socket Routes with the socket
     socketAPIRoutes.initSocket(socket);
 
-    // Add socket to socketConnections
-    socketConnections.push(socket);
+    addSocketID(socket.id);
 
     // Emit to everyone we're connected
     // TODO: Limit this to only namespaces the socket is connected to
     // @see https://socket.io/docs/emit-cheatsheet/
     socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
 
-    socket.fetchServerConnections = () => {
-      const socketId = socket.id;
-
-      // return socketConnections;
-      return socketConnections.map(connection => {
-        return connection.id;
-      }).filter(connectionId => {
-        return socketId !== connectionId;
-      });
-    };
-
     socket.on('disconnect', () => {
-      // Remove socket from socketConnections
-      socketConnections = socketConnections.filter((socketConnection) => {
-        return (!Object.is(socket, socketConnection));
-      });
+      // Remove socket from peerIDs
+      removeSocketID(socket.id);
 
       // Emit to everyone we're disconnected
       // TODO: Limit this to only namespaces the socket was connected to

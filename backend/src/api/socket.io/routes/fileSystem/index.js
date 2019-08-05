@@ -1,6 +1,6 @@
-const handleSocketRoute = require('../../utils/handleSocketRoute');
+const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
 // const fs = require('fs');
-const {ls, chdir, getPathSeparator} = require('../../../../utils/fileSystem');
+const {ls, chdir, getPathSeparator} = require('utils/fileSystem');
 
 // TODO: Move to external exports file
 const FS_METHOD_GET_PATH_SEPARATOR = 'getPathSeparator';
@@ -9,7 +9,7 @@ const FS_METHOD_CHDIR = 'chdir';
 
 const fileSystem = async(query = {}, ack) => {
   // TODO: Extract logic to backend/utils directory so it can be tested on its own
-  return await handleSocketRoute(async () => {
+  return await handleSocketAPIRoute(async () => {
     try {
       const {methodName, dirName} = query || {};
     

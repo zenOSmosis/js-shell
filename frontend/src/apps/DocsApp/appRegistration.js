@@ -8,7 +8,7 @@ export default registerApp({
   mainView: (props) => {
     return (
       <DocsWindow {...props} />
-    )
+    );
   },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}documentation/documentation.svg`
 });

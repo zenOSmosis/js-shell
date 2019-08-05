@@ -17,7 +17,7 @@ import { Switch, /*Icon,*/ Input, Popover } from 'antd';
 import { Knob } from 'react-rotary-knob'; // @see https://www.npmjs.com/package/react-rotary-knob
 import animate, { ANIMATIONS } from 'utils/animate';
 import Editor from './subComponents/Editor';
-import SplitEditor from './subComponents/SplitEditor';
+import SplitEditor from './subComponents/SplitEditor/SplitEditor';
 
 const { Search } = Input;
 

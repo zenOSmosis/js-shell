@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Button from 'components/Button';
-import LabeledSwitch, {Switch} from 'components/LabeledSwitch';
+import OLD_LabeledSwitch, {Switch} from 'components/OLD_LabeledSwitch';
 // import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 // import { Menu, MenuItem } from 'components/Menu';
 import { Select, Option } from 'components/Select';
@@ -9,8 +9,8 @@ import LoadingSpinner from 'components/spinners/LoadingSpinner';
 import Cover from 'components/Cover';
 import Center from 'components/Center';
 import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from 'components/JSONEditor';
-import socketAPIRoutes from 'utils/socketAPIRoutes';
-import socket, {socketQuery, SocketLinkedState} from 'utils/socket.io';
+import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import socket, {socketAPIQuery, SocketLinkedState} from 'utils/socket.io';
 import hocConnect from 'state/hocConnect';
 
 // import { Input } from 'antd';
@@ -83,7 +83,7 @@ class HostConnection extends Component {
     });
   }
 
-  socketQuery() {
+  socketAPIQuery() {
     const { selectedSocketIOEventName: eventName } = this.state;
     const eventData = this._requestData;
 
@@ -99,7 +99,7 @@ class HostConnection extends Component {
       };
 
       try {
-        const socketResponse = await socketQuery(eventName, eventData);
+        const socketResponse = await socketAPIQuery(eventName, eventData);
 
         console.debug('socket response', socketResponse);
 
@@ -120,7 +120,7 @@ class HostConnection extends Component {
           <div style={{textAlign: 'center', display: 'inline-block'}}>
             <Row>
               <Column>
-                <LabeledSwitch offLabel="REST" onLabel="Socket.io" checked  />
+                <OLD_LabeledSwitch offLabel="REST" onLabel="Socket.io" checked  />
               </Column>
             </Row>
             <Row>
@@ -208,7 +208,7 @@ class HostConnection extends Component {
                           // <TextArea onChange={(value) => this.updateSocketIOEventData(value)} placeholder="Message data" defaultValue="{}" />
                         }
 
-                        <LabeledSwitch onChange={(evt) => this.toggleInputMode()} offLabel={JSONEDITOR_MODE_CODE} onLabel={JSONEDITOR_MODE_TREE} />
+                        <OLD_LabeledSwitch onChange={(evt) => this.toggleInputMode()} offLabel={JSONEDITOR_MODE_CODE} onLabel={JSONEDITOR_MODE_TREE} />
                       </div>
 
                       {
@@ -257,7 +257,7 @@ class HostConnection extends Component {
             <Footer style={{ textAlign: 'left' }}>
               <Row>
                 <Column style={{ textAlign: 'left' }}>
-                  <Button onClick={(evt) => this.socketQuery()}>Send Request</Button>
+                  <Button onClick={(evt) => this.socketAPIQuery()}>Send Request</Button>
                 </Column>
                 <Column>
                 </Column>

@@ -14,7 +14,7 @@ let config = {
 
 // TODO: Enable this to work w/o window
 if (typeof window !== 'undefined') {
-  const parsedWinURL = parseURL(window.href);
+  const parsedWinURL = parseURL(window.location.href);
 
   config = Object.assign(config, {
     HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
