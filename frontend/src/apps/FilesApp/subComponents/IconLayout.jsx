@@ -16,7 +16,7 @@ export default class IconLayout extends Component {
             return (
               <Icon
                 onClick={ (evt) => filesWindow.selectNode(childNode) }
-                onDoubleClick={ (evt) => filesWindow.chdir(childNode.pathName) }
+                onDoubleClick={ (evt) => {filesWindow.open(childNode.pathName)} }
                 // onContextMenu={ (evt) => console.warn('TODO: Build new context menu provider') }
                 key={idx}
                 width={120}

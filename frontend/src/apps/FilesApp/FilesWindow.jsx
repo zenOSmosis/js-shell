@@ -14,6 +14,8 @@ import { /*Input,*/ Icon as AntdIcon } from 'antd';
 import { chdir } from 'utils/fileSystem';
 import './style.css';
 import { relativeTimeRounding } from 'moment';
+import mime from 'mime-types';
+
 
 // import { Tree } from 'antd';
 // const TreeNode = Tree.TreeNode;
@@ -91,6 +93,14 @@ export default class FilesWindow extends Component {
     });
   }
 
+  open(node) {
+    if(node.isDir) {
+      this.chdir(node);
+    } else {
+      console.log('open file:', node.mime)
+    }
+  }
+
   async chdir(dirName) {
     try {
       console.debug('Changing directory to:', dirName);
@@ -109,6 +119,7 @@ export default class FilesWindow extends Component {
         }
 
         if (childNode.isFile) {
+          childNode.mime = mime.lookup(childNode.pathName);
           totalDirectoryFiles++;
         }
       });
