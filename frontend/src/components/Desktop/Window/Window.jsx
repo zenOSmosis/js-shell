@@ -479,6 +479,10 @@ export default class Window extends Component {
     this.doCoverIfShould();
   }
 
+  _onResizeMove = (pos, size) => {
+    this._app.setPositionSize(pos, size);
+  }
+
   render() {
     let {
       app,
@@ -525,6 +529,7 @@ export default class Window extends Component {
 
         <Moveable
           ref={c => this._moveableComponent = c}
+          onMove={this._onResizeMove}
         // initialX={...}
         // initialY={...}
         >
@@ -540,6 +545,7 @@ export default class Window extends Component {
               minHeight={minHeight}
               bodyClassName="zd-window-resizable"
               onBodyMount={c => this._resizableBody = c}
+              onResizeMove={this._onResizeMove}
             // maxWidth={}
             // maxHeight={}
             >

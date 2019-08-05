@@ -40,6 +40,8 @@ class AppRuntime extends ClientGUIProcess {
     this._appCmd = null;
     this._isFocused = false;
     this._menubar = new Menubar(this);
+    this._position = {x: 0, y:0};
+    this._size = {width: 0, height: 0};
 
     (() => {
       // TODO: Create AppRuntime.typedef.js
@@ -122,6 +124,14 @@ class AppRuntime extends ClientGUIProcess {
     } catch (exc) {
       throw exc;
     }
+  }
+
+
+  //TODO: save position for next opening
+  setPositionSize(position, size) {
+console.log('TODO: save position', position, size)
+    if (position) this._position = position;
+    if (size) this._size = size;
   }
 
   /**

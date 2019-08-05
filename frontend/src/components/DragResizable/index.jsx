@@ -20,6 +20,10 @@ const RESIZE_DIRECTION_WEST = 'w';
 const RESIZE_DIRECTION_NORTHWEST = 'nw';
 
 export default class DragResizable extends Component {
+  position = {
+    x: 1, y: 1
+  }
+  size = {heigth: 1,width: 1}
   constructor(...args) {
     super(...args);
 
@@ -56,6 +60,15 @@ export default class DragResizable extends Component {
       }
 
       this._moveableComponent = moveableComponent;
+
+      const { x: initialPosX, y: initialPosY } = this._moveableComponent.getPosition();
+      const initialWidth = this.$main.outerWidth();
+      const initialHeight = this.$main.outerHeight();
+
+      this._position ={
+        x: initialPosX, y: initialPosY,
+      }
+      this._size = {heigth: initialHeight,width: initialWidth}
     }
 
     this._setMinWidthHeight();
@@ -187,6 +200,10 @@ export default class DragResizable extends Component {
   }
 
   _moveTo(posX, posY) {
+    console.log('------move to', posX)
+    this._position.x = posX;
+    this._position.y = posY;
+    this._handleResizeMove();
     this._moveableComponent.moveTo(posX, posY, false);
   }
 
@@ -221,6 +238,8 @@ export default class DragResizable extends Component {
       $main.css({
         height: newHeight
       });
+      this._size.heigth=newHeight;
+      this._handleResizeMove();
 
       this._moveTo(posX, this._initialPosY + deltaY);
     }
@@ -229,6 +248,8 @@ export default class DragResizable extends Component {
   _handleResizeEast($main, deltaX) {
     const { minWidth } = this.props;
     const newWidth = this._initialWidth + deltaX;
+    this._size.width = newWidth;
+    this._handleResizeMove();
 
     if (newWidth >= minWidth) {
       $main.css({
@@ -240,6 +261,8 @@ export default class DragResizable extends Component {
   _handleResizeSouth($main, deltaY) {
     const { minHeight } = this.props;
     const newHeight = this._initialHeight + deltaY;
+    this._size.heigth=newHeight;
+    this._handleResizeMove();
 
     if (newHeight >= minHeight) {
       $main.css({
@@ -251,6 +274,8 @@ export default class DragResizable extends Component {
   _handleResizeWest($main, deltaX) {
     const { minWidth } = this.props;
     const newWidth = this._initialWidth - deltaX;
+    this._size.width = newWidth;
+    this._handleResizeMove();
 
     if (newWidth >= minWidth) {
       $main.css({
@@ -265,9 +290,17 @@ export default class DragResizable extends Component {
     }
   }
 
+  _handleResizeMove() {
+    const { onResizeMove } = this.props;
+    if (typeof onResizeMove === 'function') {
+      onResizeMove(this._position, this._size);
+    }
+  }
+
   _handleTouchEnd(evt) {
     const { onResizeEnd } = this.props;
     if (typeof onResizeEnd === 'function') {
+      console.log('onResizeEnd', evt)
       onResizeEnd(evt);
     }
   }
@@ -286,6 +319,7 @@ export default class DragResizable extends Component {
       onResizeStart,
       onResize,
       onResizeEnd,
+      onResizeMove,
       ...propsRest
     } = this.props;
 

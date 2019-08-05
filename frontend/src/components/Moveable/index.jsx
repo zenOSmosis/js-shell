@@ -57,6 +57,10 @@ export default class Moveable extends Component {
     this._$root.css({
       transform: `translate3d(${posX}px, ${posY}px, 0)`
     });
+    const { onMove } = this.props;
+    if (typeof onMove === 'function') {
+      onMove({x: posX, y: posY});
+    }
   }
 
   getPosition() {
