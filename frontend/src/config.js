@@ -27,7 +27,7 @@ config = Object.assign(config, {
   HOST_ICON_URI_PREFIX: config.HOST_REST_URI + `/icons/`,
 
   // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URI: '/dev/null', // TODO: Debug issue where Chrome displays border around page if this is set to null
+  DESKTOP_DEFAULT_BACKGROUND_URI: config.HOST_REST_URI +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
   
   // If the Desktop should intercept the context menu by default
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: true,
