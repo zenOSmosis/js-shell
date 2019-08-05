@@ -24,7 +24,7 @@ if (typeof window !== 'undefined') {
 config = Object.assign(config, {
   SOCKET_IO_URI: config.HOST_REST_URI,
 
-  HOST_ICON_URI_PREFIX: `/icons/`,
+  HOST_ICON_URI_PREFIX: config.HOST_REST_URI + `/icons/`,
 
   // TODO: Replace hardcded path here
   DESKTOP_DEFAULT_BACKGROUND_URI: '/dev/null', // TODO: Debug issue where Chrome displays border around page if this is set to null
