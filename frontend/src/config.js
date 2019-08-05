@@ -15,9 +15,9 @@ let config = {
 // TODO: Enable this to work w/o window
 if (typeof window !== 'undefined') {
   const parsedWinURL = parseURL(window.href);
-
+  //TODO: fix fixed port here
   config = Object.assign(config, {
-    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
+    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}:3001`,
   }); 
 }
 
