@@ -93,11 +93,11 @@ export default class FilesWindow extends Component {
     });
   }
 
-  open(node) {
+  async open(node) {
     if(node.isDir) {
-      this.chdir(node);
+      this.chdir(node.pathName);
     } else {
-      console.log('open file:', node.mime)
+      console.log('open file:', node.mime, node)
     }
   }
 
@@ -307,7 +307,7 @@ export default class FilesWindow extends Component {
                       <div>
                         Type:&nbsp;
                           {node.isDir ? 'Directory' : ''}
-                        {node.isFile ? 'File' : ''}
+                        {node.isFile ? 'File ' + node.mime : ''}
                       </div>
                     );
                   })(this.state.selectedNodes[0])

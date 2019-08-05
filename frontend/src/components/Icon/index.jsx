@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from '../Image';
 import textEllipsis from 'text-ellipsis';
+import { Tooltip } from 'antd';
 import './style.css';
 
 const Icon = (props = {}) => {
@@ -46,12 +47,15 @@ const Icon = (props = {}) => {
       {
         // // TODO: Consider encapuslating in Cover
       }
-      <div className="zd-icon-name">
-        {
-          title &&
-          textEllipsis(title, maxTitleLength)
-        }
-      </div>
+      <Tooltip title={title} placement="bottom">
+        <div className="zd-icon-name">
+          {
+            title &&
+            textEllipsis(title, maxTitleLength)
+          }
+        </div>
+      </Tooltip>
+      
     </button>
   )
 };
