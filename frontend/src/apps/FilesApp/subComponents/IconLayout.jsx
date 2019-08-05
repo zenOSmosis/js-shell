@@ -21,7 +21,10 @@ export default class IconLayout extends Component {
                 key={idx}
                 width={120}
                 height={120}
-                style={{margin: 10}}
+                style={{
+                  margin: 10,
+                  backgroundColor: this.props.selectedNodes.indexOf(childNode) > -1 ? 'rgba(78, 131, 177, 0.41)' : null
+                }}
                 title={childNode.path.name}
               >
                 {

@@ -250,6 +250,7 @@ export default class FilesWindow extends Component {
                     case LAYOUT_TYPE_ICON:
                       return (
                         <IconLayout
+                          selectedNodes={this.state.selectedNodes}
                           filesWindow={this}
                           fsNodes={childNodes}
                         />
