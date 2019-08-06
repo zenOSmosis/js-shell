@@ -200,10 +200,8 @@ export default class DragResizable extends Component {
   }
 
   _moveTo(posX, posY) {
-    console.log('------move to', posX)
     this._position.x = posX;
     this._position.y = posY;
-    this._handleResizeMove();
     this._moveableComponent.moveTo(posX, posY, false);
   }
 
@@ -239,7 +237,6 @@ export default class DragResizable extends Component {
         height: newHeight
       });
       this._size.height=newHeight;
-      this._handleResizeMove();
 
       this._moveTo(posX, this._initialPosY + deltaY);
     }
@@ -249,7 +246,6 @@ export default class DragResizable extends Component {
     const { minWidth } = this.props;
     const newWidth = this._initialWidth + deltaX;
     this._size.width = newWidth;
-    this._handleResizeMove();
 
     if (newWidth >= minWidth) {
       $main.css({
@@ -262,7 +258,6 @@ export default class DragResizable extends Component {
     const { minHeight } = this.props;
     const newHeight = this._initialHeight + deltaY;
     this._size.height=newHeight;
-    this._handleResizeMove();
 
     if (newHeight >= minHeight) {
       $main.css({
@@ -275,7 +270,7 @@ export default class DragResizable extends Component {
     const { minWidth } = this.props;
     const newWidth = this._initialWidth - deltaX;
     this._size.width = newWidth;
-    this._handleResizeMove();
+    
 
     if (newWidth >= minWidth) {
       $main.css({
@@ -298,6 +293,7 @@ export default class DragResizable extends Component {
   }
 
   _handleTouchEnd(evt) {
+    this._handleResizeMove();
     const { onResizeEnd } = this.props;
     if (typeof onResizeEnd === 'function') {
       onResizeEnd(evt);

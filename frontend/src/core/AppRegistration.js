@@ -5,6 +5,7 @@ import { EVT_EXIT, EVT_WINDOW_RESIZE} from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
+let _createdWindowsCount = 0;
 
 /**
  * Creates a registration which automatically populates app menus and the Dock
@@ -41,7 +42,7 @@ class AppRegistration extends EventEmitter {
     this._mainView = mainView;
     this._appCmd = appCmd;
 
-    this._position = {x:-1, y:0};
+    this._position = {x: 0, y: 0};
     this._size = {width: 0, height: 0};
 
     this._isUnregistered = false;
@@ -58,7 +59,11 @@ class AppRegistration extends EventEmitter {
         return;
       }
 
-      console.log('launching app', this._position, this._size)
+      if(this._position.x === 0 && this._position.y === 0 ){
+        this._position = {x: _createdWindowsCount*20, y: _createdWindowsCount*20}
+      }
+      _createdWindowsCount++;
+      
       this._appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
