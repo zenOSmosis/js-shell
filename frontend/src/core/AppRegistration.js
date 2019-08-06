@@ -33,6 +33,7 @@ class AppRegistration extends EventEmitter {
         mainView,
         cmd: appCmd,
         supportedMimes,
+        menuItems,
     } = runProps;
 
     this._isLaunched = false;
@@ -42,6 +43,8 @@ class AppRegistration extends EventEmitter {
     this._iconSrc = iconSrc;
     this._mainView = mainView;
     this._appCmd = appCmd;
+
+    this._menuItems = menuItems;
 
     this._position = {x: 0, y: 0};
     this._size = {width: 0, height: 0};
@@ -73,6 +76,7 @@ class AppRegistration extends EventEmitter {
         appCmd: this._appCmd,
         position: this._position,
         size: this._size,
+        menuItems: this._menuItems,
         cmdArguments
       });
   
