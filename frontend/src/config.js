@@ -25,6 +25,7 @@ config = Object.assign(config, {
   SOCKET_IO_URI: config.HOST_REST_URI,
 
   HOST_ICON_URI_PREFIX: config.HOST_REST_URI + `/icons/`,
+  HOST_FILES_URI_PREFIX: config.HOST_REST_URI + `/files/?filePath=`,
 
   // TODO: Replace hardcded path here
   DESKTOP_DEFAULT_BACKGROUND_URI: config.HOST_REST_URI +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null

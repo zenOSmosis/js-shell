@@ -128,6 +128,7 @@ class ClientProcess extends EventEmitter {
     this._tickTimeout = null;
 
     this._state = {};
+    this._cmdArguments = null;
 
     if (typeof window !== 'undefined') {
       // TODO: Can a service worker use this, somehow?
@@ -415,6 +416,14 @@ class ClientProcess extends EventEmitter {
 
   getTitle() {
     return this._title || this.getClassName();
+  }
+
+  setCmdArguments(cmdArguments) {
+    this._cmdArguments = cmdArguments;
+  }
+
+  getCmdArguments() {
+    return this._cmdArguments;
   }
 
   setInitPosition(position) {
