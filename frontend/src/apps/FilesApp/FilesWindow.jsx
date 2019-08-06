@@ -14,7 +14,7 @@ import { /*Input,*/ Icon as AntdIcon } from 'antd';
 // import config from 'config';
 import { chdir } from 'utils/fileSystem';
 import './style.css';
-import { relativeTimeRounding } from 'moment';
+// import { relativeTimeRounding } from 'moment';
 import mime from 'mime-types';
 import config from '../../config';
 
