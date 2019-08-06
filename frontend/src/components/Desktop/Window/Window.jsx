@@ -22,7 +22,7 @@ import animate from 'utils/animate';
 import config from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-import { runInThisContext } from 'vm';
+// import { runInThisContext } from 'vm';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
