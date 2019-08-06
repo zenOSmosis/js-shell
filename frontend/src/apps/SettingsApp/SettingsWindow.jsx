@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import app from './app';
+import app from './appRegistration';
 import Button from 'components/Button';
 import Center from 'components/Center';
 import Full from 'components/Full';
@@ -102,7 +102,7 @@ export default class SettingsWindow extends Component {
   switchToSubViewNG(subPane = {}) {
     let {component, title: subPaneTitle} = subPane;
     
-    const title = (subPaneTitle ? subPaneTitle : app.getDefaultTitle());
+    //const title = (subPaneTitle ? subPaneTitle : app.getDefaultTitle());
 
     if (!component) {
       component = <MainPane settingsWindow={this} subViews={this.subViews} />;
@@ -112,7 +112,7 @@ export default class SettingsWindow extends Component {
       subPane: component,
       subToolbar: null,
     }, () => {
-      this.setTitle(title);
+      //this.setTitle(title);
     });
   }
 
@@ -128,7 +128,6 @@ export default class SettingsWindow extends Component {
       <Window
         ref={c => this._desktopWindow = c}
         {...propsRest}
-        app={app}
         toolbarRight={
           <Button onClick={ (evt) => this.switchToSubViewNG() } size="small">#</Button>
         }
