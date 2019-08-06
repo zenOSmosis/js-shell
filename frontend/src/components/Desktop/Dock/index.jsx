@@ -18,6 +18,7 @@ class Dock extends Component {
     if (!isLaunched) {
       appRegistration.launchApp();
     } else {
+      appRegistration.focus();
       // TODO: If app is already launched, bring it to the front
       console.warn('TODO: Implement bring to front');
     }

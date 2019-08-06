@@ -12,7 +12,7 @@ let config = {
   DOM_ROOT_ID: 'root'
 };
 
-// TODO: Enable this to work w/o window
+// TODO: Enable this to work w/o global window object
 if (typeof window !== 'undefined') {
   const parsedWinURL = parseURL(window.location.href);
 
@@ -24,10 +24,10 @@ if (typeof window !== 'undefined') {
 config = Object.assign(config, {
   SOCKET_IO_URI: config.HOST_REST_URI,
 
-  HOST_ICON_URI_PREFIX: `/icons/`,
+  HOST_ICON_URI_PREFIX: config.HOST_REST_URI + `/icons/`,
 
   // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URI: '/dev/null', // TODO: Debug issue where Chrome displays border around page if this is set to null
+  DESKTOP_DEFAULT_BACKGROUND_URI: config.HOST_REST_URI +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
   
   // If the Desktop should intercept the context menu by default
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: true,

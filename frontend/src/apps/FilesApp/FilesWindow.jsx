@@ -14,6 +14,9 @@ import { /*Input,*/ Icon as AntdIcon } from 'antd';
 // import config from 'config';
 import { chdir } from 'utils/fileSystem';
 import './style.css';
+import { relativeTimeRounding } from 'moment';
+import mime from 'mime-types';
+
 
 // import { Tree } from 'antd';
 // const TreeNode = Tree.TreeNode;
@@ -91,6 +94,14 @@ export default class FilesWindow extends Component {
     });
   }
 
+  async open(node) {
+    if(node.isDir) {
+      this.chdir(node.pathName);
+    } else {
+      console.log('open file:', node.mime, node)
+    }
+  }
+
   async chdir(dirName) {
     try {
       console.debug('Changing directory to:', dirName);
@@ -109,6 +120,7 @@ export default class FilesWindow extends Component {
         }
 
         if (childNode.isFile) {
+          childNode.mime = mime.lookup(childNode.pathName);
           totalDirectoryFiles++;
         }
       });
@@ -255,6 +267,7 @@ export default class FilesWindow extends Component {
                     case LAYOUT_TYPE_ICON:
                       return (
                         <IconLayout
+                          selectedNodes={this.state.selectedNodes}
                           filesWindow={this}
                           fsNodes={childNodes}
                         />
@@ -300,7 +313,7 @@ export default class FilesWindow extends Component {
                       <div>
                         Type:&nbsp;
                           {node.isDir ? 'Directory' : ''}
-                        {node.isFile ? 'File' : ''}
+                        {node.isFile ? 'File ' + node.mime : ''}
                       </div>
                     );
                   })(this.state.selectedNodes[0])

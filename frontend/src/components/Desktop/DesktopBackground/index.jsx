@@ -7,7 +7,7 @@ export default hocConnect(Background, DesktopLinkedState, (updatedState) => {
   const {backgroundURI} = updatedState;
 
   if (backgroundURI) {
-    const src = getRequestURI(backgroundURI);
+    const src = backgroundURI.substr(0,4)==='http' ? backgroundURI : getRequestURI(backgroundURI);
 
     return {
       src

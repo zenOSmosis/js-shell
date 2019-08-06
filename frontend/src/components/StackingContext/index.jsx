@@ -12,6 +12,7 @@ const StackingContext = (props = {}) => {
     <div
       {...propsRest}
       className={`zd-stacking-context ${className ? className : ''}`}
+      id='desktopArea'
     >
       {
         children

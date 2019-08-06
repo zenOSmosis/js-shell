@@ -14,9 +14,9 @@ const PublicGitSignature = () => {
     <div>
       Build info:<br />
       {
-        publicGitSignature.split('\n').map((line, idx) => {
-          return <div key={idx}>{line}</div>
-        })
+        publicGitSignature.split('\n').map((line, idx) => 
+          (idx===2 ? new Date(line).toLocaleString() : line + ' ')
+        )
       }
     </div>
   );
