@@ -13,5 +13,5 @@ export default registerApp({
   minWidth:200,
   minHeight:200,
   sizeable: false,
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}cpu/cpu.svg`
+  iconSrc: `${config.HOST_ICON_URI_PREFIX}calculator/calculator.svg`
 });

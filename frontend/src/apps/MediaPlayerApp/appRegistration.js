@@ -11,6 +11,6 @@ export default registerApp({
     )
   },
   supportedMimes: ['audio/mpeg', 'video/mp4'],
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}video/video.svg`,
+  iconSrc: `${config.HOST_ICON_URI_PREFIX}media/media.svg`,
   menuItems: [{title: 'play', onClick:()=>{alert('play clicked')}}]
 });

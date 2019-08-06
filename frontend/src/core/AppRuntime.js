@@ -37,7 +37,6 @@ class AppRuntime extends ClientGUIProcess {
     this._mainView = null;
     this._appCmd = null;
     this._isFocused = false;
-    this._isMinimized = false;
     //TODO: do get set?
     this.menuItems = runProps.menuItems;
 

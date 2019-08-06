@@ -1,14 +1,14 @@
-.component-button {
+.calc-app-button {
   display: inline-flex;
   width: 25%;
   flex: 1 0 auto;
 }
 
-.component-button.wide {
+.calc-app-button.wide {
   width: 50%;
 }
 
-.component-button button {
+.calc-app-button button {
   background-color: #e0e0e0;
   border: 0;
   font-size: 1.5rem;
@@ -17,11 +17,11 @@
   padding: 0;
 }
 
-.component-button:last-child button {
+.calc-app-button:last-child button {
   margin-right: 0;
 }
 
-.component-button.orange button {
+.calc-app-button.orange button {
   background-color: #f5923e;
   color: white;
 }

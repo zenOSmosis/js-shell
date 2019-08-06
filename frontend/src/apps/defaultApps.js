@@ -20,6 +20,10 @@ import './SourceCodeApp';
 import './TextEditorApp';
 import './TerminalApp';
 // import './DocsApp';
+import './CalculatorApp';
+// import './SettingsApp';
+import './SourceCodeApp';
+import './TextEditorApp';
 
 // Non-ported apps
 
