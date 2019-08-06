@@ -13,7 +13,7 @@ import './UserProfileApp';
 import './P2PConnectionsApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
-import './SourceCodeApp';
+import './MediaPlayerApp';
 import './SystemDetailApp';
 import './DocsApp';
 

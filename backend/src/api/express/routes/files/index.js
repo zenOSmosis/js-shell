@@ -11,6 +11,8 @@ const sendFile = (req, res) => {
   
   // TODO: Determine if file exists before trying to send
 
+  console.log('asking for', filePath);
+
   if (!filePath) {
     res.status(404);
   } else {

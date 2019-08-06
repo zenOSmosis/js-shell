@@ -29,6 +29,7 @@
     "react-file-icon": "^0.2.0",
     "react-hot-loader": "^4.8.6",
     "react-monaco-editor": "^0.25.1",
+    "react-player": "^1.11.1",
     "react-rotary-knob": "^1.1.5",
     "react-router-dom": "^5.0.0",
     "react-scripts": "^3.0.1",

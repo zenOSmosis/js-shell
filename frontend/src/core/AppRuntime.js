@@ -43,13 +43,15 @@ class AppRuntime extends ClientGUIProcess {
     this._menubar = new Menubar(this);
     this._position = {x: 0, y:0};
     this._size = {width: 0, height: 0};
+    
 
 
     (() => {
       // TODO: Create AppRuntime.typedef.js
-      const { title, iconSrc, mainView, appCmd, cmd, position, size } = runProps;
+      const { title, iconSrc, mainView, appCmd, cmd, position, size, cmdArguments } = runProps;
 
 
+      this.setCmdArguments(cmdArguments);
 
       this._position = position;
       this._size = size;

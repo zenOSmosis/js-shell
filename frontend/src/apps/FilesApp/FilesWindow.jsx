@@ -16,6 +16,13 @@ import { chdir } from 'utils/fileSystem';
 import './style.css';
 import { relativeTimeRounding } from 'moment';
 import mime from 'mime-types';
+import config from '../../config';
+
+
+import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
+const commonAppRegistryLinkedState = new AppRegistryLinkedState();
+
+
 
 
 // import { Tree } from 'antd';
@@ -98,9 +105,24 @@ export default class FilesWindow extends Component {
     if(node.isDir) {
       this.chdir(node.pathName);
     } else {
+      const apps = this.getAppRegistrationsByMime(node.mime);
+      if(apps.length) {
+        apps[0].launchApp(config.HOST_FILES_URI_PREFIX + node.pathName);
+      }
       console.log('open file:', node.mime, node)
     }
   }
+
+  getAppRegistrationsByMime(mime) {
+    if (!module.hot) {
+      return;
+    }
+  
+    const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
+  
+    return appRegistrations.filter(app=>(app.getSupportedMimes().indexOf(mime)>-1));
+    
+  };
 
   async chdir(dirName) {
     try {
