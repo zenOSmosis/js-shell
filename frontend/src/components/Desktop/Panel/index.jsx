@@ -5,7 +5,22 @@ import SocketLinkedState from 'state/SocketLinkedState';
 import hocConnect from 'state/hocConnect';
 import './style.css';
 
+const days=['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+
+
 class Panel extends Component {
+  state={clock:''}
+
+
+  componentDidMount(){
+    const self=this;
+    setInterval(()=>{
+      const now = new Date();
+      self.setState({ clock: days[now.getDay()] + ' ' + now.getHours() + ':' + now.getMinutes() })
+      }, 1000);
+  }
+
   render() {
     const {activeWindow, className, isConnected, ...propsRest} = this.props;
 
@@ -27,6 +42,11 @@ class Panel extends Component {
             }
           </button>
           
+          {this.state.clock}
+          
+          <button>
+            <Icon type="search" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
+          </button>
           <button>
             <Icon type="menu-unfold" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
           </button>

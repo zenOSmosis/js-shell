@@ -33,7 +33,6 @@ export default class Moveable extends Component {
   moveTo(posX, posY, isUsingHA = true) {
     this._posX = parseInt(posX) || 0;
     this._posY = parseInt(posY) || 0;
-
     if (isUsingHA) {
       // Run the move handler using hardware acceleration
       window.requestAnimationFrame(() => {
@@ -57,6 +56,10 @@ export default class Moveable extends Component {
     this._$root.css({
       transform: `translate3d(${posX}px, ${posY}px, 0)`
     });
+    const { onMove } = this.props;
+    if (typeof onMove === 'function') {
+      onMove({x: posX, y: posY});
+    }
   }
 
   getPosition() {
