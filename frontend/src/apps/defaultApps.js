@@ -15,12 +15,11 @@ import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
-import './DocsApp';
+// import './DocsApp';
 
 // Non-ported apps
 
 // import './SettingsApp';
 // import './WindowManagerApp';
-// import './DocsApp';
 // import './AboutApp';
 // import './ProcessTesterApp';
