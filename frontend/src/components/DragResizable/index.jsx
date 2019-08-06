@@ -325,106 +325,135 @@ export default class DragResizable extends Component {
       ...propsRest
     } = this.props;
 
-    return (
-      <div
-        {...propsRest}
-        ref={c => this.root = c}
-        className={`zd-drag-resizable ${className ? className : ''}`}
-      >
-        <div className="zd-drag-resizable-table-row">
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control top-left"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTHWEST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control top"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTH, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control top-right"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTHEAST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-        </div>
-        <div className="zd-drag-resizable-table-row">
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control left"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_WEST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-          {
-            // Note: Main does not get zd-drag-resizable-control class
-          }
-          <div
-            className="zd-drag-resizable-table-cell"
-          >
-            <div
-              className={`zd-drag-resizable-body ${bodyClassName ? bodyClassName : ''}`}
-              style={contentStyle} ref={c => this.main = c}
+    if(this.props.enable){
+      return  (
+        <div
+          {...propsRest}
+          ref={c => this.root = c}
+          className={`zd-drag-resizable ${className ? className : ''}`}
+        >
+          <div className="zd-drag-resizable-table-row">
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control top-left"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTHWEST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
             >
-              {
-                children
-              }
+            </Gesture>
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control top"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTH, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control top-right"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_NORTHEAST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+          </div>
+          <div className="zd-drag-resizable-table-row">
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control left"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_WEST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+            {
+              // Note: Main does not get zd-drag-resizable-control class
+            }
+            <div
+              className="zd-drag-resizable-table-cell"
+            >
+              <div
+                className={`zd-drag-resizable-body ${bodyClassName ? bodyClassName : ''}`}
+                style={contentStyle} ref={c => this.main = c}
+              >
+                {
+                  children
+                }
+              </div>
+            </div>
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control right"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_EAST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+          </div>
+          <div className="zd-drag-resizable-table-row">
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom-left"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTHWEST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTH, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+            <Gesture
+              className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom-right"
+              touch={RESIZABLE_TOUCH}
+              mouse={RESIZABLE_MOUSE}
+              onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTHEAST, evt)}
+              onDown={(evt) => this._handleTouchStart(evt)}
+              onUp={(evt) => this._handleTouchEnd(evt)}
+            >
+            </Gesture>
+          </div>
+        </div>
+      )
+    }else {
+      return (
+        <div
+          {...propsRest}
+          ref={c => this.root = c}
+          className={`zd-drag-resizable ${className ? className : ''}`}
+        >
+          <div className="zd-drag-resizable-table-row">
+            {
+              // Note: Main does not get zd-drag-resizable-control class
+            }
+            <div
+              className="zd-drag-resizable-table-cell"
+            >
+              <div
+                className={`zd-drag-resizable-body ${bodyClassName ? bodyClassName : ''}`}
+                style={contentStyle} ref={c => this.main = c}
+              >
+                {
+                  children
+                }
+              </div>
             </div>
           </div>
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control right"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_EAST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
         </div>
-        <div className="zd-drag-resizable-table-row">
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom-left"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTHWEST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTH, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-          <Gesture
-            className="zd-drag-resizable-table-cell zd-drag-resizable-control bottom-right"
-            touch={RESIZABLE_TOUCH}
-            mouse={RESIZABLE_MOUSE}
-            onMove={(evt) => this._handleTouchMove(RESIZE_DIRECTION_SOUTHEAST, evt)}
-            onDown={(evt) => this._handleTouchStart(evt)}
-            onUp={(evt) => this._handleTouchEnd(evt)}
-          >
-          </Gesture>
-        </div>
-      </div>
-    )
+      )
+    }
+      
   }
 }

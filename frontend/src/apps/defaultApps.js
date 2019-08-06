@@ -16,6 +16,7 @@ import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 import './DocsApp';
+import './CalculatorApp';
 
 // Non-ported apps
 
