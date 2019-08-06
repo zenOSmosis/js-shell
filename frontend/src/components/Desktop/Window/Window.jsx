@@ -123,6 +123,9 @@ export default class Window extends Component {
       // this.setTitle(title);
       this.autosetTitle();
 
+      this.autosetPosition();
+      this.autosetSize();
+
       this.focus();
 
       await this.animate(EFFECT_CREATE);
@@ -155,6 +158,29 @@ export default class Window extends Component {
     if (newTitle !== existingTitle) {
       this.setTitle(newTitle);
     }
+  }
+
+  /*
+  * Set init position based on last one
+  */
+  autosetPosition() {
+    const { app } = this.props;
+    const initPos = (app ? app.getInitPosition() : {x: 0,y: 0});
+
+    this.moveTo(initPos.x, initPos.y);
+  }
+
+  /*
+    * Set init position based on last one
+    */
+  autosetSize() {
+    const { app, minHeight, minWidth } = this.props;
+    const initSize = (app ? app.getInitSize() : {width: minWidth,height: minHeight});
+    this.resize(initSize.width, initSize.height)
+  }
+
+  resize(width, height) {
+    this._resizableComponent.resize(width, height)
   }
 
   /**
@@ -480,7 +506,7 @@ export default class Window extends Component {
   }
 
   _onResizeMove = (pos, size) => {
-    this._app.setPositionSize(pos, size);
+    this._app.onResizeMove(pos, size);
   }
 
   render() {

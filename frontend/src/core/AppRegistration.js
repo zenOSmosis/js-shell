@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
-import { EVT_EXIT } from 'process/ClientProcess';
+import { EVT_EXIT, EVT_WINDOW_RESIZE} from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
@@ -41,6 +41,9 @@ class AppRegistration extends EventEmitter {
     this._mainView = mainView;
     this._appCmd = appCmd;
 
+    this._position = {x:-1, y:0};
+    this._size = {width: 0, height: 0};
+
     this._isUnregistered = false;
 
     // Add this app registration to the registry
@@ -55,11 +58,14 @@ class AppRegistration extends EventEmitter {
         return;
       }
 
+      console.log('launching app', this._position, this._size)
       this._appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
         mainView: this._mainView,
-        appCmd: this._appCmd
+        appCmd: this._appCmd,
+        position: this._position,
+        size: this._size
       });
   
       // Handle cleanup when the app exits
@@ -69,6 +75,18 @@ class AppRegistration extends EventEmitter {
 
         // Emit to listeners that the app is closed
         commonAppRegistryLinkedState.emitRegistrationsUpdate();
+      });
+
+      //save position for next opening
+      this._appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
+        const { position, size } = position_size;
+        if(position) {
+          this._position = position;
+        }
+
+        if(size) {
+          this._size = size;
+        }
       });
 
       await this._appRuntime.onceReady();

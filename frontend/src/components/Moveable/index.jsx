@@ -33,7 +33,6 @@ export default class Moveable extends Component {
   moveTo(posX, posY, isUsingHA = true) {
     this._posX = parseInt(posX) || 0;
     this._posY = parseInt(posY) || 0;
-
     if (isUsingHA) {
       // Run the move handler using hardware acceleration
       window.requestAnimationFrame(() => {

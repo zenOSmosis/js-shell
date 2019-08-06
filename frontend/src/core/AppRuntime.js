@@ -2,6 +2,7 @@ import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER /*, REMOVE_THIS*/ }
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import Menubar from './ShellDesktop/Menubar';
 import './AppRuntime.typedef';
+import { EVT_WINDOW_RESIZE } from 'process/ClientProcess';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
 
@@ -43,15 +44,29 @@ class AppRuntime extends ClientGUIProcess {
     this._position = {x: 0, y:0};
     this._size = {width: 0, height: 0};
 
+
     (() => {
       // TODO: Create AppRuntime.typedef.js
-      const { title, iconSrc, mainView, appCmd, cmd } = runProps;
+      const { title, iconSrc, mainView, appCmd, cmd, position, size } = runProps;
+
+
+
+      this._position = position;
+      this._size = size;
 
       // cmd || appCmd are synonymous of each other
       const runCmd = appCmd || cmd;
 
       if (title) {
         this.setTitle(title);
+      }
+
+      if (position) {
+        this.setInitPosition(position);
+      }
+
+      if (size) {
+        this.setInitSize(size);
       }
 
       if (iconSrc) {
@@ -126,12 +141,8 @@ class AppRuntime extends ClientGUIProcess {
     }
   }
 
-
-  //TODO: save position for next opening
-  setPositionSize(position, size) {
-console.log('TODO: save position', position, size)
-    if (position) this._position = position;
-    if (size) this._size = size;
+  onResizeMove(position, size) {
+    this.emit(EVT_WINDOW_RESIZE, {position, size})
   }
 
   /**

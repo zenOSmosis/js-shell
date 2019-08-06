@@ -113,6 +113,9 @@ class ClientProcess extends EventEmitter {
     this._options = options;
     this._serviceURI = null;
 
+    this._initPosition = {x: 0,y: 0};
+    this._initSize = {width:0, height:0};
+
     // STDIO pipes
     this.stdin = null; // Pipe
     this.stdout = null; // Pipe
@@ -412,6 +415,22 @@ class ClientProcess extends EventEmitter {
 
   getTitle() {
     return this._title || this.getClassName();
+  }
+
+  setInitPosition(position) {
+    this._initPosition = position;
+  }
+
+  getInitPosition() {
+    return this._initPosition;
+  }
+
+  setInitSize(size) {
+    this._initSize = size;
+  }
+
+  getInitSize() {
+    return this._initSize;
   }
 
   /**

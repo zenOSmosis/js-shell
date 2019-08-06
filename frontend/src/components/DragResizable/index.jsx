@@ -23,7 +23,7 @@ export default class DragResizable extends Component {
   position = {
     x: 1, y: 1
   }
-  size = {heigth: 1,width: 1}
+  size = {height: 1,width: 1}
   constructor(...args) {
     super(...args);
 
@@ -68,7 +68,7 @@ export default class DragResizable extends Component {
       this._position ={
         x: initialPosX, y: initialPosY,
       }
-      this._size = {heigth: initialHeight,width: initialWidth}
+      this._size = {height: initialHeight,width: initialWidth}
     }
 
     this._setMinWidthHeight();
@@ -238,7 +238,7 @@ export default class DragResizable extends Component {
       $main.css({
         height: newHeight
       });
-      this._size.heigth=newHeight;
+      this._size.height=newHeight;
       this._handleResizeMove();
 
       this._moveTo(posX, this._initialPosY + deltaY);
@@ -261,7 +261,7 @@ export default class DragResizable extends Component {
   _handleResizeSouth($main, deltaY) {
     const { minHeight } = this.props;
     const newHeight = this._initialHeight + deltaY;
-    this._size.heigth=newHeight;
+    this._size.height=newHeight;
     this._handleResizeMove();
 
     if (newHeight >= minHeight) {
@@ -293,16 +293,22 @@ export default class DragResizable extends Component {
   _handleResizeMove() {
     const { onResizeMove } = this.props;
     if (typeof onResizeMove === 'function') {
-      onResizeMove(this._position, this._size);
+      onResizeMove(this._moveableComponent.getPosition(), this._size);
     }
   }
 
   _handleTouchEnd(evt) {
     const { onResizeEnd } = this.props;
     if (typeof onResizeEnd === 'function') {
-      console.log('onResizeEnd', evt)
       onResizeEnd(evt);
     }
+  }
+
+  resize(width, height) {
+    this.$main.css({
+      width,
+      height
+    });
   }
 
   // TODO: Include ability to turn off Gesture layers
