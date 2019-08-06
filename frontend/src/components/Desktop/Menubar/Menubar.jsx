@@ -27,7 +27,7 @@ class Menubar extends Component {
     }
 
     // TODO: Handle accordingly
-    console.debug('Menubar component updated', this.props);
+    //console.debug('Menubar component updated', this.props);
 
     const { focusedAppRuntime } = this.props;
     if (focusedAppRuntime) {

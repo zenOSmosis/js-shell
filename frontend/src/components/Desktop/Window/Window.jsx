@@ -350,11 +350,7 @@ export default class Window extends Component {
       await this.animate(EFFECT_RESTORE);
       this._isMinimized = false;
       
-    } else if(this._idMaximized) {
-      $(this._el).removeClass(CSS_CLASS_NAME_MAXIMIZE);
-    }
-    
-
+    } 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
   }
 

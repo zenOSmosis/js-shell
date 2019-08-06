@@ -13,7 +13,7 @@ export default class IconLayout extends Component {
       <Scrollable>
         {
           fsNodes.map((childNode, idx) => {
-            console.debug('child node', childNode);
+            //console.debug('child node', childNode);
 
             return (
               <Icon

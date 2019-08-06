@@ -32,6 +32,7 @@ class AppRegistration extends EventEmitter {
         iconSrc,
         mainView,
         cmd: appCmd,
+        supportedMimes,
     } = runProps;
 
     this._isLaunched = false;
@@ -46,12 +47,13 @@ class AppRegistration extends EventEmitter {
     this._size = {width: 0, height: 0};
 
     this._isUnregistered = false;
+    this._supportedMimes = supportedMimes || [];
 
     // Add this app registration to the registry
     commonAppRegistryLinkedState.addAppRegistration(this);
   }
 
-  async launchApp() {
+  async launchApp(cmdArguments) {
     try {
       if (this._appRuntime) {
         // Gracefully fail
@@ -70,7 +72,8 @@ class AppRegistration extends EventEmitter {
         mainView: this._mainView,
         appCmd: this._appCmd,
         position: this._position,
-        size: this._size
+        size: this._size,
+        cmdArguments
       });
   
       // Handle cleanup when the app exits
@@ -116,6 +119,10 @@ class AppRegistration extends EventEmitter {
    */
   getAppRuntime() {
     return this._appRuntime;
+  }
+
+  getSupportedMimes() {
+    return this._supportedMimes;
   }
 
   async closeApp() {
