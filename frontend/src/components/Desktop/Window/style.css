@@ -97,6 +97,10 @@
   background-color: #5AC05A !important;
 }
 
+.zd-window.hide {
+  display: none;
+}
+
 .zd-window .zd-window-body-wrapper {
   flex: auto;
   overflow: hidden;

@@ -17,7 +17,7 @@ import StackingContext from 'components/StackingContext';
 // import ViewTransition from 'components/ViewTransition'
 import './style.css';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
-import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT } from 'utils/animate';
+import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
 import animate from 'utils/animate';
 import config from 'config';
 import $ from 'jquery';
@@ -27,8 +27,10 @@ const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
+const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
 
 const CSS_CLASS_NAME_FOCUS = 'focus';
+const CSS_CLASS_NAME_HIDE = 'hide';
 
 // The CSS z-index level the next focused Window will have
 // This value is automatically incremented internally
@@ -96,6 +98,7 @@ export default class Window extends Component {
     this._windowBodyComponent = null;
     this._bodyCoverComponent = null;
 
+    this._isMinimized = false;
     this._isFocused = false;
     this._isActiveHeaderGesture = false;
     this._isResizing = false;
@@ -237,10 +240,14 @@ export default class Window extends Component {
   };
 
   focus() {
+    
+    
     // Check if window is already focused
-    if (this._isFocused) {
+    if (this._isFocused && !this._isMinimized) {
       return false;
     }
+
+    this.restore();
 
     this._app.focus();
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
@@ -249,7 +256,8 @@ export default class Window extends Component {
 
     commonDesktopLinkedState.setActiveWindow(this);
     
-    $(this._el).addClass(CSS_CLASS_NAME_FOCUS);
+    
+    
 
     this.doCoverIfShould();
 
@@ -295,7 +303,7 @@ export default class Window extends Component {
 
     // TODO: display: none
 
-    alert('hide');
+    $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
   }
@@ -306,7 +314,7 @@ export default class Window extends Component {
     // TODO: display: block
 
     // TODO: Handle accordingly
-    alert('unhide');
+    $(this._el).removeClass(CSS_CLASS_NAME_HIDE);
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
   }
@@ -314,15 +322,38 @@ export default class Window extends Component {
   async toggleMinimize() {
     // TODO: Detect current window state and take appropriate action
 
+   
     return this.minimize();
+    
   }
 
   async minimize() {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
 
-    await this.animate(EFFECT_MINIMIZE);
+    if(!this._isMinimized) {
+      await this.animate(EFFECT_MINIMIZE);
+      this._isMinimized = true;
+      await this.hide();
+      await this.blur();
+      //TODO: should focus remaining window
+    }
 
-    await this.hide();
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
+  }
+
+  async restore() {
+    console.log('restore')
+    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
+    if(this._isMinimized) {
+      console.log('restore2')
+      await this.unhide();
+      await this.animate(EFFECT_RESTORE);
+      this._isMinimized = false;
+      
+    } else if(this._idMaximized) {
+      $(this._el).removeClass(CSS_CLASS_NAME_MAXIMIZE);
+    }
+    
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
   }
@@ -337,7 +368,11 @@ export default class Window extends Component {
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
 
     // TODO: Handle accordingly
-    alert('maximize');
+    const desktopWidth = $('#desktopArea').width();
+    const desktopHeight = $('#desktopArea').height();
+    this.moveTo(0,0);
+    this.resize(desktopWidth-20, desktopHeight-60);
+    //this.resize(initSize.width, initSize.height)
 
     // Lock:
     // Upper panel buffer = 1
