@@ -5,6 +5,10 @@ import config from 'config';
 
 export default registerApp({
   title: 'Settings',
-  mainView: <SettingsWindow />,
+  mainView: (props) => {
+    return (
+      <SettingsWindow {...props} />
+    )
+  },
   iconSrc: `${config.HOST_ICON_URI_PREFIX}settings/settings.svg`
 });

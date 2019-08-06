@@ -348,7 +348,6 @@ export default class FilesWindow extends Component {
                 TODO Integrate:<br />
                 - https://nodejs.org/docs/latest/api/fs.html#fs_class_fs_fswatcher<br />
                 - Show free space<br />
-                - Preliminary opening of files<br />
                 - Drag / Drop of node nodes into other windows<br />
                 - Opening of node in other window if node is dragged to it
               </Column>

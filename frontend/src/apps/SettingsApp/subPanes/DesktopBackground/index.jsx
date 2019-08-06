@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import fetchwallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
 import getRequestURI from 'utils/fileSystem/getRequestURI';
-import { commonDesktopLinkedState } from 'state/commonLinkedStates';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 
 export default class DesktopBackground extends Component {
   state = {
@@ -37,7 +37,7 @@ export default class DesktopBackground extends Component {
               <button
                 style={{color: '#000', padding: 0, margin: 4, borderRadius: 4}}
                 key={idx}
-                onClick={ (evt) => commonDesktopLinkedState.setBackgroundURI(wallpaperPath) }
+                onClick={ (evt) => DesktopLinkedState.setBackgroundURI(wallpaperPath) }
               >
                 <img
                   src={imageURI}

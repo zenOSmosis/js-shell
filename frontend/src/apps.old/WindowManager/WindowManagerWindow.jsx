@@ -53,7 +53,6 @@ export default class WindowManager extends Component {
     return (
       <Window
         {...propsRest}
-        app={app}
       >
         {
           windowStack.map((window, idx) => {
