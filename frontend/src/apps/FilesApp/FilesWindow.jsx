@@ -14,6 +14,7 @@ import { /*Input,*/ Icon as AntdIcon } from 'antd';
 // import config from 'config';
 import { chdir } from 'utils/fileSystem';
 import './style.css';
+import { relativeTimeRounding } from 'moment';
 
 // import { Tree } from 'antd';
 // const TreeNode = Tree.TreeNode;
@@ -255,6 +256,7 @@ export default class FilesWindow extends Component {
                     case LAYOUT_TYPE_ICON:
                       return (
                         <IconLayout
+                          selectedNodes={this.state.selectedNodes}
                           filesWindow={this}
                           fsNodes={childNodes}
                         />

@@ -113,6 +113,10 @@ class AppRegistration extends EventEmitter {
     return this._title;
   }
 
+  focus() {
+    this._appRuntime.focus();
+  }
+
   getIconSrc() {
     return this._iconSrc;
   }

@@ -13,4 +13,7 @@ router.use('/files', files);
 const icons = require('./icons');
 router.use('/icons', icons);
 
+const pictures = require('./pictures');
+router.use('/pictures', pictures);
+
 module.exports = router;
