@@ -19,6 +19,7 @@ import './CalculatorApp';
 // import './SettingsApp';
 import './SourceCodeApp';
 import './TextEditorApp';
+import './TerminalApp';
 
 // Non-ported apps
 

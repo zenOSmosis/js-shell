@@ -346,6 +346,10 @@ export default class FilesWindow extends Component {
             <Row>
               <Column>
                 TODO Integrate:<br />
+                - file upload & download<br />
+                - file move<br />
+                - multiple windows
+                - file rename<br />
                 - https://nodejs.org/docs/latest/api/fs.html#fs_class_fs_fswatcher<br />
                 - Show free space<br />
                 - Drag / Drop of node nodes into other windows<br />

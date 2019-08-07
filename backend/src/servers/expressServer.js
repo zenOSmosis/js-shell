@@ -10,6 +10,7 @@ const socketAPIRoutes = require('../api/socket.io/routes');
 const { addSocketID, removeSocketID } = require('../utils/p2p/socketIDs');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
 const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
+
 // Apply custom reponse headers
 app.all('*', (req, res, next) => {
   for (const [header, value] of Object.entries(EXPRESS_CUSTOM_RESPONSE_HEADERS)) {
@@ -36,6 +37,7 @@ app.all('*', (req, res, next) => {
     // console.log(req.session);
     next();
   });
+  
 })();
 
 // Socket.io

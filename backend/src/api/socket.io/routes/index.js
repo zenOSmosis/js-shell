@@ -3,6 +3,7 @@
  */
 
 const echo = require('./echo');
+const { createXTermSocketChannel } = require('./socketChannel');
 const p2p = require('./p2p');
 const env = require('./env');
 const ping = require('./ping');
@@ -37,6 +38,9 @@ const {
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
   SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
 
+  // Socket channels
+  SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL,
+
   SOCKET_API_ROUTE_REQUEST_DISCONNECT
 } = routes;
 
@@ -66,6 +70,17 @@ const initSocket = (socket) => {
   // P2P
   socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2p.fetchSocketIDs);
   socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, p2p.sendSocketPeerData);
+
+  // Socket channel
+  socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options, ack) => {
+    options = Object.assign(options || {}, {
+      socket
+    });
+
+    // Subsequent communications over this socket route handled internally via
+    // SocketChannel
+    createXTermSocketChannel(options, ack);
+  });
 
   // Handle client disconnect request
   socket.on(SOCKET_API_ROUTE_REQUEST_DISCONNECT, () => {
