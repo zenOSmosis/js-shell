@@ -42,7 +42,7 @@ function expressShell(app2) {
     // Spawn the shell
     const shell = pty.spawn('/bin/bash', [], {
       name: 'xterm-color',
-      cwd: process.env.PWD,
+      cwd: process.env.HOME,
       env: process.env
     });
     // For all shell data send it to the websocket

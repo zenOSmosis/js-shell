@@ -4,6 +4,7 @@ import TerminalWindow from './TerminalWindow';
 import config from 'config';
 
 export default registerApp({
+  allowMultipleWindows: true,
   title: 'Terminal',
   mainView: (props) => {
     return (

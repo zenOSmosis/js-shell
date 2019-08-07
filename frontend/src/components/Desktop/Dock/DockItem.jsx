@@ -1,3 +1,16 @@
+//TODO: add preview of window via htm2tocanvas:
+//https://html2canvas.hertzen.com
+
+/*
+  const input = document.getElementById('divIdToPrint');
+  html2canvas(input)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+    })
+  ;
+ */
+
+
 import React, { Component } from 'react';
 import { Menu,  MenuDivider,  MenuItem,  SubMenu  } from 'components/Menu';
 import Image from 'components/Image';
