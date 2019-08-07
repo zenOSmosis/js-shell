@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
-import { EVT_EXIT, EVT_WINDOW_RESIZE} from 'process/ClientProcess';
+import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
@@ -86,23 +86,16 @@ class AppRegistration extends EventEmitter {
       const self = this;
       // Handle cleanup when the app exits
       appRuntime.on(EVT_EXIT, () => {
+        // save last position / size
+        console.log('getInitPosition', self._position)
+        self._position = appRuntime.getInitPosition();
+        console.log('getInitPosition', self._position)
+        self._size = appRuntime.getInitSize();
         self._isLaunched = false;
         // CHECK: remove correct appruntime
         self._appRuntime = self._appRuntime.filter(a=>(a!==appRuntime)) ;
         // Emit to listeners that the app is closed
         commonAppRegistryLinkedState.emitRegistrationsUpdate();
-      });
-
-      //save position for next opening
-      appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
-        const { position, size } = position_size;
-        if(position) {
-          this._position = position;
-        }
-
-        if(size) {
-          this._size = size;
-        }
       });
 
       await appRuntime.onceReady();
