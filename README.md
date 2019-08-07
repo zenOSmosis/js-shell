@@ -8,7 +8,7 @@
 **Note: This is currently prototype and experimental code; it is not recommended for usage at all right now**
 =======
 ![GitHub License](https://img.shields.io/github/license/zenosmosis/js-shell)
-![Travis (.org) (master branch)](https://img.shields.io/travis/zenosmosis/js-shell/master)
+[![Build Status](https://travis-ci.com/zenOSmosis/js-shell.svg?branch=master)](https://travis-ci.com/zenOSmosis/js-shell)
 
 # JS Shell
 
