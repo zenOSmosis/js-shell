@@ -1,21 +1,44 @@
 import React, { Component } from 'react';
+import Full from 'components/Full';
 import Window from 'components/Desktop/Window';
-import Center from 'components/Center';
-import ReactPlayer from 'react-player'
+import Cover from 'components/Cover';
+import ReactPlayer from 'components/ReactPlayer'
+import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
 
-export default class HelloWorldWindow extends Component {
+
+export default class MediaPlayerWindow extends Component {
+  state = {
+    // TODO: Remove hardcoded URL
+    mediaURL: 'https://www.youtube.com/watch?v=oUFJJNQGwhk'
+  };
+
   render() {
     const { ...propsRest } = this.props;
+    const { mediaURL } = this.state;
     const cmdArguments = this.props.app.getCmdArguments();
-    console.log('cmdArguments',cmdArguments)
+
+    // TODO: Remove
+    console.debug('cmdArguments', cmdArguments);
+    
     return (
       <Window
         {...propsRest}
       >
-        <Center>
-          <div>{cmdArguments}</div><br />
-          <ReactPlayer url={cmdArguments} playing />
-        </Center>
+        <Full>
+          <ReactPlayer
+            url={mediaURL}
+            playing
+            style={{width: '100%', height: '100%'}}
+          />
+        </Full>
+
+        <Cover>
+          <Layout>
+            <Footer>
+            {cmdArguments}
+            </Footer>
+          </Layout>
+        </Cover>
       </Window>
     );
   }

@@ -16,10 +16,14 @@ import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 // import './DocsApp';
+import './CalculatorApp';
+// import './SettingsApp';
+import './SourceCodeApp';
+import './TextEditorApp';
 
 // Non-ported apps
 
-// import './SettingsApp';
+
 // import './WindowManagerApp';
 // import './AboutApp';
 // import './ProcessTesterApp';

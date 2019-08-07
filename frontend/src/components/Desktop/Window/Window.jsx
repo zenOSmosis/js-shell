@@ -603,6 +603,7 @@ export default class Window extends Component {
               bodyClassName="zd-window-resizable"
               onBodyMount={c => this._resizableBody = c}
               onResizeMove={this._onResizeMove}
+              enable={typeof this.props.sizeable == 'undefined' || this.props.sizeable == true }
             // maxWidth={}
             // maxHeight={}
             >

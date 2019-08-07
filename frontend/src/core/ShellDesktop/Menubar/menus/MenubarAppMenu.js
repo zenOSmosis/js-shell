@@ -30,6 +30,8 @@ export default class MenubarAppMenu extends MenubarMenu {
       ]
     };
 
+    menu.items = (guiProcess.menuItems || []).concat(menu.items)
+
     this.setData(menu);
   }
 }
