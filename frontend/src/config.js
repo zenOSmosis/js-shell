@@ -31,7 +31,7 @@ config = Object.assign(config, {
   DESKTOP_DEFAULT_BACKGROUND_URI: config.HOST_REST_URI +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
   
   // If the Desktop should intercept the context menu by default
-  DESKTOP_CONTEXT_MENU_IS_TRAPPING: true,
+  DESKTOP_CONTEXT_MENU_IS_TRAPPING: false,
 
   // TODO: Make distinction between if running in windowed, full-screen (touch) mode, (or others?)
   DESKTOP_WINDOW_MIN_WIDTH: 500,
