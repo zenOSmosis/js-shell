@@ -83,12 +83,12 @@ class AppRegistration extends EventEmitter {
         cmdArguments
       });
   
+      const self = this;
       // Handle cleanup when the app exits
       appRuntime.on(EVT_EXIT, () => {
-        this._isLaunched = false;
+        self._isLaunched = false;
         // CHECK: remove correct appruntime
-        this._appRuntime = this._appRuntime.find(a=>(a!==appRuntime));
-
+        self._appRuntime = self._appRuntime.filter(a=>(a!==appRuntime)) ;
         // Emit to listeners that the app is closed
         commonAppRegistryLinkedState.emitRegistrationsUpdate();
       });
