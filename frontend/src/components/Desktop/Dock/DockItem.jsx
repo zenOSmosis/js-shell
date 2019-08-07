@@ -110,12 +110,12 @@ export default class DockItem extends Component {
               <MenuDivider />
               {
                 allowLaunch && 
-                <MenuItem key="launch">Open new window</MenuItem>
+                <MenuItem key="launch">{appRegistration.getAppRuntimes().length?'Open new window':'Open'}</MenuItem>
               }
 
               {
                 isLaunched && 
-                <MenuItem key="focus">Show All</MenuItem>
+                <MenuItem key="focus">Show all windows</MenuItem>
               }
             </Menu>
           </div>
