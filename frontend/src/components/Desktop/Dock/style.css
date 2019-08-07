@@ -23,7 +23,7 @@
   max-width: 90%;
   height: 100%;
   max-width: 100%;
-
+/*position: relative;*/
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -55,4 +55,13 @@
 .zd-desktop-dock .zd-desktop-dock-items button {
   background-color: transparent;
   border: 0px;
+}
+
+.zd-context-menu-overlay {
+  position: absolute;
+  bottom:60px;
+  width:200px;
+  left:-70px;
+  border-radius: 10px;
+  overflow: hidden;
 }
