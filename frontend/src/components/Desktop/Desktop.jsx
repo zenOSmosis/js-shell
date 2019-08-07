@@ -5,6 +5,7 @@ import './style.css';
 import './style-scrollbar.css';
 
 import React, { Component } from 'react';
+import Fullscreen from "react-full-screen";
 import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
@@ -28,6 +29,10 @@ import 'apps/defaultApps';
 import $ from 'jquery';
 
 class Desktop extends Component {
+  state={
+    isFullScreen: false
+  };
+
   componentDidMount() {
     this._handleFocusUpdate();
   }
@@ -48,69 +53,72 @@ class Desktop extends Component {
         $body.removeClass('blur');
       }
     }
-  }
+  };
 
   render() {
     return (
       <div ref={c => this._el = c}>
+        <Fullscreen
+          enabled={this.state.isFullScreen}
+          onChange={isFullScreen => this.setState({isFullScreen})}
+        >
+          <FullViewport>
 
-        <FullViewport>
+            {
+              // <URIRedirector /> 
+            }
 
-          {
-            // <URIRedirector /> 
-          }
+            <ContextMenu>
 
-          <ContextMenu>
+              <DesktopBackground ref={c => this._desktopBackground = c}>
 
-            <DesktopBackground ref={c => this._desktopBackground = c}>
+                <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
 
-              <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
+                  {
+                    // Top Panel
+                  }
+                  <Panel onFullScreenToggle={()=>this.setState({isFullScreen:!this.state.isFullScreen})} />
 
-                {
-                  // Top Panel
-                }
-                <Panel />
+                  <Notifications />
 
-                <Notifications />
+                  {
+                    // TODO: Implement DrawersLayer as a separate component
+                    // @see https://ant.design/components/drawer/
+                    /*
+                    <Drawer
+                      mask={false}
+                      bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                      onContextMenu={ (evt) => alert('context') }
+                      placement="right"
+                      visible={true}
+                    >
+                      Well, hello
+                    </Drawer>
+                    */
+                  }
 
-                {
-                  // TODO: Implement DrawersLayer as a separate component
-                  // @see https://ant.design/components/drawer/
-                  /*
-                  <Drawer
-                    mask={false}
-                    bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                    onContextMenu={ (evt) => alert('context') }
-                    placement="right"
-                    visible={true}
-                  >
-                    Well, hello
-                  </Drawer>
-                  */
-                }
+                  {
+                    // Binds windows to URI location; sets page title
+                    // <AppRouteController />
+                  }
 
-                {
-                  // Binds windows to URI location; sets page title
-                  // <AppRouteController />
-                }
+                  <AppRuntimeRenderProvider />
 
-                <AppRuntimeRenderProvider />
+                  <VersionLabel />
 
-                <VersionLabel />
+                  {
+                    // Bottom Dock
+                  }
+                  <Dock />
 
-                {
-                  // Bottom Dock
-                }
-                <Dock />
+                </div>
 
-              </div>
+              </DesktopBackground>
 
-            </DesktopBackground>
+            </ContextMenu>
 
-          </ContextMenu>
-
-        </FullViewport>
-
+          </FullViewport>
+        </Fullscreen>
       </div>
     );
   }

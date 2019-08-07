@@ -34,10 +34,11 @@ class AppRegistration extends EventEmitter {
         cmd: appCmd,
         supportedMimes,
         menuItems,
+        allowMultipleWindows,
     } = runProps;
 
     this._isLaunched = false;
-    this._appRuntime = null;
+    this._appRuntimes = [];
 
     this._title = title;
     this._iconSrc = iconSrc;
@@ -47,31 +48,38 @@ class AppRegistration extends EventEmitter {
     // TODO: Handle accordingly
     this._menuItems = menuItems || [];
 
-    // TODO: Rename w/ window prefixes
+    // TODO: Rename w/ _windowInitial prefixes
     this._position = {x: 0, y: 0};
     this._size = {width: 0, height: 0};
 
     this._isUnregistered = false;
     this._supportedMimes = supportedMimes || [];
 
+    this._allowMultipleWindows = allowMultipleWindows;
+
     // Add this app registration to the registry
     commonAppRegistryLinkedState.addAppRegistration(this);
   }
 
-  async launchApp(cmdArguments) {
+  /**
+   * TODO: Document
+   */
+  async launchApp(cmdArguments = null) {
     try {
-      if (this._appRuntime) {
+      if (this._appRuntimes.length && !this._allowMultipleWindows) {
         // Gracefully fail
         console.warn('App is already launched, or is launching');
         return;
       }
 
+      // Set positioning
+      // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
       if(this._position.x === 0 && this._position.y === 0 ){
-        this._position = {x: _createdWindowsCount*20, y: _createdWindowsCount*20}
+        this._position = {x: _createdWindowsCount * 20, y: _createdWindowsCount * 20}
       }
-      _createdWindowsCount++;
+      ++_createdWindowsCount;
       
-      this._appRuntime = new AppRuntime({
+      const appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
         mainView: this._mainView,
@@ -83,16 +91,23 @@ class AppRegistration extends EventEmitter {
       });
   
       // Handle cleanup when the app exits
-      this._appRuntime.on(EVT_EXIT, () => {
+      appRuntime.on(EVT_EXIT, () => {
         this._isLaunched = false;
-        this._appRuntime = null;
+        
+        // Remove this appRuntime instance
+        this._appRuntimes = this._appRuntimes.filter(a=>{
+          return !Object.is(a, appRuntime);
+        });
 
-        // Emit to listeners that the app is closed
-        commonAppRegistryLinkedState.emitRegistrationsUpdate();
+        if (!this._appRuntimes.length) {
+          // Emit to listeners that the app is closed
+          commonAppRegistryLinkedState.emitRegistrationsUpdate();
+        }
       });
 
-      //save position for next opening
-      this._appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
+      // Save position for next opening
+      // TODO: Move this to AppRuntime
+      appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
         const { position, size } = position_size;
         if(position) {
           this._position = position;
@@ -103,7 +118,9 @@ class AppRegistration extends EventEmitter {
         }
       });
 
-      await this._appRuntime.onceReady();
+      await appRuntime.onceReady();
+
+      this._appRuntimes.push(appRuntime);
   
       this._isLaunched = true;
 
@@ -117,35 +134,29 @@ class AppRegistration extends EventEmitter {
   getIsLaunched() {
     return this._isLaunched;
   }
+
+  /**
+   * @return {boolean} Whether multiple instances of this View (or Window) are
+   * allowed.
+   */
+  getAllowMultipleWindows() {
+    return this._allowMultipleWindows;
+  }
   
   /**
-   * Retrieves the launched app's process runtime, if available.
+   * Retrieves the launched app's process runtimes, if available.
    * 
-   * @return {AppRuntime}
+   * @return {AppRuntime[]00}
    */
-  getAppRuntime() {
-    return this._appRuntime;
+  getAppRuntimes() {
+    return this._appRuntimes;
   }
 
+  /**
+   * TODO: Document
+   */
   getSupportedMimes() {
     return this._supportedMimes;
-  }
-
-  getTitle() {
-    return this._title;
-  }
-
-  // TODO: Don't call focus here directly, use appRuntime instead
-  focus() {
-    this._appRuntime.focus();
-  }
-
-  getIconSrc() {
-    return this._iconSrc;
-  }
-
-  getMainWindow() {
-    return this._mainView;
   }
 
   /**
@@ -153,16 +164,45 @@ class AppRegistration extends EventEmitter {
    */
   async closeApp() {
     try {
-      if (!this._appRuntime) {
+      const lenAppRuntimes = this._appRuntimes.length;
+
+      if (!lenAppRuntimes) {
         // Gracefully fail
         console.warn('appRuntime is not registered');
         return;
       }
 
-      await this._appRuntime.close();
+      for(let i=0; i < lenAppRuntimes; i++){
+        let appRuntime = this._appRuntimes[i];
+        await appRuntime.close();
+      }
+
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * @return {string}
+   */
+  getTitle() {
+    return this._title;
+  }
+
+  /**
+   * Focuses all related AppRuntime instances.
+   */
+  focus() {
+    this._appRuntimes.forEach(a=> a.focus());
+  }
+
+  getIconSrc() {
+    return this._iconSrc;
+  }
+
+  // TODO: Rename
+  getMainWindow() {
+    return this._mainView;
   }
 
   /**
@@ -174,11 +214,15 @@ class AppRegistration extends EventEmitter {
   async unregister() {
     try {
       if (this.getIsLaunched()) {
-        const appRuntime = this.getAppRuntime();
-  
-        await appRuntime.kill();
+        const appRuntimes = this.getAppRuntimes();
+        
+        for(let i=0; i < appRuntimes.length; i++){
+          let appRuntime = appRuntimes[i];
+          await appRuntime.kill();
+        }
       }
   
+      // Remove from LinkedState
       commonAppRegistryLinkedState.removeAppRegistration(this);
   
       this._isUnregistered = true;

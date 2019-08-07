@@ -1,15 +1,15 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
-import FileManager from './FilesWindow';
+import TerminalWindow from './TerminalWindow';
 import config from 'config';
 
 export default registerApp({
   allowMultipleWindows: true,
-  title: 'Files',
+  title: 'Terminal',
   mainView: (props) => {
     return (
-      <FileManager {...props} />
-    );
+      <TerminalWindow {...props} />
+    )
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}folder/folder.svg`
+  iconSrc: `${config.HOST_ICON_URI_PREFIX}terminal/terminal.svg`
 });

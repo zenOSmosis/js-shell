@@ -19,6 +19,9 @@ const SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS = '/api/wallpapers:fetch
 const SOCKET_API_ROUTE_FETCH_SOCKET_IDS = 'api/fetch-peer-ids';
 const SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA = 'api/send-peer-message';
 
+// Socket channels
+const SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL = 'api/create-xterm-socket-channel';
+
 const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
 
 module.exports = {
@@ -40,6 +43,9 @@ module.exports = {
   // P2P
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
   SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
+
+  // Socket channels
+  SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL,
 
   SOCKET_API_ROUTE_REQUEST_DISCONNECT
 };

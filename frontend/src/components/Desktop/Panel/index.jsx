@@ -8,6 +8,12 @@ import hocConnect from 'state/hocConnect';
 import './style.css';
 
 class Panel extends Component {
+  _onFullScreenToggle() {
+    if(typeof this.props.onFullScreenToggle !== 'undefined') {
+      this.props.onFullScreenToggle()
+    }
+  }
+
   render() {
     const { activeWindow, className, isConnected, ...propsRest } = this.props;
 
@@ -33,6 +39,9 @@ class Panel extends Component {
 
           <button>
             <Icon type="search" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
+          </button>
+          <button onClick={this._onFullScreenToggle.bind(this)}>
+            <Icon type="fullscreen" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
           </button>
           <button>
             <Icon type="menu-unfold" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
