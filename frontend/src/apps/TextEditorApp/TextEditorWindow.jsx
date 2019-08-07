@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
+import Full from 'components/Full';
+import Scrollable from 'components/Scrollable';
+import { Layout, Content, Footer } from 'components/Layout';
 
 export default class TextEditorWindow extends Component {
   state = {
@@ -11,6 +14,8 @@ export default class TextEditorWindow extends Component {
     // Load editor asynchronously
     // @see https://facebook.github.io/create-react-app/docs/code-splitting
     try {
+      // TODO: Implement provisioning to cancel this import request if the
+      // parent component unmounts before import 
       const { default: RichTextEditor } = await import('react-rte');
       const value = RichTextEditor.createEmptyValue();
 
@@ -44,17 +49,31 @@ export default class TextEditorWindow extends Component {
         {...propsRest}
         minWidth={600}
       >
-        <div style={{backgroundColor:'#fff', height: '100%', color:'#000'}}>
-        {
-          RichTextEditor &&
-          <RichTextEditor
-            style={{height: '100%'}}
-            value={value}
-            onChange={this.onChange}
-          />
-        }
-        
-        </div>
+        <Layout>
+          <Content>
+            <Full style={{backgroundColor:'#fff', color:'#000'}}>
+              {
+                // TODO: Implement ability to lock controls to top
+              }
+              <Scrollable>
+                {
+                  RichTextEditor &&
+                  <RichTextEditor
+                    style={{height: '100%'}}
+                    value={value}
+                    onChange={this.onChange}
+                  />
+                }
+              </Scrollable>  
+            </Full>
+          </Content>
+          <Footer>
+            {
+              // TODO: Implement w/ optional web worker process
+            }
+            Words: N/A | Words per Minute: N/A | Keystrokes per Minute: N/A
+          </Footer>
+        </Layout>
         
       </Window>
     );

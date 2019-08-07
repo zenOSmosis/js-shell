@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Full from 'components/Full';
 import Window from 'components/Desktop/Window';
-import Cover from 'components/Cover';
+// import Cover from 'components/Cover';
 import ReactPlayer from 'components/ReactPlayer'
-import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
+// import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
 
 
 export default class MediaPlayerWindow extends Component {
@@ -19,7 +19,7 @@ export default class MediaPlayerWindow extends Component {
 
     // TODO: Remove
     console.debug('cmdArguments', cmdArguments);
-    
+
     return (
       <Window
         {...propsRest}
@@ -28,17 +28,20 @@ export default class MediaPlayerWindow extends Component {
           <ReactPlayer
             url={mediaURL}
             playing
-            style={{width: '100%', height: '100%'}}
           />
         </Full>
 
-        <Cover>
-          <Layout>
-            <Footer>
-            {cmdArguments}
-            </Footer>
-          </Layout>
-        </Cover>
+        {
+          /*
+          <Cover>
+            <Layout>
+              <Footer>
+                {cmdArguments}
+              </Footer>
+            </Layout>
+          </Cover>
+          */
+        }
       </Window>
     );
   }
