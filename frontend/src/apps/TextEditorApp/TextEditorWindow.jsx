@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
-import RichTextEditor from 'react-rte';
 
 export default class TextEditorWindow extends Component {
-
   state = {
-    value: RichTextEditor.createEmptyValue()
+    value: null,
+    RichTextEditor: null
+  };
+
+  async componentDidMount() {
+    // Load editor asynchronously
+    // @see https://facebook.github.io/create-react-app/docs/code-splitting
+    try {
+      const { default: RichTextEditor } = await import('react-rte');
+      const value = RichTextEditor.createEmptyValue();
+
+      this.setState({
+        value,
+        RichTextEditor
+      });
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   onChange = (value) => {
@@ -20,21 +35,25 @@ export default class TextEditorWindow extends Component {
     }
   };
 
-
-
   render() {
     const { ...propsRest } = this.props;
+    const { value, RichTextEditor } = this.state;
+    
     return (
       <Window
         {...propsRest}
         minWidth={600}
       >
         <div style={{backgroundColor:'#fff', height: '100%', color:'#000'}}>
-        <RichTextEditor
-          style={{height: '100%'}}
-          value={this.state.value}
-          onChange={this.onChange}
-        />
+        {
+          RichTextEditor &&
+          <RichTextEditor
+            style={{height: '100%'}}
+            value={value}
+            onChange={this.onChange}
+          />
+        }
+        
         </div>
         
       </Window>
