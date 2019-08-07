@@ -4,12 +4,14 @@ import TerminalWindow from './TerminalWindow';
 import config from 'config';
 
 export default registerApp({
-  allowMultipleWindows: true,
+  //allowMultipleWindows: true,
   title: 'Terminal',
+  
   mainView: (props) => {
     return (
       <TerminalWindow {...props} />
     )
   },
+  
   iconSrc: `${config.HOST_ICON_URI_PREFIX}terminal/terminal.svg`
 });

@@ -13,6 +13,9 @@ export default class TerminalWindow extends Component {
     return (
       <Window
         {...propsRest}
+        minWidth="740"
+        minHeight="440"
+        sizeable= "false"
       >
         <XTerm 
           addons={['fit', 'winptyCompat', 'attach']}
