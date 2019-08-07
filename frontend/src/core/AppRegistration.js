@@ -51,8 +51,10 @@ class AppRegistration extends EventEmitter {
     this._mainView = mainView;
     this._appCmd = appCmd;
 
-    this._menuItems = menuItems;
+    // TODO: Handle accordingly
+    this._menuItems = menuItems || [];
 
+    // TODO: Rename w/ window prefixes
     this._position = {x: 0, y: 0};
     this._size = {width: 0, height: 0};
 
@@ -133,28 +135,11 @@ class AppRegistration extends EventEmitter {
     return this._supportedMimes;
   }
 
-  async closeApp() {
-    try {
-      if (!this._appRuntime.length) {
-        // Gracefully fail
-        console.warn('appRuntime is not registered');
-        return;
-      }
-
-      for(let i=0; i< this._appRuntime.length; i++){
-        let appRuntime = this._appRuntime[i];
-        await appRuntime.close();
-      }
-
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
   getTitle() {
     return this._title;
   }
 
+  // TODO: Don't call focus here directly, use appRuntime instead
   focus() {
     const appRuntimes = this.getAppRuntimes();
 
@@ -174,6 +159,23 @@ class AppRegistration extends EventEmitter {
 
   getMainWindow() {
     return this._mainView;
+  }
+
+  /**
+   * @return {Promise<void>}
+   */
+  async closeApp() {
+    try {
+      if (!this._appRuntime) {
+        // Gracefully fail
+        console.warn('appRuntime is not registered');
+        return;
+      }
+
+      await this._appRuntime.close();
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /**
