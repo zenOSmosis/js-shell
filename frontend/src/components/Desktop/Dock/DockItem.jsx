@@ -89,7 +89,7 @@ export default class DockItem extends Component {
           <div style={{position:'absolute'}}>
           <div 
             ref={ref => { this._overlay = ref }} 
-            className="zd-context-menu-overlay" 
+            className="zd-context-menu-overlay " 
           >
             <Menu
                 onClick={evt => this._handleClick(evt, appRegistration)}
@@ -101,7 +101,13 @@ export default class DockItem extends Component {
                   <MenuItem key={'focus-' + idx}>{runtime.getTitle()}</MenuItem>
                 ))
               }
-              <MenuDivider />
+
+              {
+                appRegistration.getAppRuntimes().length &&
+                <MenuDivider />
+              }
+
+              
               {
                 allowLaunch && 
                 <MenuItem key="launch">{appRegistration.getAppRuntimes().length?'Open new window':'Open'}</MenuItem>

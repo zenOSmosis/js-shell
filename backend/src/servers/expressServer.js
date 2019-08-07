@@ -9,6 +9,8 @@ const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
 const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
+
+const expressShell = require('../api/express/shell')
 // Apply custom reponse headers
 app.all('*', (req, res, next) => {
   for (const [header, value] of Object.entries(EXPRESS_CUSTOM_RESPONSE_HEADERS)) {
@@ -35,6 +37,8 @@ app.all('*', (req, res, next) => {
     // console.log(req.session);
     next();
   });
+
+  
 })();
 
 // Socket.io
@@ -128,6 +132,12 @@ app.use(express.static(PATH_PUBLIC));
 const start = () => {
   console.log(`Starting Express Server on *:${HTTP_LISTEN_PORT}`);
 
+//shell
+expressShell(app);
+
+  /*app.listen(3002, ()=>{
+    console.log('app listening')
+  })*/
   // WARNING: app.listen(80) will NOT work here
   // @see https://socket.io/docs/
   server.listen(HTTP_LISTEN_PORT, () => {
