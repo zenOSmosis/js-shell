@@ -15,7 +15,6 @@ import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
-// import './DocsApp';
 import './CalculatorApp';
 // import './SettingsApp';
 import './SourceCodeApp';

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Button from 'components/Button';
+
+// TODO: Remove OLD labeled switch
 import OLD_LabeledSwitch, {Switch} from 'components/OLD_LabeledSwitch';
+
 // import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 // import { Menu, MenuItem } from 'components/Menu';
 import { Select, Option } from 'components/Select';
@@ -10,7 +13,8 @@ import Cover from 'components/Cover';
 import Center from 'components/Center';
 import JSONEditor, { JSONEDITOR_MODE_CODE, JSONEDITOR_MODE_TREE, JSONEDITOR_MODE_VIEW } from 'components/JSONEditor';
 import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
-import socket, {socketAPIQuery, SocketLinkedState} from 'utils/socket.io';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
+import socket, {SocketLinkedState} from 'utils/socket.io';
 import hocConnect from 'state/hocConnect';
 
 // import { Input } from 'antd';
