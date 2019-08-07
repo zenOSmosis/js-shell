@@ -16,7 +16,7 @@ export {
   Section
 };
 
-export const Layout = (props) => {
+const Layout = (props) => {
   const {className, children, ...propsRest} = props;
 
   return (
@@ -29,6 +29,11 @@ export const Layout = (props) => {
       }
     </AntdLayout>
   );
+};
+
+export default Layout;
+export {
+  Layout
 };
 
 export const Header = (props) => {
