@@ -1,3 +1,8 @@
+//TODO: either use socket io 
+// https://github.com/xtermjs/xterm.js/issues/1972
+// or get it working with current express implementation (see expressServer.js server.listen(HTTP_LISTEN_PORT, () => {)
+
+
 const pty = require('node-pty');
 
 module.exports = expressShell;
