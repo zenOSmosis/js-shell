@@ -3,8 +3,6 @@ import { Menu,  MenuDivider,  MenuItem,  SubMenu  } from 'components/Menu';
 import Image from 'components/Image';
 import { Tooltip } from 'antd';
 import './style.css';
-// import { Menubar as MenubarModel } from 'core/ShellDesktop';
-
 
 export default class DockItem extends Component {
   state ={
@@ -26,7 +24,6 @@ export default class DockItem extends Component {
   _handleContextMenu = (evt) => {
     evt.stopPropagation();
     evt.preventDefault();
-
     this.setState({ menuVisible: true });
   };
 
@@ -34,15 +31,12 @@ export default class DockItem extends Component {
     if(this._overlay) {
       const { menuVisible } = this.state;
       const wasOutside = !(this._overlay.contains(evt.target));
-  console.log('wasOutside', wasOutside, evt.target, this._overlay, menuVisible)
       if (wasOutside && menuVisible) this.setState({ menuVisible: false, });
     }
-    
   };
 
   _handleDocScroll = () => {
     const { menuVisible } = this.state;
-
     if (menuVisible) this.setState({ menuVisible: false, });
   };
 
