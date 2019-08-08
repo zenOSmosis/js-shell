@@ -1,10 +1,11 @@
-import Window, {getWindowStack} from './Window';
+import Window, { getWindowStack, EVT_RESIZE } from './Window';
 // import hocConnect from 'state/hocConnect';
 // import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 
 export default Window;
 export {
-  getWindowStack
+  getWindowStack,
+  EVT_RESIZE
 };
 /*
 

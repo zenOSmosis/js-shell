@@ -47,7 +47,17 @@ module.exports = function override(config, env) {
   // @see https://medium.com/@vincentdnl/just-did-all-the-steps-in-the-article-on-a-fresh-cra-install-and-i-get-a-referenceerror-window-is-e200541533d0
   config.output['globalObject'] = 'this';
 
+  /*
+  if (!config.externals) {
+    config.externals = {};
+  };
+  config.externals = {...config.externals, {
+    ...newExternals
+  }};
+  */
+
   // Echo config, for debug purposes
+  // Note: This should come last, if echoing complete config
   console.log('Webpack config w/ overrides @ config-overrides.js', {
     config,
     env

@@ -13,8 +13,8 @@
     "browserslist": "^4.6.3",
     "caniuse-lite": "^1.0.30000974",
     "chai": "^4.2.0",
+    "classnames": "^2.2.6",
     "equals": "^1.0.5",
-    "express-ws": "^4.0.0",
     "fast-safe-stringify": "^2.0.6",
     "html2canvas": "^1.0.0-rc.3",
     "jquery": "^3.4.1",
@@ -23,7 +23,6 @@
     "mime-types": "^2.1.24",
     "moment": "^2.24.0",
     "monaco-editor-webpack-plugin": "^1.7.0",
-    "node-pty": "^0.8.1",
     "normalize.css": "^8.0.1",
     "react": "^16.8.6",
     "react-app-rewire-hot-loader": "^2.0.1",
@@ -48,13 +47,13 @@
     "simple-peer": "^9.5.0",
     "socket.io-client": "^2.2.0",
     "stacktrace-js": "^2.0.0",
-    "terminal-in-react": "^4.3.1",
     "text-ellipsis": "^1.0.3",
     "uuid": "^3.3.2",
+    "uuidv4": "^4.0.0",
     "v8-compile-cache": "^2.0.3",
     "webamp": "^1.4.0",
     "worker-loader": "^2.0.0",
-    "xterm": "^3.13.1"
+    "xterm": "^3.14.5"
   },
   "scripts": {
     "start": "REACT_APP_PUBLIC_GIT_SIGNATURE=`../cli/./echo-git-public-signature.sh` react-app-rewired start",

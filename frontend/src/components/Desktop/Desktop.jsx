@@ -30,8 +30,9 @@ import $ from 'jquery';
 
 class Desktop extends Component {
   state={
-    isFull: false
-  }
+    isFullScreen: false
+  };
+
   componentDidMount() {
     this._handleFocusUpdate();
   }
@@ -52,14 +53,14 @@ class Desktop extends Component {
         $body.removeClass('blur');
       }
     }
-  }
+  };
 
   render() {
     return (
       <div ref={c => this._el = c}>
         <Fullscreen
-          enabled={this.state.isFull}
-          onChange={isFull => this.setState({isFull})}
+          enabled={this.state.isFullScreen}
+          onChange={isFullScreen => this.setState({isFullScreen})}
         >
           <FullViewport>
 
@@ -76,7 +77,7 @@ class Desktop extends Component {
                   {
                     // Top Panel
                   }
-                  <Panel onFullScreenToggle={()=>this.setState({isFull:!this.state.isFull})} />
+                  <Panel onFullScreenToggle={()=>this.setState({isFullScreen:!this.state.isFullScreen})} />
 
                   <Notifications />
 

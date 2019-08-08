@@ -20,6 +20,7 @@
     "socket.io": "^2.2.0",
     "stacktrace-js": "^2.0.0",
     "systeminformation": "^4.14.4",
+    "uuidv4": "^4.0.0",
     "v8-compile-cache": "^2.0.3"
   },
   "devDependencies": {
