@@ -108,16 +108,16 @@ class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     nativeWorker.postMessage(message, transfer);
   }
 
-  kill(killSignal = 0) {
+  exit(exitSignal = 0) {
     console.warn('TODO: Implement Web Worker terminate handling');
 
     // Emit to host
     /*
     this.stdctrl.write({
       // TODO: Use constant for ctrl message
-      ctrlMessage: 'kill',
+      ctrlMessage: 'exit',
       ctrlData: {
-        killSignal
+        exitSignal
       }
     });
     */

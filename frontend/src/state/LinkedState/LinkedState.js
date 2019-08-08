@@ -187,7 +187,7 @@ class LinkedState extends EventEmitter {
   /**
    * Alias of this.destroy().
    */
-  kill() {
+  exit() {
     this.destroy();
   }
 }

@@ -21,12 +21,12 @@ class Keyboard extends ClientProcess {
     }
   }
 
-  kill() {
+  exit() {
     doc.removeEventListener('keydown', this._handleKeyboardInteract);
     doc.removeEventListener('keypress', this._handleKeyboardInteract);
     doc.removeEventListener('keyup', this._handleKeyboardInteract);
 
-    super.kill();
+    super.exit();
   }
 }
 
@@ -55,6 +55,6 @@ new ClientGUIProcess((proc) => {
   });
 
   proc.on('beforeExit', () => {
-    keyboard.kill();
+    keyboard.exit();
   });
 });

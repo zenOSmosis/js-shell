@@ -82,11 +82,11 @@ class MicrophoneProcess extends ClientAudioProcess {
     }
   }
 
-  async kill(killSignal = 0) {
+  async exit(exitSignal = 0) {
     try {
       await this._stopMic();
   
-      await super.kill(killSignal);
+      await super.exit(exitSignal);
     } catch (exc) {
       throw exc;
     }

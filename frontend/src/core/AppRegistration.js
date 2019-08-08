@@ -211,7 +211,7 @@ class AppRegistration extends EventEmitter {
         const appRuntimes = this.getAppRuntimes();
         for(let i=0; i< appRuntimes.length; i++){
           let appRuntime = appRuntimes[i];
-          await appRuntime.kill();
+          await appRuntime.exit();
         }
       }
   

@@ -106,23 +106,23 @@ class ClientGUIProcess extends ClientProcess {
   }
 
   /**
-   * Unmounts the view and kills the process.
+   * Unmounts the view and exits the process.
    * 
-   * @param {number} killSignal
+   * @param {number} exitSignal
    * @return {Promise<void>}
    */
-  async kill(killSignal = 0) {
+  async exit(exitSignal = 0) {
     try {
       if (this._mountedReactComponent) {
         this._mountedReactComponent.empty();
       }
   
-      // Note, this is an asynchronous operation...  kill should probably be an async function w/ optional signal
+      // Note, this is an asynchronous operation...  exit should probably be an async function w/ optional signal
   
-      // Allow view to unset before calling super.kill().
+      // Allow view to unset before calling super.exit().
       // TODO: Debug this; Not sure if we should use setImmediate, nextTick, or just pass through
       // this.setImmediate(async () => {
-      await super.kill(killSignal);
+      await super.exit(exitSignal);
       // }); 
     } catch (exc) {
       throw exc;

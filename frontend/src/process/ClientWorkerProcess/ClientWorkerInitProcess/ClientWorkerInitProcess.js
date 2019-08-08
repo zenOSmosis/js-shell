@@ -242,7 +242,7 @@ class ClientWorkerInitProcess extends ClientProcess {
       await super._init();
 
       // KILL THIS AUTHENTICATOR PROCESS AFTER INIT
-      this.kill();
+      this.exit();
     } catch (exc) {
       throw exc;
     }
