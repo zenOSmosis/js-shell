@@ -497,9 +497,9 @@ class ClientProcess extends EventEmitter {
         return await this.evalInProcessContext(this._cmd);
       }
     } catch (exc) {
-      // Automatically kill if crashed
-      // TODO: Use killSignal constant for error
-      this.kill(1);
+      // Automatically exit if crashed
+      // TODO: Use exitSignal constant for error
+      this.exit(1);
 
       throw exc;
     }
@@ -723,7 +723,7 @@ class ClientProcess extends EventEmitter {
       });
       
       if (shouldClose) {
-        return await this.kill();
+        return await this.exit();
       }
     } catch (exc) {
       throw exc;
@@ -735,8 +735,8 @@ class ClientProcess extends EventEmitter {
    * 
    * @return {Promise<void>}
    */
-  async kill(killSignal = 0) {
-    // Prevent trying to kill an already exited process
+  async exit(exitSignal = 0) {
+    // Prevent trying to exit an already exited process
     if (this._isShuttingDown || this._isExited) {
       console.warn('Process already exited, or is shutting down');
       return;
@@ -757,7 +757,7 @@ class ClientProcess extends EventEmitter {
       try {
         const proc = children[i];
 
-        await proc.kill();
+        await proc.exit();
       } catch (exc) {
         console.error(exc);
       }
@@ -770,14 +770,14 @@ class ClientProcess extends EventEmitter {
     this._isExited = true;
 
     // Let anyone know that this operation has completed
-    this.emit(EVT_EXIT, killSignal);
+    this.emit(EVT_EXIT, exitSignal);
 
     // Clean up event handles
     // Important! This must be called after all other event emits have been
     // called (including EVT_EXIT!)
     this.removeAllListeners();
 
-    // console.debug(`Exited ${this.getClassName()} with signal: ${killSignal}`, this);
+    // console.debug(`Exited ${this.getClassName()} with signal: ${exitSignal}`, this);
   }
 
   /**

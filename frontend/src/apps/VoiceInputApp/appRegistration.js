@@ -113,7 +113,7 @@ export default registerApp({
                       // TODO: Use EVT_BEFORE_EXIT
                       mic.on('beforeExit', async () => {
                         try {
-                          await audioWorker.kill();
+                          await audioWorker.exit();
 
                           audioWorker = null;
                         } catch (exc) {
@@ -207,7 +207,7 @@ export default registerApp({
                 return;
               }
 
-              await micProcess.kill();
+              await micProcess.exit();
               micProcess = null;
             }
           }

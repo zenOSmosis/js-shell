@@ -27,13 +27,13 @@ const fetchScripts = async (uris) => {
     const sources = await new Promise((resolve, reject) => {
       // Handle successful data
       workerProcess.stdout.on('data' , (data) => {
-        workerProcess.kill();
+        workerProcess.exit();
         resolve(data);
       });
 
       // Handle data errors
       workerProcess.stderr.on('data', (err) => {
-        workerProcess.kill();
+        workerProcess.exit();
         reject(err);
       });
     });
