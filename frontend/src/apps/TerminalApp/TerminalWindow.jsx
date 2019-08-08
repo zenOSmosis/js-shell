@@ -77,12 +77,12 @@ export default class TerminalWindow extends Component {
     */
 
     this._socketChannel.on('data', (data) => {
-      this._xterm.write(data);
+      this._xterm.write(this._socketChannel.ab2str(data));
     });
   }
 
-  _handleInput = (input) => {
-    this._socketChannel.write(input);
+  _handleInput = (data) => {
+    this._socketChannel.write(this._socketChannel.str2ab(data));
   };
 
   render() {

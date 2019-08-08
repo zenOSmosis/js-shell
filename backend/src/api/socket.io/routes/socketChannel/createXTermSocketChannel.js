@@ -9,15 +9,15 @@ const fs = require('fs');
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
-const createXTermSocketChannel = async(options = {}, ack) => {
+const createXTermSocketChannel = async (options = {}, ack) => {
   return handleSocketAPIRoute(() => {
     const { socket } = options;
-    
+
     const socketChannel = new SocketChannel(socket);
     const socketChannelID = socketChannel.getChannelID();
 
     // create shell process
-	  var ptyProcess = pty.spawn(shell, [], {
+    var ptyProcess = pty.spawn(shell, [], {
       name: 'xterm-color',
       cols: 80,
       rows: 30,
@@ -25,22 +25,25 @@ const createXTermSocketChannel = async(options = {}, ack) => {
       env: process.env
     });
 
-    // store term's output into buffer or emit through socket
     ptyProcess.on('data', (data) => {
-      socketChannel.write(data);
+      socketChannel.write(socketChannel.str2ab(data));
     });
 
     socketChannel.on('data', (data) => {
-			ptyProcess.write(data);
+      ptyProcess.write(socketChannel.ab2str(data));
     });
-    
+
     socketChannel.on('disconnect', () => {
       ptyProcess.kill();
     });
 
     // console.log('socketChannelID', socketChannelID);
 
-    return{
+    // ptyProcess.write('ls\r');
+    // ptyProcess.resize(100, 40);
+    // ptyProcess.write('ls\r');
+
+    return {
       socketChannelID
     };
 

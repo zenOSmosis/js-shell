@@ -41,13 +41,6 @@ class SocketChannel extends EventEmitter {
   }
 
   emit(evtName, data) {
-    /*
-    console.log('emit', {
-      evtName,
-      data
-    });
-    */
-
     // Send event over Socket.io
     this._socket.emit(this.getChannelID(), {
       evtName,
@@ -72,6 +65,25 @@ class SocketChannel extends EventEmitter {
     // Pass underneath this instance, so we don't re-emit over Socket.io
     super.emit(evtName, data);
   };
+
+  // @see https://gist.github.com/skratchdot/e095036fad80597f1c1a
+  // source: http://stackoverflow.com/a/11058858
+  str2ab(str) {
+    // Note: Using Uint8Array sends arrow keystrokes as they should be
+    var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
+    for (var i = 0, strLen = str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
+  // @see https://gist.github.com/skratchdot/e095036fad80597f1c1a
+  // source: http://stackoverflow.com/a/11058858
+  ab2str(buf) {
+    // Note: Using Uint8Array sends arrow keystrokes as they should be
+    return String.fromCharCode.apply(null, new Uint8Array(buf));
+  }
 
   disconnect() {
     this.emit(EVT_BEFORE_DISCONNECT);
