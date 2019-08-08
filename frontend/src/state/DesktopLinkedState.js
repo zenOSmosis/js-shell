@@ -52,7 +52,10 @@ class DesktopLinkedState extends LinkedState {
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
       // Whether the browser window is focused or not
-      isFocused: true
+      isFocused: true,
+
+      // Whether the desktop is in full-screen mode
+      isFullScreenRequested: false
     });
   }
 
