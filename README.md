@@ -1,13 +1,4 @@
-| Branch            | Status            |
-| ----------------- | ----------------- |
-| master | [![Build Status](https://api.travis-ci.com/zenosmosis/js-shell.svg?branch=master)](https://travis-ci.com/zenosmosis/js-shell?branch=master) |
-
-
-# JS Shell
-
-**Note: This is currently prototype and experimental code; it is not recommended for usage at all right now**
-=======
-![GitHub License](https://img.shields.io/github/license/zenosmosis/js-shell)
+[![GitHub License](https://img.shields.io/github/license/zenosmosis/js-shell)](https://raw.githubusercontent.com/zenOSmosis/js-shell/master/LICENSE.txt)
 [![Build Status](https://travis-ci.com/zenOSmosis/js-shell.svg?branch=master)](https://travis-ci.com/zenOSmosis/js-shell)
 
 # JS Shell
