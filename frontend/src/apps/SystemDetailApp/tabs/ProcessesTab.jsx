@@ -178,7 +178,7 @@ class Processes extends Component {
 
                     </td>
                     <td>
-                      <button onClick={evt => process.kill()}>Close</button>
+                      <button onClick={evt => process.exit()}>Close</button>
                       <button>Detail</button>
                     </td>
                   </tr>

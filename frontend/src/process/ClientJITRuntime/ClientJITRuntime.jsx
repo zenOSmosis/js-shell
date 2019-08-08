@@ -111,7 +111,7 @@ class ClientJITRuntime extends ClientProcess {
       const compiledCode = await this.compile(code, babelCompilerWorker);
 
       // We're done w/ the compiler
-      babelCompilerWorker.kill();
+      babelCompilerWorker.exit();
 
       // Evaluate JavaScript in the given context
       this._evalInProtectedContext(compiledCode);

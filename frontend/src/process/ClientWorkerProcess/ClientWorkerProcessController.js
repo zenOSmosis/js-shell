@@ -201,16 +201,16 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
   /**
    * Kills the native Worker.
    * 
-   * @param {number} killSignal 
+   * @param {number} exitSignal 
    */
-  async kill(killSignal = 0) {
+  async exit(exitSignal = 0) {
     if (this._nativeWorker) {
       // TODO: Send signal to remote worker before terminating
 
       this._nativeWorker.terminate();
     }
 
-    await super.kill(killSignal);
+    await super.exit(exitSignal);
   }
 }
 

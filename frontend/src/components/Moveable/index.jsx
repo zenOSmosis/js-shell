@@ -58,7 +58,7 @@ export default class Moveable extends Component {
     });
     const { onMove } = this.props;
     if (typeof onMove === 'function') {
-      onMove({x: posX, y: posY});
+      onMove({ x: posX, y: posY });
     }
   }
 
@@ -73,7 +73,13 @@ export default class Moveable extends Component {
   }
 
   render() {
-    const { children, initialX, initialY, ...propsRest } = this.props;
+    const {
+      children,
+      initialX,
+      initialY,
+      onMove,
+      ...propsRest
+    } = this.props;
 
     return (
       <div
