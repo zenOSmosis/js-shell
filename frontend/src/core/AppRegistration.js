@@ -48,9 +48,9 @@ class AppRegistration extends EventEmitter {
     // TODO: Handle accordingly
     this._menuItems = menuItems || [];
 
-    // TODO: Rename w/ _windowInitial prefixes
-    this._position = { x: 0, y: 0 };
-    this._size = { width: 0, height: 0 };
+    // Previous position and size
+    this._lastPosition = { x: 0, y: 0 };
+    this._lastSize = { width: 0, height: 0 };
 
     this._isUnregistered = false;
     this._supportedMimes = supportedMimes || [];
@@ -74,8 +74,8 @@ class AppRegistration extends EventEmitter {
 
       // Set positioning
       // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
-      if (this._position.x === 0 && this._position.y === 0) {
-        this._position = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
+      if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
+        this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
       }
       ++_createdWindowsCount;
 
@@ -84,20 +84,17 @@ class AppRegistration extends EventEmitter {
         iconSrc: this._iconSrc,
         mainView: this._mainView,
         appCmd: this._appCmd,
-        position: this._position,
-        size: this._size,
+        position: this._lastPosition,
+        size: this._lastSize,
         menuItems: this._menuItems,
         cmdArguments
       });
 
       // Handle cleanup when the app exits
       appRuntime.on(EVT_EXIT, () => {
-        // save last position / size
-        console.log('getInitPosition', self._position)
-        this._position = appRuntime.getInitPosition();
-
-        console.log('getInitPosition', this._position)
-        this._size = appRuntime.getInitSize();
+        // Retain position and size for next open
+        this._lastPosition = appRuntime.getInitPosition();
+        this._lastSize = appRuntime.getInitSize();
 
         this._isLaunched = false;
 
@@ -111,21 +108,6 @@ class AppRegistration extends EventEmitter {
           commonAppRegistryLinkedState.emitRegistrationsUpdate();
         }
       });
-
-      // Save position for next opening
-      // TODO: Move this to AppRuntime
-      /*
-      appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
-        const { position, size } = position_size;
-        if (position) {
-          this._position = position;
-        }
-
-        if (size) {
-          this._size = size;
-        }
-      });
-      */
 
       await appRuntime.onceReady();
 
@@ -168,7 +150,6 @@ class AppRegistration extends EventEmitter {
     return this._supportedMimes;
   }
 
-
   /**
    * @return {Promise<void>}
    */
@@ -191,7 +172,6 @@ class AppRegistration extends EventEmitter {
       throw exc;
     }
   }
-
 
   /**
    * @return {string}
