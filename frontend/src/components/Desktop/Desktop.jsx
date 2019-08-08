@@ -5,7 +5,7 @@ import './style.css';
 import './style-scrollbar.css';
 
 import React, { Component } from 'react';
-import Fullscreen from "react-full-screen";
+import Fullscreen from 'react-full-screen';
 import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
@@ -30,26 +30,6 @@ import 'apps/defaultApps';
 import $ from 'jquery';
 
 class Desktop extends Component {
-  state={
-    isFull: false,
-    isLoggedIn: false
-  }
-
-  constructor(props = {}) {
-    super();
-
-    this._desktopLinkedState = new DesktopLinkedState();
-    this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-      const { isLoggedIn } = updatedState;
-      if (typeof isLoggedIn !== 'undefined') {
-        this.setState({isLoggedIn});
-      }
-    });
-  }
-
-
-  
-
   componentDidMount() {
     this._handleFocusUpdate();
   }
@@ -74,13 +54,13 @@ class Desktop extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.state;
-    //const isLoggedIn = true;
+    const { isFullScreenRequested } = this.props;
+
     return (
       <div ref={c => this._el = c}>
         <Fullscreen
-          enabled={this.state.isFull}
-          onChange={isFull => this.setState({isFull})}
+          enabled={isFullScreenRequested}
+          // onChange={isFullScreenRequested => this.setState({isFullScreenRequested})}
         >
           <FullViewport>
 
@@ -90,49 +70,48 @@ class Desktop extends Component {
 
             <ContextMenu>
 
-              <DesktopBackground ref={c => this._desktopBackground = c} className={isLoggedIn ? '' : 'blurred'} >
-                {isLoggedIn && (
-                  <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
+              <DesktopBackground ref={c => this._desktopBackground = c}>
 
-                    {
-                      // Top Panel
-                    }
-                    <Panel onFullScreenToggle={()=>this.setState({isFull:!this.state.isFull})} />
+                <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
 
-                    <Notifications />
+                  {
+                    // Top Panel
+                  }
+                  <Panel />
 
-                    {
-                      // TODO: Implement DrawersLayer as a separate component
-                      // @see https://ant.design/components/drawer/
-                      /*
-                      <Drawer
-                        mask={false}
-                        bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                        onContextMenu={ (evt) => alert('context') }
-                        placement="right"
-                        visible={true}
-                      >
-                        Well, hello
-                      </Drawer>
-                      */
-                    }
+                  <Notifications />
 
-                    {
-                      // Binds windows to URI location; sets page title
-                      // <AppRouteController />
-                    }
+                  {
+                    // TODO: Implement DrawersLayer as a separate component
+                    // @see https://ant.design/components/drawer/
+                    /*
+                    <Drawer
+                      mask={false}
+                      bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                      onContextMenu={ (evt) => alert('context') }
+                      placement="right"
+                      visible={true}
+                    >
+                      Well, hello
+                    </Drawer>
+                    */
+                  }
 
-                    <AppRuntimeRenderProvider />
+                  {
+                    // Binds windows to URI location; sets page title
+                    // <AppRouteController />
+                  }
 
-                    <VersionLabel />
+                  <AppRuntimeRenderProvider />
 
-                    {
-                      // Bottom Dock
-                    }
-                    <Dock />
+                  <VersionLabel />
 
-                  </div>
-                )}
+                  {
+                    // Bottom Dock
+                  }
+                  <Dock />
+
+                </div>
 
               </DesktopBackground>
               {
@@ -150,7 +129,8 @@ class Desktop extends Component {
 }
 
 export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
-  const { isFocused, isLoggedIn } = updatedState;
+  const { isFocused, isFullScreenRequested } = updatedState;
+
   let filteredState = {};
 
   if (typeof isLoggedIn !== 'undefined') {
@@ -159,6 +139,10 @@ export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
 
   if (typeof isFocused !== 'undefined') {
     filteredState.isFocused = isFocused;
+  }
+
+  if (typeof isFullScreenRequested !== 'undefined') {
+    filteredState.isFullScreenRequested = isFullScreenRequested;
   }
 
   if (Object.keys(filteredState).length) {
