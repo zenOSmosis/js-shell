@@ -6,9 +6,6 @@ import './AppRuntime.typedef';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
 
-// TODO: Handle via DesktopLinkedState
-let _focusedAppRuntime = null;
-
 // export const EVT_CONTENT_UPDATE = 'content-update';
 // export const EVT_TITLE_UPDATE = 'title-update';
 // export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
@@ -40,6 +37,7 @@ class AppRuntime extends ClientGUIProcess {
     this._mainView = null;
     this._appCmd = null;
     this._isFocused = false;
+    this._isMinimized = false;
     //TODO: do get set?
     this.menuItems = runProps.menuItems;
 
@@ -102,19 +100,24 @@ class AppRuntime extends ClientGUIProcess {
       });
 
       this.on(EVT_FOCUS, () => {
+        const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
+        console.log('received focus for', this._title, 'last focused was', focusedAppRuntime?focusedAppRuntime._title:'null')
         // Ignore if already focused
-        if (Object.is(this, _focusedAppRuntime)) {
+        /*if (Object.is(this, focusedAppRuntime)) {
           return;
-        }
+        }*/
   
         // Blur existing GUI process, if present
-        if (_focusedAppRuntime) {
-          _focusedAppRuntime.blur();
-        }
+        /*if (focusedAppRuntime) {
+          focusedAppRuntime.blur();
+        }*/
   
-        _focusedAppRuntime = this;
-        commonDesktopLinkedState.setFocusedAppRuntme(this);
+        commonDesktopLinkedState.setFocusedAppRuntime(this);
       });
+
+      this.on(EVT_BLUR, () => {
+        
+      })
 
       // Register w/ DesktopLinkedState
       // Note (as of the time of writing) the underlying ClientProcess also
@@ -123,12 +126,21 @@ class AppRuntime extends ClientGUIProcess {
       commonDesktopLinkedState.addLaunchedAppRuntime(this);
 
       this.once(EVT_BEFORE_EXIT, () => {
-        if (Object.is(this, _focusedAppRuntime)) {
-          // TODO: Handle via DesktopLinkedState
-          _focusedAppRuntime = null;
-          commonDesktopLinkedState.setFocusedAppRuntme(null);
-        }
+        const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
+        if (Object.is(this, focusedAppRuntime)) {
 
+          const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
+          const lenAppRuntimeFocusOrder = appRuntimeFocusOrder.length;
+
+          const lastFocusedRuntime = appRuntimeFocusOrder[lenAppRuntimeFocusOrder - 2];
+          if(lastFocusedRuntime) {
+            // pass focus to latest focused window
+            lastFocusedRuntime.focus();
+          } else {
+            commonDesktopLinkedState.setFocusedAppRuntime(null);
+          }
+        }
+        
         // Unregister from DesktopLinkedState
         commonDesktopLinkedState.removeLaunchedAppRuntime(this);
       });
@@ -143,6 +155,11 @@ class AppRuntime extends ClientGUIProcess {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  onMinimize() {
+    this._isMinimized = true;
+    commonDesktopLinkedState.setMinimizedAppRuntime(this);
   }
 
   onResizeMove(position, size) {
@@ -199,6 +216,7 @@ class AppRuntime extends ClientGUIProcess {
    * Utilizes this.setIsFocused().
    */
   focus() {
+    this._isMinimized = false;
     this.setIsFocused(true);
   }
 
@@ -225,14 +243,14 @@ class AppRuntime extends ClientGUIProcess {
    * @param {boolean} isFocused 
    */
   setIsFocused(isFocused) {
+    // TODO: Remove
+    console.debug(`${isFocused ? 'Focusing' : 'Blurring'} app runtime`, this._title, this);
+
     // Ignore duplicate
     if (this._isFocused === isFocused) {
       console.warn('isFocused is already set to:', isFocused);
       return;
     }
-
-    // TODO: Remove
-    console.debug(`${isFocused ? 'Focusing' : 'Blurring'} app runtime`, this);
 
     this.setImmediate(() => {
       this._isFocused = isFocused;

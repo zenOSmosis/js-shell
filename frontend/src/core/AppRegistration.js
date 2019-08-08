@@ -1,11 +1,18 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
-import { EVT_EXIT } from 'process/ClientProcess';
+import DesktopLinkedState from 'state/DesktopLinkedState';
+import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
+const commonDesktopLinkedState = new DesktopLinkedState();
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
 let _createdWindowsCount = 0;
+
+
+
+
+
 
 /**
  * Creates a registration which automatically populates app menus and the Dock
@@ -184,7 +191,9 @@ class AppRegistration extends EventEmitter {
    * Focuses all related AppRuntime instances.
    */
   focus() {
-    this._appRuntimes.forEach(a => a.focus());
+    //focus respecting order
+    const apps = commonDesktopLinkedState.getAppRuntimeFocusOrder().filter(a => (this._appRuntime.indexOf(a)>-1))
+    apps.forEach(a=> a.focus());
   }
 
   getIconSrc() {

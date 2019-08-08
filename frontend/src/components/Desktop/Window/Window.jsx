@@ -30,7 +30,9 @@ const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
 
+// Exported events
 export const EVT_RESIZE = 'resize';
+// (... currently implemented as needed)
 
 const CSS_CLASS_NAME_FOCUS = 'focus';
 const CSS_CLASS_NAME_HIDE = 'hide';
@@ -330,6 +332,9 @@ export default class Window extends Component {
 
     // TODO: display: none
 
+    // notify AppRuntime to pass focus
+    this.props.app.onMinimize();
+
     $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
@@ -371,10 +376,8 @@ export default class Window extends Component {
   }
 
   async restore() {
-    console.log('restore')
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
-    if (this._isMinimized) {
-      console.log('restore2')
+    if(this._isMinimized) {
       await this.unhide();
       await this.animate(EFFECT_RESTORE);
       this._isMinimized = false;
