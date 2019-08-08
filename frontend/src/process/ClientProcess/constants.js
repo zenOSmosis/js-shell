@@ -21,7 +21,7 @@ export const EVT_TICK = 'tick';
 export const EVT_BEFORE_EXIT = 'beforeExit';
 export const EVT_EXIT = 'exit';
 
-export const EVT_WINDOW_RESIZE = 'window_resize';
+//export const EVT_WINDOW_RESIZE = 'window_resize';
 
 export const EVT_STATE_UPDATE = 'stateUpdate';
 

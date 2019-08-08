@@ -34,10 +34,11 @@ class AppRegistration extends EventEmitter {
         cmd: appCmd,
         supportedMimes,
         menuItems,
+        allowMultipleWindows,
     } = runProps;
 
     this._isLaunched = false;
-    this._appRuntime = null;
+    this._appRuntime = [];
 
     this._title = title;
     this._iconSrc = iconSrc;
@@ -54,13 +55,15 @@ class AppRegistration extends EventEmitter {
     this._isUnregistered = false;
     this._supportedMimes = supportedMimes || [];
 
+    this._allowMultipleWindows = allowMultipleWindows;
+
     // Add this app registration to the registry
     commonAppRegistryLinkedState.addAppRegistration(this);
   }
 
   async launchApp(cmdArguments) {
     try {
-      if (this._appRuntime) {
+      if (this._appRuntime.length && !this._allowMultipleWindows) {
         // Gracefully fail
         console.warn('App is already launched, or is launching');
         return;
@@ -71,7 +74,7 @@ class AppRegistration extends EventEmitter {
       }
       _createdWindowsCount++;
       
-      this._appRuntime = new AppRuntime({
+      const appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
         mainView: this._mainView,
@@ -82,28 +85,24 @@ class AppRegistration extends EventEmitter {
         cmdArguments
       });
   
+      const self = this;
       // Handle cleanup when the app exits
-      this._appRuntime.on(EVT_EXIT, () => {
-        this._isLaunched = false;
-        this._appRuntime = null;
-
+      appRuntime.on(EVT_EXIT, () => {
+        // save last position / size
+        console.log('getInitPosition', self._position)
+        self._position = appRuntime.getInitPosition();
+        console.log('getInitPosition', self._position)
+        self._size = appRuntime.getInitSize();
+        self._isLaunched = false;
+        // CHECK: remove correct appruntime
+        self._appRuntime = self._appRuntime.filter(a=>(a!==appRuntime)) ;
         // Emit to listeners that the app is closed
         commonAppRegistryLinkedState.emitRegistrationsUpdate();
       });
 
-      //save position for next opening
-      this._appRuntime.on(EVT_WINDOW_RESIZE, (position_size) => {
-        const { position, size } = position_size;
-        if(position) {
-          this._position = position;
-        }
+      await appRuntime.onceReady();
 
-        if(size) {
-          this._size = size;
-        }
-      });
-
-      await this._appRuntime.onceReady();
+      this._appRuntime.push(appRuntime);
   
       this._isLaunched = true;
 
@@ -117,18 +116,44 @@ class AppRegistration extends EventEmitter {
   getIsLaunched() {
     return this._isLaunched;
   }
+
+  getAllowMultipleWindows() {
+    return this._allowMultipleWindows;
+  }
   
   /**
    * Retrieves the launched app's process runtime, if available.
    * 
    * @return {AppRuntime}
    */
-  getAppRuntime() {
+  getAppRuntimes() {
     return this._appRuntime;
   }
 
   getSupportedMimes() {
     return this._supportedMimes;
+  }
+
+
+  /**
+   * @return {Promise<void>}
+   */
+  async closeApp() {
+    try {
+      if (!this._appRuntime.length) {
+        // Gracefully fail
+        console.warn('appRuntime is not registered');
+        return;
+      }
+
+      for(let i=0; i< this._appRuntime.length; i++){
+        let appRuntime = this._appRuntime[i];
+        await appRuntime.close();
+      }
+
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   getTitle() {
@@ -137,7 +162,7 @@ class AppRegistration extends EventEmitter {
 
   // TODO: Don't call focus here directly, use appRuntime instead
   focus() {
-    this._appRuntime.focus();
+    this._appRuntime.forEach(a=> a.focus());
   }
 
   getIconSrc() {
@@ -149,23 +174,6 @@ class AppRegistration extends EventEmitter {
   }
 
   /**
-   * @return {Promise<void>}
-   */
-  async closeApp() {
-    try {
-      if (!this._appRuntime) {
-        // Gracefully fail
-        console.warn('appRuntime is not registered');
-        return;
-      }
-
-      await this._appRuntime.close();
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
-  /**
    * Removes this app from the Desktop registry.
    * 
    * Important!  Once the app is unregistered, it is no longer available in the
@@ -174,9 +182,11 @@ class AppRegistration extends EventEmitter {
   async unregister() {
     try {
       if (this.getIsLaunched()) {
-        const appRuntime = this.getAppRuntime();
-  
-        await appRuntime.kill();
+        const appRuntimes = this.getAppRuntimes();
+        for(let i=0; i< appRuntimes.length; i++){
+          let appRuntime = appRuntimes[i];
+          await appRuntime.kill();
+        }
       }
   
       commonAppRegistryLinkedState.removeAppRegistration(this);

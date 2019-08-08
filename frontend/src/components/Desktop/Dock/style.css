@@ -23,7 +23,7 @@
   max-width: 90%;
   height: 100%;
   max-width: 100%;
-
+/*position: relative;*/
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -55,4 +55,42 @@
 .zd-desktop-dock .zd-desktop-dock-items button {
   background-color: transparent;
   border: 0px;
+}
+
+.zd-context-menu-overlay {
+  position: absolute;
+  bottom:60px;
+  width:200px;
+  left:-70px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.arrow_box {
+	position: relative;
+	background: #88b7d5;
+	border: 1px solid #c2e1f5;
+}
+.arrow_box:after, .arrow_box:before {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.arrow_box:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-top-color: #88b7d5;
+	border-width: 30px;
+	margin-left: -30px;
+}
+.arrow_box:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-top-color: #c2e1f5;
+	border-width: 31px;
+	margin-left: -31px;
 }
