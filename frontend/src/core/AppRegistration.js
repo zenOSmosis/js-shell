@@ -191,9 +191,17 @@ class AppRegistration extends EventEmitter {
    * Focuses all related AppRuntime instances.
    */
   focus() {
+    const appRuntimes = this.getAppRuntimes();
+
+    const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
+    let linkedApps = [];
+
+    if (Array.isArray(appRuntimeFocusOrder)) {
+      linkedApps = appRuntimeFocusOrder.filter(a => (appRuntimes.indexOf(a)>-1));
+    }
+
     //focus respecting order
-    const apps = commonDesktopLinkedState.getAppRuntimeFocusOrder().filter(a => (this._appRuntime.indexOf(a)>-1))
-    apps.forEach(a=> a.focus());
+    linkedApps.forEach(a=> a.focus());
   }
 
   getIconSrc() {
