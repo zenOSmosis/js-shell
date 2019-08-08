@@ -20,10 +20,6 @@ const RESIZE_DIRECTION_WEST = 'w';
 const RESIZE_DIRECTION_NORTHWEST = 'nw';
 
 export default class DragResizable extends Component {
-  position = {
-    x: 1, y: 1
-  }
-  size = {height: 1,width: 1}
   constructor(...args) {
     super(...args);
 
@@ -65,10 +61,10 @@ export default class DragResizable extends Component {
       const initialWidth = this.$main.outerWidth();
       const initialHeight = this.$main.outerHeight();
 
-      this._position ={
+      this._position = {
         x: initialPosX, y: initialPosY,
       }
-      this._size = {height: initialHeight,width: initialWidth}
+      this._size = { height: initialHeight, width: initialWidth }
     }
 
     this._setMinWidthHeight();
@@ -236,7 +232,7 @@ export default class DragResizable extends Component {
       $main.css({
         height: newHeight
       });
-      this._size.height=newHeight;
+      this._size.height = newHeight;
 
       this._moveTo(posX, this._initialPosY + deltaY);
     }
@@ -257,7 +253,7 @@ export default class DragResizable extends Component {
   _handleResizeSouth($main, deltaY) {
     const { minHeight } = this.props;
     const newHeight = this._initialHeight + deltaY;
-    this._size.height=newHeight;
+    this._size.height = newHeight;
 
     if (newHeight >= minHeight) {
       $main.css({
@@ -270,7 +266,7 @@ export default class DragResizable extends Component {
     const { minWidth } = this.props;
     const newWidth = this._initialWidth - deltaX;
     this._size.width = newWidth;
-    
+
 
     if (newWidth >= minWidth) {
       $main.css({
@@ -311,6 +307,7 @@ export default class DragResizable extends Component {
   render() {
     let {
       children,
+      enable,
       bodyClassName,
       className,
       onBodyMount,
@@ -325,8 +322,8 @@ export default class DragResizable extends Component {
       ...propsRest
     } = this.props;
 
-    if(this.props.enable){
-      return  (
+    if (enable) {
+      return (
         <div
           {...propsRest}
           ref={c => this.root = c}
@@ -427,7 +424,7 @@ export default class DragResizable extends Component {
           </div>
         </div>
       )
-    }else {
+    } else {
       return (
         <div
           {...propsRest}
@@ -454,6 +451,6 @@ export default class DragResizable extends Component {
         </div>
       )
     }
-      
+
   }
 }

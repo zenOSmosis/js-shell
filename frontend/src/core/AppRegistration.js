@@ -54,9 +54,9 @@ class AppRegistration extends EventEmitter {
     // TODO: Handle accordingly
     this._menuItems = menuItems || [];
 
-    // TODO: Rename w/ window prefixes
-    this._position = {x: 0, y: 0};
-    this._size = {width: 0, height: 0};
+    // Previous position and size
+    this._lastPosition = { x: 0, y: 0 };
+    this._lastSize = { width: 0, height: 0 };
 
     this._isUnregistered = false;
     this._supportedMimes = supportedMimes || [];
@@ -75,8 +75,10 @@ class AppRegistration extends EventEmitter {
         return;
       }
 
-      if(this._position.x === 0 && this._position.y === 0 ){
-        this._position = {x: _createdWindowsCount*20, y: _createdWindowsCount*20}
+      // Set positioning
+      // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
+      if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
+        this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
       }
       _createdWindowsCount++;
       
@@ -85,20 +87,32 @@ class AppRegistration extends EventEmitter {
         iconSrc: this._iconSrc,
         mainView: this._mainView,
         appCmd: this._appCmd,
-        position: this._position,
-        size: this._size,
+        position: this._lastPosition,
+        size: this._lastSize,
         menuItems: this._menuItems,
         cmdArguments
       });
   
       const self = this;
       // Handle cleanup when the app exits
-      this._appRuntime.on(EVT_EXIT, () => {
+      appRuntime.on(EVT_EXIT, () => {
+        // Retain position and size for next open
+        this._lastPosition = appRuntime.getInitPosition();
+        this._lastSize = appRuntime.getInitSize();
+
         this._isLaunched = false;
         this._appRuntime = null;
 
-        // Emit to listeners that the app is closed
-        commonAppRegistryLinkedState.emitRegistrationsUpdate();
+
+        // Remove this appRuntime instance
+        this._appRuntimes = this._appRuntimes.filter(a => {
+          return !Object.is(a, appRuntime);
+        });
+
+        if (!this._appRuntimes.length) {
+          // Emit to listeners that the app is closed
+          commonAppRegistryLinkedState.emitRegistrationsUpdate();
+        }
       });
 
       await appRuntime.onceReady();
@@ -135,32 +149,6 @@ class AppRegistration extends EventEmitter {
     return this._supportedMimes;
   }
 
-  getTitle() {
-    return this._title;
-  }
-
-  // TODO: Don't call focus here directly, use appRuntime instead
-  focus() {
-    const appRuntimes = this.getAppRuntimes();
-
-    const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
-    let linkedApps = [];
-
-    if (Array.isArray(appRuntimeFocusOrder)) {
-      linkedApps = appRuntimeFocusOrder.filter(a => (appRuntimes.indexOf(a)>-1));
-    }
-
-    linkedApps.forEach(a=> a.focus());
-   }
-
-  getIconSrc() {
-    return this._iconSrc;
-  }
-
-  getMainWindow() {
-    return this._mainView;
-  }
-
   /**
    * @return {Promise<void>}
    */
@@ -176,6 +164,29 @@ class AppRegistration extends EventEmitter {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * @return {string}
+   */
+  getTitle() {
+    return this._title;
+  }
+
+  /**
+   * Focuses all related AppRuntime instances.
+   */
+  focus() {
+    this._appRuntimes.forEach(a => a.focus());
+  }
+
+  getIconSrc() {
+    return this._iconSrc;
+  }
+
+  // TODO: Rename
+  getMainWindow() {
+    return this._mainView;
   }
 
   /**
