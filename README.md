@@ -1,4 +1,4 @@
-![GitHub License](https://img.shields.io/github/license/zenosmosis/js-shell)
+[![GitHub License](https://img.shields.io/github/license/zenosmosis/js-shell)](https://raw.githubusercontent.com/zenOSmosis/js-shell/master/LICENSE.txt)
 [![Build Status](https://travis-ci.com/zenOSmosis/js-shell.svg?branch=master)](https://travis-ci.com/zenOSmosis/js-shell)
 
 # JS Shell
