@@ -6,7 +6,8 @@ const EVT_BEFORE_DISCONNECT = 'beforeDisconnect';
 const EVT_DISCONNECT = 'disconnect';
 
 /**
- * Client / Server layered communications on top of Socket.io socket.
+ * Client / Server bidirectional communications on top of an existing
+ * Socket.io socket connection.
  * 
  * It's like a virtual socket on a socket, w/ it's own event connect /
  * disconnect events.
@@ -41,7 +42,7 @@ class SocketChannel extends EventEmitter {
   }
 
   emit(evtName, data) {
-    // Send event over Socket.io
+    // Send artbitrary event data over Socket.io
     this._socket.emit(this.getChannelID(), {
       evtName,
       data
@@ -53,15 +54,8 @@ class SocketChannel extends EventEmitter {
   }
 
   _handleRawSocketData(socketData) {
-    const { evtName, data} = socketData;
+    const { evtName, data } = socketData;
 
-    /*
-    console.log('receive', {
-      evtName,
-      data
-    });
-    */
-    
     // Pass underneath this instance, so we don't re-emit over Socket.io
     super.emit(evtName, data);
   };
@@ -70,9 +64,9 @@ class SocketChannel extends EventEmitter {
   // source: http://stackoverflow.com/a/11058858
   str2ab(str) {
     // Note: Using Uint8Array sends arrow keystrokes as they should be
-    var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-    var bufView = new Uint8Array(buf);
-    for (var i = 0, strLen = str.length; i < strLen; i++) {
+    const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+    const bufView = new Uint8Array(buf);
+    for (let i = 0, strLen = str.length; i < strLen; i++) {
       bufView[i] = str.charCodeAt(i);
     }
     return buf;
@@ -82,7 +76,13 @@ class SocketChannel extends EventEmitter {
   // source: http://stackoverflow.com/a/11058858
   ab2str(buf) {
     // Note: Using Uint8Array sends arrow keystrokes as they should be
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
+    let str = String.fromCharCode.apply(null, new Uint8Array(buf));
+
+    // Fix Socket.io null character termination
+    // @see https://github.com/xtermjs/xterm.js/issues/1972
+    str = str.replace('\0', '');
+
+    return str;
   }
 
   disconnect() {
