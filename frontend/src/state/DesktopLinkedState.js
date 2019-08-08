@@ -38,6 +38,8 @@ class DesktopLinkedState extends LinkedState {
 
       launchedAppRuntimes: [],
 
+      appRuntimeFocusOrder: [],
+
       // TODO: Differentiate between this and ProcessLinkedState.focusedGUIProcess
       focusedAppRuntime: null,
 
@@ -88,12 +90,14 @@ class DesktopLinkedState extends LinkedState {
    * @param {AppRuntime} appRuntime 
    */
   addLaunchedAppRuntime(appRuntime) {
-    let { launchedAppRuntimes } = this.getState();
+    let { launchedAppRuntimes, appRuntimeFocusOrder } = this.getState();
 
     launchedAppRuntimes.push(appRuntime);
+    appRuntimeFocusOrder.push(appRuntime);
 
     this.setState({
-      launchedAppRuntimes
+      launchedAppRuntimes,
+      appRuntimeFocusOrder
     });
   }
 
@@ -103,14 +107,18 @@ class DesktopLinkedState extends LinkedState {
    * @param {AppRuntime} appRuntime 
    */
   removeLaunchedAppRuntime(appRuntime) {
-    let { launchedAppRuntimes } = this.getState();
+    let { launchedAppRuntimes, appRuntimeFocusOrder } = this.getState();
 
     launchedAppRuntimes = launchedAppRuntimes.filter(testAppRuntime => {
       return !Object.is(appRuntime, testAppRuntime);
     });
+    appRuntimeFocusOrder = appRuntimeFocusOrder.filter(testAppRuntime => {
+      return !Object.is(appRuntime, testAppRuntime);
+    });
 
     this.setState({
-      launchedAppRuntimes
+      launchedAppRuntimes,
+      appRuntimeFocusOrder
     });
   }
 
@@ -163,16 +171,52 @@ class DesktopLinkedState extends LinkedState {
     });
   }
 
-  setFocusedAppRuntme(focusedAppRuntime) {
+  setFocusedAppRuntime(newFocusedAppRuntime) {
+    let { appRuntimeFocusOrder, focusedAppRuntime } = this.getState();
+    //blur latest appRuntime
+    if(focusedAppRuntime) {
+      focusedAppRuntime.blur();
+    }
+    focusedAppRuntime = newFocusedAppRuntime;
+
+    appRuntimeFocusOrder = appRuntimeFocusOrder.filter(testAppRuntime => {
+      return !Object.is(focusedAppRuntime, testAppRuntime);
+    });
+    appRuntimeFocusOrder.push(focusedAppRuntime);
     this.setState({
-      focusedAppRuntime
+      focusedAppRuntime,
+      appRuntimeFocusOrder
+    });
+  }
+
+  setMinimizedAppRuntime(minimizeAppRuntime) {
+    let { appRuntimeFocusOrder } = this.getState();
+    
+    appRuntimeFocusOrder = [minimizeAppRuntime].concat(appRuntimeFocusOrder.filter(testAppRuntime => {
+      return !Object.is(minimizeAppRuntime, testAppRuntime) && !testAppRuntime._isMinimized;
+    }));
+    // pass focus
+    if(appRuntimeFocusOrder.length > 1) {
+      // pass focus to latest focused window
+      appRuntimeFocusOrder[appRuntimeFocusOrder.length - 1].focus();
+    } else {
+      this.setFocusedAppRuntime(null);
+    }
+
+    this.setState({
+      appRuntimeFocusOrder
     });
   }
 
   getFocusedAppRuntime() {
-    const { focusedAppRuntime } = this.state;
-
+    const { focusedAppRuntime } = this.getState();
     return focusedAppRuntime;
+  }
+
+  getAppRuntimeFocusOrder() {
+    const { appRuntimeFocusOrder } = this.getState();
+
+    return appRuntimeFocusOrder;
   }
 
   /**

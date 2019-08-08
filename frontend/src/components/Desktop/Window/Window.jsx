@@ -303,6 +303,9 @@ export default class Window extends Component {
 
     // TODO: display: none
 
+    // notify AppRuntime to pass focus
+    this.props.app.onMinimize();
+
     $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
     // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
@@ -342,10 +345,8 @@ export default class Window extends Component {
   }
 
   async restore() {
-    console.log('restore')
     // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
     if(this._isMinimized) {
-      console.log('restore2')
       await this.unhide();
       await this.animate(EFFECT_RESTORE);
       this._isMinimized = false;
