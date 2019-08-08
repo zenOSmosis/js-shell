@@ -44,17 +44,13 @@ class DesktopLinkedState extends LinkedState {
       // URL redirect location
       redirectLocation: '/',
 
-      // A list of currently running apps
-      // TODO: Remove this from this list; use a new Process/LinkedState, or etc.
-      // launchedApps: [],
-
       // The background image location of the Desktop
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
       // Whether the browser window is focused or not
       isFocused: true,
 
-      // Whether the desktop is in full-screen mode
+      // Whether the desktop is requested to be in full-screen mode
       isFullScreenRequested: false
     });
   }
