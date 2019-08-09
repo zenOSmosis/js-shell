@@ -1,7 +1,6 @@
 // TODO: Implement ability to pause (if no watchers are running)
 
 import EventEmitter from 'events';
-import getNow from 'utils/time/getNow';
 
 export const EVT_STOP = 'stop';
 export const EVT_CYCLE = 'cycle'; // TODO: Rename to EVT_UPDATE
@@ -54,7 +53,7 @@ class CPUThreadTimer extends EventEmitter {
 
       ++i;
 
-      const currentCycleStartTime = getNow();
+      const currentCycleStartTime = performance.now();
 
       if (prevCycleStartTime) {
         let elapsed = currentCycleStartTime - prevCycleStartTime;
