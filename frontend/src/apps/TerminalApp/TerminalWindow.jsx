@@ -49,39 +49,17 @@ export default class TerminalWindow extends Component {
   }
 
   componentWillUnmount() {
-    console.warn('TODO: Handle forcing of terminal to disconnect');
+    // Disconnect from the socket channel
+    this._socketChannel.disconnect();
   }
 
   _connectTerminal() {
-    // TODO: Fix this
-    // No idea what this does
-    // term.winptyCompatInit();
-
-    /*
-    // Open the websocket connection to the backend
-    const protocol = (window.location.protocol === 'https:') ? 'wss://' : 'ws://';
-    const port = ':3002';//window.location.port ? `:${window.location.port}` : '';
-    const socketUrl = `${protocol}${window.location.hostname}${port}/shell`;
-    console.debug('connecting to:', socketUrl)
-    const socket = new WebSocket(socketUrl);
-    
-    // Attach the socket to the terminal
-    socket.onopen = (ev) => { 
-      console.debug('socket connected')
-      term.attach(socket); 
-    }
-  
-    socket.onerror = (ev) => { 
-      console.debug('error', ev)
-    }
-    */
-
     this._socketChannel.on('data', (data) => {
       this._xterm.write(this._socketChannel.ab2str(data));
     });
   }
 
-  _handleInput = (data) => {
+  _handleKeyboardInput = (data) => {
     this._socketChannel.write(this._socketChannel.str2ab(data));
   };
 
@@ -103,7 +81,7 @@ export default class TerminalWindow extends Component {
 
             // addons={['fit', /*'winptyCompat'*/, 'attach']}
             ref={ref => this._xterm = ref}
-            onInput={this._handleInput}
+            onInput={this._handleKeyboardInput}
           />
         }
         
