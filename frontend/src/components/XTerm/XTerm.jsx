@@ -1,4 +1,4 @@
-// This code was lifted from here
+// This code was lifted from here because it is no longer being maintained there
 // @see https://github.com/farfromrefug/react-xterm/blob/master/src/react-xterm.tsx
 
 import React, { Component } from 'react';
@@ -9,12 +9,13 @@ import('xterm/dist/xterm.css');
 export default class Xterm extends Component {
   constructor(props, context) {
     super(props, context);
+
     this.state = {
       isFocused: false
     };
 
-    this.xterm = null;
-    this.container = null;
+    this._xterm = null;
+    this._container = null;
   }
 
   applyAddon(addon) {
@@ -22,12 +23,10 @@ export default class Xterm extends Component {
   }
 
   componentDidMount() {
+    // Apply addons
     const defaultAddons = ['fit', /*'winptyCompat',*/ 'attach'];
-
     const propsAddons = this.props.addons || [];
-
     const addons = [...defaultAddons, ...propsAddons];
-
     if (addons) {
       addons.forEach(s => {
         const addon = require(`xterm/dist/addons/${s}/${s}.js`);
@@ -35,28 +34,29 @@ export default class Xterm extends Component {
       });
     }
 
-    this.xterm = new Terminal(this.props.options);
-    this.xterm.open(this.container);
-    this.xterm.on('focus', this.focusChanged.bind(this, true));
-    this.xterm.on('blur', this.focusChanged.bind(this, false));
+    this._xterm = new Terminal(this.props.options);
+    this._xterm.open(this._container);
+    this._xterm.on('focus', this.focusChanged.bind(this, true));
+    this._xterm.on('blur', this.focusChanged.bind(this, false));
     if (this.props.onContextMenu) {
-      this.xterm.element.addEventListener('contextmenu', this.onContextMenu.bind(this));
+      this._xterm.element.addEventListener('contextmenu', this.onContextMenu.bind(this));
     }
     if (this.props.onInput) {
-      this.xterm.on('data', this.onInput);
+      this._xterm.on('data', this.onInput);
     }
     if (this.props.value) {
-      this.xterm.write(this.props.value);
+      this._xterm.write(this.props.value);
     }
   }
 
   componentWillUnmount() {
     // is there a lighter-weight way to remove the cm instance?
-    if (this.xterm) {
-      this.xterm.destroy();
-      this.xterm = null;
+    if (this._xterm) {
+      this._xterm.destroy();
+      this._xterm = null;
     }
   }
+  
   // componentWillReceiveProps(nextProps) {
   //     if (nextProps.hasOwnProperty('value')) {
   //         this.setState({ value: nextProps.value });
@@ -66,10 +66,10 @@ export default class Xterm extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     // console.log('shouldComponentUpdate', nextProps.hasOwnProperty('value'), nextProps.value != this.props.value);
     if (nextProps.hasOwnProperty('value') && nextProps.value !== this.props.value) {
-      if (this.xterm) {
-        this.xterm.clear();
+      if (this._xterm) {
+        this._xterm.clear();
         setTimeout(() => {
-          this.xterm.write(nextProps.value);
+          this._xterm.write(nextProps.value);
         }, 0)
       }
     }
@@ -77,20 +77,24 @@ export default class Xterm extends Component {
   }
 
   getTerminal() {
-    return this.xterm;
+    return this._xterm;
   }
 
   write(data) {
-    this.xterm && this.xterm.write(data);
+    this._xterm && this._xterm.write(data);
+  }
+
+  writeUtf8(data) {
+    this._xterm && this._xterm.writeUtf8(data);
   }
 
   writeln(data) {
-    this.xterm && this.xterm.writeln(data);
+    this._xterm && this._xterm.writeln(data);
   }
 
   focus() {
-    if (this.xterm) {
-      this.xterm.focus();
+    if (this._xterm) {
+      this._xterm.focus();
     }
   }
 
@@ -102,7 +106,7 @@ export default class Xterm extends Component {
   }
 
   fit() {
-    this.xterm.fit();
+    this._xterm.fit();
   }
 
   onInput = (data) => {
@@ -110,7 +114,7 @@ export default class Xterm extends Component {
   };
 
   resize(cols, rows) {
-    this.xterm && this.xterm.resize(Math.round(cols), Math.round(rows));
+    this._xterm && this._xterm.resize(Math.round(cols), Math.round(rows));
   }
 
   /**
@@ -119,11 +123,11 @@ export default class Xterm extends Component {
    * @param {boolean} value 
    */
   setOption(key, value) {
-    this.xterm && this.xterm.setOption(key, value);
+    this._xterm && this._xterm.setOption(key, value);
   }
 
   refresh() {
-    this.xterm && this.xterm.refresh(0, this.xterm.rows - 1);
+    this._xterm && this._xterm.refresh(0, this._xterm.rows - 1);
   }
 
   onContextMenu(e) {
@@ -136,7 +140,7 @@ export default class Xterm extends Component {
     const terminalClassName = className('ReactXTerm', this.state.isFocused ? 'ReactXTerm--focused' : null, this.props.className);
     return <div
       {...propsRest}
-      ref={ref => (this.container = ref)}
+      ref={ref => (this._container = ref)}
       className={terminalClassName}
       style={{ width: '100%', height: '100%' }}
     />;
