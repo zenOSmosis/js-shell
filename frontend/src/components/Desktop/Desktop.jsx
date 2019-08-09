@@ -74,8 +74,8 @@ class Desktop extends Component {
   }
 
   render() {
-    //const {isLoggedIn} = this.state;
-    const isLoggedIn = true;
+    const {isLoggedIn} = this.state;
+    //const isLoggedIn = true;
     return (
       <div ref={c => this._el = c}>
         <Fullscreen
