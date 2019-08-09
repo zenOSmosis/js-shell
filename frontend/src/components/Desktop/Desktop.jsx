@@ -40,9 +40,10 @@ class Desktop extends Component {
 
     this._desktopLinkedState = new DesktopLinkedState();
     this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-  console.log('EVT_LINKED_STATE_UPDATE', updatedState)
       const { isLoggedIn } = updatedState;
-      this.setState({isLoggedIn});
+      if (typeof isLoggedIn !== 'undefined') {
+        this.setState({isLoggedIn});
+      }
     });
   }
 
@@ -73,7 +74,8 @@ class Desktop extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.state;
+    //const {isLoggedIn} = this.state;
+    const isLoggedIn = true;
     return (
       <div ref={c => this._el = c}>
         <Fullscreen
