@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const makeUUID = require('uuidv4');
 
 const EVT_CONNECT = 'connect';
+const EVT_DATA = 'data';
 const EVT_BEFORE_DISCONNECT = 'beforeDisconnect';
 const EVT_DISCONNECT = 'disconnect';
 
@@ -26,9 +27,16 @@ class SocketChannel extends EventEmitter {
 
     this._init();
 
-    this.emit(EVT_CONNECT);
+    // Simulate connect in next tick
+    // (process.nextTick may not be available on client, hence the timeout)
+    setTimeout(() => {
+      this.emit(EVT_CONNECT);
+    }, 1);
   }
 
+  /**
+   * @return {string}
+   */
   getChannelID() {
     return this._channelID;
   }
@@ -41,6 +49,12 @@ class SocketChannel extends EventEmitter {
     this._socket.off(this.getChannelID(), this._handleRawSocketData.bind(this));
   }
 
+  /**
+   * Emits data over the underlying Socket.io connection, encapsulated in an object.
+   * 
+   * @param {string} evtName
+   * @param {any} data
+   */
   emit(evtName, data) {
     // Send artbitrary event data over Socket.io
     this._socket.emit(this.getChannelID(), {
@@ -50,7 +64,7 @@ class SocketChannel extends EventEmitter {
   }
 
   write(data) {
-    return this.emit('data', data);
+    return this.emit(EVT_DATA, data);
   }
 
   _handleRawSocketData(socketData) {
@@ -60,11 +74,20 @@ class SocketChannel extends EventEmitter {
     super.emit(evtName, data);
   };
 
-  // @see https://gist.github.com/skratchdot/e095036fad80597f1c1a
-  // source: http://stackoverflow.com/a/11058858
+  /**
+   * Converts a string to an ArrayBuffer.
+   * 
+   * This could be a bad approach...
+   * @see https://github.com/xtermjs/xterm.js/issues/1972
+   * 
+   * The original work came from:
+   * @see http://stackoverflow.com/a/11058858 (modified to work w/ Unit8Array)
+   * 
+   * @param {string}
+   * @return {ArrayBuffer} 
+   */
   str2ab(str) {
-    // Note: Using Uint8Array sends arrow keystrokes as they should be
-    const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+    const buf = new ArrayBuffer(str.length);
     const bufView = new Uint8Array(buf);
     for (let i = 0, strLen = str.length; i < strLen; i++) {
       bufView[i] = str.charCodeAt(i);
@@ -72,16 +95,20 @@ class SocketChannel extends EventEmitter {
     return buf;
   }
 
-  // @see https://gist.github.com/skratchdot/e095036fad80597f1c1a
-  // source: http://stackoverflow.com/a/11058858
+  /**
+   * Converts an ArrayBuffer to a string.
+   *
+   * This could be a bad approach...
+   * @see https://github.com/xtermjs/xterm.js/issues/1972
+   * 
+   * The original work came from:
+   * @see http://stackoverflow.com/a/11058858 (modified to work w/ Unit8Array)
+   * 
+   * @param {ArrayBuffer} buf
+   * @return {string}
+   */
   ab2str(buf) {
-    // Note: Using Uint8Array sends arrow keystrokes as they should be
-    let str = String.fromCharCode.apply(null, new Uint8Array(buf));
-
-    // Fix Socket.io null character termination
-    // @see https://github.com/xtermjs/xterm.js/issues/1972
-    str = str.replace('\0', '');
-
+    const str = String.fromCharCode.apply(null, new Uint8Array(buf));
     return str;
   }
 
@@ -98,6 +125,8 @@ class SocketChannel extends EventEmitter {
 
 module.exports = {
   SocketChannel,
+  EVT_CONNECT,
+  EVT_DATA,
   EVT_BEFORE_DISCONNECT,
   EVT_DISCONNECT
 };

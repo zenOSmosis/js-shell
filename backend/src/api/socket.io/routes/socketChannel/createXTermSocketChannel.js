@@ -1,7 +1,11 @@
 // @see https://gist.github.com/steinwaywhw/9920493
 
 const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
-const { SocketChannel } = require('utils/socketAPI/SocketChannel');
+const {
+  SocketChannel,
+  EVT_DATA: EVT_SOCKET_CHANNEL_DATA,
+  EVT_BEFORE_DISCONNECT: EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT
+} = require('utils/socketAPI/SocketChannel');
 const os = require('os');
 const pty = require('node-pty');
 // const terminal = require('term.js');
@@ -28,22 +32,16 @@ const createXTermSocketChannel = async (options = {}, ack) => {
     const ptyProcess = pty.spawn(shell, [], {
       name: 'xterm-color',
 
-      handleFlowControl: true,
-
       // TODO: Set these dynamically
       cols: 80,
       rows: 30,
 
       cwd: process.env.HOME,
       env: process.env,
-
-      // stdio: 'inherit',
-      // detached: true,
-      // customFds: [0, 1, 2]
     });
 
     // STDIN from socket
-    socketChannel.on('data', (data) => {
+    socketChannel.on(EVT_SOCKET_CHANNEL_DATA, (data) => {
       ptyProcess.write(socketChannel.ab2str(data));
     });
 
@@ -56,7 +54,7 @@ const createXTermSocketChannel = async (options = {}, ack) => {
       socketChannel.disconnect();
     });
 
-    socketChannel.on('disconnect', () => {
+    socketChannel.on(EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT, () => {
       ptyProcess.exit(0);
     });
 
