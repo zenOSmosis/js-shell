@@ -7,7 +7,7 @@ import ClientProcessPipe from './ClientProcessPipe';
 import CPUThreadTimer, { EVT_CYCLE as CPU_THREAD_CLOCK_CYCLE } from './CPUThreadTimer';
 import makeCallback from './_makeCallback';
 import evalInContext from 'utils/evalInContext';
-import getNow from 'utils/time/getNow';
+import getUnixTime from 'utils/time/getUnixTime';
 
 import {
   EVT_READY,
@@ -109,7 +109,7 @@ class ClientProcess extends EventEmitter {
 
     this._isGUIProcess = false;
     this._cmd = cmd;
-    this._startTime = getNow();
+    this._startTime = getUnixTime();
     this._options = options;
     this._serviceURI = null;
 
@@ -681,12 +681,13 @@ class ClientProcess extends EventEmitter {
   }
 
   /**
-   * TODO: Document
+   * Returns a low resolution (slightly inaccurate) number of seconds since the
+   * current process started.
    * 
    * @return {number}
    */
   getUptime() {
-    const now = getNow();
+    const now = getUnixTime();
 
     return now - this._startTime;
   }
