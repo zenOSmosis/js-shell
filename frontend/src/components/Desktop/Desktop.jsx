@@ -38,12 +38,12 @@ class Desktop extends Component {
   }
 
   _handleFocusUpdate = () => {
-    const { isFocused } = this.props;
+    const { viewportIsFocused } = this.props;
 
-    if (typeof isFocused !== 'undefined') {
+    if (typeof viewportIsFocused !== 'undefined') {
       const $body = $(window.document.body);
 
-      if (!isFocused) {
+      if (!viewportIsFocused) {
         $body.addClass('blur');
       } else {
         $body.removeClass('blur');
@@ -123,12 +123,12 @@ class Desktop extends Component {
 }
 
 export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
-  const { isFocused, isFullScreenRequested } = updatedState;
+  const { viewportIsFocused, isFullScreenRequested } = updatedState;
 
   let filteredState = {};
 
-  if (typeof isFocused !== 'undefined') {
-    filteredState.isFocused = isFocused;
+  if (typeof viewportIsFocused !== 'undefined') {
+    filteredState.viewportIsFocused = viewportIsFocused;
   }
 
   if (typeof isFullScreenRequested !== 'undefined') {

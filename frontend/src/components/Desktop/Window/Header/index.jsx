@@ -115,14 +115,28 @@ export default class WindowHeader extends Component {
             overflow: 'hidden',
             position: 'relative',
           }}>
+            {
+              // TODO: Move dots to their own view
+            }
+            {
+              // Red dot
+            }
             <button
               className="zd-dot red"
               onClick={(evt) => desktopWindow.close()}
             ></button>
+
+            {
+              // Yellow dot
+            }
             <button
               className="zd-dot yellow"
               onClick={(evt) => desktopWindow.toggleMinimize()}
             ></button>
+
+            {
+              // Green dot
+            }
             <button
               className="zd-dot green"
               onClick={(evt) => desktopWindow.toggleMaximize()}

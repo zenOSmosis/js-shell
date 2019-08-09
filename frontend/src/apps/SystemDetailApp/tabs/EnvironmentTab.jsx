@@ -4,14 +4,27 @@ import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedCont
 import { Layout, Header, Content, Footer } from 'components/Layout';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
-// import DesktopLinkedState from 'state/DesktopLinkedState';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 // import SocketLinkedState from 'state/SocketLinkedState';
-// import hocConnect from 'state/hocConnect';
+import hocConnect from 'state/hocConnect';
 
 const MODE_CLIENT = 'client';
 const MODE_HOST = 'host';
 
-export default class Environment extends Component {
+const ViewportSize = (props) => {
+  const { viewportSize } = props;
+  if (!viewportSize) {
+    return false;
+  }
+
+  const { width, height } = viewportSize;
+
+  return (
+    <span>Width: {width}x{height}</span>
+  );
+};
+
+class Environment extends Component {
   constructor(...args) {
     super(...args);
 
@@ -46,7 +59,12 @@ export default class Environment extends Component {
   render() {
     const { mode, remoteEnv } = this.state;
 
-    let { clientIP, connectionStatus, isDesktopFocused } = this.props;
+    let {
+      clientIP,
+      connectionStatus,
+      viewportIsFocused,
+      viewportSize
+    } = this.props;
     clientIP = clientIP || 'N/A';
 
     return (
@@ -82,17 +100,11 @@ export default class Environment extends Component {
                   <hr />
                   Device:
                   <div>
-                    Viewport Size: xy
+                    Viewport Size: <ViewportSize viewportSize={viewportSize} />
                   </div>
                   <div>
-                    Focused: {isDesktopFocused ? 'Yes' : 'No'}
+                    Viewport Focused: {viewportIsFocused ? 'Yes' : 'No'}
                   </div>
-                </div>
-                <div>
-                  Linked States: []
-                </div>
-                <div>
-                  Windows: <button>Launch Window Manager</button>
                 </div>
                 {
                   Object.keys(process.env).map((envKey, idx) => {
@@ -131,25 +143,37 @@ export default class Environment extends Component {
   }
 }
 
-/*
 const DesktopEnvironment = hocConnect(Environment, DesktopLinkedState, (updatedState) => {
-  const {isFocused} = updatedState;
+  const { viewportIsFocused, viewportSize } = updatedState;
 
   let filteredState = {};
 
-  if (typeof isFocused !== 'undefined') {
-    filteredState.isDesktopFocused = isFocused;
+  if (typeof viewportIsFocused !== 'undefined') {
+    filteredState = {
+      ...filteredState, ...{
+        viewportIsFocused
+      }
+    };
+  }
+
+  if (typeof viewportSize !== 'undefined') {
+    filteredState = {
+      ...filteredState, ...{
+        viewportSize
+      }
+    };
   }
 
   if (Object.keys(filteredState).length) {
     return filteredState;
   }
 });
-*/
+
+export default DesktopEnvironment;
 
 /*
 const ConnectedEnvironment = hocConnect(DesktopEnvironment, SocketLinkedState, (updatedState) => {
-  const {clientIP, connectionStatus} = updatedState;
+  const { clientIP, connectionStatus } = updatedState;
 
   let filteredState = {};
 

@@ -55,6 +55,14 @@ export default class TerminalWindow extends Component {
 
   _connectTerminal() {
     this._socketChannel.on('data', (data) => {
+      if (!this._xterm) {
+        // TODO: Fix potential HMR-related issue by attempting to establish a
+        // new terminal if we ever get here
+
+        console.error('No xterm available when connecting terminal');
+        return;
+      }
+
       this._xterm.write(this._socketChannel.ab2str(data));
     });
   }

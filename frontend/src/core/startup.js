@@ -6,7 +6,7 @@
 
 // Initializes the ShellCore services
 import Core from './Core';
-import ShellDesktop from './ShellDesktop';
+import ShellDesktop, { ViewportFocusMonitor, ViewportSizeMonitor } from './ShellDesktop';
 import P2PMonitor from './p2p/P2PMonitor';
 import config from 'config';
 
@@ -31,6 +31,12 @@ const startup = () => {
 
     // Mount the Shell Desktop
     const desktop = new ShellDesktop(core);
+
+    // Mount the ViewportFocusMonitor to the Desktop
+    new ViewportFocusMonitor(desktop);
+
+    // Mount the ViewportSizeMonitor to the Desktop
+    new ViewportSizeMonitor(desktop);
     
     // Mount the P2PMonitor to the Desktop
     new P2PMonitor(desktop);
