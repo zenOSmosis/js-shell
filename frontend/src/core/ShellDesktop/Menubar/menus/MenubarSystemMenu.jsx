@@ -1,11 +1,13 @@
 import React from 'react';
 import MenubarMenu from '../MenubarMenu';
 import { Icon } from 'antd';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 
 export default class MenubarSystemMenu extends MenubarMenu {
   constructor(...args) {
     super(...args);
-    
+    this._desktopLinkedState = new DesktopLinkedState();
+
     this.setData({
       title: <Icon type="deployment-unit" />,
       items: [
@@ -48,6 +50,15 @@ export default class MenubarSystemMenu extends MenubarMenu {
               }
             }
           ]
+        },
+        /**
+         * @type {MenubarMenuItem}
+         */
+        {
+          title: 'Logout',
+          onClick: () => {
+            this._desktopLinkedState.setIsLogged(false);
+          }
         }
       ]
     });
