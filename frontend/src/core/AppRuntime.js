@@ -132,6 +132,7 @@ class AppRuntime extends ClientGUIProcess {
           const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
           if(appRuntimeFocusOrder.length > 1) {
             // pass focus to latest focused window
+            console.log('appRuntimeFocusOrder', appRuntimeFocusOrder)
             appRuntimeFocusOrder[appRuntimeFocusOrder.length - 2].focus();
           } else {
             commonDesktopLinkedState.setFocusedAppRuntime(null);

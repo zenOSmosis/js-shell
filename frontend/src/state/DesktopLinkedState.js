@@ -190,11 +190,12 @@ class DesktopLinkedState extends LinkedState {
       focusedAppRuntime.blur();
     }
     focusedAppRuntime = newFocusedAppRuntime;
-
-    appRuntimeFocusOrder = appRuntimeFocusOrder.filter(testAppRuntime => {
-      return !Object.is(focusedAppRuntime, testAppRuntime);
-    });
-    appRuntimeFocusOrder.push(focusedAppRuntime);
+    if(newFocusedAppRuntime != null){
+      appRuntimeFocusOrder = appRuntimeFocusOrder.filter(testAppRuntime => {
+        return !Object.is(focusedAppRuntime, testAppRuntime);
+      });
+      appRuntimeFocusOrder.push(focusedAppRuntime);
+    }
     this.setState({
       focusedAppRuntime,
       appRuntimeFocusOrder

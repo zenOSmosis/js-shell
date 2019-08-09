@@ -21,13 +21,14 @@ class Menubar extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    
     // Don't contiune if props haven't updated
     if (Object.is(prevProps, this.props)) {
       return;
     }
 
     // TODO: Handle accordingly
-    //console.debug('Menubar component updated', this.props);
+    console.debug('Menubar component updated', this.props);
 
     const { focusedAppRuntime } = this.props;
     if (focusedAppRuntime) {
@@ -37,6 +38,10 @@ class Menubar extends Component {
 
       this.setState({
         menus
+      });
+    } else {
+      this.setState({
+        menus: []
       });
     }
   }
