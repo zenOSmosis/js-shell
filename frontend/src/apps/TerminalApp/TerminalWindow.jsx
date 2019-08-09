@@ -99,6 +99,8 @@ export default class TerminalWindow extends Component {
         {
           socketChannelID &&
           <XTerm
+            // TODO: Enable support for resize / etc
+
             // addons={['fit', /*'winptyCompat'*/, 'attach']}
             ref={ref => this._xterm = ref}
             onInput={this._handleInput}
