@@ -55,14 +55,17 @@ export default class TerminalWindow extends Component {
         minHeight="440"
         sizeable= "false"
       >
-        <XTerm 
-          addons={['fit', 'winptyCompat', 'attach']}
-          ref={ref => this._xterm = ref} 
-          style={{
-            width: '100%',
-            height: '100%'
-          }} 
-        />
+        {
+          socketChannelID &&
+          <XTerm
+            // TODO: Enable support for resize / etc
+
+            // addons={['fit', /*'winptyCompat'*/, 'attach']}
+            ref={ref => this._xterm = ref}
+            onInput={this._handleInput}
+          />
+        }
+        
       </Window>
     );
   }

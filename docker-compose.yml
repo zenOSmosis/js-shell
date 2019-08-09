@@ -28,7 +28,8 @@ services:
       # - ./backend:/shell/backend # Only during development
       - ./:/shell # Only during development
     environment:
-      - NODE_ENV="development"
+      - NODE_ENV=development
+      - TERM=xterm # Enables interactive CLI environments
     links:
       - frontend
       - dev_proxy # Only during development
@@ -47,7 +48,7 @@ services:
       # - ./cli:/shell/cli # Only during development
       - ./:/shell # Only during development
     environment:
-      - NODE_ENV="development"
+      - NODE_ENV=development
       # - HTTPS=true
     command: ["npm", "run", "start"]
     ports:
