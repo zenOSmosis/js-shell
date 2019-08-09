@@ -3,7 +3,6 @@ import config from '../config';
 // import App from '../utils/desktop/registerApp';
 import hocConnect from './hocConnect';
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import $ from 'jquery';
 
 export {
   EVT_LINKED_STATE_UPDATE,
@@ -13,9 +12,10 @@ export {
 const DESKTOP_LINKED_SCOPE_NAME = `desktopLinkedState`;
 
 /**
- * Maintains state directly related to the Shell Desktop.
+ * Maintains state directly related to the Shell Desktop and its running
+ * applications.
  * 
- * @extends LinkedState;
+ * @extends LinkedState
  */
 class DesktopLinkedState extends LinkedState {
   constructor() {
@@ -24,6 +24,7 @@ class DesktopLinkedState extends LinkedState {
       contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
 
       // Setting this will generate a new Desktop Notification
+      // TODO: Typedef notification object
       lastNotification: {
         message: null,
         description: null,
@@ -36,8 +37,10 @@ class DesktopLinkedState extends LinkedState {
 
       shellDesktopProcess: null,
 
+      // Running applications
       launchedAppRuntimes: [],
 
+      // TODO: Document
       appRuntimeFocusOrder: [],
 
       isLoggedIn: false,
@@ -52,7 +55,11 @@ class DesktopLinkedState extends LinkedState {
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
       // Whether the browser window is focused or not
-      isFocused: true,
+      // TODO: Rename to viewportIsFocused
+      viewportIsFocused: true,
+
+      // TODO: Create typedef for this
+      viewportSize: { width: 0, height: 0},
 
       // Whether the desktop is requested to be in full-screen mode
       isFullScreenRequested: false
@@ -60,13 +67,14 @@ class DesktopLinkedState extends LinkedState {
   }
 
   /**
-   * TODO: Document
+   * This should only be run once.
    * 
    * @param {ShellDesktop} shellDesktopProcess
    */
   setShellDesktopProcess(shellDesktopProcess) {
     const { shellDesktopProcess: existingShellDesktopProcess } = this.getState();
 
+    // Prevent multiple Desktop processes from being able to be run
     if (existingShellDesktopProcess) {
       throw new Error('Existing Shell Desktop process already set');
     }
@@ -204,9 +212,12 @@ class DesktopLinkedState extends LinkedState {
   setMinimizedAppRuntime(minimizeAppRuntime) {
     let { appRuntimeFocusOrder } = this.getState();
     
-    appRuntimeFocusOrder = [minimizeAppRuntime].concat(appRuntimeFocusOrder.filter(testAppRuntime => {
+    appRuntimeFocusOrder = [minimizeAppRuntime]
+        .concat(appRuntimeFocusOrder
+        .filter(testAppRuntime => {
       return !Object.is(minimizeAppRuntime, testAppRuntime) && !testAppRuntime._isMinimized;
     }));
+
     // pass focus
     if(appRuntimeFocusOrder.length > 1) {
       // pass focus to latest focused window
@@ -242,40 +253,5 @@ class DesktopLinkedState extends LinkedState {
     return contextMenuIsTrapping;
   }
 }
-
-// Handle Desktop blur / focus
-// TODO: Move elsewhere
-(() => {
-  const desktopLinkedState = new DesktopLinkedState();
-
-  // TODO: Use constants for "blur" / "focus"
-  $(window).on('blur focus', function (e) {
-    let prevType = $(this).data('prevType');
-
-    let isFocused = true;
-
-    if (prevType !== e.type) {   //  reduce double-fire issues
-      switch (e.type) {
-        case 'blur':
-          isFocused = false;
-          break;
-
-        case 'focus':
-          isFocused = true;
-          break;
-
-        default:
-          // Ignore default case
-          break;
-      }
-    }
-
-    $(this).data("prevType", e.type);
-
-    desktopLinkedState.setState({
-      isFocused
-    });
-  });
-})();
 
 export default DesktopLinkedState;

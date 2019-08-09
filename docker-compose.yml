@@ -34,6 +34,14 @@ services:
       - frontend
       - dev_proxy # Only during development
     command: ["npm", "run", "start"]
+
+    # Only during development or special deployments
+    # Note: Note: These options are ignored when deploying a stack in swarm mode with a (version 3) Compose file.
+    # @see https://docs.docker.com/compose/compose-file/
+    cap_add:
+      - SYS_ADMIN # Only during development or special deployments
+      - NET_ADMIN # Only during development or special deployments
+    
     ports:
       - 3001:3001
 

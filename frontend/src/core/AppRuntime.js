@@ -2,13 +2,8 @@ import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER /*, REMOVE_THIS*/ }
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import Menubar from './ShellDesktop/Menubar';
 import './AppRuntime.typedef';
-//import { EVT_WINDOW_RESIZE } from 'process/ClientProcess';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
-
-// export const EVT_CONTENT_UPDATE = 'content-update';
-// export const EVT_TITLE_UPDATE = 'title-update';
-// export const EVT_ICON_SRC_UPDATE = 'icon-src-update';
 
 export const EVT_FOCUS = 'focus';
 export const EVT_BLUR = 'blur';
@@ -37,18 +32,24 @@ class AppRuntime extends ClientGUIProcess {
     this._mainView = null;
     this._appCmd = null;
     this._isFocused = false;
+
     //TODO: do get set?
-    this.menuItems = runProps.menuItems;
+    this.menuItems = runProps.menuItems || [];
 
     this._menubar = new Menubar(this);
 
-    
-
-
     (() => {
       // TODO: Create AppRuntime.typedef.js
-      const { title, iconSrc, mainView, appCmd, cmd, position, size, cmdArguments } = runProps;
-
+      const {
+        title,
+        iconSrc,
+        mainView,
+        appCmd,
+        cmd,
+        position,
+        size,
+        cmdArguments
+      } = runProps;
 
       this.setCmdArguments(cmdArguments);
 
@@ -159,13 +160,30 @@ class AppRuntime extends ClientGUIProcess {
     commonDesktopLinkedState.setMinimizedAppRuntime(this);
   }
 
+
+  // TODO: Move this elsewhere
+
+  /**
+   * @typedef {Object} WindowPosition
+   * @property {number} x 
+   * @property {number} y 
+   */
+
+  /**
+   * 
+   * @param {WindowPosition} position 
+   * @param {?} size // TODO: Determine size? 
+   */
   onResizeMove(position, size) {
     if(position) {
       this.setInitPosition(position);
     }
+
     if(size) {
-      this.setInitSize(size)
+      this.setInitSize(size);
     }
+
+    console.warn('Has size?', (size ? 'yes' : 'no'), this);
   }
 
   /**

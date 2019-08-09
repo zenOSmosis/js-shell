@@ -7,14 +7,12 @@
 
 import React, { Component } from 'react';
 import WindowHeader from './Header';
-// import Gesture from 'commponents/Gesture';
 import ContextMenu from 'components/ContextMenu';
 import Cover from 'components/Cover';
 import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
-// import ViewTransition from 'components/ViewTransition'
 import './style.css';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
@@ -22,12 +20,42 @@ import animate from 'utils/animate';
 import config from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-// import { runInThisContext } from 'vm';
 const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
 const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
+
+// Begin exported events ***********
+//
+// Though exporting events aren't typical in React components, this provides an
+// alternative interface for external hooks
+
+export const EVT_BEFORE_TITLE_SET = 'beforeTitleSet';
+export const EVT_TITLE_SET = 'titleSet';
+
+export const EVT_BEFORE_FOCUS = 'beforeFocus';
+export const EVT_FOCUS = 'focus';
+
+export const EVT_BEFORE_BLUR = 'beforeBlur';
+export const EVT_BLUR = 'blur';
+
+export const EVT_BEFORE_HIDE = 'beforeHide';
+export const EVT_HIDE = 'hide';
+
+export const EVT_BEFORE_UNHIDE = 'beforeUnhide';
+export const EVT_UNHIDE = 'unhide';
+
+export const EVT_BEFORE_MINIMIZE = 'beforeMinimize';
+export const EVT_MINIMIZE = 'minimize';
+
+export const EVT_BEFORE_MAXIMIZE = 'willMaximize';
+export const EVT_MAXIMIZE = 'maximize';
+
+export const EVT_BEFORE_RESIZE = 'beforeResize';
+export const EVT_RESIZE = 'resize';
+
+// End Exported events ***********
 
 const CSS_CLASS_NAME_FOCUS = 'focus';
 const CSS_CLASS_NAME_HIDE = 'hide';
@@ -87,9 +115,8 @@ export default class Window extends Component {
     this._el = null;
 
     this._app = this.props.app;
-    const self = this;
-    this._app.on('focus',()=>{
-      self.focus();
+    this._app.on('focus', () => {
+      this.focus();
     })
     this._moveableComponent = null;
     this._resizableComponent = null;
@@ -99,6 +126,7 @@ export default class Window extends Component {
     this._bodyCoverComponent = null;
 
     this._isMinimized = false;
+    this._isMaximized = false;
     this._isFocused = false;
     this._isActiveHeaderGesture = false;
     this._isResizing = false;
@@ -131,9 +159,11 @@ export default class Window extends Component {
 
       this.focus();
 
+      // TODO: Fix implementation
+      // (works on Chrome in Linux; not on Windows)
       await this.animate(EFFECT_CREATE);
 
-      // this.lifecycleEvents.broadcast(EVT_WINDOW_MOUNTED);
+      // this.emit(EVT_DID_MOUNT);
     } catch (exc) {
       throw exc;
     }
@@ -192,23 +222,21 @@ export default class Window extends Component {
    * @param {string} title 
    */
   setTitle(title) {
-    if (!title) {
-      console.warn('Ignoring empty title');
-      return;
-    }
+    title = (title ? title.toString() : '');
 
+    // Ensure title is a different title
     const { title: existingTitle } = this.state;
     if (title === existingTitle) {
-      console.warn('Title has not changed');
       return;
     }
 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_WILL_SET);
+    this.emit(EVT_BEFORE_TITLE_SET);
+
     this.setState({
       title
-    }/*, () => {
-      // this.lifecycleEvents.broadcast(EVT_WINDOW_TITLE_DID_SET);
-    }*/);
+    }, () => {
+      this.emit(EVT_TITLE_SET);
+    });
   }
 
   /**
@@ -222,14 +250,23 @@ export default class Window extends Component {
     return title;
   }
 
+  /**
+   * return {boolean}
+   */
   getIsClosed() {
     return this._isClosed;
   }
 
+  /**
+   * @return {string}
+   */
   getUUID() {
     return this._uuid;
   }
 
+  /**
+   * Internally called when the Window is interacted w/ via mouse or touch.
+   */
   _onInteract = (evt) => {
     if (this._isClosed) {
       return;
@@ -239,145 +276,200 @@ export default class Window extends Component {
     this.focus();
   };
 
-  focus() {
-    
-    
-    // Check if window is already focused
-    if (this._isFocused && !this._isMinimized) {
-      return false;
+  async focus() {
+    try {
+      // Check if window is already focused
+      if (this._isFocused && !this._isMinimized) {
+        return false;
+      }
+
+      this.emit(EVT_BEFORE_FOCUS);
+
+      this.restore();
+
+      this._app.focus();
+
+      this._isFocused = true;
+
+      commonDesktopLinkedState.setActiveWindow(this);
+
+      this.doCoverIfShould();
+
+      /**
+       * The zIndex is directly applied to the base DOM element, instead of
+       * applied as state, because applying as state causes a re-render which
+       * messes with mouse / touch functionality when selecting another Window.
+       * e.g. if Window A is focused, and then the user tries to resize Window
+       * B, if a re-render has to occur, the user first has to select Window B
+       * before the resize will happen.
+       */
+      $(this._el).css({
+        zIndex: _nextZIndex
+      });
+      ++_nextZIndex;
+
+      // TODO: Await for any effects to complete
+
+      this.emit(EVT_FOCUS); 
+    } catch (exc) {
+      throw exc;
     }
-
-    this.restore();
-
-    this._app.focus();
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_ACTIVATE);
-
-    this._isFocused = true;
-
-    commonDesktopLinkedState.setActiveWindow(this);
-    
-    
-    
-
-    this.doCoverIfShould();
-
-    /**
-     * The zIndex is directly applied to the base DOM element, instead of
-     * applied as state, because applying as state causes a re-render which
-     * messes with mouse / touch functionality when selecting another Window.
-     * e.g. if Window A is focused, and then the user tries to resize Window
-     * B, if a re-render has to occur, the user first has to select Window B
-     * before the resize will happen.
-     */
-    $(this._el).css({
-      zIndex: _nextZIndex
-    });
-    ++_nextZIndex;
-    
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_ACTIVATE);
   }
 
-  blur() {
-    if (!this._isFocused) {
-      return false;
+  async blur() {
+    try {
+      if (!this._isFocused) {
+        return false;
+      }
+  
+      this.emit(EVT_BEFORE_BLUR);
+      
+      this._isFocused = false;
+  
+      $(this._el).removeClass(CSS_CLASS_NAME_FOCUS);
+  
+      this.doCoverIfShould();
+
+      // TODO: Await for any effects to complete
+  
+      this.emit(EVT_BLUR);
+    } catch (exc) {
+      throw exc;
     }
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_DEACTIVATE);
-    this._isFocused = false;
-
-    $(this._el).removeClass(CSS_CLASS_NAME_FOCUS);
-
-    this.doCoverIfShould();
-
-    //  this.lifecycleEvents.broadcast(EVT_WINDOW_DID_DEACTIVATE);
   }
 
+  // TODO: Await for any effects to complete
   async toggleHide() {
     // TODO: Detect current window state and take appropriate action
 
     return this.hide();
   }
 
+  // TODO: Await for any effects to complete
+  // Differentiate this between minimize (or remove minimize)
   async hide() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_HIDE);
+    this.emit(EVT_BEFORE_HIDE);
 
     // TODO: display: none
 
     // notify AppRuntime to pass focus
-    this.props.app.onMinimize();
+    const { onMinimize } = this.props.app;
+    if (typeof onMinimize === 'function') {
+      onMinimize();
+    }
 
     $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_HIDE);
+    this.emit(EVT_HIDE);
   }
 
+  // TODO: Await for any effects to complete
   async unhide() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_UNHIDE);
+    this.emit(EVT_BEFORE_UNHIDE);
 
     // TODO: display: block
 
     // TODO: Handle accordingly
     $(this._el).removeClass(CSS_CLASS_NAME_HIDE);
 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_UNHIDE);
+    this.emit(EVT_UNHIDE);
   }
 
   async toggleMinimize() {
-    // TODO: Detect current window state and take appropriate action
-
-   
-    return this.minimize();
-    
-  }
-
-  async minimize() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
-
-    if(!this._isMinimized) {
-      await this.animate(EFFECT_MINIMIZE);
-      this._isMinimized = true;
-      await this.hide();
-      await this.blur();
-      //TODO: should focus remaining window
+    try {
+      if (!this._isMinimized) {
+        await this.minimize();
+      } else {
+        await this.restore();
+      }
+    } catch (exc) {
+      throw exc;
     }
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
   }
 
+// TODO: Await for any effects to complete
+  async minimize() {
+    try {
+      // Since this.resize() is not called in this method, wrap w/
+      // EVT_BEFORE_RESIZE/EVT_DID_RESIZE hooks
+      this.emit(EVT_BEFORE_RESIZE);
+
+      // this.emit(EVT_BEFORE_MINIMIZE);
+  
+      if (!this._isMinimized) {
+        await this.animate(EFFECT_MINIMIZE);
+        this._isMinimized = true;
+        await this.hide();
+        await this.blur();
+        //TODO: should focus remaining window
+      }
+  
+      // this.emit(EVT_DID_MINIMIZE);
+  
+      // Since this.resize() is not called in this method, wrap w/
+      // EVT_BEFORE_RESIZE/EVT_DID_RESIZE hooks
+      this.emit(EVT_RESIZE);
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  // TODO: Await for any effects to complete
   async restore() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MINIMIZE);
-    if(this._isMinimized) {
-      await this.unhide();
+    try {
+      // this.emit(EVT_BEFORE_RESTORE);
+
+      if(this._isMinimized) {
+        await this.unhide();
+        this._isMinimized = false;
+      } else if (this._isMaximized) {
+        console.warn('TODO: Apply window position / size before app was maximized');
+        this._isMaximized = false;
+      }
+
       await this.animate(EFFECT_RESTORE);
-      this._isMinimized = false;
-      
-    } 
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MINIMIZE);
+
+      // this.emit(EVT_DID_RESTORE); 
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   async toggleMaximize() {
-    // TODO: Detect current window state and take appropriate action
-
-    return this.maximize();
+    try {
+      if (this._isMaximized) {
+        await this.maximize();
+      } else {
+        await this.restore();
+      }
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   async maximize() {
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_MAXIMIZE);
+    try {
+      this.emit(EVT_BEFORE_MAXIMIZE);
 
-    // TODO: Handle accordingly
-    const desktopWidth = $('#desktopArea').width();
-    const desktopHeight = $('#desktopArea').height();
-    this.moveTo(0,0);
-    this.resize(desktopWidth-20, desktopHeight-60);
-    //this.resize(initSize.width, initSize.height)
+      // TODO: Utilize desktopWidth / desktopHeight in DesktopLinkedState
+      const $desktopArea = $('#desktopArea');
+      const desktopWidth = $desktopArea.width();
+      const desktopHeight = $desktopArea.height();
+  
+      // TODO: Retain position prior to moving
+      // TODO: Make resize properties configurable
+      // TODO: Include dock location and size in resize calculations
+      this.moveTo(0, 0);
+      this.resize(desktopWidth - 20, desktopHeight - 60);
+  
+      this._isMaximized = true;
 
-    // Lock:
-    // Upper panel buffer = 1
-    // Dock buffer = 1
-    // Height = Background height - (Dock height + Dock buffer) - Upper panel height ( + Upper panel buffer)
-    // Top = Upper panel height + (Upper panel buffer)
-
-    // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_MAXIMIZE);
+      // TODO: Await for any effects to complete
+  
+      this.emit(EVT_MAXIMIZE);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /**
@@ -402,65 +494,6 @@ export default class Window extends Component {
   moveTo(posX, posY) {
     this._moveableComponent.moveTo(posX, posY);
   }
-
-  /**
-   * Sets the outer window chrome (including resizable layer) width & height.
-   * 
-   * @param {number | string} width 
-   * @param {number | string} height 
-   */
-  /*
-  setOuterSize(width, height) {
-    $(this._moveableComponent).css({
-      width,
-      height
-    });
-
-    const $header = $(this._windowHeaderComponent);
-    const headerHeight = $header.outerHeight();
-
-    const bodyHeight = height - headerHeight;
-
-    console.debug({
-      headerHeight,
-      bodyHeight,
-      height
-    });
-
-    // this.setBodySize('100%', bodyHeight);
-  }
-  */
-
-  /**
-   * Sets the inner window body content width & height.
-   * 
-   * @param {number | string} width 
-   * @param {number | string} height 
-   */
-  /*
-  setBodySize(width, height) {
-    window.requestAnimationFrame(() => {
-      $(this._windowBodyComponent).css({
-        width: width,
-        height: height
-      });
-    });
-  }
-  */
-
-  /*
-  getCalculatedBodySize() {
-    const bodyCalcStyle = window.getComputedStyle(this.windowBodyWrapper);
-
-    const width = parseInt(bodyCalcStyle.getPropertyValue('width'));
-    const height = parseInt(bodyCalcStyle.getPropertyValue('height'));
-
-    return {
-      width,
-      height
-    };
-  }
-  */
 
   /**
    * Determines whether the Window should be overlaid with <Cover /> (a
@@ -713,15 +746,15 @@ export default class Window extends Component {
 
       const { app } = this.props;
 
-      // this.lifecycleEvents.broadcast(EVT_WINDOW_WILL_CLOSE);
+      // this.emit(EVT_BEFORE_CLOSE);
 
       // Remove this window from the internal _windowStack
       _windowStack = _windowStack.filter(testWindow => {
         return !Object.is(this, testWindow);
       });
-  
-      // this.lifecycleEvents.broadcast(EVT_WINDOW_DID_CLOSE);
-  
+
+      // this.emit(EVT_DID_CLOSE);
+
       if (app) {
         await app.close();
       }

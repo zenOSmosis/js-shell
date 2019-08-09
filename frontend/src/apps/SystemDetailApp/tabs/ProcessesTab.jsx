@@ -175,7 +175,6 @@ class Processes extends Component {
                           }
                         })()
                       }
-
                     </td>
                     <td>
                       <button onClick={evt => process.exit()}>Close</button>

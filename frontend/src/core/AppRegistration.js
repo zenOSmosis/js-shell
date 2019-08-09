@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
+import { EVT_BEFORE_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
 import './AppRuntime.typedef';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
@@ -44,7 +44,9 @@ class AppRegistration extends EventEmitter {
     } = runProps;
 
     this._isLaunched = false;
-    this._appRuntime = [];
+
+    // Connected app runtimes attached to this registration
+    this._appRuntimes = [];
 
     this._title = title;
     this._iconSrc = iconSrc;
@@ -80,8 +82,9 @@ class AppRegistration extends EventEmitter {
       if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
         this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
       }
-      _createdWindowsCount++;
-      
+      ++_createdWindowsCount;
+
+      // Create the app process
       const appRuntime = new AppRuntime({
         title: this._title,
         iconSrc: this._iconSrc,
@@ -95,7 +98,7 @@ class AppRegistration extends EventEmitter {
   
       const self = this;
       // Handle cleanup when the app exits
-      appRuntime.on(EVT_EXIT, () => {
+      appRuntime.on(EVT_BEFORE_EXIT, () => {
         // Retain position and size for next open
         this._lastPosition = appRuntime.getInitPosition();
         this._lastSize = appRuntime.getInitSize();
@@ -117,8 +120,9 @@ class AppRegistration extends EventEmitter {
 
       await appRuntime.onceReady();
 
-      this._appRuntime.push(appRuntime);
-  
+      // Mount the new runtime to the runtimes stack
+      this._appRuntimes.push(appRuntime);
+
       this._isLaunched = true;
 
       // Emit to listeners that the app is launched
@@ -182,11 +186,13 @@ class AppRegistration extends EventEmitter {
     const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
     let linkedApps = [];
 
+    // Focus respecting order
+    // TODO: Document this
     if (Array.isArray(appRuntimeFocusOrder)) {
-      linkedApps = appRuntimeFocusOrder.filter(a => (appRuntimes.indexOf(a)>-1));
+      linkedApps = appRuntimeFocusOrder.filter(a => (appRuntimes.indexOf(a) > -1));
     }
 
-    //focus respecting order
+    // Focus each linked app
     linkedApps.forEach(a=> a.focus());
   }
 
@@ -200,7 +206,7 @@ class AppRegistration extends EventEmitter {
   }
 
   /**
-   * Removes this app from the Desktop registry.
+   * Removes this app (and all connected runtimes) from the Desktop registry.
    * 
    * Important!  Once the app is unregistered, it is no longer available in the
    * Dock or any app menus.
