@@ -1,0 +1,132 @@
+.overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+ 
+  background-image: url("http://localhost:3001/pictures/mojave.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+body:before{
+  content: '';
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
+}
+.login-form
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 300px;
+  height: 400px;
+  padding: 80px 40px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: rgba(0,0,0,.5);
+}
+.avatar {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  top: calc(-80px/2);
+  left: calc(50% - 40px);
+}
+.login-form h2 {
+  margin: 0;
+  padding: 0 0 20px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+}
+.login-form p
+{
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  color: #fff;
+}
+.login-form input
+{
+  width: 100%;
+  margin-bottom: 20px;
+}
+.login-form input[type="text"],
+.login-form input[type="password"]
+{
+  border: none;
+  border-bottom: 1px solid #fff;
+  background: transparent;
+  outline: none;
+  height: 40px;
+  color: #fff;
+  font-size: 16px;
+}
+.login-form input[type="submit"] {
+  height: 30px;
+  color: #fff;
+  font-size: 15px;
+  background: red;
+  cursor: pointer;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  margin-top: 15%;
+}
+.login-form a
+{
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+}
+input[type="checkbox"] {
+  width: 20%;
+}
+
+/*
+
+<div id="mask">
+    <p>Lorem ipsum ...</p>
+    <img src="http://www.byui.edu/images/agriculture-life-sciences/flower.jpg" />
+</div>
+
+
+<div class="login-form">
+        <img src="2.jpg" class="avatar">
+        <h2>Log in</h2>
+        <form>
+            <p>Username</p>
+            <input type="text" name="username" placeholder="Enter Username">
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Enter Password">
+            <input type="submit" name="" value="Sign In">
+            <p><input type="checkbox"> Remember Me</p>
+        </form>
+    </div>
+
+
+
+*/

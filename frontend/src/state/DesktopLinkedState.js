@@ -40,6 +40,8 @@ class DesktopLinkedState extends LinkedState {
 
       appRuntimeFocusOrder: [],
 
+      isLoggedIn: false,
+
       // TODO: Differentiate between this and ProcessLinkedState.focusedGUIProcess
       focusedAppRuntime: null,
 
@@ -139,6 +141,16 @@ class DesktopLinkedState extends LinkedState {
         activeWindow
       });
     }
+  }
+
+  setIsLogged(logged) {
+    this.setState({isLoggedIn: logged});
+  }
+
+  getIsLogged() {
+    const { isLoggedIn } = this.getState();
+
+    return isLoggedIn;
   }
 
   getActiveWindow() {

@@ -19,6 +19,9 @@ app.all('*', (req, res, next) => {
   next();
 });
 
+// Allow parsing of post json body
+app.use(express.json());
+
 // Session management
 // @see https://www.npmjs.com/package/express-session
 (() => {
