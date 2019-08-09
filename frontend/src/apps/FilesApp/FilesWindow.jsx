@@ -17,10 +17,11 @@ import { relativeTimeRounding } from 'moment';
 import mime from 'mime-types';
 import config from '../../config';
 
+import 'react-dropzone-uploader/dist/styles.css'
+import DropFile from 'components/DropFile'
 
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
-
 
 
 
@@ -246,6 +247,7 @@ export default class FilesWindow extends Component {
           </Row>
         }
       >
+        <DropFile>
         <Layout className="FileNavigator">
           <Layout>
             {
@@ -356,6 +358,7 @@ export default class FilesWindow extends Component {
             </Row>
           </Footer>
         </Layout>
+        </DropFile>
       </Window>
     );
   }
