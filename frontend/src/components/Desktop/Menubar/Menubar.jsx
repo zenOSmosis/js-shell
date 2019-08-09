@@ -23,7 +23,7 @@ class Menubar extends Component {
   componentDidUpdate(prevProps) {
     
     // Don't contiune if props haven't updated
-    if (Object.is(prevProps, this.props)) {
+    if (Object.is(prevProps.focusedAppRuntime, this.props.focusedAppRuntime)) {
       return;
     }
 
