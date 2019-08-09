@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { /* Icon, */ Dropdown } from 'antd';
 import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Menu';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import {
+  MenubarSystemMenu,
+} from 'core/ShellDesktop/Menubar/menus';
 import './style.css';
 // import { Menubar as MenubarModel } from 'core/ShellDesktop';
 
@@ -41,7 +44,7 @@ class Menubar extends Component {
       });
     } else {
       this.setState({
-        menus: []
+        menus: [new MenubarSystemMenu(this)]
       });
     }
   }
