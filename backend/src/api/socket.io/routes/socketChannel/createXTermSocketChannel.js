@@ -55,7 +55,9 @@ const createXTermSocketChannel = async (options = {}, ack) => {
     });
 
     socketChannel.on(EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT, () => {
-      ptyProcess.exit(0);
+      // TODO: Is there not a way to directly exit the ptyProcess?
+      const { _pid: ptyProcessPID } = ptyProcess;
+      process.kill(ptyProcessPID, 'SIGHUP');
     });
 
     // console.log('socketChannelID', socketChannelID);
