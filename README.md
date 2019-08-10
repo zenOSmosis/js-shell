@@ -85,7 +85,7 @@ Currently developed with Node.js 10, compiled with Webpack, and supports ES6+ / 
 
 - Built on: [Facebook's Create React App](https://github.com/facebook/create-react-app)
 - Source file compilation: Webpack
-- Additional configuration: frontend/config-overrides.js
+- [react-app-rewired](https://github.com/timarney/react-app-rewired) config: frontend/config-overrides.js
 - HMR (Hot Module Replacement) supported: Yes
 - Module import syntax (ES6+ / CommonJS):
   ```
