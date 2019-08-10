@@ -31,7 +31,7 @@ class ViewportFocusMonitor extends ClientProcess {
 
       // Set initial focus state
       this.setState({
-        viewportIsFocused: true
+        isViewportFocused: true
       });
 
       await super._init();
@@ -63,17 +63,17 @@ class ViewportFocusMonitor extends ClientProcess {
     const prevType = this._prevFocusBlurEventType;
 
     if (type !== prevType) {
-      let viewportIsFocused = null;
+      let isViewportFocused = null;
 
         switch (e.type) {
           // TODO: Use constant
           case 'blur':
-            viewportIsFocused = false;
+            isViewportFocused = false;
             break;
   
           // TODO: Use constant
           case 'focus':
-            viewportIsFocused = true;
+            isViewportFocused = true;
             break;
   
           default:
@@ -84,11 +84,8 @@ class ViewportFocusMonitor extends ClientProcess {
         this._prevFocusBlurEventType = type;
     
         this._desktopLinkedState.setState({
-          viewportIsFocused
+          isViewportFocused
         });
-
-        // TODO: Remove
-        console.debug(`Viewport is ${type}ed`);
     }
   }
 }
