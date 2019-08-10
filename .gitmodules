@@ -7,3 +7,6 @@
 [submodule "docker_modules/docker-coturn"]
 	path = docker_modules/docker-coturn
 	url = https://github.com/zenOSmosis/docker-coturn.git
+[submodule "docker_modules/searx"]
+	path = docker_modules/searx
+	url = https://github.com/asciimoo/searx.git

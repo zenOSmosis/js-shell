@@ -11,6 +11,9 @@ const systemTime = require('./systemTime');
 const debugError = require('./debugError');
 const xApps = require('./xApps');
 const appCategories = require('./appCategories');
+
+const webSearch = require('./webSearch');
+
 // const systemCommand = require('./systemCommand');
 // const portAudio = require('./portAudio');
 const wallpapers = require('./wallpapers');
@@ -32,6 +35,8 @@ const {
   // SOCKET_API_ROUTE_PORT_AUDIO_FETCH_DEVICES,
   // SOCKET_API_ROUTE_PORT_AUDIO_FETCH_HOST_APIS,
   SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS,
+
+  SOCKET_API_ROUTE_WEB_SEARCH,
 
   // P2P
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
@@ -62,6 +67,8 @@ const initSocket = (socket) => {
   socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);
 
   socket.on(SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS, wallpapers.fetchWallpaperPaths);
+
+  socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
 
   // P2P
   socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2p.fetchSocketIDs);

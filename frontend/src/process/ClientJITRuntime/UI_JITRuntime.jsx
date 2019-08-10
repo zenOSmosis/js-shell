@@ -7,6 +7,7 @@ import getPrototypeChain from 'utils/getPrototypeChain';
 
 import BabelCompilerWorkerProcess from 'process/BabelCompilerWorkerProcess';
 import ClientProcess from 'process/ClientProcess';
+import ClientGUIProcess from 'process/ClientGUIProcess';
 import AppRuntime from 'core/AppRuntime';
 import ClientWorkerProcess from 'process/ClientWorkerProcess';
 import MicrophoneProcess from 'process/MicrophoneProcess';
@@ -19,6 +20,7 @@ import Center from 'components/Center';
 import Cover from 'components/Cover';
 import IFrame from 'components/IFrame';
 import Window from 'components/Desktop/Window';
+import WebSearchTileList from 'components/WebSearchTileList';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 
 // Note: Currently commented-out due to inconsistent exports
@@ -41,6 +43,7 @@ class UI_JITRuntime extends ClientJITRuntime {
       
       BabelCompilerWorkerProcess,
       ClientProcess,
+      ClientGUIProcess,
       AppRuntime,
       ClientWorkerProcess,
       MicrophoneProcess,
@@ -57,7 +60,8 @@ class UI_JITRuntime extends ClientJITRuntime {
         Center,
         Cover,
         IFrame,
-        Window
+        Window,
+        WebSearchTileList
       },
 
       utils: {

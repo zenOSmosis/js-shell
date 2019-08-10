@@ -63,6 +63,11 @@ services:
     command: ["npm", "run", "start"]
     ports:
       - 3000:3000
+
+  searx:
+    build: ./docker_modules/searx
+    ports:
+      - 3020:8080 # TODO: Close off outside port unless necessary
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
