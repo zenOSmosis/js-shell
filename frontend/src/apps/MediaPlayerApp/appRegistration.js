@@ -10,6 +10,7 @@ export default registerApp({
       <MediaPlayerWindow {...props} />
     )
   },
+  allowMultipleWindows: true,
   supportedMimes: ['audio/mpeg', 'video/mp4'],
   iconSrc: `${config.HOST_ICON_URI_PREFIX}media/media.svg`,
   menuItems: [{title: 'play', onClick:()=>{alert('play clicked')}}]
