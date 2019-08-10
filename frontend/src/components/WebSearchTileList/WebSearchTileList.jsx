@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import Full from '../Full';
 import TileList, { Tile } from '../TileList';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
-import { SOCKET_API_ROUTE_WEB_SEARCH } from 'shared/socketAPI/socketAPIRoutes';
 import { Spin, Icon } from 'antd';
 import Center from 'components/Center';
 import Cover from 'components/Cover';
+import { SOCKET_API_ROUTE_WEB_SEARCH } from 'shared/socketAPI/socketAPIRoutes';
+import 'shared/socketAPI/socketAPITypedefs';
 
 const AntIcon = <Icon type="loading" style={{ fontSize: 68 }} spin />;
+
+/**
+ * @typedef WebSearchTileListState
+ * @property {SearxResponseResult[]} results
+ * @property {boolean} isSearching
+ */
 
 /**
  * A wrapper for TileList with web search results.
@@ -18,6 +25,9 @@ class WebSearchTileList extends Component {
   constructor(props) {
     super(props);
 
+    /**
+     * @type {WebSearchTileListState}
+     */
     this.state = {
       results: [],
       isSearching: false
@@ -41,6 +51,8 @@ class WebSearchTileList extends Component {
           results,
           isSearching: false
         });
+
+        console.debug(results);
       } catch (exc) {
         throw exc;
       }
@@ -49,17 +61,8 @@ class WebSearchTileList extends Component {
     }
   }
 
-  /*
-  componentDidUpdate(prevProps, prevState) {
-    console.debug({
-      prevProps,
-      prevState
-    });
-  }
-  */
-
   /**
-   * @param{WebSearchQueryResult} result
+   * @param{SearxResponseResult} result
    */
   _handleResultSelect = (result) => {
     const { onResultSelect } = this.props;
@@ -74,7 +77,8 @@ class WebSearchTileList extends Component {
       ...propsRest
     } = this.props;
 
-    const { results, isSearching } = this.state;
+    const { /*results,*/ isSearching } = this.state;
+    const results = [];
 
     return (
       <Full>
@@ -83,14 +87,13 @@ class WebSearchTileList extends Component {
         >
           {
             results.map((result, idx) => {
-              // WebSearchQueryResult
               const {
-                url,
+                // url,
                 thumbnail,
                 title,
-                content,
-                template,
-                publishedDate
+                // content,
+                // template,
+                // publishedDate
               } = result;
 
               return (
