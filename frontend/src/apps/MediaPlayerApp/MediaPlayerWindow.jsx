@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import Full from 'components/Full';
-import Window from 'components/Desktop/Window';
 import Cover from 'components/Cover';
+import Window from 'components/Desktop/Window';
 import ReactPlayer from 'components/ReactPlayer';
 import WebSearchTileList from 'components/WebSearchTileList';
 // import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
@@ -11,8 +11,7 @@ export default class MediaPlayerWindow extends Component {
     super(props);
 
     this.state = {
-      // TODO: Remove hardcoded URL
-      mediaURL: 'https://www.youtube.com/watch?v=oUFJJNQGwhk'
+      mediaURL: null
     };
 
     this._elSearchInput = null;
@@ -53,6 +52,21 @@ export default class MediaPlayerWindow extends Component {
     }
   };
 
+  _handleResultSelect = (result) => {
+    const {
+      url,
+      thumbnail,
+      title,
+      content,
+      template,
+      publishedDate
+    } = result;
+
+    this.setState({
+      mediaURL: url
+    });
+  };
+
   render() {
     const { ...propsRest } = this.props;
     const { mediaURL } = this.state;
@@ -71,14 +85,18 @@ export default class MediaPlayerWindow extends Component {
           </div>
         }
       >
-        <ReactPlayer
-          // url={mediaURL}
-          // playing
-        />
+        {
+          mediaURL &&
+          <ReactPlayer
+            url={mediaURL}
+            playing
+          />
+        }
 
         <Cover>
           <WebSearchTileList
             ref={ c => this._webSearchTileList = c }
+            onResultSelect={this._handleResultSelect}
           />
         </Cover>
         
