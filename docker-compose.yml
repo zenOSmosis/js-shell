@@ -2,6 +2,8 @@
 
 # JS Shell Docker Compose Development Configuration
 
+# TODO: Autorestart all environments in production
+
 version: '3.1'
 services:
   # Creates a self-signed SSL proxy for local development
