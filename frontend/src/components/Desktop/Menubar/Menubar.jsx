@@ -127,8 +127,6 @@ class Menubar extends Component {
 }
 
 export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
-  console.debug('updated state', updatedState);
-
   const { focusedAppRuntime } = updatedState;
 
   if (typeof focusedAppRuntime !== 'undefined') {
