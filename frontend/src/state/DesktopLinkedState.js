@@ -55,8 +55,7 @@ class DesktopLinkedState extends LinkedState {
       backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
 
       // Whether the browser window is focused or not
-      // TODO: Rename to viewportIsFocused
-      viewportIsFocused: true,
+      isViewportFocused: true,
 
       // TODO: Create typedef for this
       viewportSize: { width: 0, height: 0},

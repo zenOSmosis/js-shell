@@ -183,7 +183,7 @@ class AppRuntime extends ClientGUIProcess {
       this.setInitSize(size);
     }
 
-    console.warn('Has size?', (size ? 'yes' : 'no'), this);
+    // console.warn('Has size?', (size ? 'yes' : 'no'), this);
   }
 
   /**

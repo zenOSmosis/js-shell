@@ -62,7 +62,7 @@ class Environment extends Component {
     let {
       clientIP,
       connectionStatus,
-      viewportIsFocused,
+      isViewportFocused,
       viewportSize
     } = this.props;
     clientIP = clientIP || 'N/A';
@@ -103,7 +103,7 @@ class Environment extends Component {
                     Viewport Size: <ViewportSize viewportSize={viewportSize} />
                   </div>
                   <div>
-                    Viewport Focused: {viewportIsFocused ? 'Yes' : 'No'}
+                    Viewport Focused: {isViewportFocused ? 'Yes' : 'No'}
                   </div>
                 </div>
                 {
@@ -144,14 +144,14 @@ class Environment extends Component {
 }
 
 const DesktopEnvironment = hocConnect(Environment, DesktopLinkedState, (updatedState) => {
-  const { viewportIsFocused, viewportSize } = updatedState;
+  const { isViewportFocused, viewportSize } = updatedState;
 
   let filteredState = {};
 
-  if (typeof viewportIsFocused !== 'undefined') {
+  if (typeof isViewportFocused !== 'undefined') {
     filteredState = {
       ...filteredState, ...{
-        viewportIsFocused
+        isViewportFocused
       }
     };
   }
