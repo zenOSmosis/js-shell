@@ -110,7 +110,7 @@ class WebSearchTileList extends Component {
                   title={title}
                   onClick={evt => { this._handleResultSelect(result) }}
                 >
-                  <img src={thumbnail} width="100%" />
+                  <img alt={title} src={thumbnail} width="100%" />
                 </Tile>
               );
             })

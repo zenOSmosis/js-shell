@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Full from 'components/Full';
-import Cover from 'components/Cover';
+// import Cover from 'components/Cover';
 import Window from 'components/Desktop/Window';
 import ReactPlayer from 'components/ReactPlayer';
 import SplitterLayout from 'components/SplitterLayout';
