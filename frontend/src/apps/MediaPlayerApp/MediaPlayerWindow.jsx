@@ -5,6 +5,7 @@ import Window from 'components/Desktop/Window';
 import ReactPlayer from 'components/ReactPlayer';
 import WebSearchTileList from 'components/WebSearchTileList';
 // import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
+import 'shared/socketAPI/socketAPITypedefs';
 
 export default class MediaPlayerWindow extends Component {
   constructor(props) {
@@ -38,28 +39,30 @@ export default class MediaPlayerWindow extends Component {
     }
   };
 
+  /**
+   * @return {Promise<void>}
+   */
   _handleSearchQuery = async () => {
     try {
       const queryValue = this._elSearchInput.value;
 
-      const results = await this._webSearchTileList.query(queryValue);
-
-      console.log({
-        queryResults: results
-      });
+      await this._webSearchTileList.query(queryValue);
     } catch (exc) {
       throw exc;
     }
   };
 
+  /**
+   * @param {SearxResponseResult} result
+   */
   _handleResultSelect = (result) => {
     const {
       url,
-      thumbnail,
-      title,
-      content,
-      template,
-      publishedDate
+      // thumbnail,
+      // title,
+      // content,
+      // template,
+      // publishedDate
     } = result;
 
     this.setState({

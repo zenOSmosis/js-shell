@@ -34,6 +34,13 @@ class WebSearchTileList extends Component {
     };
   }
 
+  /**
+   * Important!  This doesn't resolve a value; it only sets it internally to
+   * the class.
+   * 
+   * @param {string} value
+   * @return {Promise<void>} 
+   */
   async query(value) {
     try {
       try {
@@ -42,17 +49,19 @@ class WebSearchTileList extends Component {
         });
 
         // TODO: Allow this to be cancellable
-        const results = await socketAPIQuery(SOCKET_API_ROUTE_WEB_SEARCH, {
+        const searxResults = await socketAPIQuery(SOCKET_API_ROUTE_WEB_SEARCH, {
           query: value
         });
 
-        // TODO: Don't set if the component has already unmounted
-        this.setState({
-          results,
-          isSearching: false
-        });
+        if (searxResults) {
+          const { results } = searxResults;
 
-        console.debug(results);
+          // TODO: Don't set if the component has already unmounted
+          this.setState({
+            results,
+            isSearching: false
+          });
+        }
       } catch (exc) {
         throw exc;
       }
@@ -77,8 +86,7 @@ class WebSearchTileList extends Component {
       ...propsRest
     } = this.props;
 
-    const { /*results,*/ isSearching } = this.state;
-    const results = [];
+    const { results, isSearching } = this.state;
 
     return (
       <Full>
