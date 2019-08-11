@@ -1,6 +1,5 @@
-// TODO: Implement ability to cancel running query.  If the availability is not
-// implemented directly in socket.io, proxy it.
-// Bluebird promises?
+// TODO: Implement ability to cancel https://dev.to/chromiumdev/cancellable-async-functions-in-javascript-5gp7
+// Would be nice to keep async / await structure, and have it cancelable at the same time
 
 import socket from 'utils/socket.io';
 
