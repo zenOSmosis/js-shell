@@ -12,7 +12,7 @@ require('../typedefs');
  * TODO: Move this to
  * 
  * @param {SearxSearchOptions} queryOptions
- * @return {Promise<SearxResponseResult[]>}
+ * @return {Promise<SearxResponse[]>}
  */
 const _fetchQueryResults = async (queryOptions) => {
   try {
@@ -21,18 +21,9 @@ const _fetchQueryResults = async (queryOptions) => {
     // TODO: Switch to POST; remove hardcoded categories
     const res = await axios.get(`http://searx:8080?q=${urlencode(query)}&categories=videos&format=json`);
 
-    const { data: rawQueryResults } = res;
+    const { data: searxResponse } = res;
 
-    return rawQueryResults;
-    
-    if (rawQueryResults) {
-      const { results } = rawQueryResults;
-
-      /**
-       * @type SearxResponseResult[]
-       */
-      return results;
-    }
+    return searxResponse;
   } catch (exc) {
     throw exc;
   }
@@ -42,7 +33,7 @@ const _fetchQueryResults = async (queryOptions) => {
   * @param {SearxSearchOptions} options // TODO: Document 
   * @return {Promise<void>}
   */
-const webSearch = async(options = {}, ack) => {
+const webSearch = async(options, ack) => {
   return handleSocketAPIRoute(async () => {
     try {
       return await _fetchQueryResults(options);
