@@ -114,7 +114,9 @@ export default class Window extends Component {
     // Base DOM element for the Window
     this._el = null;
 
+    // TODO: Move this out of constructor
     this._app = this.props.app;
+    // TODO: Use contant here
     this._app.on('focus', () => {
       this.focus();
     })
@@ -204,14 +206,20 @@ export default class Window extends Component {
   }
 
   /*
-    * Set init position based on last one
-    */
+   * Set init position based on last one
+   */
   autosetSize() {
     const { app, minHeight, minWidth } = this.props;
     const initSize = (app ? app.getInitSize() : {width: minWidth,height: minHeight});
     this.resize(initSize.width, initSize.height)
   }
 
+  /**
+   * Sets the outer dimensions of the window to the given width and height.
+   * 
+   * @param {number} width 
+   * @param {number} height 
+   */
   resize(width, height) {
     this._resizableComponent.resize(width, height)
   }
@@ -248,13 +256,6 @@ export default class Window extends Component {
     const { title } = this.state;
 
     return title;
-  }
-
-  /**
-   * return {boolean}
-   */
-  getIsClosed() {
-    return this._isClosed;
   }
 
   /**
@@ -338,41 +339,50 @@ export default class Window extends Component {
     }
   }
 
-  // TODO: Await for any effects to complete
   async toggleHide() {
     // TODO: Detect current window state and take appropriate action
 
     return this.hide();
   }
 
-  // TODO: Await for any effects to complete
   // Differentiate this between minimize (or remove minimize)
   async hide() {
-    this.emit(EVT_BEFORE_HIDE);
+    try {
+      this.emit(EVT_BEFORE_HIDE);
 
-    // TODO: display: none
+      // TODO: display: none
+  
+      // notify AppRuntime to pass focus
+      const { onMinimize } = this.props.app;
+      if (typeof onMinimize === 'function') {
+        onMinimize();
+      }
+  
+      $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
-    // notify AppRuntime to pass focus
-    const { onMinimize } = this.props.app;
-    if (typeof onMinimize === 'function') {
-      onMinimize();
+      // TODO: Await for any effects to complete
+  
+      this.emit(EVT_HIDE);
+    } catch (exc) {
+      throw exc;
     }
-
-    $(this._el).addClass(CSS_CLASS_NAME_HIDE);
-
-    this.emit(EVT_HIDE);
   }
 
-  // TODO: Await for any effects to complete
   async unhide() {
-    this.emit(EVT_BEFORE_UNHIDE);
+    try {
+      this.emit(EVT_BEFORE_UNHIDE);
 
-    // TODO: display: block
+      // TODO: display: block
+  
+      // TODO: Handle accordingly
+      $(this._el).removeClass(CSS_CLASS_NAME_HIDE);
 
-    // TODO: Handle accordingly
-    $(this._el).removeClass(CSS_CLASS_NAME_HIDE);
-
-    this.emit(EVT_UNHIDE);
+      // TODO: Await for any effects to complete
+  
+      this.emit(EVT_UNHIDE);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   async toggleMinimize() {
@@ -763,5 +773,12 @@ export default class Window extends Component {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getIsClosed() {
+    return this._isClosed;
   }
 }
