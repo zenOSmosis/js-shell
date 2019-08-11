@@ -1,5 +1,7 @@
 // TODO: Get ideas from https://github.com/defunctzombie/node-process/blob/master/browser.js
 
+// TODO: Implement optional provisioning to force selected processes to be singletons
+
 import EventEmitter from 'events';
 import ProcessLinkedState from 'state/ProcessLinkedState';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
