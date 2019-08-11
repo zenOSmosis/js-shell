@@ -1,5 +1,4 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import removeArrayValue from 'utils/array/removeArrayValue';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -59,15 +58,20 @@ export default class P2PLinkedState extends LinkedState {
   removeSocketPeerID(socketPeerID) {
     const { socketPeerIDs } = this.getState();
 
-    removeArrayValue(socketPeerIDs, socketPeerID);
+    const rmIdx = socketPeerIDs.indexOf(socketPeerID);
 
-    this.setState({
-      socketPeerIDs
-    });
+    if (rmIdx > -1) {
+      socketPeerIDs.splice(rmIdx, 1);
+
+      this.setState({
+        socketPeerIDs
+      });
+    }
   }
 
   // add / remove p2p
 
+  /*
   addWebRTCConnection(webRTCConnection) {
     const { webRTCConnections } = this.getState();
 
@@ -77,14 +81,19 @@ export default class P2PLinkedState extends LinkedState {
       webRTCConnections
     });
   }
+  */
 
+  /*
   removeWebRTCConnection(webRTCConnection) {
-    const { webRTCConnections } = this.getState();
+    let { webRTCConnections } = this.getState();
 
-    removeArrayValue(webRTCConnections, webRTCConnection);
+    webRTCConnections = webRTCConnections.filter(testWebRTCConnection => {
+
+    });
 
     this.setState({
       webRTCConnections
     });
   }
+  */
 }

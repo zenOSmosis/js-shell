@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import ClientJITRuntime, { THIS_REP } from './ClientJITRuntime';
 
 // [main threaded] JITRuntime included shared objects
-import getLogicalProcessors from 'utils/getLogicalProcessors';
-import getPrototypeChain from 'utils/getPrototypeChain';
 
 import BabelCompilerWorkerProcess from 'process/BabelCompilerWorkerProcess';
 import ClientProcess from 'process/ClientProcess';
@@ -29,6 +27,8 @@ import SocketChannel from 'shared/socketAPI/SocketChannel';
 // import socketAPIEvents from 'utils/socketAPIEvents';
 
 import beep from 'utils/audio/beep';
+import getLogicalProcessors from 'utils/getLogicalProcessors';
+import getPrototypeChain from 'utils/getPrototypeChain';
 
 /**
  * @extends ClientJITRuntime
@@ -46,6 +46,7 @@ class UI_JITRuntime extends ClientJITRuntime {
       ClientProcess,
       ClientGUIProcess,
       AppRuntime,
+      
       ClientWorkerProcess,
       MicrophoneProcess,
       ClientAudioWorkerProcess,
