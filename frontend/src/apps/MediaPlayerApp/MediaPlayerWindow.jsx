@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-// import Full from 'components/Full';
+import Full from 'components/Full';
 import Cover from 'components/Cover';
 import Window from 'components/Desktop/Window';
 import ReactPlayer from 'components/ReactPlayer';
+import SplitterLayout from 'components/SplitterLayout';
 import WebSearchTileList from 'components/WebSearchTileList';
 // import { Layout, /* Sider, */ Content, Footer } from 'components/Layout';
+import { Input } from 'antd';
 import 'shared/socketAPI/socketAPITypedefs';
+const { Search } = Input;
 
 export default class MediaPlayerWindow extends Component {
   constructor(props) {
@@ -80,29 +83,32 @@ export default class MediaPlayerWindow extends Component {
         {...propsRest}
         toolbarRight={
           <div>
-            <input
+            <Search
               ref={ c => this._elSearchInput = c }
               placeholder="Search"
               onKeyPress={this._handleSearchKeypress}
+              size="small"
             />
           </div>
         }
       >
-        {
-          mediaURL &&
-          <ReactPlayer
-            url={mediaURL}
-            playing
-          />
-        }
-
-        <Cover>
-          <WebSearchTileList
-            ref={ c => this._webSearchTileList = c }
-            onResultSelect={this._handleResultSelect}
-          />
-        </Cover>
-        
+        <SplitterLayout
+          secondaryInitialSize={240}
+        >
+          <Full>
+            <ReactPlayer
+              url={mediaURL}
+              playing
+            />
+          </Full>
+          
+          <Full>
+            <WebSearchTileList
+              ref={ c => this._webSearchTileList = c }
+              onResultSelect={this._handleResultSelect}
+            />
+          </Full>
+        </SplitterLayout>
       </Window>
     );
   }
