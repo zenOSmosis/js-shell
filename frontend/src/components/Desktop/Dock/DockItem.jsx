@@ -18,22 +18,24 @@ import { Tooltip } from 'antd';
 import './style.css';
 
 export default class DockItem extends Component {
-  state ={
-    menuVisible: false,
-  }
-
-  componentDidMount() {
-    this._root.addEventListener('contextmenu', this._handleContextMenu.bind(this));
-    document.addEventListener('mousedown', this._handleDocClick.bind(this));
-    this._root.addEventListener('scroll', this._handleDocScroll.bind(this));
+  state = {
+    isMenuVisible: false,
+    isDockItemHovered: false
   };
 
-  componentWillUnmount() {
-    this._root.removeEventListener('contextmenu', this._handleContextMenu);
-    document.removeEventListener('mousedown', this._handleDocClick);
-    this._root.removeEventListener('scroll', this._handleDocScroll);
+  componentDidMount() {
+    this._root.addEventListener(EVT_CONTEXT_MENU, this._handleContextMenu);
+    document.addEventListener(EVT_MOUSEDOWN, this._handleDocClick);
+    this._root.addEventListener(EVT_SCROLL, this._handleDocScroll);
   }
 
+  componentWillUnmount() {
+    this._root.removeEventListener(EVT_CONTEXT_MENU, this._handleContextMenu);
+    document.removeEventListener(EVT_MOUSEDOWN, this._handleDocClick);
+    this._root.removeEventListener(EVT_SCROLL, this._handleDocScroll);
+  }
+
+  // TODO: Use DesktopLinkedState for detection if we should present this context menu
   _handleContextMenu = (evt) => {
     evt.stopPropagation();
     evt.preventDefault();
@@ -53,18 +55,33 @@ export default class DockItem extends Component {
     if (menuVisible) this.setState({ menuVisible: false, });
   };
 
-  _handleClick(evt, appRegistration) {
+  /*
+  _handleClick = (evt, appRegistration) => {
     console.debug('click', evt.key, appRegistration);
-    if(evt.key === 'launch'){
-      appRegistration.launchApp();
-    } else if(evt.key === 'focus'){
-      appRegistration.focus();
-    } else {
-      let [ key, idx ] = evt.key.split('-');
-      appRegistration.getAppRuntimes()[idx].focus();
+    const { key } = evt;
+
+    switch (key) {
+      // case 'launch':
+      //   appRegistration.launchApp();
+      // break;
+
+      // case 'focus':
+      //  appRegistration.focus();
+      // break;
+
+      default:
+        let [key, idx] = evt.key.split('-');
+    
+        // Absorb key so it doesn't trigger a warning
+        isUndefined(key);
+
+        console.debug(idx);
+        
+        // appRegistration.getJoinedAppRuntimes()[idx].focus();
+      break;
     }
-    this.setState({ menuVisible: false, });
-  }
+  };
+  */
 
   handleDockItemClick(appRegistration) {
     const isLaunched = appRegistration.getIsLaunched();
@@ -72,66 +89,96 @@ export default class DockItem extends Component {
     if (!isLaunched) {
       appRegistration.launchApp();
     } else {
-      appRegistration.focus();
+      console.warn('IMPLEMENT APP FOCUS');
     }
   }
 
   render() {
-    const { menuVisible } = this.state;
+    const { isMenuVisible, isDockItemHovered } = this.state;
     const { appRegistration } = this.props;
     const isLaunched = appRegistration.getIsLaunched();
     const allowLaunch = !isLaunched || appRegistration.getAllowMultipleWindows();
     const iconSrc = appRegistration.getIconSrc();
     const title = appRegistration.getTitle();
-    
+    const appRuntimes = appRegistration.getJoinedAppRuntimes();
+
     return (
       <div
         ref={ c => this._root = c }
         // effect="wobble" // TODO: Use variable
         className={`zd-desktop-dock-item ${isLaunched ? 'open' : ''}`}
       >
-        <Tooltip title={title}>
+        <Tooltip
+          title={title}
+          visible={!isMenuVisible && isDockItemHovered}
+        >
           <button
-            onClick={ evt => this.handleDockItemClick(appRegistration) }
+            onMouseOver={evt => this.setState({ isDockItemHovered: true })}
+            onMouseLeave={evt => this.setState({ isDockItemHovered: false })}
+            onClick={evt => this._handleDockItemClick(appRegistration)}
           >
             <Image className="zd-desktop-dock-item-icon" src={iconSrc} />
           </button>
         </Tooltip>
         {
-          menuVisible &&
-          <div style={{position:'absolute'}}>
-          <div 
-            ref={ref => { this._overlay = ref }} 
-            className="zd-context-menu-overlay " 
-          >
-            <Menu
-                onClick={evt => this._handleClick(evt, appRegistration)}
+          isMenuVisible &&
+          <div style={{ position: 'absolute' }}>
+            <div
+              ref={ref => { this._overlay = ref }}
+              className="zd-context-menu-overlay "
+            >
+              <Menu
+                onClick={evt => { this.setState({ isMenuVisible: false }) }}
                 // style={{ width: 256 }}
                 mode="vertical"
-            >
-              {
-                appRegistration.getAppRuntimes().map((runtime, idx)=>(
-                  <MenuItem key={'focus-' + idx}>{runtime.getTitle()}</MenuItem>
-                ))
-              }
+              >
+                {
+                  appRuntimes.map((runtime, idx) => (
+                    <MenuItem
+                      key={`focus-${idx}`}
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {runtime.getTitle()}
+                    </MenuItem>
+                  ))
+                }
 
-              {
-                appRegistration.getAppRuntimes().length &&
-                <MenuDivider />
-              }
+                {
+                  isLaunched &&
+                  <MenuDivider />
+                }
 
-              
-              {
-                allowLaunch && 
-                <MenuItem key="launch">{appRegistration.getAppRuntimes().length?'Open new window':'Open'}</MenuItem>
-              }
+                {
+                  allowLaunch &&
+                  <MenuItem
+                    key={`launch`}
+                    onClick={evt => { appRegistration.launchApp() }}
+                  >
+                    {appRuntimes.length ? 'Open new window' : 'Open'}
+                  </MenuItem>
+                }
 
-              {
-                isLaunched && 
-                <MenuItem key="focus">Show all windows</MenuItem>
-              }
-            </Menu>
-          </div>
+                {
+                  isLaunched &&
+                  <MenuItem key={`focus`}>Show all windows</MenuItem>
+                }
+
+                {
+                  isLaunched &&
+                  <MenuDivider />
+                }
+
+                {
+                  isLaunched &&
+                  <MenuItem
+                    key={`close`}
+                    onClick={evt => { appRegistration.closeAllJoinedApps() }}
+                  >
+                    Close all windows
+                  </MenuItem>
+                }
+              </Menu>
+            </div>
           </div>
         }
       </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ProcessLinkedState from 'state/ProcessLinkedState';
+import ClientProcessLinkedState from 'state/ClientProcessLinkedState';
 // import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import hocConnect from 'state/hocConnect';
 import secondsToHHMMSS from 'utils/time/secondsToHHMMSS';
@@ -129,7 +129,7 @@ class Processes extends Component {
           <tbody>
             {
               processes.map((process, idx) => {
-                // TODO: Debug ProcessLinkedState issue where exited processes
+                // TODO: Debug ClientProcessLinkedState issue where exited processes
                 // could still show in this list
                 if (!process) {
                   return false;
@@ -191,4 +191,4 @@ class Processes extends Component {
   }
 }
 
-export default hocConnect(Processes, ProcessLinkedState);
+export default hocConnect(Processes, ClientProcessLinkedState);

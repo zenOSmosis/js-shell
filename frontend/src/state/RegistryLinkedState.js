@@ -20,11 +20,12 @@ class RegistryLinkedState extends LinkedState {
    * the registry state array (e.g. if the registry name is "apps", it can be
    * deduced from the state by calling: const { apps } = this.getState() ). 
    */
-  constructor(registryName = null) {
+  constructor(registryName = null, defaultState = {}) {
     registryName = registryName || DEFAULT_REGISTRY_LINKED_SCOPE_NAME;
 
     super(registryName, {
-      [registryName]: []
+      [registryName]: [],
+      ...defaultState
     });
 
     this._registryName = registryName;

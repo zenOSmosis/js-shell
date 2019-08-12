@@ -12,10 +12,12 @@ const LINKED_SCOPE_NAME = 'zd-client-processes';
  * 
  * @extends LinkedState
  */
-class ProcessLinkedState extends LinkedState {
+class ClientProcessLinkedState extends LinkedState {
   constructor() {
     super(LINKED_SCOPE_NAME, {
-      processes: [],
+      processes: [], // All processes
+
+      guiProcesses: [], // GUI process subset of all processes
 
       // The last process which was updated
       // TODO: Rename to lastUpdatedProcess
@@ -30,9 +32,13 @@ class ProcessLinkedState extends LinkedState {
 
     // console.debug('Adding process', process);
 
-    const { processes } = this.getState();
+    const { processes, guiProcesses } = this.getState();
 
     processes.push(process);
+
+    if (process.getIsGUIProcess()) {
+      guiProcesses.push(process);
+    };
 
     process.on(EVT_TICK, this._handleProcessUpdate);
 
@@ -42,7 +48,8 @@ class ProcessLinkedState extends LinkedState {
     });
 
     this.setState({
-      processes
+      processes,
+      guiProcesses
     });
   }
 
@@ -69,15 +76,22 @@ class ProcessLinkedState extends LinkedState {
 
     // console.debug('Removing process', process);
 
-    let processes = this.getProcesses();
+    let { processes, guiProcesses } = this.getState();
 
     // Filter out the process
     processes = processes.filter(testProcess => {
       return !Object.is(process, testProcess);
     });
 
+    if (process.getIsGUIProcess()) {
+      guiProcesses = guiProcesses.filter(testProcess => {
+        return !Object.is(guiProcesses, testProcess);
+      });
+    }
+
     this.setState({
-      processes
+      processes,
+      guiProcesses
     });
   }
 
@@ -91,4 +105,4 @@ class ProcessLinkedState extends LinkedState {
   }
 }
 
-export default ProcessLinkedState;
+export default ClientProcessLinkedState;

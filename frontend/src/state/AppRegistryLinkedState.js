@@ -1,9 +1,5 @@
 import RegistryLinkedState, { EVT_LINKED_STATE_UPDATE } from './RegistryLinkedState';
 
-// This is not includable as it would introduce a circular dependency
-// TODO: How to validate against this type w/o actually including this type?
-// import AppRegistration from 'core/AppRegistration';
-
 export {
   EVT_LINKED_STATE_UPDATE
 };

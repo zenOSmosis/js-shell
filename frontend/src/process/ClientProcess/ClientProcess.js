@@ -3,7 +3,7 @@
 // TODO: Implement optional provisioning to force selected processes to be singletons
 
 import EventEmitter from 'events';
-import ProcessLinkedState from 'state/ProcessLinkedState';
+import ClientProcessLinkedState from 'state/ClientProcessLinkedState';
 import CPUTimeLinkedState from 'state/CPUTimeLinkedState';
 import ClientProcessPipe from './ClientProcessPipe';
 import CPUThreadTimer, { EVT_CYCLE as CPU_THREAD_CLOCK_CYCLE } from './CPUThreadTimer';
@@ -26,9 +26,9 @@ import {
 } from './constants';
 
 // Keeps track of running processes
-const processLinkedState = new ProcessLinkedState();
+const _processLinkedState = new ClientProcessLinkedState();
 
-const cpuTimeLinkedState = new CPUTimeLinkedState();
+const _cpuTimeLinkedState = new CPUTimeLinkedState();
 
 // The process id of the next process (auto-incremented in the ClientProcess
 // constructor)
@@ -144,12 +144,12 @@ class ClientProcess extends EventEmitter {
     this.setImmediate(async () => {
       try {
         if (!this._isExited) {
-          // Register process with processLinkedState
-          // Important, processLinkedState must be set in setImmediate or it won't
+          // Register process with ClientProcessLinkedState
+          // Important, ClientProcessLinkedState must be set in setImmediate or it won't
           // accurately reflect process extensions until the next tick.
           // Without using setImmediate, GUI components, etc. won't render until the
           // next tick.
-          processLinkedState.addProcess(this);
+          _processLinkedState.addProcess(this);
         }
 
         await this._init();
@@ -239,10 +239,10 @@ class ClientProcess extends EventEmitter {
    * Worker controller processes.
    */
   _initCPUThreadRootProcess() {
-    cpuTimeLinkedState.addThreadRootProcess(this);
+    _cpuTimeLinkedState.addThreadRootProcess(this);
 
     this.on(EVT_BEFORE_EXIT, () => {
-      cpuTimeLinkedState.removeThreadRootProcess(this);
+      _cpuTimeLinkedState.removeThreadRootProcess(this);
     });
   }
 
@@ -262,7 +262,7 @@ class ClientProcess extends EventEmitter {
       cpuThreadUsagePercent
     });
     */
-    cpuTimeLinkedState.setCPUThreadUsagePercent(this, cpuThreadUsagePercent);
+    _cpuTimeLinkedState.setCPUThreadUsagePercent(this, cpuThreadUsagePercent);
   }
 
   /**
@@ -451,7 +451,7 @@ class ClientProcess extends EventEmitter {
    * @return {ClientProcess[]}
    */
   getChildren() {
-    const { processes } = processLinkedState.getState();
+    const { processes } = _processLinkedState.getState();
     const pid = this.getPID();
 
     const children = processes.filter((proc) => {
@@ -492,7 +492,7 @@ class ClientProcess extends EventEmitter {
       // console.debug(`Executing ${this.getClassName()}`, this);
 
       if (typeof this._cmd !== 'function') {
-        console.debug('No command passed to ClientProcess.  Ignoring eval.');
+        // console.debug('No command passed to ClientProcess.  Ignoring eval.');
         return;
       } else {
         // Run cmd in this process scope
@@ -767,7 +767,7 @@ class ClientProcess extends EventEmitter {
     }
 
     // Unregister process with processLinkedState
-    processLinkedState.removeProcess(this);
+    _processLinkedState.removeProcess(this);
 
     // Set our exit flag
     this._isExited = true;

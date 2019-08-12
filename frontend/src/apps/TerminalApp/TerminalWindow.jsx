@@ -51,7 +51,6 @@ export default class TerminalWindow extends Component {
             onInput={this._handleKeyboardInput}
           />
         }
-        
       </Window>
     );
   }

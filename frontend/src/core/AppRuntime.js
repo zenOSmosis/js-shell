@@ -1,9 +1,10 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER /*, REMOVE_THIS*/ } from 'process/ClientGUIProcess';
-import DesktopLinkedState from 'state/DesktopLinkedState';
+import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_TICK /*, REMOVE_THIS*/ } from 'process/ClientGUIProcess';
+import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
+import AppRegistration from './AppRegistration';
+import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
 import Menubar from './ShellDesktop/Menubar';
-import './AppRuntime.typedef';
 
-const commonDesktopLinkedState = new DesktopLinkedState();
+const _appRuntimeLinkedState = new AppRuntimeLinkedState();
 
 export const EVT_FOCUS = 'focus';
 export const EVT_BLUR = 'blur';
@@ -15,68 +16,85 @@ export const EVT_BLUR = 'blur';
  */
 class AppRuntime extends ClientGUIProcess {
   /**
-   * @param {AppRuntimeRunProps} runProps 
+   * @param {AppRegistration} appRegistration 
    */
-  constructor(runProps) {
-    if (typeof runProps !== 'object') {
-      throw new Error('runProps is not an object');
+  constructor(appRegistration) {
+    if (!(appRegistration instanceof AppRegistration)) {
+      throw new Error('appRegistration is not of AppRegistration type');
     }
 
-    const shellDesktopProcess = commonDesktopLinkedState.getShellDesktopProcess();
-
     // Fork apps from the Shell Desktop Process (for now)
+    // TODO: Fork from AppControlCentral
+    const shellDesktopProcess = getShellDesktopProcess();
     super(shellDesktopProcess);
 
-    this._defaultTitle = null;
-    this._iconSrc = null;
-    this._mainView = null;
-    this._appCmd = null;
-    this._isFocused = false;
+    // this._defaultTitle = null;
+    // this._iconSrc = null;
+    // this._mainView = null;
+    // this._appCmd = null;
+
+    // this._isFocused = false;
+    // this._isMinimized = false;
 
     //TODO: do get set?
-    this.menuItems = runProps.menuItems || [];
+    // this.menuItems = runProps.menuItems || [];
 
     this._menubar = new Menubar(this);
 
     (() => {
       // TODO: Create AppRuntime.typedef.js
+      /*
       const {
         title,
         iconSrc,
-        mainView,
+        view,
         appCmd,
         cmd,
-        position,
-        size,
-        cmdArguments
+        // position,
+        // size,
+        cmdArguments // TODO: Route these as view props?
       } = runProps;
+      */
 
-      this.setCmdArguments(cmdArguments);
+      // this.setCmdArguments(cmdArguments);
 
-      this._position = position;
-
+      // this._position = position;
 
       // cmd || appCmd are synonymous of each other
-      const runCmd = appCmd || cmd;
+      // const runCmd = appCmd || cmd;
+
+      const appRegistrationProps = appRegistration.getProps();
+
+      const {
+        title,
+        mainView: view,
+        cmd: runCmd
+      } = appRegistrationProps;
 
       if (title) {
         this.setTitle(title);
       }
 
+      /*
       if (position) {
         this.setInitPosition(position);
       }
+      */
 
+      /*
       if (size) {
         this.setInitSize(size);
       }
+      */
 
+      /*
       if (iconSrc) {
         this.setIconSrc(iconSrc);
       }
+      */
 
-      if (mainView) {
-        this.setMainWindow(mainView);
+      if (view) {
+        this.setView(view);
       }
 
       if (runCmd) {
@@ -99,6 +117,7 @@ class AppRuntime extends ClientGUIProcess {
         this.focus();
       });
 
+      /*
       this.on(EVT_FOCUS, () => {
         const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
         console.log('received focus for', this._title, 'last focused was', focusedAppRuntime?focusedAppRuntime._title:'null')
@@ -112,20 +131,18 @@ class AppRuntime extends ClientGUIProcess {
           focusedAppRuntime.blur();
         }*/
   
-        commonDesktopLinkedState.setFocusedAppRuntime(this);
-      });
+        // commonDesktopLinkedState.setFocusedAppRuntime(this);
+      // });
 
-      this.on(EVT_BLUR, () => {
-        
-      })
 
       // Register w/ DesktopLinkedState
       // Note (as of the time of writing) the underlying ClientProcess also
-      // registers w/ ProcessLinkedState, however these usages are for
+      // registers w/ ClientProcessLinkedState, however these usages are for
       // different purposes
-      commonDesktopLinkedState.addLaunchedAppRuntime(this);
+      _appRuntimeLinkedState.addAppRuntime(this);
 
       this.once(EVT_BEFORE_EXIT, () => {
+        /*
         const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
         if (Object.is(this, focusedAppRuntime)) {
 
@@ -138,16 +155,28 @@ class AppRuntime extends ClientGUIProcess {
             commonDesktopLinkedState.setFocusedAppRuntime(null);
           }
         }
+        */
         
         // Unregister from DesktopLinkedState
-        commonDesktopLinkedState.removeLaunchedAppRuntime(this);
+        _appRuntimeLinkedState.removeAppRuntime(this);
       });
 
-      // Register app w/ view
-      // Refer to components/Desktop/Window for example usage of app prop
-      this.setViewProps({
-        app: this
-      });
+      // Handle tick functionality
+      (() => {
+        const _handleTick = () => {
+          // Register / update appRuntime view property
+          // Refer to components/Desktop/Window for example usage of app prop
+          this.setViewProps({
+            appRuntime: this
+          });
+        };
+
+        // Dispatch to view on each process tick
+        this.on(EVT_TICK, _handleTick);
+
+        // Handle the initial tick
+        _handleTick();
+      })();
 
       await super._init();
     } catch (exc) {
@@ -155,25 +184,28 @@ class AppRuntime extends ClientGUIProcess {
     }
   }
 
+  /*
   onMinimize() {
     this._isMinimized = true;
     commonDesktopLinkedState.setMinimizedAppRuntime(this);
   }
-
+  */
 
   // TODO: Move this elsewhere
+  // TODO: Also add DesktopWindowSize
 
   /**
-   * @typedef {Object} WindowPosition
+   * @typedef {Object} DesktopWindowPosition
    * @property {number} x 
    * @property {number} y 
    */
 
   /**
    * 
-   * @param {WindowPosition} position 
+   * @param {DesktopWindowPosition} position 
    * @param {?} size // TODO: Determine size? 
    */
+  /*
   onResizeMove(position, size) {
     if(position) {
       this.setInitPosition(position);
@@ -185,6 +217,7 @@ class AppRuntime extends ClientGUIProcess {
 
     // console.warn('Has size?', (size ? 'yes' : 'no'), this);
   }
+  */
 
   /**
    * TODO: Document
@@ -200,26 +233,27 @@ class AppRuntime extends ClientGUIProcess {
    * 
    * @return {string}
    */
+  /*
   getDefaultTitle() {
     return this._defaultTitle;
   }
+  */
 
   // TODO: Utilize ClientGUIProcess setIcon
+  /*
   setIconSrc(iconSrc) {
     this._iconSrc = iconSrc;
 
     // this.emit(EVT_ICON_SRC_UPDATE, iconSrc);
   }
+  */
 
   // TODO: Utilize ClientGUIProcess getIcon
+  /*
   getIconSrc() {
     return this._iconSrc;
   }
-
-  // TODO: Rename to setView
-  setMainWindow(mainView) {
-    this.setView(mainView);
-  }
+  */
 
   /**
    * Notifies all listeners that this process is the one the user is
@@ -231,7 +265,7 @@ class AppRuntime extends ClientGUIProcess {
    * Utilizes this.setIsFocused().
    */
   focus() {
-    this._isMinimized = false;
+    // this._isMinimized = false;
     this.setIsFocused(true);
   }
 
@@ -252,7 +286,7 @@ class AppRuntime extends ClientGUIProcess {
    * Sets whether or not this process' React.Component has top priority in the
    * UI (e.g. if a Window, this Window would be the currently focused Window).
    * 
-   * Important! Handling of dynamically blurring other instances is not handled
+   * Important! Handling of dynamically blurring other instances is not performed
    * directly in here.
    * 
    * @param {boolean} isFocused 

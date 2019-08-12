@@ -22,16 +22,14 @@ export default class MediaPlayerWindow extends Component {
     this._webSearchTileList = null;
   }
 
-  componentDidMount() {
-    console.debug(this._webSearchTileList);
-  }
-
   _handleSearchKeypress = (evt) => {
     const { which: keyCode } = evt;
 
     switch (keyCode) {
       case 13: // Enter
-        this._handleSearchQuery()
+        const { value: query } = evt.target;
+
+        this._handleSearchQuery(query)
       break;
 
       // TODO: Handle escape
@@ -45,11 +43,9 @@ export default class MediaPlayerWindow extends Component {
   /**
    * @return {Promise<void>}
    */
-  _handleSearchQuery = async () => {
+  _handleSearchQuery = async (query) => {
     try {
-      const queryValue = this._elSearchInput.value;
-
-      await this._webSearchTileList.query(queryValue);
+      await this._webSearchTileList.query(query);
     } catch (exc) {
       throw exc;
     }

@@ -1,0 +1,163 @@
+import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import AppRegistration from '../AppRegistration';
+import AppRuntime from '../AppRuntime';
+
+let _appControlCentral = null;
+
+/**
+ * In-memory, one-to-one join of app registration & app runtime.
+ * 
+ * @typedef {Object} AppRegistrationRuntimeJoin
+ * @property {AppRegistration} appRegistration
+ * @property {AppRuntime} appRuntime
+ */
+
+/**
+ * A collection of joined app registrations with app runtimes.
+ * 
+ * @type {AppRegistrationRuntimeJoin[]}
+ */
+let _appRegistrationRuntimeJoinStack = [];
+
+/**
+ * App Control Central manages all AppRuntimes instances.
+ * 
+ * @extends ClientProcess
+ */
+class AppControlCentral extends ClientProcess {
+  constructor(...args) {
+    if (_appControlCentral) {
+      throw new Error('Another AppControlCentral already exists!');
+    }
+
+    super(...args);
+
+    this.setTitle('App Control Central');
+
+    // Handle cleanup before exit
+    // This should never exit, actually
+    this.on(EVT_BEFORE_EXIT, () => {
+      _appControlCentral = null;
+    });
+
+    // Register flag
+    _appControlCentral = this;
+  }
+
+  /**
+   * @param {AppRegistration} appRegistration
+   * @return {Promise<AppRuntime>}
+   */
+  async launchAppRegistration(appRegistration) {
+    try {
+      if (!(appRegistration instanceof AppRegistration)) {
+        throw new Error('appRegistration is not a valid AppRegistration');
+      }
+
+      const appRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
+      const allowMultipleWindows = appRegistration.getAllowMultipleWindows();
+
+      if (appRuntimes.length && !allowMultipleWindows) {
+        // Gracefully fail
+        console.warn('App is already launched, or is launching');
+        return false;
+      }
+
+      // Set positioning
+      // TODO: Move positioning & sizing functionality to WindowControlCentral
+      // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
+      /*
+      if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
+        this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
+      }
+      ++_createdWindowsCount;
+      */
+
+      // Create the app process
+      const appRuntime = new AppRuntime(appRegistration);
+
+      appRuntime.once(EVT_BEFORE_EXIT, () => {
+        this._removeConnectedAppRuntime(appRuntime);
+      });
+
+      await appRuntime.onceReady();
+
+      // Mount the new runtime to the runtimes stack
+      _appRegistrationRuntimeJoinStack.push({
+        appRegistration,
+        appRuntime
+      });
+
+      return appRuntime;
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  async closeAllAppRuntimesByAppRegistration(appRegistration) {
+    try {
+      const joinedAppRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
+      const lenJoinedAppRuntimes = joinedAppRuntimes.length;
+
+      for (let i = 0; i < lenJoinedAppRuntimes; i++) {
+        await joinedAppRuntimes[i].close();
+      }
+
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * @param {AppRegistration} appRegistration 
+   * @return {AppRuntime[]}
+   */
+  getJoinedAppRuntimesByRegistration(appRegistration) {
+    const joins = _appRegistrationRuntimeJoinStack.filter(join => {
+      return join.appRegistration === appRegistration;
+    });
+
+    const appRuntimes = joins.map(join => {
+      return join.appRuntime;
+    });
+
+    return appRuntimes;
+  }
+
+  /**
+   * Removes the given AppRuntime from the internal _appRegistratinRuntimeJoinStack.
+   * 
+   * @param {AppRegistration} appRuntime 
+   */
+  _removeConnectedAppRuntime(appRuntime) {
+    _appRegistrationRuntimeJoinStack = _appRegistrationRuntimeJoinStack.filter(testJoin => {
+      const { appRuntime: testAppRuntime } = testJoin;
+
+      return !Object.is(testAppRuntime, appRuntime);
+    });
+  }
+}
+
+//
+
+const getIsAppControlCentralReady = () => {
+  return (_appControlCentral ? true : false);
+};
+
+/**
+ * @return {AppLaunchController} A constructed instance of the
+ * AppLaunchController
+ */
+const getAppControlCentral = () => {
+  if (!_appControlCentral) {
+    throw new Error('No App Launch Controller defined');
+  }
+
+  return _appControlCentral;
+};
+
+export default AppControlCentral;
+export {
+  getIsAppControlCentralReady,
+  getAppControlCentral
+};

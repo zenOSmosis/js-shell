@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DesktopLinkedState from 'state/DesktopLinkedState';
+import ClientProcessLinkedState from 'state/ClientProcessLinkedState';
 import hocConnect from 'state/hocConnect';
 import StackingContext from 'components/StackingContext';
 import equals from 'equals';
@@ -11,26 +11,33 @@ import equals from 'equals';
  * 
  * @extends Component
  */
-class AppRuntimeRenderProvider extends Component {
+class GUIProcessRenderProvider extends Component {
   render() {
-    let { launchedAppRuntimes } = this.props;
-    launchedAppRuntimes = launchedAppRuntimes || [];
+    let { guiProcesses } = this.props;
+    guiProcesses = guiProcesses || [];
 
     return (
         <StackingContext>
           {
             // TODO: Consider rendering the component directly w/ ReactDOM to
             // the container
-            launchedAppRuntimes.map((proc) => {
-              const AppRuntimeRenderComponent = proc.getReactComponent();
-              if (!AppRuntimeRenderComponent) {
+            guiProcesses.map((proc) => {
+              const GUIProcessView = proc.getReactComponent();
+              if (!GUIProcessView) {
+                console.warn('No GUIProcessView on:', proc);
                 return false;
+              } /* else {
+                console.debug('GUIProcessView', {
+                  GUIProcessView,
+                  proc
+                });
               }
+              */
 
               const pid = proc.getPID();
 
               return (
-                <AppRuntimeRenderComponent
+                <GUIProcessView
                   key={pid}
                 />
               )
@@ -41,17 +48,19 @@ class AppRuntimeRenderProvider extends Component {
   }
 }
 
-const ConnectedAppRuntimeRenderProvider = (() => {
+const ConnectedGUIProcessRenderProvider = (() => {
   // A cache of AppRuntime process IDs
   let prevPIDs = [];
 
-  return hocConnect(AppRuntimeRenderProvider, DesktopLinkedState, (updatedState) => {
-    const { launchedAppRuntimes } = updatedState;
+  return hocConnect(GUIProcessRenderProvider, ClientProcessLinkedState, (updatedState) => {
+    const { guiProcesses } = updatedState;
 
-    if (typeof launchedAppRuntimes !== 'undefined') {
-      const appRuntimePIDs = launchedAppRuntimes.map(proc => {
+    if (typeof guiProcesses !== 'undefined') {
+      const appRuntimePIDs = guiProcesses.map(proc => {
         return proc.getPID();
       });
+
+      // TODO: Filter out PID of Shell Desktop
 
       // Determine if the previous AppRuntime IDs are the same as the current
       // in order to prevent unnecessary render cycles
@@ -60,14 +69,14 @@ const ConnectedAppRuntimeRenderProvider = (() => {
         prevPIDs = appRuntimePIDs;
 
         return {
-          launchedAppRuntimes
+          guiProcesses
         };
       }
     }
   });
 })();
 
-export default ConnectedAppRuntimeRenderProvider;
+export default ConnectedGUIProcessRenderProvider;
 export {
-  AppRuntimeRenderProvider
+  GUIProcessRenderProvider
 };
