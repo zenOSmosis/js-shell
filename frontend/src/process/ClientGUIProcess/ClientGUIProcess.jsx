@@ -30,9 +30,7 @@ class ClientGUIProcess extends ClientProcess {
 
     // Externally set view (used by this.setView())
     this._View = null;
-    
-    this._isFocused = false;
-    this._desktopMenubarData = null; 
+
     this._renderProps = {};
 
     this._ReactComponent = createClientGUIProcessReactComponent({
@@ -60,7 +58,7 @@ class ClientGUIProcess extends ClientProcess {
   /**
    * TODO: Document
    * 
-   * @param {React.Component} View 
+   * @param {React.Component || function} View 
    */
   setView(View) {
     let firstRender = false;

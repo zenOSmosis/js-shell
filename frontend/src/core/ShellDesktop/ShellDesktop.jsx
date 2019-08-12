@@ -1,7 +1,3 @@
-/**
- * This serves as the root component of the overall Shell Desktop application.
- */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'App';
@@ -17,14 +13,31 @@ import config from 'config';
 
 const { DOM_ROOT_ID } = config;
 
-// This should be treated as a singleton
-export default class ShellDesktop extends ClientGUIProcess {
+/**
+ * @type {ShellDesktop}
+ */
+let _shellDesktopProcess = null;
+
+/**
+ * Shell Desktop GUI Process mounts the root component of the application to
+ * the DOM, and wraps it with a ClientGUIProcess.
+ * 
+ * @extends ClientGUIProcess
+ */
+class ShellDesktop extends ClientGUIProcess {
   constructor(...args) {
+    if (_shellDesktopProcess) {
+      throw new Error('Cannot have more than one ShellDesktop process');
+    }
+
     super(...args);
 
     this._desktopLinkedState = null;
     this._socketLinkedState = null;
     this._areCommonEventsInit = false;
+
+    // Set the process flag
+    _shellDesktopProcess = this;
   }
 
   /**
@@ -117,3 +130,12 @@ export default class ShellDesktop extends ClientGUIProcess {
     });
   }
 }
+
+const getShellDesktopProcess = () => {
+  return _shellDesktopProcess;
+};
+
+export default ShellDesktop;
+export {
+  getShellDesktopProcess
+};

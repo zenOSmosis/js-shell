@@ -10,14 +10,14 @@ export default class ScreenRecorderWindow extends Component {
     super(...args);
 
     this._videoElem = null;
-    this._app = null;
+    this._appRuntime = null;
   }
 
   componentDidMount() {
-    const { app } = this.props;
-    this._app = app;
+    const { appRuntime } = this.props;
+    this._appRuntime = appRuntime;
 
-    this._app.setState({
+    this._appRuntime.setState({
       videoElem: this.getVideoElem(),
       viewComponent: this
     });
@@ -32,7 +32,7 @@ export default class ScreenRecorderWindow extends Component {
   }
 
   startCapture() {
-    this._app.setState({
+    this._appRuntime.setState({
       isCapturingRequested: true
     });
   }
@@ -50,6 +50,11 @@ export default class ScreenRecorderWindow extends Component {
   render() {
     const {
       isCapturing,
+      isCapturingRequested,
+      isUsingLogicalSurface,
+      displaySurface,
+      viewComponent,
+      videoElem,
       ...propsRest
     } = this.props;
 

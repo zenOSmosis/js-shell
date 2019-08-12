@@ -1,25 +1,26 @@
 import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
-import DesktopLinkedState from 'state/DesktopLinkedState';
-import { EVT_BEFORE_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
-import './AppRuntime.typedef';
+import { getAppControlCentral } from './ShellDesktop/AppControlCentral';
+import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
 
-const commonDesktopLinkedState = new DesktopLinkedState();
-const commonAppRegistryLinkedState = new AppRegistryLinkedState();
-let _createdWindowsCount = 0;
+// const commonDesktopLinkedState = new DesktopLinkedState();
+const _appRegistryLinkedState = new AppRegistryLinkedState();
+// let _createdWindowsCount = 0;
 
-
-
-
-
+/**
+ * @typedef {Object} AppRegistrationProps
+ * @property {string} title
+ * @property {string} iconSrc
+ * @property {React.Component} mainView // TODO: Rename to view
+ * @property {function} cmd Command to run inside of AppRuntime's
+ * ClientGUIProcess.
+ * @property {boolean} allowMultipleWindows? [default = false]
+ */
 
 /**
  * Creates a registration which automatically populates app menus and the Dock
  * (if apps are launched, or they're pinned).
- * 
- * TODO: Move this comment to the Dock; The items in the Dock represent a
- * filtered subset of all available registrations.
  * 
  * In order to populate the Dock, and any relevant app menus, this class should
  * be instantiated for each referenced app.
@@ -29,37 +30,37 @@ let _createdWindowsCount = 0;
 class AppRegistration extends EventEmitter {
   /**
    * 
-   * @param {AppRuntimeRunProps} runProps 
+   * @param {AppRegistrationProps} appRegistrationProps 
    */
-  constructor(runProps) {
+  constructor(appRegistrationProps) {
     super();
 
     const {
       title,
       iconSrc,
-      mainView,
-      cmd: appCmd,
-      supportedMimes,
+      mainView, // TODO: Rename to view
+      cmd: runCmd,
+      supportedMimes, // TODO: Rename to supportedMimeTypes
       menuItems,
       allowMultipleWindows,
-    } = runProps;
+    } = appRegistrationProps;
+
+    this._appRegistrationProps = appRegistrationProps;
 
     this._isLaunched = false;
 
-    // Connected app runtimes attached to this registration
-    this._appRuntimes = [];
-
+    // [8/12/2019] TODO: Map all appRegistrationProps as properties
     this._title = title;
     this._iconSrc = iconSrc;
-    this._mainView = mainView;
-    this._appCmd = appCmd;
+    this._view = mainView; // TODO: Rename to view
+    this._runCmd = runCmd;
 
     // TODO: Handle accordingly
     this._menuItems = menuItems || [];
 
     // Previous position and size
-    this._lastPosition = { x: 0, y: 0 };
-    this._lastSize = { width: 0, height: 0 };
+    // this._lastPosition = { x: 0, y: 0 };
+    // this._lastSize = { width: 0, height: 0 };
 
     this._isUnregistered = false;
     this._supportedMimes = supportedMimes || [];
@@ -67,72 +68,76 @@ class AppRegistration extends EventEmitter {
     this._allowMultipleWindows = allowMultipleWindows;
 
     // Add this app registration to the registry
-    commonAppRegistryLinkedState.addAppRegistration(this);
+    _appRegistryLinkedState.addAppRegistration(this);
   }
 
   /**
-   * TODO: Document
+   * @return {AppRegistrationProps}
+   */
+  getProps() {
+    return this._appRegistrationProps;
+  }
+
+  /**
+   * Launches an AppRuntime based on this registration.
+   * 
+   * @param {any} cmdArguments? Optional cmd data to be sent to the
+   * AppRuntime instance.
+   * @return {Promise<AppRuntime> | boolean}
    */
   async launchApp(cmdArguments = null) {
     try {
-      if (this._appRuntimes.length && !this._allowMultipleWindows) {
-        // Gracefully fail
-        console.warn('App is already launched, or is launching');
+      const appControlCentral = getAppControlCentral();
+
+      const appRuntime = await appControlCentral.launchAppRegistration(this, cmdArguments);
+
+      if (!(appRuntime instanceof AppRuntime)) {
+        throw new Error('appRuntime is not an AppRuntime instance');
+      }
+      
+      if (!appRuntime) {
+        console.debug('AppControlCentral blocked launching of app registration', this);
         return;
       }
 
-      // Set positioning
-      // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
-      if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
-        this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
-      }
-      ++_createdWindowsCount;
+      // Important!  Wait until exit (not before exit)
+      appRuntime.once(EVT_EXIT, () => {
+        const appRuntimes = this.getJoinedAppRuntimes();
 
-      // Create the app process
-      const appRuntime = new AppRuntime({
-        title: this._title,
-        iconSrc: this._iconSrc,
-        mainView: this._mainView,
-        appCmd: this._appCmd,
-        position: this._lastPosition,
-        size: this._lastSize,
-        menuItems: this._menuItems,
-        cmdArguments
-      });
-
-      // Handle cleanup when the app exits
-      appRuntime.on(EVT_BEFORE_EXIT, () => {
-        // Retain position and size for next open
-        this._lastPosition = appRuntime.getInitPosition();
-        this._lastSize = appRuntime.getInitSize();
-
-        this._isLaunched = false;
-
-        // Remove this appRuntime instance
-        this._appRuntimes = this._appRuntimes.filter(a => {
-          return !Object.is(a, appRuntime);
-        });
-
-        if (!this._appRuntimes.length) {
-          // Emit to listeners that the app is closed
-          commonAppRegistryLinkedState.emitRegistrationsUpdate();
+        if (!appRuntimes.length) {
+          // All connected AppRuntime instances are closed
+          this._setIsLaunched(false);
         }
       });
 
-      await appRuntime.onceReady();
+      this._setIsLaunched(true);
 
-      // Mount the new runtime to the runtimes stack
-      this._appRuntimes.push(appRuntime);
-
-      this._isLaunched = true;
-
-      // Emit to listeners that the app is launched
-      commonAppRegistryLinkedState.emitRegistrationsUpdate();
+      return appRuntime;
     } catch (exc) {
       throw exc;
     }
   }
 
+  async closeAllJoinedApps() {
+    const appControlCentral = getAppControlCentral();
+    return appControlCentral.closeAllAppRuntimesByAppRegistration(this);
+  }
+
+  /**
+   * Internally sets whether or not there are connected AppRuntime instances.
+   * 
+   * @param {boolean} isLaunched 
+   */
+  _setIsLaunched(isLaunched) {
+    this._isLaunched = isLaunched;
+    _appRegistryLinkedState.emitRegistrationsUpdate();
+  }
+
+  /**
+   * Retrieves whether or not there are connected AppRuntime instances.
+   * 
+   * @return {boolean}
+   */
   getIsLaunched() {
     return this._isLaunched;
   }
@@ -148,40 +153,20 @@ class AppRegistration extends EventEmitter {
   /**
    * Retrieves the launched app's process runtimes, if available.
    * 
-   * @return {AppRuntime[]00}
+   * @return {AppRuntime[]}
    */
-  getAppRuntimes() {
-    return this._appRuntimes;
+  getJoinedAppRuntimes() {
+    const appControlCentral = getAppControlCentral();
+
+    return appControlCentral.getJoinedAppRuntimesByRegistration(this);
   }
 
   /**
    * TODO: Document
+   * TODO: Rename to getSupportedMimeTypes
    */
   getSupportedMimes() {
     return this._supportedMimes;
-  }
-
-  /**
-   * @return {Promise<void>}
-   */
-  async closeApp() {
-    try {
-      const lenAppRuntimes = this._appRuntimes.length;
-
-      if (!lenAppRuntimes) {
-        // Gracefully fail
-        console.warn('appRuntime is not registered');
-        return;
-      }
-
-      for (let i = 0; i < lenAppRuntimes; i++) {
-        let appRuntime = this._appRuntimes[i];
-        await appRuntime.close();
-      }
-
-    } catch (exc) {
-      throw exc;
-    }
   }
 
   /**
@@ -194,8 +179,9 @@ class AppRegistration extends EventEmitter {
   /**
    * Focuses all related AppRuntime instances.
    */
+  /*
   focus() {
-    const appRuntimes = this.getAppRuntimes();
+    const appRuntimes = this.getJoinedAppRuntimes();
 
     const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
     let linkedApps = [];
@@ -209,14 +195,14 @@ class AppRegistration extends EventEmitter {
     // Focus each linked app
     linkedApps.forEach(a=> a.focus());
   }
+  */
 
   getIconSrc() {
     return this._iconSrc;
   }
 
-  // TODO: Rename
-  getMainWindow() {
-    return this._mainView;
+  getView() {
+    return this.view;
   }
 
   /**
@@ -228,16 +214,11 @@ class AppRegistration extends EventEmitter {
   async unregister() {
     try {
       if (this.getIsLaunched()) {
-        const appRuntimes = this.getAppRuntimes();
-
-        for (let i = 0; i < appRuntimes.length; i++) {
-          let appRuntime = appRuntimes[i];
-          await appRuntime.exit();
-        }
+        await this.closeAllJoinedApps();
       }
 
       // Remove from LinkedState
-      commonAppRegistryLinkedState.removeAppRegistration(this);
+      _appRegistryLinkedState.removeAppRegistration(this);
 
       this._isUnregistered = true;
     } catch (exc) {

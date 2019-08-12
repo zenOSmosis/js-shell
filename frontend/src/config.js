@@ -33,6 +33,8 @@ config = Object.assign(config, {
   // If the Desktop should intercept the context menu by default
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: false,
 
+  DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE: '[ Untitled Window ]',
+
   // TODO: Make distinction between if running in windowed, full-screen (touch) mode, (or others?)
   DESKTOP_WINDOW_MIN_WIDTH: 500,
   DESKTOP_WINDOW_MIN_HEIGHT: 460

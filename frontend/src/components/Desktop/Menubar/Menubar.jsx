@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { /* Icon, */ Dropdown } from 'antd';
 import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Menu';
-import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
+import hocConnect from 'state/hocConnect';
 import './style.css';
 // import { Menubar as MenubarModel } from 'core/ShellDesktop';
 
@@ -118,7 +119,7 @@ class Menubar extends Component {
   }
 }
 
-export default hocConnect(Menubar, DesktopLinkedState, (updatedState) => {
+export default hocConnect(Menubar, AppRuntimeLinkedState, (updatedState) => {
   const { focusedAppRuntime } = updatedState;
 
   if (typeof focusedAppRuntime !== 'undefined') {

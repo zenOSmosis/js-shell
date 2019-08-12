@@ -1,9 +1,6 @@
 // TODO: Enable optional debugger:  https://github.com/redsunsoft/react-render-visualizer
 
-// Note: Window is not currently set as a HOC component due to it conflicting
-// with current window actions (e.g. moving, etc)
-
-// TODO: Enable resize / reposition of window (size / position) if screensize is changed
+// TODO: Implement https://www.npmjs.com/package/prop-types
 
 import React, { Component } from 'react';
 import EventEmitter from 'events';
@@ -15,13 +12,17 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
 import './style.css';
-import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
+import AppRuntime from 'core/AppRuntime';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
-import animate from 'utils/animate';
+import animate from 'utils/animate'; // TODO: Debug why this doesn't work on Windows
+import PropTypes from 'prop-types';
+import _WindowStack from './_WindowStack';
+
 import config from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-const { DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
+const { DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE, DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
@@ -31,6 +32,9 @@ const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
 //
 // Though exporting events aren't typical in React components, this provides an
 // alternative interface for external hooks
+
+export const EVT_BEFORE_CLOSE = 'beforeClose';
+export const EVT_CLOSE = 'close';
 
 export const EVT_BEFORE_TITLE_SET = 'beforeTitleSet';
 export const EVT_TITLE_SET = 'titleSet';
@@ -63,10 +67,10 @@ const CSS_CLASS_NAME_HIDE = 'hide';
 
 // The CSS z-index level the next focused Window will have
 // This value is automatically incremented internally
-let _nextZIndex = 0;
+// let _nextZIndex = 0;
 
 // An array of windows
-let _windowStack = [];
+// let _windowStack = [];
 
 /**
  * TODO: Refactor elsewhere
@@ -74,18 +78,23 @@ let _windowStack = [];
  * 
  * @return {Window[]} An array of Window instances
  */
+/*
 export const getWindowStack = () => {
   return _windowStack.filter((window) => {
     return !window.getIsClosed();
   });
 }
+*/
 
-const commonDesktopLinkedState = new DesktopLinkedState();
+const _desktopLinkedState = new DesktopLinkedState();
+const _windowStack = new _WindowStack();
 
 // Handle blurring of non-focused windows
 // Only a single window can be "active" at a time (that is, the focused window)
+// TODO: Move all stack management to Core Window Stack Manager
+/*
 (() => {
-  commonDesktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
+  _desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
     const { activeWindow } = updatedState;
 
     if (typeof activeWindow !== 'undefined') {
@@ -101,8 +110,14 @@ const commonDesktopLinkedState = new DesktopLinkedState();
     }
   });
 })();
+*/
 
 export default class Window extends Component {
+  static propTypes = {
+    // Optional
+    appRuntime: PropTypes.instanceOf(AppRuntime)
+  };
+  
   constructor(props) {
     super(props);
 
@@ -112,17 +127,22 @@ export default class Window extends Component {
 
     this._events = new EventEmitter();
 
+    // Apply stack management to the Window
+    _windowStack._addWindow(this);
+
     this._uuid = uuidv4();
 
     // Base DOM element for the Window
     this._el = null;
 
     // TODO: Move this out of constructor
-    this._app = this.props.app;
+    // this._app = this.props.app;
     // TODO: Use contant here
+    /*
     this._app.on('focus', () => {
       this.focus();
-    })
+    });
+    */
     this._moveableComponent = null;
     this._resizableComponent = null;
     this._paintedComponent = null;
@@ -136,26 +156,35 @@ export default class Window extends Component {
     this._isActiveHeaderGesture = false;
     this._isResizing = false;
 
+    this._isClosing = false;
     this._isClosed = false;
 
     // Add this window to the stack
-    _windowStack.push(this);
+    // _windowStack.push(this);
   }
 
   emit(...args) {
-    this._events.emit(...args);
+    if (this._events) {
+      this._events.emit(...args);
+    }
   }
 
   on(...args) {
-    this._events.on(...args);
+    if (this._events) {
+      this._events.on(...args);
+    }
   }
 
   off(...args) {
-    this._events.off(...args);
+    if (this._events) {
+      this._events.off(...args);
+    }
   }
 
   once(...args) {
-    this._events.once(...args);
+    if (this._events) {
+      this._events.once(...args);
+    }
   }
 
   async componentDidMount() {
@@ -171,10 +200,10 @@ export default class Window extends Component {
         onMount(this);
       }
 
-      // Set Window title either from props or from app
-      // TODO: Remove app here; use passed props
-      // const { app, title: propsTitle } = this.props;
-      // const title = (app ? app.getTitle() : propsTitle);
+      // Set Window title either from props or from appRuntime
+      // TODO: Remove appRuntime here; use passed props
+      // const { appRuntime, title: propsTitle } = this.props;
+      // const title = (appRuntime ? appRuntime.getTitle() : propsTitle);
       // this.setTitle(title);
       this.autosetTitle();
 
@@ -202,40 +231,28 @@ export default class Window extends Component {
   }
 
   componentWillUnmount() {
-    this._events.removeAllListeners();
-    this._events = null;
-
     this.close();
-  }
-
-  /**
-   * Automatically sets Window title based on configuration.
-   */
-  autosetTitle() {
-    const { title: existingTitle } = this.state;
-    const { app, title: propsTitle } = this.props;
-    const newTitle = (app ? app.getTitle() : propsTitle);
-    if (newTitle !== existingTitle) {
-      this.setTitle(newTitle);
-    }
   }
 
   /*
   * Set init position based on last one
   */
   autosetPosition() {
-    const { app } = this.props;
-    const initPos = (app ? app.getInitPosition() : { x: 0, y: 0 });
+    /*
+    const { appRuntime } = this.props;
+    const initPos = (appRuntime ? appRuntime.getInitPosition() : { x: 0, y: 0 });
 
     this.moveTo(initPos.x, initPos.y);
+    */
+   console.warn('TODO: Reimplement autoset position w/ _windowStack');
   }
 
   /*
    * Set init position based on last one
    */
   autosetSize() {
-    const { app, minHeight, minWidth } = this.props;
-    const initSize = (app ? app.getInitSize() : { width: minWidth, height: minHeight });
+    const { appRuntime, minHeight, minWidth } = this.props;
+    const initSize = (appRuntime ? appRuntime.getInitSize() : { width: minWidth, height: minHeight });
     this.resize(initSize.width, initSize.height)
   }
 
@@ -247,6 +264,24 @@ export default class Window extends Component {
    */
   resize(width, height) {
     this._resizableComponent.resize(width, height);
+  }
+
+  /**
+   * Automatically sets Window title based on configuration.
+   */
+  autosetTitle() {
+    const { title: existingTitle } = this.state;
+    const { appRuntime, title: propsTitle } = this.props;
+    
+    const newTitle = (
+      propsTitle ?
+      propsTitle : appRuntime ?
+      appRuntime.getTitle() : DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE
+    );
+    
+    if (newTitle !== existingTitle) {
+      this.setTitle(newTitle);
+    }
   }
 
   /**
@@ -284,6 +319,19 @@ export default class Window extends Component {
   }
 
   /**
+   * @return {AppRuntime | undefined}
+   */
+  /*
+  getAppRuntimeIfExists() {
+    const { appRuntime } = this.props;
+
+    return appRuntime;
+  }
+  */
+
+  /**
+   * Unique identifier of the Window (not the connected AppRuntime).
+   * 
    * @return {string}
    */
   getUUID() {
@@ -313,11 +361,12 @@ export default class Window extends Component {
 
       this.restore();
 
-      this._app.focus();
+      $(this._el).addClass(CSS_CLASS_NAME_FOCUS);
 
       this._isFocused = true;
 
-      commonDesktopLinkedState.setActiveWindow(this);
+      // _desktopLinkedState.setActiveWindow(this);
+      // TODO: Get stack index and apply from _windowStack
 
       this.doCoverIfShould();
 
@@ -329,11 +378,12 @@ export default class Window extends Component {
        * B, if a re-render has to occur, the user first has to select Window B
        * before the resize will happen.
        */
+      /*
       $(this._el).css({
         zIndex: _nextZIndex
       });
       ++_nextZIndex;
-
+      */
       // TODO: Await for any effects to complete
 
       this.emit(EVT_FOCUS); 
@@ -378,10 +428,12 @@ export default class Window extends Component {
       // TODO: display: none
   
       // notify AppRuntime to pass focus
-      const { onMinimize } = this.props.app;
+      /*
+      const { onMinimize } = this.props.appRuntime;
       if (typeof onMinimize === 'function') {
         onMinimize();
       }
+      */
   
       $(this._el).addClass(CSS_CLASS_NAME_HIDE);
 
@@ -472,7 +524,7 @@ export default class Window extends Component {
 
   async toggleMaximize() {
     try {
-      if (this._isMaximized) {
+      if (!this._isMaximized) {
         await this.maximize();
       } else {
         await this.restore();
@@ -484,24 +536,25 @@ export default class Window extends Component {
 
   async maximize() {
     try {
-      this.emit(EVT_BEFORE_MAXIMIZE);
-
       // TODO: Utilize desktopWidth / desktopHeight in DesktopLinkedState
-      const $desktopArea = $('#desktopArea');
-      const desktopWidth = $desktopArea.width();
-      const desktopHeight = $desktopArea.height();
-  
-      // TODO: Retain position prior to moving
-      // TODO: Make resize properties configurable
-      // TODO: Include dock location and size in resize calculations
-      this.moveTo(0, 0);
-      this.resize(desktopWidth - 20, desktopHeight - 60);
-  
-      this._isMaximized = true;
+      const { viewportSize } = _desktopLinkedState.getState();
+      if (viewportSize) {
+        this.emit(EVT_BEFORE_MAXIMIZE);
 
-      // TODO: Await for any effects to complete
+        const { width: viewportWidth, height: viewportHeight } = viewportSize;
+    
+        // TODO: Retain position prior to moving
+        // TODO: Make resize properties configurable
+        // TODO: Include dock location and size in resize calculations
+        this.moveTo(0, 0);
+        this.resize(viewportWidth - 20, viewportHeight - 60);
+    
+        this._isMaximized = true;
   
-      this.emit(EVT_MAXIMIZE);
+        // TODO: Await for any effects to complete
+    
+        this.emit(EVT_MAXIMIZE);
+      }
     } catch (exc) {
       throw exc;
     }
@@ -601,13 +654,16 @@ export default class Window extends Component {
     this.doCoverIfShould();
   };
 
+  /**
+   * Note, the actual handling is provided in combination of <Moveable> and <DragResizable>.
+   */
   _handleResizeMove = (pos, size) => {
-    this._app.onResizeMove(pos, size);
+    // this._app.onResizeMove(pos, size);
   };
 
   render() {
     let {
-      app,
+      appRuntime,
       children,
       className,
       description,
@@ -764,33 +820,40 @@ export default class Window extends Component {
   }
 
   /**
-   * Closes the underlying app, if available (which will unrender the Window).
+   * Closes the underlying appRuntime, if available (which will unrender the Window).
    * 
    * @return {Promise<void>}
    */
   async close() {
     try {
-      if (this._isClosed) {
-        console.warn('Window is already closed. Skipping close.');
+      if (this._isClosed || this._isClosing) {
         return;
       }
 
-      const { app } = this.props;
+      const { appRuntime } = this.props;
 
-      // this.emit(EVT_BEFORE_CLOSE);
+      this._isClosing = true;
+
+      this.emit(EVT_BEFORE_CLOSE);
 
       // Remove this window from the internal _windowStack
+      /*
       _windowStack = _windowStack.filter(testWindow => {
         return !Object.is(this, testWindow);
       });
+      */
 
-      // this.emit(EVT_DID_CLOSE);
-
-      if (app) {
-        await app.close();
+      if (appRuntime) {
+        await appRuntime.close();
       }
 
       this._isClosed = true;
+
+      this.emit(EVT_CLOSE);
+
+      // Unregister event listeners
+      this._events.removeAllListeners();
+      this._events = null;
     } catch (exc) {
       throw exc;
     }

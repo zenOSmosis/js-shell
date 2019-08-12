@@ -83,6 +83,7 @@ class WebSearchTileList extends Component {
   render() {
     const {
       query,
+      onResultSelect,
       ...propsRest
     } = this.props;
 

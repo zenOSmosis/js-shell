@@ -19,34 +19,38 @@ import VersionLabel from './VersionLabel';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
-import AppRuntimeRenderProvider from './AppRuntimeRenderProvider';
+import GUIProcessRenderProvider from './GUIProcessRenderProvider';
 
 // Registers default Shell Desktop apps
 // TODO: If refactoring this to another location, update the reference to that
 // location in apps/defaultApps.js comments
+import $ from 'jquery';
+
 import 'apps/defaultApps';
 
-import $ from 'jquery';
+const CSS_CLASS_NAME_BLUR = 'blur';
 
 class Desktop extends Component {
   componentDidMount() {
-    this._handleFocusUpdate();
+    this._handleViewportFocusUpdate();
   }
 
   componentDidUpdate() {
-    this._handleFocusUpdate();
+    this._handleViewportFocusUpdate();
   }
 
-  _handleFocusUpdate = () => {
+  _handleViewportFocusUpdate = () => {
     const { isViewportFocused } = this.props;
 
     if (typeof isViewportFocused !== 'undefined') {
       const $body = $(window.document.body);
 
-      if (!isViewportFocused) {
-        $body.addClass('blur');
+      if (isViewportFocused) {
+        // Remove blur when in focused
+        $body.removeClass(CSS_CLASS_NAME_BLUR);
       } else {
-        $body.removeClass('blur');
+        // Add blur when not in focused
+        $body.addClass(CSS_CLASS_NAME_BLUR);
       }
     }
   };
@@ -100,7 +104,7 @@ class Desktop extends Component {
                     // <AppRouteController />
                   }
 
-                  <AppRuntimeRenderProvider />
+                  <GUIProcessRenderProvider />
 
                   <VersionLabel />
 

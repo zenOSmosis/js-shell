@@ -6,8 +6,12 @@
 
 // Initializes the ShellCore services
 import Core from './Core';
-import ShellDesktop, { ViewportFocusMonitor, ViewportSizeMonitor } from './ShellDesktop';
-import P2PMonitor from './p2p/P2PMonitor';
+import ShellDesktop, {
+  ViewportFocusMonitor,
+  ViewportSizeMonitor,
+  P2PMonitor,
+  AppControlCentral,
+} from './ShellDesktop';
 import config from 'config';
 
 const { DOM_ROOT_ID } = config;
@@ -17,31 +21,32 @@ let _hasStarted = false;
 /**
  * Starts up the Shell Desktop Core.
  */
-const startup = () => {
-  // TODO: Move hasStarted (or equiv.) check to Core
-  if (_hasStarted) {
-    console.warn('Client system has already started');
-    return;
-  } else {
-    // Display temporary "Launching" notice
-    const rootEl = document.getElementById(DOM_ROOT_ID);
-    rootEl.innerHTML = 'Launching Core & Desktop services';
+const startup = async () => {
+  try {
+    // TODO: Move hasStarted (or equiv.) check to Core
+    if (_hasStarted) {
+      console.warn('Client system has already started');
+      return;
+    } else {
+      // Display temporary "Launching" notice
+      const rootEl = document.getElementById(DOM_ROOT_ID);
+      rootEl.innerHTML = 'Launching Core & Desktop services';
 
-    const core = new Core();
+      const core = new Core();
 
-    // Mount the Shell Desktop
-    const desktop = new ShellDesktop(core);
+      // Mount the Shell Desktop
+      const desktop = new ShellDesktop(core);
+      
+      // Mount the Shell Desktop services
+      new ViewportFocusMonitor(desktop);
+      new ViewportSizeMonitor(desktop);
+      new AppControlCentral(desktop);
+      new P2PMonitor(desktop);
 
-    // Mount the ViewportFocusMonitor to the Desktop
-    new ViewportFocusMonitor(desktop);
-
-    // Mount the ViewportSizeMonitor to the Desktop
-    new ViewportSizeMonitor(desktop);
-    
-    // Mount the P2PMonitor to the Desktop
-    new P2PMonitor(desktop);
-
-    _hasStarted = true;
+      _hasStarted = true;
+    }
+  } catch (exc) {
+    throw exc;
   }
 };
 

@@ -11,9 +11,11 @@ import MonacoEditor from 'components/MonacoEditor';
 
 const RUN_TARGET_MAIN = 'Main Thread';
 const RUN_TARGET_WORKER = 'Worker Thread';
+const RUN_TARGET_APP_REGISTRATION = 'App Registration';
 const RUN_TARGETS = [
   RUN_TARGET_MAIN,
-  RUN_TARGET_WORKER
+  RUN_TARGET_WORKER,
+  RUN_TARGET_APP_REGISTRATION
 ];
 
 export default class TabbedPane extends Component {

@@ -50,7 +50,7 @@ const registerApp = (appProps) => {
   
             createDesktopNotification(`Deferring existing ${existingAppTitle} unregistration until close`);
   
-            const apps = hmrMatchedRegistration.getAppRuntimes();
+            const apps = hmrMatchedRegistration.getJoinedAppRuntimes();
   
             // Defer unload until close
             apps.forEach(app=>{
