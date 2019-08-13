@@ -6,6 +6,8 @@ export {
 
 export const APP_REGISTRATIONS_LINKED_SCOPE_NAME = 'appRegistrations';
 
+console.warn('TODO: Implement persistent local storage of relevant window sizes and positions for AppRegistryLinkedState');
+
 /**
  * A registry of all registered app registrations for the Desktop.
  * 

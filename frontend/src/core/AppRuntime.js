@@ -28,6 +28,8 @@ class AppRuntime extends ClientGUIProcess {
     const shellDesktopProcess = getShellDesktopProcess();
     super(shellDesktopProcess);
 
+    this._appRegistration = appRegistration;
+
     // this._defaultTitle = null;
     // this._iconSrc = null;
     // this._mainView = null;
@@ -112,28 +114,12 @@ class AppRuntime extends ClientGUIProcess {
    */
   async _init() {
     try {
+      /*
       this.on(EVT_FIRST_RENDER, () => {
         // Automatically focus on first render
         this.focus();
       });
-
-      /*
-      this.on(EVT_FOCUS, () => {
-        const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
-        console.log('received focus for', this._title, 'last focused was', focusedAppRuntime?focusedAppRuntime._title:'null')
-        // Ignore if already focused
-        /*if (Object.is(this, focusedAppRuntime)) {
-          return;
-        }*/
-  
-        // Blur existing GUI process, if present
-        /*if (focusedAppRuntime) {
-          focusedAppRuntime.blur();
-        }*/
-  
-        // commonDesktopLinkedState.setFocusedAppRuntime(this);
-      // });
-
+      */
 
       // Register w/ DesktopLinkedState
       // Note (as of the time of writing) the underlying ClientProcess also
@@ -141,24 +127,8 @@ class AppRuntime extends ClientGUIProcess {
       // different purposes
       _appRuntimeLinkedState.addAppRuntime(this);
 
-      this.once(EVT_BEFORE_EXIT, () => {
-        /*
-        const focusedAppRuntime = commonDesktopLinkedState.getFocusedAppRuntime();
-        if (Object.is(this, focusedAppRuntime)) {
-
-          const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
-          const lenAppRuntimeFocusOrder = appRuntimeFocusOrder.length;
-
-          const lastFocusedRuntime = appRuntimeFocusOrder[lenAppRuntimeFocusOrder - 2];
-          if(lastFocusedRuntime) {
-            // pass focus to latest focused window
-            lastFocusedRuntime.focus();
-          } else {
-            commonDesktopLinkedState.setFocusedAppRuntime(null);
-          }
-        }
-        */
-        
+      // Handle exit cleanup
+      this.once(EVT_BEFORE_EXIT, () => {        
         // Unregister from DesktopLinkedState
         _appRuntimeLinkedState.removeAppRuntime(this);
       });
@@ -186,41 +156,6 @@ class AppRuntime extends ClientGUIProcess {
     }
   }
 
-  /*
-  onMinimize() {
-    this._isMinimized = true;
-    commonDesktopLinkedState.setMinimizedAppRuntime(this);
-  }
-  */
-
-  // TODO: Move this elsewhere
-  // TODO: Also add DesktopWindowSize
-
-  /**
-   * @typedef {Object} DesktopWindowPosition
-   * @property {number} x 
-   * @property {number} y 
-   */
-
-  /**
-   * 
-   * @param {DesktopWindowPosition} position 
-   * @param {?} size // TODO: Determine size? 
-   */
-  /*
-  onResizeMove(position, size) {
-    if(position) {
-      this.setInitPosition(position);
-    }
-
-    if(size) {
-      this.setInitSize(size);
-    }
-
-    // console.warn('Has size?', (size ? 'yes' : 'no'), this);
-  }
-  */
-
   /**
    * TODO: Document
    * 
@@ -229,33 +164,6 @@ class AppRuntime extends ClientGUIProcess {
   getMenubar() {
     return this._menubar;
   }
-
-  /**
-   * Retrieves the original title, before any modifications.
-   * 
-   * @return {string}
-   */
-  /*
-  getDefaultTitle() {
-    return this._defaultTitle;
-  }
-  */
-
-  // TODO: Utilize ClientGUIProcess setIcon
-  /*
-  setIconSrc(iconSrc) {
-    this._iconSrc = iconSrc;
-
-    // this.emit(EVT_ICON_SRC_UPDATE, iconSrc);
-  }
-  */
-
-  // TODO: Utilize ClientGUIProcess getIcon
-  /*
-  getIconSrc() {
-    return this._iconSrc;
-  }
-  */
 
   /**
    * Notifies all listeners that this process is the one the user is
@@ -280,9 +188,11 @@ class AppRuntime extends ClientGUIProcess {
    * 
    * Utilizes this.setIsFocused().
    */
+  /*
   blur() {
     this.setIsFocused(false);
   }
+  */
 
   /**
    * Sets whether or not this process' React.Component has top priority in the
@@ -307,6 +217,9 @@ class AppRuntime extends ClientGUIProcess {
       this._isFocused = isFocused;
 
       if (isFocused) {
+        // TODO: Possibly mode this handling to AppControlCentral
+        _appRuntimeLinkedState.setFocusedAppRuntime(this);
+        
         this.emit(EVT_FOCUS);
       } else {
         this.emit(EVT_BLUR);
@@ -322,6 +235,24 @@ class AppRuntime extends ClientGUIProcess {
    */
   getIsFocused() {
     return this._isFocused;
+  }
+
+  /**
+   * This should be called directly by the Window in order to record last window size.
+   * 
+   * @param {WindowSize} windowSize 
+   */
+  recordWindowSize(windowSize) {
+    this._appRegistration.recordAppRuntimeWindowSize(this, windowSize);
+  }
+
+ /**
+   * This should be called directly by the Window in order to record last window position.
+   * 
+   * @param {WindowPosition} windowPosition 
+   */
+  recordWindowPosition(windowPosition) {
+    this._appRegistration.recordAppRuntimeWindowPosition(this, windowPosition);
   }
 }
 

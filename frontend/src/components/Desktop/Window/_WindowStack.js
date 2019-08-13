@@ -1,9 +1,6 @@
 import EventEmitter from 'events';
 import AppRuntime from 'core/AppRuntime';
-import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import Window, { EVT_BEFORE_CLOSE } from './Window';
-
-const _appRuntimeLinkedState = new AppRuntimeLinkedState();
 
 /**
  * @extends EventEmitter
@@ -61,7 +58,7 @@ class WindowStack extends EventEmitter {
     // Set focused app runtime in LinkedState
     const appRuntime = desktopWindow.getAppRuntimeIfExists();
     if (appRuntime) {
-      _appRuntimeLinkedState.setFocusedAppRuntime(appRuntime);
+      appRuntime.focus();
     }
     
     this.renderStack();
