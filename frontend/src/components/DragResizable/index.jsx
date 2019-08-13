@@ -19,9 +19,25 @@ const RESIZE_DIRECTION_SOUTHWEST = 'sw';
 const RESIZE_DIRECTION_WEST = 'w';
 const RESIZE_DIRECTION_NORTHWEST = 'nw';
 
-export default class DragResizable extends Component {
+/**
+ * @typedef {Object} DragResizableProportions
+ * @property {number} outerWidth
+ * @property {number} outerHeight
+ * @property {number} mainWidth,
+ * @property {number} mainHeight
+ */
+
+/**
+ * @extends React.Component
+ */
+class DragResizable extends Component {
   constructor(...args) {
     super(...args);
+
+    this._root = null;
+    this._main = null;
+    this._$root = null;
+    this._$main = null;
 
     this._initialTouchX = 0;
     this._initialTouchY = 0;
@@ -36,14 +52,14 @@ export default class DragResizable extends Component {
   }
 
   componentDidMount() {
-    this.$root = $(this.root);
-    this.$main = $(this.main);
+    this._$root = $(this._root);
+    this._$main = $(this._main);
 
     this._setMinWidthHeight();
 
     const { onBodyMount } = this.props;
     if (typeof onBodyMount === 'function') {
-      onBodyMount(this.main);
+      onBodyMount(this._main);
     }
   }
 
@@ -58,12 +74,13 @@ export default class DragResizable extends Component {
       this._moveableComponent = moveableComponent;
 
       const { x: initialPosX, y: initialPosY } = this._moveableComponent.getPosition();
-      const initialWidth = this.$main.outerWidth();
-      const initialHeight = this.$main.outerHeight();
+      const initialWidth = this._$main.outerWidth();
+      const initialHeight = this._$main.outerHeight();
 
       this._position = {
         x: initialPosX, y: initialPosY,
-      }
+      };
+
       this._size = { height: initialHeight, width: initialWidth }
     }
 
@@ -77,7 +94,7 @@ export default class DragResizable extends Component {
     minHeight = parseInt(minHeight) || RESIZABLE_DEFAULT_MIN_HEIGHT;
 
     window.requestAnimationFrame(() => {
-      this.$main.css({
+      this._$main.css({
         minWidth,
         minHeight
       });
@@ -101,8 +118,8 @@ export default class DragResizable extends Component {
     direction = direction.toLowerCase();
 
     // console.debug(`TODO: resize in direction: ${direction}`, evt);
-    // const $root = $(this.root);
-    const $main = $(this.main);
+    // const $root = $(this._root);
+    const $main = $(this._main);
 
     const deltaX = evt.delta[0];
     const deltaY = evt.delta[1];
@@ -179,18 +196,24 @@ export default class DragResizable extends Component {
           return;
       }
 
-      const outerWidth = this.$root.outerWidth();;
-      const outerHeight = this.$root.outerHeight();
-      const mainWidth = this.$main.innerWidth();
-      const mainHeight = this.$main.innerHeight();
-
       if (typeof onResize === 'function') {
-        onResize({
+        const outerWidth = this._$root.outerWidth();;
+        const outerHeight = this._$root.outerHeight();
+        const mainWidth = this._$main.innerWidth();
+        const mainHeight = this._$main.innerHeight();
+
+        /**
+         * @type {DragResizableProportions}
+         */
+        const proportions = {
           outerWidth,
           outerHeight,
           mainWidth,
           mainHeight
-        })
+        };
+
+        // Call onResize callback w/ proportions
+        onResize(proportions);
       }
     });
   }
@@ -220,8 +243,8 @@ export default class DragResizable extends Component {
     this._initialPosX = initialPosX;
     this._initialPosY = initialPosY;
 
-    this._initialWidth = this.$main.outerWidth();
-    this._initialHeight = this.$main.outerHeight();
+    this._initialWidth = this._$main.outerWidth();
+    this._initialHeight = this._$main.outerHeight();
   }
 
   _handleResizeNorth($main, posX, deltaY) {
@@ -297,7 +320,7 @@ export default class DragResizable extends Component {
   }
 
   resize(width, height) {
-    this.$main.css({
+    this._$main.css({
       width,
       height
     });
@@ -326,7 +349,7 @@ export default class DragResizable extends Component {
       return (
         <div
           {...propsRest}
-          ref={c => this.root = c}
+          ref={c => this._root = c}
           className={`zd-drag-resizable ${className ? className : ''}`}
         >
           <div className="zd-drag-resizable-table-row">
@@ -376,7 +399,7 @@ export default class DragResizable extends Component {
             >
               <div
                 className={`zd-drag-resizable-body ${bodyClassName ? bodyClassName : ''}`}
-                style={contentStyle} ref={c => this.main = c}
+                style={contentStyle} ref={c => this._main = c}
               >
                 {
                   children
@@ -428,7 +451,7 @@ export default class DragResizable extends Component {
       return (
         <div
           {...propsRest}
-          ref={c => this.root = c}
+          ref={c => this._root = c}
           className={`zd-drag-resizable ${className ? className : ''}`}
         >
           <div className="zd-drag-resizable-table-row">
@@ -440,7 +463,7 @@ export default class DragResizable extends Component {
             >
               <div
                 className={`zd-drag-resizable-body ${bodyClassName ? bodyClassName : ''}`}
-                style={contentStyle} ref={c => this.main = c}
+                style={contentStyle} ref={c => this._main = c}
               >
                 {
                   children
@@ -454,3 +477,5 @@ export default class DragResizable extends Component {
 
   }
 }
+
+export default DragResizable;
