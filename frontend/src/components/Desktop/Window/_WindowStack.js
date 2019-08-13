@@ -29,12 +29,43 @@ class WindowStack extends EventEmitter {
     return this._stack;
   }
 
-  focusWindow() {
+  getWindowStackIndex(desktopWindow) {
+    const currIdx = this._stack.indexOf(desktopWindow);
+    if (currIdx === -1) {
+      console.warn('desktopWindow is not in the stack');
+      return;
+    }
+
+    return currIdx;
+  }
+
+  focusWindow(desktopWindow) {
+    if (!(desktopWindow instanceof Window)) {
+      throw new Error('desktopWindow is not a Window instance');
+    }
+
+    const lenStack = this._stack.length;
+
     // Move window to the top of stack
+    const currIdx = this.getWindowStackIndex(desktopWindow);
+    
+    // Remove from stack
+    this._stack.splice(currIdx, 1);
 
-    // Apply relevant z-indexes to other windows
-
-    // Blur other windows
+    // Push to the end of the stack
+    this._stack.push(desktopWindow);
+    
+    for (let i = 0; i < lenStack; i++) {
+      const testWindow = this._stack[i];
+    
+      // Apply relevant z-indexes (to visually render them)
+      testWindow.setZIndex(i * 1000);
+    
+      // Blur other windows
+      if (!Object.is(desktopWindow, testWindow)) {
+        testWindow.blur();
+      }
+    }
   }
 
   focusAppRuntime(appRuntime) {

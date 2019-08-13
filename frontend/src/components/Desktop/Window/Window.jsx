@@ -363,6 +363,7 @@ export default class Window extends Component {
 
       // _desktopLinkedState.setActiveWindow(this);
       // TODO: Get stack index and apply from _windowStack
+      _windowStack.focusWindow(this);
 
       this.doCoverIfShould();
 
@@ -458,6 +459,16 @@ export default class Window extends Component {
     }
   }
 
+  /**
+   * Sets the z-order of the Window, visually placing it in front of, or
+   * behind, other Windows, based on the highest zIndex.
+   * 
+   * @param {number} zIndex Higher is positioned in front of lower.
+   */
+  setZIndex(zIndex) {
+    $(this._el).css({zIndex});
+  }
+
   async toggleMinimize() {
     try {
       if (!this._isMinimized) {
@@ -470,7 +481,7 @@ export default class Window extends Component {
     }
   }
 
-// TODO: Await for any effects to complete
+  // TODO: Await for any effects to complete
   async minimize() {
     try {
       // Since this.resize() is not called in this method, wrap w/
