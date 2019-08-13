@@ -64,57 +64,33 @@ export const EVT_RESIZE = 'resize';
 const CSS_CLASS_NAME_FOCUS = 'focus';
 const CSS_CLASS_NAME_HIDE = 'hide';
 
-// The CSS z-index level the next focused Window will have
-// This value is automatically incremented internally
-// let _nextZIndex = 0;
-
-// An array of windows
-// let _windowStack = [];
-
-/**
- * TODO: Refactor elsewhere
- * TODO: Implement always-on-top
- * 
- * @return {Window[]} An array of Window instances
- */
-/*
-export const getWindowStack = () => {
-  return _windowStack.filter((window) => {
-    return !window.getIsClosed();
-  });
-}
-*/
-
 const _desktopLinkedState = new DesktopLinkedState();
 const _windowStack = new _WindowStack();
 
-// Handle blurring of non-focused windows
-// Only a single window can be "active" at a time (that is, the focused window)
-// TODO: Move all stack management to Core Window Stack Manager
-/*
-(() => {
-  _desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-    const { activeWindow } = updatedState;
+/**
+ * @typedef {Object} WindowPosition
+ * @property {number} x
+ * @property {number} y 
+ */
 
-    if (typeof activeWindow !== 'undefined') {
-      const _windowStack = getWindowStack();
+/**
+ * @typedef {Object} WindowSize
+ * @property {number} width
+ * @property {number} height
+ */
 
-      _windowStack.forEach((desktopWindow) => {
-        const isFocusedWindow = Object.is(activeWindow, desktopWindow);
-
-        if (!isFocusedWindow) {
-          desktopWindow.blur();
-        }
-      });
-    }
-  });
-})();
-*/
-
-export default class Window extends Component {
+/**
+ * A Desktop Window for the Shell.
+ * 
+ * @extends React.Component
+ */
+class Window extends Component {
   static propTypes = {
     // Optional
-    appRuntime: PropTypes.instanceOf(AppRuntime)
+    appRuntime: PropTypes.instanceOf(AppRuntime),
+    initialWidth: PropTypes.number,
+    initialHeight: PropTypes.number,
+    sizeable: PropTypes.bool
   };
   
   constructor(props) {
@@ -157,6 +133,16 @@ export default class Window extends Component {
 
     this._isClosing = false;
     this._isClosed = false;
+
+    /**
+     * @type {WindowSize}
+     */
+    this._restoreSize = {};
+
+    /**
+     * @type {WindowPosition}
+     */
+    this._restorePosition = {};
 
     // Add this window to the stack
     // _windowStack.push(this);
@@ -215,7 +201,7 @@ export default class Window extends Component {
       // (works on Chrome in Linux; not on Windows)
       await this.animate(EFFECT_CREATE);
 
-      // this.emit(EVT_DID_MOUNT);
+      // this.emit(EVT_MOUNT);
     } catch (exc) {
       throw exc;
     }
@@ -486,23 +472,26 @@ export default class Window extends Component {
   async minimize() {
     try {
       // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_DID_RESIZE hooks
+      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
       this.emit(EVT_BEFORE_RESIZE);
 
       // this.emit(EVT_BEFORE_MINIMIZE);
   
       if (!this._isMinimized) {
         await this.animate(EFFECT_MINIMIZE);
+
+        // IMPORANT! Set boolean flag before any resize operations take place,
+        // so the sizes & positions are not recorded
         this._isMinimized = true;
-        await this.hide();
+
         await this.blur();
-        //TODO: should focus remaining window
+        await this.hide();
       }
   
-      // this.emit(EVT_DID_MINIMIZE);
+      // this.emit(EVT_MINIMIZE);
   
       // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_DID_RESIZE hooks
+      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
       this.emit(EVT_RESIZE);
     } catch (exc) {
       throw exc;
@@ -515,16 +504,20 @@ export default class Window extends Component {
       // this.emit(EVT_BEFORE_RESTORE);
 
       if(this._isMinimized) {
-        await this.unhide();
         this._isMinimized = false;
+        
+        await this.unhide();
       } else if (this._isMaximized) {
-        console.warn('TODO: Apply window position / size before app was maximized');
         this._isMaximized = false;
+
+        console.warn('TODO: Apply window position / size before app was maximized');
       }
+
+      console.warn('TODO: Apply restore position and size');
 
       await this.animate(EFFECT_RESTORE);
 
-      // this.emit(EVT_DID_RESTORE); 
+      // this.emit(EVT_RESTORE); 
     } catch (exc) {
       throw exc;
     }
@@ -554,15 +547,20 @@ export default class Window extends Component {
       if (viewportSize) {
         this.emit(EVT_BEFORE_MAXIMIZE);
 
-        const { width: viewportWidth, height: viewportHeight } = viewportSize;
+        // IMPORANT! Set boolean flag before any resize operations take place,
+        // so the sizes & positions are not recorded
+        this._isMaximized = true;
+
+        const {
+          width: viewportWidth,
+          height: viewportHeight
+        } = viewportSize;
     
         // TODO: Retain position prior to moving
         // TODO: Make resize properties configurable
         // TODO: Include dock location and size in resize calculations
         this.moveTo(0, 0);
         this.resize(viewportWidth - 20, viewportHeight - 60);
-    
-        this._isMaximized = true;
   
         // TODO: Await for any effects to complete
     
@@ -588,10 +586,22 @@ export default class Window extends Component {
     }
   }
 
+  /**
+   * @return {WindowPosition}
+   */
   getPosition() {
     return this._moveableComponent.getPosition();
   }
 
+  /**
+   * @param {WindowPosition} windowPosition 
+   */
+  setPosition(windowPosition) {
+    const { x, y } = windowPosition;
+
+    this.moveTo(x, y);
+  }
+  
   moveTo(posX, posY) {
     this._moveableComponent.moveTo(posX, posY);
   }
@@ -655,13 +665,42 @@ export default class Window extends Component {
   }
 
   /**
-   * Called when the <DragResizable /> layer has been resized.
+   * Called when the <DragResizable /> layer is being resized.
+   * 
+   * @param {DragResizableProportions} proportions
    */
-  /*
-  _handleResize = (resizeData) => {
-    const { width: bodyWidth, height: bodyHeight } = this.getCalculatedBodySize();
+  _handleResize = (dragResizableProportions) => {
+    if (!this._isMaximized && !this._isMinimized) {
+      /*
+      const {
+        outerWidth,
+        outerHeight,
+        mainWidth,
+        mainHeight
+      } = proportions;
+      */
 
-    // this.setBodySize(bodyWidth, bodyHeight);
+      const { appRuntime } = this.props;
+
+      if (appRuntime) {
+        const {
+          outerWidth: width,
+          outerHeight: height
+        } = dragResizableProportions;
+
+        /**
+         * @type WindowSize
+         */
+        const windowSize = {
+          width,
+          height
+        };
+
+        appRuntime.recordWindowSize(windowSize);
+      }
+    }
+
+    this.emit(EVT_RESIZE);
   };
   */
 
@@ -676,8 +715,13 @@ export default class Window extends Component {
   /**
    * Note, the actual handling is provided in combination of <Moveable> and <DragResizable>.
    */
-  _handleResizeMove = (pos, size) => {
-    // this._app.onResizeMove(pos, size);
+  _handleMove = (pos) => {
+    if (!this._isMaximized || !this._isMinimized) {
+      const { appRuntime } = this.props;
+      if (appRuntime) {
+        appRuntime.recordWindowPosition(pos);
+      }
+    }
   };
 
   /**
@@ -697,8 +741,11 @@ export default class Window extends Component {
       children,
       className,
       description,
+      
       initialWidth,
       initialHeight,
+      sizeable, // TODO: Rename to isResizable
+
       toolbar,
       toolbarRight,
       subToolbar,
@@ -708,7 +755,6 @@ export default class Window extends Component {
       minWidth,
       minHeight,
       onReady,
-      sizeable, // TODO: Rename to isResizable
       ...propsRest
     } = this.props;
 
@@ -740,7 +786,7 @@ export default class Window extends Component {
 
         <Moveable
           ref={c => this._moveableComponent = c}
-          onMove={this._onResizeMove}
+          onMove={this._handleMove}
         // initialX={...}
         // initialY={...}
         >
@@ -756,7 +802,7 @@ export default class Window extends Component {
               minHeight={minHeight}
               bodyClassName="zd-window-resizable"
               onBodyMount={c => this._resizableBody = c}
-              onResizeMove={this._handleResizeMove}
+              onResizeMove={this._handleMove}
               enable={isResizeEnabled}
             // maxWidth={}
             // maxHeight={}
@@ -899,3 +945,5 @@ export default class Window extends Component {
     return this._isClosed;
   }
 }
+
+export default Window;

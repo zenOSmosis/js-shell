@@ -4,9 +4,7 @@ import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import { getAppControlCentral } from './ShellDesktop/AppControlCentral';
 import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
 
-// const commonDesktopLinkedState = new DesktopLinkedState();
 const _appRegistryLinkedState = new AppRegistryLinkedState();
-// let _createdWindowsCount = 0;
 
 /**
  * @typedef {Object} AppRegistrationProps
@@ -172,27 +170,6 @@ class AppRegistration extends EventEmitter {
     return this._title;
   }
 
-  /**
-   * Focuses all related AppRuntime instances.
-   */
-  /*
-  focus() {
-    const appRuntimes = this.getJoinedAppRuntimes();
-
-    const appRuntimeFocusOrder = commonDesktopLinkedState.getAppRuntimeFocusOrder();
-    let linkedApps = [];
-
-    // Focus respecting order
-    // TODO: Document this
-    if (Array.isArray(appRuntimeFocusOrder)) {
-      linkedApps = appRuntimeFocusOrder.filter(a => (appRuntimes.indexOf(a) > -1));
-    }
-
-    // Focus each linked app
-    linkedApps.forEach(a=> a.focus());
-  }
-  */
-
   getIconSrc() {
     return this._iconSrc;
   }
@@ -200,6 +177,42 @@ class AppRegistration extends EventEmitter {
   getView() {
     return this.view;
   }
+
+  /**
+   * Records the Window size in the given AppRuntime instance. 
+   * 
+   * @param {AppRuntime} appRuntime 
+   * @param {WindowSize} windowSize
+   */
+  recordAppRuntimeWindowSize(appRuntime, windowSize) {
+    console.debug('TODO: Record app runtime window size', {
+      appRuntime,
+      windowSize
+    });
+  }
+
+  /**
+   * Records the Window position in the given AppRuntime instance.
+   * 
+   * @param {AppRuntime} appRuntime 
+   * @param {WindowPosition} windowPosition 
+   */
+  recordAppRuntimeWindowPosition(appRuntime, windowPosition) {
+    console.debug('TODO: Record app runtime window position', {
+      appRuntime,
+      windowPosition
+    });
+  }
+
+  /**
+   * Utilized to store metadata related to this AppRegistration. 
+   * 
+   * @return {string}
+   */
+  /*
+  getSerializedRegistration() {
+  }
+  */
 
   /**
    * Removes this app (and all connected runtimes) from the Desktop registry.
