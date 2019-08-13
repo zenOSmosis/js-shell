@@ -194,7 +194,10 @@ export default class Window extends Component {
       }
       */
 
-      this._protoIsMounted = true;
+      const { onMount } = this.props;
+      if (typeof onMount === 'function') {
+        onMount(this);
+      }
 
       // Set Window title either from props or from appRuntime
       // TODO: Remove appRuntime here; use passed props
@@ -541,6 +544,11 @@ export default class Window extends Component {
 
   async maximize() {
     try {
+      if (!this.getIsResizeEnabled()) {
+        console.warn('Window is not resize enabled, so it cannot be maximized');
+        return;
+      }
+
       // TODO: Utilize desktopWidth / desktopHeight in DesktopLinkedState
       const { viewportSize } = _desktopLinkedState.getState();
       if (viewportSize) {
@@ -672,6 +680,17 @@ export default class Window extends Component {
     // this._app.onResizeMove(pos, size);
   };
 
+  /**
+   * @return {boolean} Whether or not the window can be resized by the user. 
+   */
+  getIsResizeEnabled() {
+    const { sizeable } = this.props;
+
+    const isResizeEnabled = (typeof sizeable === 'undefined' || sizeable === true);
+
+    return isResizeEnabled;
+  }
+
   render() {
     let {
       appRuntime,
@@ -689,8 +708,11 @@ export default class Window extends Component {
       minWidth,
       minHeight,
       onReady,
+      sizeable, // TODO: Rename to isResizable
       ...propsRest
     } = this.props;
+
+    const isResizeEnabled = this.getIsResizeEnabled();
 
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
@@ -734,8 +756,8 @@ export default class Window extends Component {
               minHeight={minHeight}
               bodyClassName="zd-window-resizable"
               onBodyMount={c => this._resizableBody = c}
-              onResizeMove={this._onResizeMove}
-              enable={typeof this.props.sizeable == 'undefined' || this.props.sizeable == true }
+              onResizeMove={this._handleResizeMove}
+              enable={isResizeEnabled}
             // maxWidth={}
             // maxHeight={}
             >
