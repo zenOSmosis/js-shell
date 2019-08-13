@@ -91,10 +91,6 @@ class WindowStack extends EventEmitter {
       
       // Push to the end of the stack
       this._stack.push(currIdx);
-
-      if (i === lenAppRuntimeWindows - 1) {
-        currWindow.focus();
-      }
     }
 
     this.renderStack();
@@ -127,6 +123,13 @@ class WindowStack extends EventEmitter {
     return appRuntimeWindows;
   }
 
+  /**
+   * Applies zIndexes on the underlying Window stack, and applies focus() /
+   * blur() to each Window, depending on where they are in the stack.
+   * 
+   * The Window with the highest stack index (0 is lowest), will become the
+   * focused Window, while all others are blurred.
+   */
   renderStack() {
     const lenStack = this._stack.length;
 
@@ -136,9 +139,13 @@ class WindowStack extends EventEmitter {
       // Apply relevant z-indexes (to visually render them)
       testWindow.setZIndex(i * 1000);
     
-      // Blur other windows
+      
       if (i < lenStack - 1) {
+        // Blur other windows
         testWindow.blur();
+      } else {
+        // Focus hightest window
+        testWindow.focus();
       }
     }
   }
