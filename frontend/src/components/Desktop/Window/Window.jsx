@@ -321,13 +321,11 @@ export default class Window extends Component {
   /**
    * @return {AppRuntime | undefined}
    */
-  /*
   getAppRuntimeIfExists() {
     const { appRuntime } = this.props;
 
     return appRuntime;
   }
-  */
 
   /**
    * Unique identifier of the Window (not the connected AppRuntime).
