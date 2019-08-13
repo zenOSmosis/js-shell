@@ -39,22 +39,97 @@ class WindowStack extends EventEmitter {
     return currIdx;
   }
 
+  /**
+   * Focuses a single window.
+   * 
+   * @param {Window} desktopWindow 
+   */
   focusWindow(desktopWindow) {
     if (!(desktopWindow instanceof Window)) {
       throw new Error('desktopWindow is not a Window instance');
     }
 
-    const lenStack = this._stack.length;
-
     // Move window to the top of stack
     const currIdx = this.getWindowStackIndex(desktopWindow);
     
-    // Remove from stack
+    // Temporarily Remove from stack
     this._stack.splice(currIdx, 1);
 
     // Push to the end of the stack
     this._stack.push(desktopWindow);
+
+    // Set focused app runtime in LinkedState
+    const appRuntime = desktopWindow.getAppRuntimeIfExists();
+    if (appRuntime) {
+      _appRuntimeLinkedState.setFocusedAppRuntime(appRuntime);
+    }
     
+    this.renderStack();
+  }
+
+  /**
+   * Brings all connected windows to the given AppRuntime to the front.
+   * 
+   * @param {AppRuntime} appRuntime 
+   */
+  bringAppRuntimeWindowsToFront(appRuntime) {
+    if (!(appRuntime instanceof AppRuntime)) {
+      throw new Error('appRuntime is not an AppRuntime instance');
+    }
+
+    // Locate all windows for the desktopWindow AppRuntime
+    const appRuntimeWindows = this.getAppRuntimeWindows(appRuntime);
+
+    // Push them all to the top of the stack, in the current order
+    const lenAppRuntimeWindows = appRuntimeWindows.length;
+    for (let i = 0; i < lenAppRuntimeWindows; i++) {
+      const currWindow = appRuntimeWindows[i];
+      const currIdx = this.getWindowStackIndex(currWindow);
+      
+      // Temporarily Remove from stack
+      this._stack.splice(currIdx, 1);
+      
+      // Push to the end of the stack
+      this._stack.push(currIdx);
+
+      if (i === lenAppRuntimeWindows - 1) {
+        currWindow.focus();
+      }
+    }
+
+    this.renderStack();
+  }
+
+  /**
+   * 
+   * @param {AppRuntime} appRuntime
+   * @return {Window[]}
+   */
+  getAppRuntimeWindows(appRuntime) {
+    if (!(appRuntime instanceof AppRuntime)) {
+      throw new Error('appRuntime is not an AppRuntime instance');
+    }
+
+    const lenStack = this._stack.length;
+
+    const appRuntimeWindows = [];
+
+    for (let i = 0; i < lenStack; i++) {
+      const desktopWindow = this._stack[i];
+    
+      const testAppRuntime = desktopWindow.getAppRuntimeIfExists();
+
+      if (Object.is(testAppRuntime, appRuntime)) {
+        appRuntimeWindows.push(desktopWindow);
+      }
+    }
+
+    return appRuntimeWindows;
+  }
+
+  renderStack() {
+    const lenStack = this._stack.length;
+
     for (let i = 0; i < lenStack; i++) {
       const testWindow = this._stack[i];
     
@@ -62,22 +137,10 @@ class WindowStack extends EventEmitter {
       testWindow.setZIndex(i * 1000);
     
       // Blur other windows
-      if (!Object.is(desktopWindow, testWindow)) {
+      if (i < lenStack - 1) {
         testWindow.blur();
       }
     }
-  }
-
-  focusAppRuntime(appRuntime) {
-    if (!(appRuntime instanceof AppRuntime)) {
-      throw new Error('appRuntime is not an AppRuntime instance');
-    }
-
-    // Locate all windows for the desktopWindow AppRuntime
-
-    // Push them all to the top of the stack, in the current order
-
-    // Render the stack accordingly
   }
 
   /**
