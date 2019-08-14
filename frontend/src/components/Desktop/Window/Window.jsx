@@ -384,6 +384,13 @@ class Window extends Component {
     }
   }
 
+  /**
+   * @return {boolean}
+   */
+  getIsFocused() {
+    return this._isFocused;
+  }
+
   async toggleHide() {
     // TODO: Detect current window state and take appropriate action
 

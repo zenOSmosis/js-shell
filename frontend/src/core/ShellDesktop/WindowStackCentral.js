@@ -4,7 +4,12 @@
 import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
 import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
-import Window, { EVT_MOUNT, EVT_BEFORE_CLOSE, EVT_FOCUS } from 'components/Desktop/Window';
+import Window, {
+  EVT_MOUNT,
+  EVT_BEFORE_CLOSE,
+  EVT_FOCUS,
+  EVT_BLUR
+} from 'components/Desktop/Window';
 
 let _windowStackCentral = null;
 
@@ -220,33 +225,27 @@ class WindowStackCentral extends ClientProcess {
   }
 
   /**
-   * Focuses a single Window.
+   * Handles blur / focus of a single Window.
    * 
-   * IMPORTANT! This is called internally once the Window emits an EVT_FOCUS event.
+   * IMPORTANT! This is internally called once the Window emits an EVT_FOCUS
+   * or an EVT_BLUR event.
    * 
    * @param {Window} desktopWindow 
    */
-  _handleWindowFocus = (desktopWindow) => {
+  _handleWindowFocusChange = (desktopWindow) => {
     if (!(desktopWindow instanceof Window)) {
       throw new Error('desktopWindow is not a Window instance');
     }
 
-    // Move window to the top of stack
-    const currIdx = this.getWindowStackIndex(desktopWindow);
-    
-    // Temporarily Remove from stack
-    this._stack.splice(currIdx, 1);
-
-    // Push to the end of the stack
-    this._stack.push(desktopWindow);
+    this.bringSubWindowStackToTop([desktopWindow]);
 
     // Set focused app runtime in LinkedState
     const appRuntime = desktopWindow.getAppRuntimeIfExists();
     if (appRuntime) {
-      appRuntime.focus();
+      const isFocused = desktopWindow.getIsFocused();
+
+      appRuntime.setIsFocused(isFocused);
     }
-    
-    this.renderStack();
   }
 
   /**
@@ -269,7 +268,11 @@ class WindowStackCentral extends ClientProcess {
     });
 
     desktopWindow.on(EVT_FOCUS, () => {
-      this._handleWindowFocus(desktopWindow);
+      this._handleWindowFocusChange(desktopWindow);
+    });
+
+    desktopWindow.on(EVT_BLUR, () => {
+      this._handleWindowFocusChange(desktopWindow);
     });
 
     // Handle window close cleanup
