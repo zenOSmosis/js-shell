@@ -17,7 +17,7 @@ import DesktopLinkedState from 'state/DesktopLinkedState';
 import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
 import animate from 'utils/animate'; // TODO: Debug why this doesn't work on Windows
 import PropTypes from 'prop-types';
-import _WindowStack from './_WindowStack';
+import { getWindowStackCentral } from 'core/ShellDesktop/'; // TODO: Import from ShellDesktop
 
 import config from 'config';
 import $ from 'jquery';
@@ -66,7 +66,6 @@ const CSS_CLASS_NAME_FOCUS = 'focus';
 const CSS_CLASS_NAME_HIDE = 'hide';
 
 const _desktopLinkedState = new DesktopLinkedState();
-const _windowStack = new _WindowStack();
 
 /**
  * @typedef {Object} WindowPosition
@@ -103,8 +102,10 @@ class Window extends Component {
 
     this._events = new EventEmitter();
 
+    this._windowStack = getWindowStackCentral();
+
     // Apply stack management to the Window
-    _windowStack._addWindow(this);
+    this._windowStack._addWindow(this);
 
     this._uuid = uuidv4();
 
@@ -146,7 +147,7 @@ class Window extends Component {
     this._restorePosition = {};
 
     // Add this window to the stack
-    // _windowStack.push(this);
+    // this._windowStack.push(this);
   }
 
   emit(...args) {
@@ -230,7 +231,7 @@ class Window extends Component {
 
     this.moveTo(initPos.x, initPos.y);
     */
-   console.warn('TODO: Reimplement autoset position w/ _windowStack');
+   console.warn('TODO: Reimplement autoset position w/ this._windowStack');
   }
 
   /*
@@ -350,8 +351,8 @@ class Window extends Component {
       this._isFocused = true;
 
       // _desktopLinkedState.setActiveWindow(this);
-      // TODO: Get stack index and apply from _windowStack
-      _windowStack.focusWindow(this);
+      // TODO: Get stack index and apply from this._windowStack
+      this._windowStack.focusWindow(this);
 
       this.doCoverIfShould();
 
@@ -913,13 +914,6 @@ class Window extends Component {
 
       this.emit(EVT_BEFORE_CLOSE);
 
-      // Remove this window from the internal _windowStack
-      /*
-      _windowStack = _windowStack.filter(testWindow => {
-        return !Object.is(this, testWindow);
-      });
-      */
-
       if (appRuntime) {
         await appRuntime.close();
       }
@@ -927,6 +921,8 @@ class Window extends Component {
       this._isClosed = true;
 
       this.emit(EVT_CLOSE);
+
+      this._windowStack = null;
 
       // Unregister event listeners
       this._events.removeAllListeners();

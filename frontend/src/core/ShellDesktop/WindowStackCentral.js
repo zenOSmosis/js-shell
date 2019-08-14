@@ -1,13 +1,24 @@
-import EventEmitter from 'events';
-import AppRuntime from 'core/AppRuntime';
-import Window, { EVT_BEFORE_CLOSE } from './Window';
+import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
+// import AppRegistration from '../AppRegistration';
+import AppRuntime from '../AppRuntime';
+import Window, { EVT_BEFORE_CLOSE } from 'components/Desktop/Window';
+
+let _windowStackCentral = null;
 
 /**
- * @extends EventEmitter
+ * Window Stack Central manages the entire Window stack.
+ * 
+ * @extends ClientProcess
  */
-class WindowStack extends EventEmitter {
-  constructor() {
-    super();
+class WindowStackCentral extends ClientProcess {
+  constructor(...args) {
+    if (_windowStackCentral) {
+      throw new Error('Another WindowStackCentral already exists!');
+    }
+
+    super(...args);
+
+    this.setTitle('Window Stack Central');
 
     /**
      * An array of Window components.
@@ -17,6 +28,9 @@ class WindowStack extends EventEmitter {
      * @type {Window[]}
      */
     this._stack = [];
+
+    // Register process flag
+    _windowStackCentral = this;
   }
 
   /**
@@ -181,6 +195,23 @@ class WindowStack extends EventEmitter {
       return testWindow !== desktopWindow
     });
   }
+}
+
+//
+
+/**
+ * @return {AppLaunchController} A constructed instance of the
+ * AppLaunchController
+ */
+const getWindowStackCentral = () => {
+  if (!_windowStackCentral) {
+    throw new Error('No Window Stack Central defined');
+  }
+
+  return _windowStackCentral;
 };
 
-export default WindowStack;
+export default WindowStackCentral;
+export {
+  getWindowStackCentral
+};
