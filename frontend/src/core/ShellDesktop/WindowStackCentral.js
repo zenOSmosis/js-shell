@@ -4,7 +4,7 @@
 import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
 import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
-import Window, { EVT_MOUNT, EVT_BEFORE_CLOSE } from 'components/Desktop/Window';
+import Window, { EVT_MOUNT, EVT_BEFORE_CLOSE, EVT_FOCUS } from 'components/Desktop/Window';
 
 let _windowStackCentral = null;
 
@@ -89,34 +89,6 @@ class WindowStackCentral extends ClientProcess {
     }
 
     console.warn('desktopWindow is not in the stack');
-  }
-
-  /**
-   * Focuses a single window.
-   * 
-   * @param {Window} desktopWindow 
-   */
-  focusWindow(desktopWindow) {
-    if (!(desktopWindow instanceof Window)) {
-      throw new Error('desktopWindow is not a Window instance');
-    }
-
-    // Move window to the top of stack
-    const currIdx = this.getWindowStackIndex(desktopWindow);
-    
-    // Temporarily Remove from stack
-    this._stack.splice(currIdx, 1);
-
-    // Push to the end of the stack
-    this._stack.push(desktopWindow);
-
-    // Set focused app runtime in LinkedState
-    const appRuntime = desktopWindow.getAppRuntimeIfExists();
-    if (appRuntime) {
-      appRuntime.focus();
-    }
-    
-    this.renderStack();
   }
 
   bringSubWindowStackToTop(desktopWindows) {
@@ -220,8 +192,6 @@ class WindowStackCentral extends ClientProcess {
    * focused Window, while all others are blurred.
    */
   renderStack() {
-    console.warn('rendering stack', this._stack);
-
     const lenStack = this._stack.length;
 
     for (let i = 0; i < lenStack; i++) {
@@ -232,6 +202,7 @@ class WindowStackCentral extends ClientProcess {
           i,
           stack: this._stack
         });
+
         continue;
       }
     
@@ -246,6 +217,36 @@ class WindowStackCentral extends ClientProcess {
         testWindow.focus();
       }
     }
+  }
+
+  /**
+   * Focuses a single Window.
+   * 
+   * IMPORTANT! This is called internally once the Window emits an EVT_FOCUS event.
+   * 
+   * @param {Window} desktopWindow 
+   */
+  _handleWindowFocus = (desktopWindow) => {
+    if (!(desktopWindow instanceof Window)) {
+      throw new Error('desktopWindow is not a Window instance');
+    }
+
+    // Move window to the top of stack
+    const currIdx = this.getWindowStackIndex(desktopWindow);
+    
+    // Temporarily Remove from stack
+    this._stack.splice(currIdx, 1);
+
+    // Push to the end of the stack
+    this._stack.push(desktopWindow);
+
+    // Set focused app runtime in LinkedState
+    const appRuntime = desktopWindow.getAppRuntimeIfExists();
+    if (appRuntime) {
+      appRuntime.focus();
+    }
+    
+    this.renderStack();
   }
 
   /**
@@ -267,8 +268,12 @@ class WindowStackCentral extends ClientProcess {
       this.incrementNextDefaultPosition();
     });
 
+    desktopWindow.on(EVT_FOCUS, () => {
+      this._handleWindowFocus(desktopWindow);
+    });
+
     // Handle window close cleanup
-    desktopWindow.on(EVT_BEFORE_CLOSE, () => {
+    desktopWindow.once(EVT_BEFORE_CLOSE, () => {
       this._removeWindow(desktopWindow);
     });
   }
