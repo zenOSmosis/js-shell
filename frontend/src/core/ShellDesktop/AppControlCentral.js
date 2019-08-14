@@ -40,7 +40,7 @@ class AppControlCentral extends ClientProcess {
       _appControlCentral = null;
     });
 
-    // Register flag
+    // Register process flag
     _appControlCentral = this;
   }
 
@@ -150,7 +150,7 @@ const getIsAppControlCentralReady = () => {
  */
 const getAppControlCentral = () => {
   if (!_appControlCentral) {
-    throw new Error('No App Launch Controller defined');
+    throw new Error('No App Control Central defined');
   }
 
   return _appControlCentral;

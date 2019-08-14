@@ -11,6 +11,7 @@ import ShellDesktop, {
   ViewportSizeMonitor,
   P2PMonitor,
   AppControlCentral,
+  WindowStackCentral
 } from './ShellDesktop';
 import config from 'config';
 
@@ -41,6 +42,7 @@ const startup = async () => {
       new ViewportFocusMonitor(desktop);
       new ViewportSizeMonitor(desktop);
       new AppControlCentral(desktop);
+      new WindowStackCentral(desktop);
       new P2PMonitor(desktop);
 
       _hasStarted = true;
