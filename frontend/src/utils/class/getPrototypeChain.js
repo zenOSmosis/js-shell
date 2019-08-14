@@ -15,7 +15,7 @@ const getPrototypeChain = (object) => {
       _chain.push(object);
 
       if (Object.getPrototypeOf(prototype) !== object) {  
-        return _getter(prototype, object);
+        return _getter(prototype);
       }
 
     }
