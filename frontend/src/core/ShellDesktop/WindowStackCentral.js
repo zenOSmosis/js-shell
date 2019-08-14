@@ -1,7 +1,7 @@
 import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
 // import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
-import Window, { EVT_BEFORE_CLOSE } from 'components/Desktop/Window';
+import Window, { EVT_MOUNT, EVT_BEFORE_CLOSE } from 'components/Desktop/Window';
 
 let _windowStackCentral = null;
 
@@ -11,6 +11,13 @@ let _windowStackCentral = null;
  * @extends ClientProcess
  */
 class WindowStackCentral extends ClientProcess {
+  // Default offset of where to place the next Window, relevant to the previous
+  // Window
+  static nextDefaultPositionOffset = {
+    x: 20,
+    y: 20
+  };
+
   constructor(...args) {
     if (_windowStackCentral) {
       throw new Error('Another WindowStackCentral already exists!');
@@ -31,6 +38,31 @@ class WindowStackCentral extends ClientProcess {
 
     // Register process flag
     _windowStackCentral = this;
+
+    /**
+     * If no position information is stored for the Window, this value will be
+     * used for the Window position.  It is updated internally per each Window.
+     * 
+     * @type {WindowPosition}
+     */
+    this._nextDefaultPosition = {
+      x: 0,
+      y: 0
+    };
+  }
+
+  incrementNextDefaultPosition() {
+    let { x, y } = this._nextDefaultPosition;
+    const { x: offsetX, y: offsetY } = WindowStackCentral.nextDefaultPositionOffset;
+
+    // Apply offsets
+    x += offsetX;
+    y += offsetY;
+
+    this._nextDefaultPosition = {
+      x,
+      y
+    };
   }
 
   /**
@@ -172,14 +204,18 @@ class WindowStackCentral extends ClientProcess {
       throw new Error('desktopWindow is not a Window instance');
     }
 
+    this._stack.push(desktopWindow);
+
+    // Apply Window position once mounted
+    desktopWindow.once(EVT_MOUNT, () => {
+      desktopWindow.setPosition(this._nextDefaultPosition);
+      this.incrementNextDefaultPosition();
+    });
+
     // Handle window close cleanup
     desktopWindow.on(EVT_BEFORE_CLOSE, () => {
       this._removeWindow(desktopWindow);
     });
-
-    this._stack.push(desktopWindow);
-
-    console.warn('TODO: Implement initial autoposition', this);
   }
 
   /**
