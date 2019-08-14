@@ -30,6 +30,9 @@ const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
 // Though exporting events aren't typical in React components, this provides an
 // alternative interface for external hooks
 
+export const EVT_MOUNT = 'mount';
+export const EVT_BEFORE_UNMOUNT = 'beforeUnmount';
+
 export const EVT_BEFORE_CLOSE = 'beforeClose';
 export const EVT_CLOSE = 'close';
 
@@ -185,13 +188,13 @@ class Window extends Component {
       this.autosetPosition();
       this.autosetSize();
 
-      this.focus();
-
       // TODO: Fix implementation
       // (works on Chrome in Linux; not on Windows)
       await this.animate(EFFECT_CREATE);
 
-      // this.emit(EVT_MOUNT);
+      this.emit(EVT_MOUNT);
+
+      this.focus();
     } catch (exc) {
       throw exc;
     }
@@ -205,8 +208,14 @@ class Window extends Component {
     this.autosetTitle();
   }
 
-  componentWillUnmount() {
-    this.close();
+  async componentWillUnmount() {
+    try {
+      await this.close();
+
+      this.emit(EVT_BEFORE_UNMOUNT);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /*
