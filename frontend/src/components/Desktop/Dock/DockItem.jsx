@@ -1,3 +1,14 @@
+import React, { Component } from 'react';
+import { Menu, MenuDivider, MenuItem, /* SubMenu */ } from 'components/Menu';
+import Image from 'components/Image';
+import { getWindowStackCentral } from 'core/ShellDesktop';
+import { Tooltip } from 'antd';
+import './style.css';
+
+const EVT_CONTEXT_MENU = 'contextmenu';
+const EVT_MOUSEDOWN = 'mousedown';
+const EVT_SCROLL = 'scroll';
+
 //TODO: add preview of window via htm2tocanvas:
 //https://html2canvas.hertzen.com
 
@@ -55,42 +66,24 @@ export default class DockItem extends Component {
     if (menuVisible) this.setState({ menuVisible: false, });
   };
 
-  /*
-  _handleClick = (evt, appRegistration) => {
-    console.debug('click', evt.key, appRegistration);
-    const { key } = evt;
-
-    switch (key) {
-      // case 'launch':
-      //   appRegistration.launchApp();
-      // break;
-
-      // case 'focus':
-      //  appRegistration.focus();
-      // break;
-
-      default:
-        let [key, idx] = evt.key.split('-');
-    
-        // Absorb key so it doesn't trigger a warning
-        isUndefined(key);
-
-        console.debug(idx);
-        
-        // appRegistration.getJoinedAppRuntimes()[idx].focus();
-      break;
-    }
+    const { isMenuVisible } = this.state;
+    if (isMenuVisible) this.setState({ isMenuVisible: false });
   };
-  */
 
-  handleDockItemClick(appRegistration) {
+  _handleDockItemClick = (appRegistration) => {
     const isLaunched = appRegistration.getIsLaunched();
 
     if (!isLaunched) {
       appRegistration.launchApp();
     } else {
-      console.warn('IMPLEMENT APP FOCUS');
+      this._showAllAppRegistrationWindows(appRegistration);
     }
+  }
+
+  _showAllAppRegistrationWindows(appRegistration) {
+    const windowStackCentral = getWindowStackCentral();
+
+    windowStackCentral.bringAppRegistrationWindowsToFront(appRegistration);
   }
 
   render() {
@@ -133,6 +126,7 @@ export default class DockItem extends Component {
                 mode="vertical"
               >
                 {
+                  // Title
                   appRuntimes.map((runtime, idx) => (
                     <MenuItem
                       key={`focus-${idx}`}
@@ -144,11 +138,13 @@ export default class DockItem extends Component {
                 }
 
                 {
+                  // Divider
                   isLaunched &&
                   <MenuDivider />
                 }
 
                 {
+                  // Open
                   allowLaunch &&
                   <MenuItem
                     key={`launch`}
@@ -159,16 +155,26 @@ export default class DockItem extends Component {
                 }
 
                 {
+                  // Show all
+                  // TODO: Display all only if more than one Window
                   isLaunched &&
-                  <MenuItem key={`focus`}>Show all windows</MenuItem>
+                  <MenuItem
+                    key={`focus`}
+                    onClick={evt => { this._showAllAppRegistrationWindows(appRegistration) }}
+                  >
+                    Show all windows
+                  </MenuItem>
                 }
 
                 {
+                  // Divider
                   isLaunched &&
                   <MenuDivider />
                 }
 
                 {
+                  // Close all
+                  // TODO: Display all only if more than one Window
                   isLaunched &&
                   <MenuItem
                     key={`close`}
@@ -184,4 +190,32 @@ export default class DockItem extends Component {
       </div>
     );
   }
+
+  /*
+  _handleMenuClick = (evt, appRegistration) => {
+    console.debug('click', evt.key, appRegistration);
+    const { key } = evt;
+
+    switch (key) {
+      // case 'launch':
+      //   appRegistration.launchApp();
+      // break;
+
+      // case 'focus':
+      //  appRegistration.focus();
+      // break;
+
+      default:
+        let [key, idx] = evt.key.split('-');
+    
+        // Absorb key so it doesn't trigger a warning
+        isUndefined(key);
+
+        console.debug(idx);
+        
+        // appRegistration.getJoinedAppRuntimes()[idx].focus();
+      break;
+    }
+  };
+  */
 }

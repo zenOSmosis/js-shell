@@ -1,5 +1,8 @@
+// TODO: Prevent Windows from being positioned outside of viewable area
+// (or snap back after positioning)
+
 import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
-// import AppRegistration from '../AppRegistration';
+import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
 import Window, { EVT_MOUNT, EVT_BEFORE_CLOSE } from 'components/Desktop/Window';
 
@@ -72,14 +75,20 @@ class WindowStackCentral extends ClientProcess {
     return this._stack;
   }
 
+  /**
+   * 
+   * @param {number} desktopWindow 
+   */
   getWindowStackIndex(desktopWindow) {
-    const currIdx = this._stack.indexOf(desktopWindow);
-    if (currIdx === -1) {
-      console.warn('desktopWindow is not in the stack');
-      return;
+    for (let i = 0; i < this._stack.length; i++) {
+      const testWindow = this._stack[i];
+
+      if (Object.is(testWindow, desktopWindow)) {
+        return i;
+      }
     }
 
-    return currIdx;
+    console.warn('desktopWindow is not in the stack');
   }
 
   /**
@@ -110,8 +119,42 @@ class WindowStackCentral extends ClientProcess {
     this.renderStack();
   }
 
+  bringSubWindowStackToTop(desktopWindows) {
+    // Push them all to the top of the stack, in the current order
+    const lenDesktopWindows = desktopWindows.length;
+    for (let i = 0; i < lenDesktopWindows; i++) {
+      const currWindow = desktopWindows[i];
+
+      const currIdx = this.getWindowStackIndex(currWindow);
+
+      if (currIdx === -1) {
+        continue;
+      }
+      
+      // Temporarily remove from stack
+      this._stack.splice(currIdx, 1);
+      
+      // Push to the end of the stack
+      this._stack.push(currWindow);
+    }
+
+    this.renderStack();
+  }
+
+  bringAppRegistrationWindowsToFront(appRegistration) {
+    if (!(appRegistration instanceof AppRegistration)) {
+      throw new Error('appRegistration is not an AppRegistration instance');
+    }
+
+    // Locate all windows for the desktopWindow AppRuntime
+    const appRegistrationWindows = this.getJoinedAppRegistrationWindows(appRegistration);
+
+    this.bringSubWindowStackToTop(appRegistrationWindows);
+  }
+
   /**
-   * Brings all connected windows to the given AppRuntime to the front.
+   * Brings all connected windows to the given AppRuntime to the top of the
+   * stack, then renders them.
    * 
    * @param {AppRuntime} appRuntime 
    */
@@ -121,49 +164,52 @@ class WindowStackCentral extends ClientProcess {
     }
 
     // Locate all windows for the desktopWindow AppRuntime
-    const appRuntimeWindows = this.getAppRuntimeWindows(appRuntime);
+    const appRuntimeWindows = this.getJoinedAppRuntimeWindows(appRuntime);
 
-    // Push them all to the top of the stack, in the current order
-    const lenAppRuntimeWindows = appRuntimeWindows.length;
-    for (let i = 0; i < lenAppRuntimeWindows; i++) {
-      const currWindow = appRuntimeWindows[i];
-      const currIdx = this.getWindowStackIndex(currWindow);
-      
-      // Temporarily Remove from stack
-      this._stack.splice(currIdx, 1);
-      
-      // Push to the end of the stack
-      this._stack.push(currIdx);
-    }
-
-    this.renderStack();
+    this.bringSubWindowStackToTop(appRuntimeWindows);
   }
 
   /**
+   * Retrieves Window components connected to the given AppRuntime.
    * 
    * @param {AppRuntime} appRuntime
    * @return {Window[]}
    */
-  getAppRuntimeWindows(appRuntime) {
+  getJoinedAppRuntimeWindows(appRuntime) {
     if (!(appRuntime instanceof AppRuntime)) {
       throw new Error('appRuntime is not an AppRuntime instance');
     }
 
-    const lenStack = this._stack.length;
+    const appRegistration = appRuntime.getAppRegistration();
 
-    const appRuntimeWindows = [];
+    return this.getJoinedAppRegistrationWindows(appRegistration);
+  }
 
-    for (let i = 0; i < lenStack; i++) {
-      const desktopWindow = this._stack[i];
+  /**
+   * Retrieves Window components connected to the given AppRegistration.
+   * 
+   * @param {AppRegistration} appRegistration
+   * @return {Window[]}
+   */
+  getJoinedAppRegistrationWindows(appRegistration) {
+    /**
+     * @type {AppRuntime[]}
+     */
+    const joinedAppRuntimes = appRegistration.getJoinedAppRuntimes();
+    const lenJoinedAppRuntimes = joinedAppRuntimes.length;
+
+    const joinedAppRuntimeWindows = [];
     
-      const testAppRuntime = desktopWindow.getAppRuntimeIfExists();
+    for (let i = 0; i < lenJoinedAppRuntimes; i++) {
+      const currAppRuntime = joinedAppRuntimes[i];
+      const currWindow = currAppRuntime.getWindowIfExists();
 
-      if (Object.is(testAppRuntime, appRuntime)) {
-        appRuntimeWindows.push(desktopWindow);
+      if (currWindow) {
+        joinedAppRuntimeWindows.push(currWindow);
       }
     }
 
-    return appRuntimeWindows;
+    return joinedAppRuntimeWindows;
   }
 
   /**
@@ -174,10 +220,20 @@ class WindowStackCentral extends ClientProcess {
    * focused Window, while all others are blurred.
    */
   renderStack() {
+    console.warn('rendering stack', this._stack);
+
     const lenStack = this._stack.length;
 
     for (let i = 0; i < lenStack; i++) {
       const testWindow = this._stack[i];
+
+      if (!testWindow) {
+        console.error('Skipping non-Window @', {
+          i,
+          stack: this._stack
+        });
+        continue;
+      }
     
       // Apply relevant z-indexes (to visually render them)
       testWindow.setZIndex(i);
@@ -229,7 +285,7 @@ class WindowStackCentral extends ClientProcess {
     }
 
     this._stack = this._stack.filter(testWindow => {
-      return testWindow !== desktopWindow
+      return !Object.is(testWindow, desktopWindow);
     });
   }
 }

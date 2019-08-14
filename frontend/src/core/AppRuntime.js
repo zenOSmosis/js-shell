@@ -38,6 +38,11 @@ class AppRuntime extends ClientGUIProcess {
     // this._isFocused = false;
     // this._isMinimized = false;
 
+    /**
+     * @type {Window | null} Shell Desktop Window.
+     */
+    this._window = null;
+
     //TODO: do get set?
     // this.menuItems = runProps.menuItems || [];
 
@@ -139,6 +144,15 @@ class AppRuntime extends ClientGUIProcess {
   }
 
   /**
+   * Retrieves the connected AppRegistration of this AppRuntime instance.
+   * 
+   * @return {AppRegistration}
+   */
+  getAppRegistration() {
+    return this._appRegistration;
+  }
+
+  /**
    * TODO: Document
    * 
    * @return {Menubar}
@@ -147,26 +161,29 @@ class AppRuntime extends ClientGUIProcess {
     return this._menubar;
   }
 
+  setWindow(desktopWindow) {
+    this.setImmediate(() => {
+      this._window = desktopWindow;
+    });
+  }
+
+  getWindowIfExists() {
+    return this._window;
+  }
+
   /**
    * Notifies all listeners that this process is the one the user is
    * interacting with directly.
    * 
-   * TODO: Allow optional focus context so we can have independent channels
-   * of focus.
-   * 
    * Utilizes this.setIsFocused().
    */
   focus() {
-    // this._isMinimized = false;
     this.setIsFocused(true);
   }
 
   /**
    * Notifies all listeners that this process is no longer being interacted
    * with directly.
-   * 
-   * TODO: Allow optional focus context so we can have independent channels
-   * of blur.
    * 
    * Utilizes this.setIsFocused().
    */

@@ -121,8 +121,12 @@ class AppRegistration extends EventEmitter {
   }
 
   async closeAllJoinedApps() {
-    const appControlCentral = getAppControlCentral();
-    return appControlCentral.closeAllAppRuntimesByAppRegistration(this);
+    try {
+      const appControlCentral = getAppControlCentral();
+      return await appControlCentral.closeAllAppRuntimesByAppRegistration(this);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /**
@@ -179,12 +183,17 @@ class AppRegistration extends EventEmitter {
     return this._iconSrc;
   }
 
+  /**
+   * @return {React.Component}
+   */
   getView() {
     return this.view;
   }
 
   /**
-   * Records the Window size in the given AppRuntime instance. 
+   * Records the Window size in the given AppRuntime instance.
+   * 
+   * IMPORTANT! This should only be called by a Window component.
    * 
    * @param {AppRuntime} appRuntime 
    * @param {WindowSize} windowSize
@@ -198,6 +207,8 @@ class AppRegistration extends EventEmitter {
 
   /**
    * Records the Window position in the given AppRuntime instance.
+   * 
+   * IMPORTANT! This should only be called by a Window component.
    * 
    * @param {AppRuntime} appRuntime 
    * @param {WindowPosition} windowPosition 
