@@ -180,14 +180,13 @@ class WindowStackCentral extends ClientProcess {
       const testWindow = this._stack[i];
     
       // Apply relevant z-indexes (to visually render them)
-      testWindow.setZIndex(i * 1000);
-    
+      testWindow.setZIndex(i);
       
       if (i < lenStack - 1) {
         // Blur other windows
         testWindow.blur();
       } else {
-        // Focus hightest window
+        // Focus highest zIndex window
         testWindow.focus();
       }
     }
