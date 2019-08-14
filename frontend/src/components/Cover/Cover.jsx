@@ -25,7 +25,7 @@ export default class Cover extends Component {
     return (
       <Full
         {...propsRest}
-        className={`zd-cover ${!isVisible ? 'hidden' : ''} ${className ? className : ''}`}
+        className={`zd-cover ${!isVisible ? 'no-display' : ''} ${className ? className : ''}`}
       >
         {
           children

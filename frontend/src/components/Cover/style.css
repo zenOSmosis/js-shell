@@ -7,6 +7,6 @@
   overflow: hidden;
 }
 
-.zd-cover.hidden {
+.zd-cover.no-display {
   display: none;
 }
