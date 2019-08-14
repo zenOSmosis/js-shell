@@ -279,6 +279,9 @@ class WindowStackCentral extends ClientProcess {
     desktopWindow.once(EVT_BEFORE_CLOSE, () => {
       this._removeWindow(desktopWindow);
     });
+
+    // Note: this.renderStack() does not need to be called here, as the initial
+    // render is already performed
   }
 
   /**
@@ -295,6 +298,10 @@ class WindowStackCentral extends ClientProcess {
     this._stack = this._stack.filter(testWindow => {
       return !Object.is(testWindow, desktopWindow);
     });
+
+    // Render the updated stack, or there will be problems with auto Window
+    // focusing after closing other Windows, etc.
+    this.renderStack();
   }
 }
 
