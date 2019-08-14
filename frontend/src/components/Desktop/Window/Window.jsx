@@ -354,8 +354,6 @@ class Window extends Component {
 
       this._isFocused = true;
 
-      this._windowStack.focusWindow(this);
-
       this.doCoverIfShould();
 
       this.emit(EVT_FOCUS); 
