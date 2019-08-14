@@ -51,7 +51,7 @@ class AppControlCentral extends ClientProcess {
   async launchAppRegistration(appRegistration) {
     try {
       if (!(appRegistration instanceof AppRegistration)) {
-        throw new Error('appRegistration is not a valid AppRegistration');
+        throw new Error('appRegistration is not an AppRegistration instance');
       }
 
       const appRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
@@ -90,6 +90,10 @@ class AppControlCentral extends ClientProcess {
    */
   async closeAllAppRuntimesByAppRegistration(appRegistration) {
     try {
+      if (!(appRegistration instanceof AppRegistration)) {
+        throw new Error('appRegistration is not an AppRegistration instance');
+      }
+
       const joinedAppRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
       const lenJoinedAppRuntimes = joinedAppRuntimes.length;
 
@@ -106,8 +110,12 @@ class AppControlCentral extends ClientProcess {
    * @return {AppRuntime[]}
    */
   getJoinedAppRuntimesByRegistration(appRegistration) {
+    if (!(appRegistration instanceof AppRegistration)) {
+      throw new Error('appRegistration is not an AppRegistration instance');
+    }
+
     const joins = _appRegistrationRuntimeJoinStack.filter(join => {
-      return join.appRegistration === appRegistration;
+      return Object.is(join.appRegistration, appRegistration);
     });
 
     const appRuntimes = joins.map(join => {
@@ -123,6 +131,10 @@ class AppControlCentral extends ClientProcess {
    * @param {AppRegistration} appRuntime 
    */
   _removeConnectedAppRuntime(appRuntime) {
+    if (!(appRuntime instanceof AppRuntime)) {
+      throw new Error('appRuntime is not an AppRuntime instance');
+    }
+
     _appRegistrationRuntimeJoinStack = _appRegistrationRuntimeJoinStack.filter(testJoin => {
       const { appRuntime: testAppRuntime } = testJoin;
 

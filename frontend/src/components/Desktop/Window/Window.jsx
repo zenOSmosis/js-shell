@@ -106,6 +106,13 @@ class Window extends Component {
     this._events = new EventEmitter();
 
     this._windowStack = getWindowStackCentral();
+    (() => {
+      const { appRuntime } = this.props;
+
+      if (appRuntime) {
+        appRuntime.setWindow(this);
+      }
+    })();
 
     // Apply stack management to the Window
     this._windowStack._addWindow(this);

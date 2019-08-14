@@ -9,11 +9,11 @@ class PersistentStorageLinkedState extends LinkedState {
   constructor(linkedStateScopeName = PERSISTENT_STORAGE_LINKED_STATE_SCOPE_NAME, defaultState = {}) {
     super(linkedStateScopeName, defaultState);
 
-    console.warn('TODO: Detect if original instance and hydrate from persistent storage');
+    console.warn('TODO: Detect if original instance and hydrate from persistent storage', this);
   }
 
   setState(updatedState, onSet = null) {
-    console.warn('TODO: Write updated state to persistent storage', updatedState);
+    // console.warn('TODO: Write updated state to persistent storage', updatedState);
 
     super.setState(updatedState, onSet);
   }
