@@ -27,7 +27,7 @@ import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 
 import beep from 'utils/audio/beep';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
-import getPrototypeChain from 'utils/getPrototypeChain';
+import getPrototypeChain from 'utils/class/getPrototypeChain';
 
 /**
  * @extends ClientJITRuntime
