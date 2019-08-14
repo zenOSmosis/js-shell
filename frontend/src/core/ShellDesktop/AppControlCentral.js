@@ -5,7 +5,7 @@ import AppRuntime from '../AppRuntime';
 let _appControlCentral = null;
 
 /**
- * In-memory, one-to-one join of app registration & app runtime.
+ * In-memory, one-to-one join of an AppRegistration & AppRuntime instance.
  * 
  * @typedef {Object} AppRegistrationRuntimeJoin
  * @property {AppRegistration} appRegistration
@@ -63,16 +63,6 @@ class AppControlCentral extends ClientProcess {
         return false;
       }
 
-      // Set positioning
-      // TODO: Move positioning & sizing functionality to WindowControlCentral
-      // TODO: Fix https://github.com/zenOSmosis/js-shell/issues/11
-      /*
-      if (this._lastPosition.x === 0 && this._lastPosition.y === 0) {
-        this._lastPosition = { x: _createdWindowsCount * 20, y: _createdWindowsCount * 20 }
-      }
-      ++_createdWindowsCount;
-      */
-
       // Create the app process
       const appRuntime = new AppRuntime(appRegistration);
 
@@ -94,6 +84,10 @@ class AppControlCentral extends ClientProcess {
     }
   }
 
+  /**
+   * @param {AppRegistration} appRegistration
+   * @return {Promise<void>} 
+   */
   async closeAllAppRuntimesByAppRegistration(appRegistration) {
     try {
       const joinedAppRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
@@ -102,7 +96,6 @@ class AppControlCentral extends ClientProcess {
       for (let i = 0; i < lenJoinedAppRuntimes; i++) {
         await joinedAppRuntimes[i].close();
       }
-
     } catch (exc) {
       throw exc;
     }
@@ -140,10 +133,6 @@ class AppControlCentral extends ClientProcess {
 
 //
 
-const getIsAppControlCentralReady = () => {
-  return (_appControlCentral ? true : false);
-};
-
 /**
  * @return {AppLaunchController} A constructed instance of the
  * AppLaunchController
@@ -158,6 +147,5 @@ const getAppControlCentral = () => {
 
 export default AppControlCentral;
 export {
-  getIsAppControlCentralReady,
   getAppControlCentral
 };
