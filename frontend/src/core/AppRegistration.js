@@ -203,10 +203,12 @@ class AppRegistration extends EventEmitter {
    * @param {WindowSize} windowSize
    */
   recordAppRuntimeWindowSize(appRuntime, windowSize) {
+    /*
     console.debug('TODO: Record app runtime window size', {
       appRuntime,
       windowSize
     });
+    */
   }
 
   /**
@@ -218,10 +220,12 @@ class AppRegistration extends EventEmitter {
    * @param {WindowPosition} windowPosition 
    */
   recordAppRuntimeWindowPosition(appRuntime, windowPosition) {
+    /*
     console.debug('TODO: Record app runtime window position', {
       appRuntime,
       windowPosition
     });
+    */
   }
 
   /**
