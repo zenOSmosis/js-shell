@@ -1,4 +1,4 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_TICK /*, REMOVE_THIS*/ } from 'process/ClientGUIProcess';
+import ClientGUIProcess, { EVT_BEFORE_EXIT, /* EVT_FIRST_RENDER,*/ EVT_TICK } from 'process/ClientGUIProcess';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
@@ -76,24 +76,6 @@ class AppRuntime extends ClientGUIProcess {
       if (title) {
         this.setTitle(title);
       }
-
-      /*
-      if (position) {
-        this.setInitPosition(position);
-      }
-      */
-
-      /*
-      if (size) {
-        this.setInitSize(size);
-      }
-      */
-
-      /*
-      if (iconSrc) {
-        this.setIconSrc(iconSrc);
-      }
-      */
 
       if (view) {
         this.setView(view);
@@ -217,7 +199,7 @@ class AppRuntime extends ClientGUIProcess {
       this._isFocused = isFocused;
 
       if (isFocused) {
-        // TODO: Possibly mode this handling to AppControlCentral
+        // TODO: Possibly move this handling to AppControlCentral
         _appRuntimeLinkedState.setFocusedAppRuntime(this);
         
         this.emit(EVT_FOCUS);

@@ -1,4 +1,4 @@
-import RegistryLinkedState, { EVT_LINKED_STATE_UPDATE } from './RegistryLinkedState';
+import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -9,11 +9,15 @@ export const APP_RUNTIMES_LINKED_SCOPE_NAME = 'appRuntimes';
 /**
  * A registry of all running applications for the Desktop.
  * 
- * @extends RegistryLinkedState
+ * @extends LinkedState
  */
-class AppRuntimeLinkedState extends RegistryLinkedState {
+class AppRuntimeLinkedState extends LinkedState {
   constructor() {
     super(APP_RUNTIMES_LINKED_SCOPE_NAME, {
+      // All AppRuntime instances
+      appRuntimes: [],
+      
+      // The most recently focused AppRuntime instance
       focusedAppRuntime: null
     });
   }
@@ -26,7 +30,13 @@ class AppRuntimeLinkedState extends RegistryLinkedState {
     }
     */
 
-    super.addRegistration(appRuntime);
+    let { appRuntimes } = this.getState();
+
+    appRuntimes.push(appRuntime);
+
+    this.setState({
+      appRuntimes
+    });
   }
 
   setFocusedAppRuntime(appRuntime) {
@@ -37,16 +47,21 @@ class AppRuntimeLinkedState extends RegistryLinkedState {
 
   // TODO: Document
   removeAppRuntime(appRuntime) {
-    const { focusedAppRuntime } = this.getState();
+    let { appRuntimes, focusedAppRuntime } = this.getState();
 
     // Remove focused app runtime if this is the last runtime
     if (Object.is(focusedAppRuntime, appRuntime)) {
-      this.setState({
-        focusedAppRuntime: null
-      });
+      focusedAppRuntime = null;
     }
 
-    super.removeRegistration(appRuntime);
+    appRuntimes = appRuntimes.filter(testRuntime => {
+      return !Object.is(testRuntime, appRuntime);
+    });
+
+    this.setState({
+      appRuntimes,
+      focusedAppRuntime
+    });
   }
 
   // TODO: Document
