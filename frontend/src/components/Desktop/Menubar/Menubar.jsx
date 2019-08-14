@@ -39,6 +39,10 @@ class Menubar extends Component {
       this.setState({
         menus
       });
+    } else {
+      this.setState({
+        menus: []
+      });
     }
   }
 

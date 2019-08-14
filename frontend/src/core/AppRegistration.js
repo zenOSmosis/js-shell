@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import { getAppControlCentral } from './ShellDesktop/AppControlCentral';
-import { EVT_EXIT /*, EVT_WINDOW_RESIZE*/} from 'process/ClientProcess';
+import { EVT_TICK, EVT_EXIT } from 'process/ClientProcess';
 
 const _appRegistryLinkedState = new AppRegistryLinkedState();
 
@@ -98,6 +98,10 @@ class AppRegistration extends EventEmitter {
         return;
       }
 
+      appRuntime.on(EVT_TICK, () => {
+        _appRegistryLinkedState.emitProcessTick();
+      });
+
       // Important!  Wait until exit (not before exit)
       appRuntime.once(EVT_EXIT, () => {
         const appRuntimes = this.getJoinedAppRuntimes();
@@ -128,7 +132,8 @@ class AppRegistration extends EventEmitter {
    */
   _setIsLaunched(isLaunched) {
     this._isLaunched = isLaunched;
-    _appRegistryLinkedState.emitRegistrationsUpdate();
+
+    _appRegistryLinkedState.emitProcessTick();
   }
 
   /**

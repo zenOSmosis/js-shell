@@ -178,6 +178,8 @@ class WindowStackCentral extends ClientProcess {
     });
 
     this._stack.push(desktopWindow);
+
+    console.warn('TODO: Implement initial autoposition', this);
   }
 
   /**

@@ -1,7 +1,5 @@
 // TODO: Enable optional debugger:  https://github.com/redsunsoft/react-render-visualizer
 
-// TODO: Implement https://www.npmjs.com/package/prop-types
-
 import React, { Component } from 'react';
 import EventEmitter from 'events';
 import WindowHeader from './Header';
@@ -91,6 +89,8 @@ class Window extends Component {
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
     sizeable: PropTypes.bool
+
+    // TODO: PropType additional types
   };
   
   constructor(props) {
@@ -112,14 +112,6 @@ class Window extends Component {
     // Base DOM element for the Window
     this._el = null;
 
-    // TODO: Move this out of constructor
-    // this._app = this.props.app;
-    // TODO: Use contant here
-    /*
-    this._app.on('focus', () => {
-      this.focus();
-    });
-    */
     this._moveableComponent = null;
     this._resizableComponent = null;
     this._paintedComponent = null;
@@ -145,9 +137,6 @@ class Window extends Component {
      * @type {WindowPosition}
      */
     this._restorePosition = {};
-
-    // Add this window to the stack
-    // this._windowStack.push(this);
   }
 
   emit(...args) {
@@ -238,9 +227,9 @@ class Window extends Component {
    * Set init position based on last one
    */
   autosetSize() {
-    const { appRuntime, minHeight, minWidth } = this.props;
-    const initSize = (appRuntime ? appRuntime.getInitSize() : { width: minWidth, height: minHeight });
-    this.resize(initSize.width, initSize.height)
+    const { initialWidth, initialHeight } = this.props;
+    
+    this.resize(initialWidth, initialHeight);
   }
 
   /**
@@ -350,27 +339,9 @@ class Window extends Component {
 
       this._isFocused = true;
 
-      // _desktopLinkedState.setActiveWindow(this);
-      // TODO: Get stack index and apply from this._windowStack
       this._windowStack.focusWindow(this);
 
       this.doCoverIfShould();
-
-      /**
-       * The zIndex is directly applied to the base DOM element, instead of
-       * applied as state, because applying as state causes a re-render which
-       * messes with mouse / touch functionality when selecting another Window.
-       * e.g. if Window A is focused, and then the user tries to resize Window
-       * B, if a re-render has to occur, the user first has to select Window B
-       * before the resize will happen.
-       */
-      /*
-      $(this._el).css({
-        zIndex: _nextZIndex
-      });
-      ++_nextZIndex;
-      */
-      // TODO: Await for any effects to complete
 
       this.emit(EVT_FOCUS); 
     } catch (exc) {
@@ -434,8 +405,6 @@ class Window extends Component {
   async unhide() {
     try {
       this.emit(EVT_BEFORE_UNHIDE);
-
-      // TODO: display: block
   
       // TODO: Handle accordingly
       $(this._el).removeClass(CSS_CLASS_NAME_HIDE);
@@ -451,6 +420,13 @@ class Window extends Component {
   /**
    * Sets the z-order of the Window, visually placing it in front of, or
    * behind, other Windows, based on the highest zIndex.
+   * 
+   * Note: The zIndex is directly applied to the base DOM element, instead of
+   * applied as state, because applying as state causes a re-render which
+   * messes with mouse / touch functionality when selecting another Window.
+   * e.g. if Window A is focused, and then the user tries to resize Window
+   * B, if a re-render has to occur, the user first has to select Window B
+   * before the resize will happen.
    * 
    * @param {number} zIndex Higher is positioned in front of lower.
    */
