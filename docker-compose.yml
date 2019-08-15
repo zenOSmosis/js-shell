@@ -56,35 +56,6 @@ services:
     ports:
       - 3001:3001
 
-  searx:
-    build: ./docker_modules/searx
-    networks:
-      - shell-core-service-network
-    ports:
-      - 3020:8080 # TODO: Close off outside port unless necessary
-   
-  # coturn:
-  #  build: ./docker_modules/docker-coturn
-  #  networks:
-  #   - shell-core-service-network
-  #  volumes:
-  #    - ./docker_modules/docker-coturn:/app # Only during development
-  #  ports:
-  #    - 3478:3478
-  #    - 3478:3478/udp
-  #    - 65435-65535:65435-65535/udp
-
-  # Prototype STT socket w/ Socket.io interface
-  # stt-socket:
-  #  build: ./docker_modules/stt-socket
-  #  networks:
-  #    - shell-core-service-network
-  #  volumes:
-  #    - ./docker_modules/stt-socket:/app # Only during development
-  #    - /tmp/stt-socket:/tmp # Only during development
-  #  ports:
-  #    - 8888:8888
-
   # Note: No direct network access to frontend; proxied through backend
   frontend:
     build: ./frontend
@@ -103,3 +74,32 @@ services:
     command: ["npm", "run", "start"]
     # ports:
     #  - 3000:3000
+
+  searx:
+    build: ./docker_modules/searx
+    networks:
+      - shell-core-service-network
+    ports:
+      - 3020:8080 # TODO: Close off outside port unless necessary
+   
+  # coturn:
+  #  build: ./docker_modules/docker-coturn
+  #  networks:
+  #   - shell-core-service-network
+  #  volumes:
+  #    - ./docker_modules/docker-coturn:/app # Only during development
+  #  ports:
+  #    - 3478:3478
+  #    - 3478:3478/udp
+  #    - 65435-65535:65435-65535/udp
+
+# Prototype STT socket w/ Socket.io interface
+  stt-socket:
+    build: ./docker_modules/stt-socket
+    networks:
+      - shell-core-service-network
+    volumes:
+      - ./docker_modules/stt-socket:/app # Only during development
+      - /tmp/stt-socket:/tmp # Only during development
+    # ports:
+    #  - 8888:8888
