@@ -1,4 +1,4 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, /* EVT_FIRST_RENDER,*/ EVT_TICK } from 'process/ClientGUIProcess';
+import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_TICK } from 'process/ClientGUIProcess';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
@@ -49,27 +49,6 @@ class AppRuntime extends ClientGUIProcess {
     this._menubar = new Menubar(this);
 
     (() => {
-      // TODO: Create AppRuntime.typedef.js
-      /*
-      const {
-        title,
-        iconSrc,
-        view,
-        appCmd,
-        cmd,
-        // position,
-        // size,
-        cmdArguments // TODO: Route these as view props?
-      } = runProps;
-      */
-
-      // this.setCmdArguments(cmdArguments);
-
-      // this._position = position;
-
-      // cmd || appCmd are synonymous of each other
-      // const runCmd = appCmd || cmd;
-
       const appRegistrationProps = appRegistration.getProps();
 
       const {
@@ -106,6 +85,12 @@ class AppRuntime extends ClientGUIProcess {
       // registers w/ ClientProcessLinkedState, however these usages are for
       // different purposes
       _appRuntimeLinkedState.addAppRuntime(this);
+
+      this.once(EVT_FIRST_RENDER, () => {
+        this.setImmediate(() => {
+          this.focus();
+        });
+      });
 
       // Handle exit cleanup
       this.once(EVT_BEFORE_EXIT, () => {        
@@ -188,20 +173,25 @@ class AppRuntime extends ClientGUIProcess {
    * Sets whether or not this process' React.Component has top priority in the
    * UI (e.g. if a Window, this Window would be the currently focused Window).
    * 
-   * Important! Handling of dynamically blurring other instances is not performed
+   * IMPORTANT! Handling of dynamically blurring other instances is not performed
    * directly in here.
    * 
    * @param {boolean} isFocused 
    */
   setIsFocused(isFocused) {
-    // TODO: Remove
-    console.debug(`${isFocused ? 'Focusing' : 'Blurring'} app runtime`, this._title, this);
-
+    // Don't check for existing focused state
     this._isFocused = isFocused;
 
     if (isFocused) {
-      // TODO: Possibly move this handling to AppControlCentral
+      // This allows the Menubar to accurately set on the first render by
+      // waiting until it might have information
       _appRuntimeLinkedState.setFocusedAppRuntime(this);
+
+      // Loop back focusing to Window, if not already set
+      const desktopWindow = this.getWindowIfExists();
+      if (desktopWindow && !desktopWindow.getIsFocused()) {
+        desktopWindow.focus();
+      }
       
       this.emit(EVT_FOCUS);
     } else {
