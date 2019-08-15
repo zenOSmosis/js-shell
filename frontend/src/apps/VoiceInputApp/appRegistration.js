@@ -8,6 +8,8 @@ import config from 'config';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import createAudioWorker from './createAudioWorker';
 
+import VoiceInputLinkedState from './VoiceInputLinkedState';
+
 export default registerApp({
   title: 'Voice Input',
   mainView: (props) => {
@@ -16,43 +18,15 @@ export default registerApp({
     );
   },
   cmd: (appProcess) => {
-    // TODO: The current implementation is not efficient when actively
-    // transcribing and moving / resizing windows at the same time, as each
-    // render update messes with the Window rendering.
-    //
-    // Potential solutions to this are:
-    //    - 1. (ideal) Rework Window component so that state updates don't
-    //    mess with this
-    //    - 2. (easier) Create an inner Component view which handles the rapid
-    //    updates
+    let _voiceInputLinkedState = new VoiceInputLinkedState();
+    appProcess.on('beforeExit', () => {
+      _voiceInputLinkedState.destroy();
+    });
 
     // Keeps view synced to runtime state
     // TODO: Use EVT_STATE_UPDATE
     appProcess.on('stateUpdate', (updatedState) => {
-      appProcess.setViewProps(updatedState);
-    });
-
-    // Set initial state
-    appProcess.setState({
-      isMicRequested: false,
-      isMicOn: false,
-
-      micSampleDuration: null,
-      micSampleLength: null,
-      micNumberOfChannels: null,
-      micSampleRate: null,
-
-      micAudioLevelRMS: null,
-      micAudioLevelDB: null,
-
-      isAudioWorkerOnline: false,
-
-      transcript: null,
-
-      audioWorkerDownsampleRate: null,
-
-      // STT API connection status
-      wsBackendStatus: null
+      _voiceInputLinkedState.setState(updatedState);
     });
 
     let micProcess = null;
@@ -97,9 +71,9 @@ export default registerApp({
                       numberOfChannels,
                       sampleRate: micSampleRate
                     } = micOutputAudioFormat;
-                    
+
                     appProcess.setState({
-                      micSampleDuration: duration,
+                      micSampleDuration: duration ? duration.toFixed(4) : 0,
                       micSampleLength: length,
                       micNumberOfChannels: numberOfChannels,
                       micSampleRate
@@ -152,14 +126,17 @@ export default registerApp({
                         (() => {
                           // Proper-cased status, for display purposes
                           let wsBackendStatus = null;
-                          
+
                           // console.debug('received stdctrl data', data);
                           const { wsConnecting, wsOpen, wsClose, wsError } = data;
+
+                          let isSTTConnected = false;
 
                           if (wsConnecting) {
                             wsBackendStatus = 'Connecting';
                           } else if (wsOpen) {
                             wsBackendStatus = 'Connected';
+                            isSTTConnected = true;
                           } else if (wsClose) {
                             wsBackendStatus = 'Closed';
                           } else if (wsError) {
@@ -169,7 +146,8 @@ export default registerApp({
 
                           if (wsBackendStatus) {
                             appProcess.setState({
-                              wsBackendStatus
+                              wsBackendStatus,
+                              isSTTConnected
                             });
                           }
                         })();

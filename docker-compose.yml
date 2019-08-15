@@ -56,6 +56,25 @@ services:
     ports:
       - 3001:3001
 
+  # Note: No direct network access to frontend; proxied through backend
+  frontend:
+    build: ./frontend
+    volumes:
+      # Backend is mapped w/ frontend because of shared object in utils/bind
+      # jh: Not yet sure how this will work in production environment
+      # - ./frontend:/shell/frontend # Only during development
+      # - ./backend:/shell/backend # Only during development
+      # - ./cli:/shell/cli # Only during development
+      - ./:/shell # Only during development
+    environment:
+      - NODE_ENV=development
+      # - HTTPS=true
+    networks:
+      - shell-core-service-network
+    command: ["npm", "run", "start"]
+    # ports:
+    #  - 3000:3000
+
   searx:
     build: ./docker_modules/searx
     networks:
@@ -82,24 +101,5 @@ services:
   #  volumes:
   #    - ./docker_modules/stt-socket:/app # Only during development
   #    - /tmp/stt-socket:/tmp # Only during development
-  #  ports:
+  #   ports:
   #    - 8888:8888
-
-  # Note: No direct network access to frontend; proxied through backend
-  frontend:
-    build: ./frontend
-    volumes:
-      # Backend is mapped w/ frontend because of shared object in utils/bind
-      # jh: Not yet sure how this will work in production environment
-      # - ./frontend:/shell/frontend # Only during development
-      # - ./backend:/shell/backend # Only during development
-      # - ./cli:/shell/cli # Only during development
-      - ./:/shell # Only during development
-    environment:
-      - NODE_ENV=development
-      # - HTTPS=true
-    networks:
-      - shell-core-service-network
-    command: ["npm", "run", "start"]
-    # ports:
-    #  - 3000:3000

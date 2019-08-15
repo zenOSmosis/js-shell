@@ -16,19 +16,8 @@ import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
-// import './SettingsApp';
 import './SourceCodeApp';
 import './TextEditorApp';
 import './TerminalApp';
 // import './DocsApp';
-import './CalculatorApp';
 // import './SettingsApp';
-import './SourceCodeApp';
-import './TextEditorApp';
-
-// Non-ported apps
-
-
-// import './WindowManagerApp';
-// import './AboutApp';
-// import './ProcessTesterApp';
