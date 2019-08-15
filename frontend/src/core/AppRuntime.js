@@ -101,13 +101,6 @@ class AppRuntime extends ClientGUIProcess {
    */
   async _init() {
     try {
-      /*
-      this.on(EVT_FIRST_RENDER, () => {
-        // Automatically focus on first render
-        this.focus();
-      });
-      */
-
       // Register w/ DesktopLinkedState
       // Note (as of the time of writing) the underlying ClientProcess also
       // registers w/ ClientProcessLinkedState, however these usages are for
@@ -187,11 +180,9 @@ class AppRuntime extends ClientGUIProcess {
    * 
    * Utilizes this.setIsFocused().
    */
-  /*
   blur() {
     this.setIsFocused(false);
   }
-  */
 
   /**
    * Sets whether or not this process' React.Component has top priority in the
@@ -205,12 +196,6 @@ class AppRuntime extends ClientGUIProcess {
   setIsFocused(isFocused) {
     // TODO: Remove
     console.debug(`${isFocused ? 'Focusing' : 'Blurring'} app runtime`, this._title, this);
-
-    // Ignore duplicate
-    if (this._isFocused === isFocused) {
-      console.warn('isFocused is already set to:', isFocused);
-      return;
-    }
 
     this._isFocused = isFocused;
 
