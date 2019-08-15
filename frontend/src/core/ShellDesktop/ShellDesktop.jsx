@@ -4,12 +4,14 @@ import App from 'App';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
-import ClientGUIProcess, { EVT_BEFORE_EXIT } from 'process/ClientGUIProcess';
+import AppRuntime from '../AppRuntime';
+import { EVT_BEFORE_EXIT } from 'process/ClientGUIProcess';
 import { EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import SocketLinkedState from 'state/SocketLinkedState';
 
 import config from 'config';
+import AppRegistration from '../AppRegistration';
 
 const { DOM_ROOT_ID } = config;
 
@@ -22,15 +24,28 @@ let _shellDesktopProcess = null;
  * Shell Desktop GUI Process mounts the root component of the application to
  * the DOM, and wraps it with a ClientGUIProcess.
  * 
- * @extends ClientGUIProcess
+ * @extends AppRuntime
  */
-class ShellDesktop extends ClientGUIProcess {
-  constructor(...args) {
+class ShellDesktop extends AppRuntime {
+  constructor() {
     if (_shellDesktopProcess) {
       throw new Error('Cannot have more than one ShellDesktop process');
     }
 
-    super(...args);
+    const shellRegistration = (() => {
+      const shellRegistration = new AppRegistration({
+        title: 'Shell Desktop',
+        mainView: () => {
+          return (
+            <App />
+          );
+        }
+      });
+
+      return shellRegistration;
+    })();
+
+    super(shellRegistration);
 
     this._desktopLinkedState = null;
     this._socketLinkedState = null;
@@ -61,12 +76,7 @@ class ShellDesktop extends ClientGUIProcess {
         this._socketLinkedState = null;
       });
 
-      this.setTitle('Shell Desktop');
-
       const rootEl = document.getElementById(DOM_ROOT_ID);
-
-      // Mounts the App component to the base ReactComponent
-      this.setView(App);
 
       const ReactComponent = this.getReactComponent();
       

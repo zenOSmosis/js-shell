@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getShellDesktopProcess } from 'core/ShellDesktop';
 import ClientProcessLinkedState from 'state/ClientProcessLinkedState';
 import hocConnect from 'state/hocConnect';
 import StackingContext from 'components/StackingContext';
@@ -51,13 +52,22 @@ class GUIProcessRenderProvider extends Component {
 const ConnectedGUIProcessRenderProvider = (() => {
   // A cache of AppRuntime process IDs
   let _prevPIDs = [];
+  let _shellGUIProcessID = null;
 
   return hocConnect(GUIProcessRenderProvider, ClientProcessLinkedState, (updatedState) => {
+    if (!_shellGUIProcessID) {
+      const shellGUIProcess = getShellDesktopProcess();
+      _shellGUIProcessID = shellGUIProcess.getPID();
+    }
+
     const { guiProcesses } = updatedState;
 
     if (typeof guiProcesses !== 'undefined') {
+
       const appRuntimePIDs = guiProcesses.map(testProc => {
         return testProc.getPID();
+      }).filter(testPID => {
+        return testPID !== _shellGUIProcessID
       });
 
       // TODO: Filter out PID of Shell Desktop
