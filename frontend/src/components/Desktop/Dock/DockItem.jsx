@@ -21,13 +21,6 @@ const EVT_SCROLL = 'scroll';
   ;
  */
 
-
-import React, { Component } from 'react';
-import { Menu,  MenuDivider,  MenuItem,  SubMenu  } from 'components/Menu';
-import Image from 'components/Image';
-import { Tooltip } from 'antd';
-import './style.css';
-
 export default class DockItem extends Component {
   state = {
     isMenuVisible: false,
@@ -65,11 +58,7 @@ export default class DockItem extends Component {
     const { menuVisible } = this.state;
     if (menuVisible) this.setState({ menuVisible: false, });
   };
-
-    const { isMenuVisible } = this.state;
-    if (isMenuVisible) this.setState({ isMenuVisible: false });
-  };
-
+  
   _handleDockItemClick = (appRegistration) => {
     const isLaunched = appRegistration.getIsLaunched();
 

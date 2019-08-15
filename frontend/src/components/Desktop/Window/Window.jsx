@@ -704,14 +704,11 @@ class Window extends Component {
 
     this.emit(EVT_RESIZE);
   };
-  */
 
   _handleResizeEnd = (evt) => {
     this._isResizing = false;
     
     this.doCoverIfShould();
-  }
-
   };
 
   /**

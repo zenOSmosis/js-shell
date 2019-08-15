@@ -1,12 +1,51 @@
 import React, { Component } from 'react';
-import Window from 'components/Desktop/Window';
-import { XTerm, Terminal } from "react-xterm";
-import "react-xterm/node_modules/xterm/dist/xterm.css"
+import Window, { EVT_RESIZE } from 'components/Desktop/Window';
+import XTerm from 'components/XTerm';
+// import { XTerm, /* Terminal */ } from 'react-xterm';
+// import 'react-xterm/node_modules/xterm/dist/xterm.css';
+
+import socket from 'utils/socket.io';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
+import { SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL } from 'shared/socketAPI/socketAPIRoutes';
+import SocketChannel from 'shared/socketAPI/SocketChannel';
 
 export default class TerminalWindow extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      socketChannelID: null
+    };
+
+    this._window = null;
+    this._xterm = null;
+    this._socketChannel = null;
+
+    this._initSocketChannel();
+  }
+
+  async _initSocketChannel() {
+    try {
+      const { socketChannelID } = await socketAPIQuery(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL);
+
+      this._socketChannel = new SocketChannel(socket, socketChannelID);
+
+      this.setState({
+        socketChannelID
+      });
+
+      this._connectTerminal();
+    } catch (exc) {
+      throw exc;
+    }
+  }
 
   componentDidMount() {
-    connectTerminal(this._xterm)
+    // this._connectTerminal();
+
+    this._window.on(EVT_RESIZE, () => {
+      this._xterm.fit();
+    });
   }
 
   componentWillUnmount() {
@@ -34,12 +73,14 @@ export default class TerminalWindow extends Component {
 
   render() {
     const { ...propsRest } = this.props;
+    const { socketChannelID } = this.state;
     return (
       <Window
         {...propsRest}
-        minWidth="740"
-        minHeight="440"
-        sizeable= "false"
+        // minWidth="740"
+        // minHeight="440"
+        // sizeable= "false"=
+        ref={window => this._window = window}
       >
         {
           socketChannelID &&
@@ -54,6 +95,4 @@ export default class TerminalWindow extends Component {
       </Window>
     );
   }
-
-  
 }
