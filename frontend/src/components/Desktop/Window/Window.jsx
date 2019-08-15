@@ -279,24 +279,6 @@ class Window extends Component {
   }
 
   /**
-   * Automatically sets Window title based on configuration.
-   */
-  autosetTitle() {
-    const { title: existingTitle } = this.state;
-    const { appRuntime, title: propsTitle } = this.props;
-    
-    const newTitle = (
-      propsTitle ?
-      propsTitle : appRuntime ?
-      appRuntime.getTitle() : DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE
-    );
-    
-    if (newTitle !== existingTitle) {
-      this.setTitle(newTitle);
-    }
-  }
-
-  /**
    * Sets the Window title.
    * 
    * @param {string} title 
