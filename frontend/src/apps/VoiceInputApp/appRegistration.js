@@ -23,51 +23,11 @@ export default registerApp({
       _voiceInputLinkedState.destroy();
     });
 
-
-    // TODO: The current implementation is not efficient when actively
-    // transcribing and moving / resizing windows at the same time, as each
-    // render update messes with the Window rendering.
-    //
-    // Potential solutions to this are:
-    //    - 1. (ideal) Rework Window component so that state updates don't
-    //    mess with this
-    //    - 2. (easier) Create an inner Component view which handles the rapid
-    //    updates
-
     // Keeps view synced to runtime state
     // TODO: Use EVT_STATE_UPDATE
     appProcess.on('stateUpdate', (updatedState) => {
-      // TODO / IMPORTANT: Don't set all props directly to view, as it affects
-      // the ability to resize and move the Window w/o interruption during
-      // transcription
       _voiceInputLinkedState.setState(updatedState);
     });
-
-    // Set initial state
-    /*
-    appProcess.setState({
-      isMicRequested: false,
-      isMicOn: false,
-
-      micSampleDuration: null,
-      micSampleLength: null,
-      micNumberOfChannels: null,
-      micSampleRate: null,
-
-      micAudioLevelRMS: null,
-      micAudioLevelDB: null,
-
-      isAudioWorkerOnline: false,
-
-      transcript: null,
-
-      audioWorkerDownsampleRate: null,
-      isSTTConnected: false,
-
-      // STT API connection status
-      wsBackendStatus: null
-    });
-    */
 
     let micProcess = null;
     let audioWorker = null;
@@ -111,7 +71,7 @@ export default registerApp({
                       numberOfChannels,
                       sampleRate: micSampleRate
                     } = micOutputAudioFormat;
-                    
+
                     appProcess.setState({
                       micSampleDuration: duration ? duration.toFixed(4) : 0,
                       micSampleLength: length,
@@ -166,7 +126,7 @@ export default registerApp({
                         (() => {
                           // Proper-cased status, for display purposes
                           let wsBackendStatus = null;
-                          
+
                           // console.debug('received stdctrl data', data);
                           const { wsConnecting, wsOpen, wsClose, wsError } = data;
 
