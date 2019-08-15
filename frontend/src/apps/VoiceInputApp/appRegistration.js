@@ -29,6 +29,9 @@ export default registerApp({
     // Keeps view synced to runtime state
     // TODO: Use EVT_STATE_UPDATE
     appProcess.on('stateUpdate', (updatedState) => {
+      // TODO / IMPORTANT: Don't set all props directly to view, as it affects
+      // the ability to resize and move the Window w/o interruption during
+      // transcription
       appProcess.setViewProps(updatedState);
     });
 
