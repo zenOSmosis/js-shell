@@ -7,8 +7,7 @@ import AppRuntime from '../AppRuntime';
 import Window, {
   EVT_MOUNT,
   EVT_BEFORE_CLOSE,
-  EVT_FOCUS,
-  EVT_BLUR
+  EVT_FOCUS
 } from 'components/Desktop/Window';
 
 let _windowStackCentral = null;
@@ -232,7 +231,7 @@ class WindowStackCentral extends ClientProcess {
    * 
    * @param {Window} desktopWindow 
    */
-  _handleWindowFocusChange = (desktopWindow) => {
+  _handleWindowFocus = (desktopWindow) => {
     if (!(desktopWindow instanceof Window)) {
       throw new Error('desktopWindow is not a Window instance');
     }
@@ -265,23 +264,19 @@ class WindowStackCentral extends ClientProcess {
     desktopWindow.once(EVT_MOUNT, () => {
       desktopWindow.setPosition(this._nextDefaultPosition);
       this.incrementNextDefaultPosition();
+
+      // Render w/ zIndexes
+      this.renderStack();
     });
 
     desktopWindow.on(EVT_FOCUS, () => {
-      this._handleWindowFocusChange(desktopWindow);
-    });
-
-    desktopWindow.on(EVT_BLUR, () => {
-      this._handleWindowFocusChange(desktopWindow);
+      this._handleWindowFocus(desktopWindow);
     });
 
     // Handle window close cleanup
     desktopWindow.once(EVT_BEFORE_CLOSE, () => {
       this._removeWindow(desktopWindow);
     });
-
-    // Note: this.renderStack() does not need to be called here, as the initial
-    // render is already performed
   }
 
   /**
