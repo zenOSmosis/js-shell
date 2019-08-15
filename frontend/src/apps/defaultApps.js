@@ -11,24 +11,13 @@ import './FilesApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
 import './P2PConnectionsApp';
-// import './VoiceInputApp';
+import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
-// import './SettingsApp';
 import './SourceCodeApp';
 import './TextEditorApp';
 import './TerminalApp';
 // import './DocsApp';
-import './CalculatorApp';
 // import './SettingsApp';
-import './SourceCodeApp';
-import './TextEditorApp';
-
-// Non-ported apps
-
-
-// import './WindowManagerApp';
-// import './AboutApp';
-// import './ProcessTesterApp';

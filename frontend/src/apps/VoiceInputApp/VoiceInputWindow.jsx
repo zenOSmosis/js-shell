@@ -6,19 +6,21 @@ import AnalogVUMeter from 'components/AnalogVUMeter';
 import { Section } from 'components/Layout';
 
 export default class VoiceInputWindow extends Component {
+  _appRuntime = null;
+
   componentDidMount() {
-    const { app } = this.props;
-    this._app = app;
+    const { appRuntime } = this.props;
+    this._appRuntime = appRuntime;
   }
 
   startMicrophone() {
-    this._app.setState({
+    this._appRuntime.setState({
       isMicRequested: true
     });
   }
 
   stopMicrophone() {
-    this._app.setState({
+    this._appRuntime.setState({
       isMicRequested: false
     });
   }
