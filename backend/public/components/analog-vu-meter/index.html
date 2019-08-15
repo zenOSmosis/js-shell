@@ -175,8 +175,7 @@
         if (typeof vuLevel !== 'undefined') {
           window.requestAnimationFrame(function () {
             // This algorithm is not correct, just for a proof-of-concept
-
-            let degRotation = (vuLevel + 20);
+            let degRotation = (vuLevel);
 
             // Min bottom-out
             if (degRotation < 0) {
@@ -187,6 +186,8 @@
             if (degRotation > 90) {
               degRotation = 90;
             }
+
+            degRotation = Math.round(degRotation);
 
             needle.style.transform = `rotate(${degRotation}deg)`;
           });

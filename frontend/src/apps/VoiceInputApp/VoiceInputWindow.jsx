@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import { Row, Column } from 'components/RowColumn';
-import AnalogVUMeter from 'components/AnalogVUMeter';
 import { Section } from 'components/Layout';
+import VoiceInputLinkedState from './VoiceInputLinkedState';
+import hocConnect from 'state/hocConnect';
+import ConnectedAnalogVUMeter from './subComponents/ConnectedAnalogVUMeter';
+import ConnectedMicAudioDetail from './subComponents/ConnectedMicAudioDetail';
+import ConnectedTranscript from './subComponents/ConnectedTranscript';
 
-export default class VoiceInputWindow extends Component {
+class VoiceInputWindow extends Component {
   _appRuntime = null;
 
   componentDidMount() {
@@ -58,6 +62,7 @@ export default class VoiceInputWindow extends Component {
       isMicRequested,
       isMicOn,
 
+      /*
       micSampleDuration,
       micSampleLength,
       micNumberOfChannels,
@@ -69,9 +74,12 @@ export default class VoiceInputWindow extends Component {
       transcript,
 
       isAudioWorkerOnline,
-      wsBackendStatus,
 
       audioWorkerDownsampleRate,
+
+      wsBackendStatus,
+      isSTTConnected,
+      */
 
       ...propsRest
     } = this.props;
@@ -112,20 +120,14 @@ export default class VoiceInputWindow extends Component {
             <Column>
               <Row>
                 <Column>
-                  <AnalogVUMeter vuLevel={micAudioLevelRMS} />
+                  <ConnectedAnalogVUMeter />
                 </Column>
               </Row>
 
               <Row>
                 <Column style={{ textAlign: 'left' }}>
                   <Section>
-                    Transcript:<br />
-                    <div style={{ width: '100%', backgroundColor: '#fff', color: '#000', fontWeight: 'bold', textAlign: 'left' }}>
-                      &nbsp;
-                      {
-                        transcript
-                      }
-                    </div>
+                    <ConnectedTranscript />
                   </Section>
                 </Column>
               </Row>
@@ -133,104 +135,24 @@ export default class VoiceInputWindow extends Component {
               <Row style={{ height: '100%' }}>
                 <Column>
                   <Center>
-                    <div>
-                      <div>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td>
-                                STT API connection status
-                              </td>
-                              <td>
-                                {wsBackendStatus}
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>
-                                Mic sample duration
-                              </td>
-                              <td>
-                                {
-                                  micSampleDuration &&
-                                  <span>{micSampleDuration} seconds</span>
-                                }
-                              </td>
-                            </tr>
-                            
-                            <tr>
-                              <td>
-                                Mic sample length
-                              </td>
-                              <td>
-                                {micSampleLength} bytes
-                              </td>
-                            </tr>
-                            
-                            <tr>
-                              <td>
-                                Mic sample rate
-                              </td>
-                              <td>
-                                {micSampleRate}
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>
-                                Mic channels
-                              </td>
-                              <td>
-                                {micNumberOfChannels}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                Audio level RMS
-                              </td>
-                              <td>
-                                {micAudioLevelRMS}
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>
-                                Audio level DB
-                              </td>
-                              <td>
-                                {
-                                  micAudioLevelDB &&
-                                  <span>{micAudioLevelDB} db</span>
-                                }
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>
-                                Downsample Rate
-                              </td>
-                              <td>
-                                {audioWorkerDownsampleRate}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                    </div>
+                    <ConnectedMicAudioDetail />
                   </Center>
                 </Column>
               </Row>
 
-              <Row>
-                <Column>
-                  <div style={{ overflow: 'auto' }}>
-                    <div style={{ float: 'right' }}>
-                      Mic time: 00:00:00
-                  </div>
-                  </div>
-                </Column>
-              </Row>
+              {
+                /*
+                 <Row>
+                  <Column>
+                    <div style={{ overflow: 'auto' }}>
+                      <div style={{ float: 'right' }}>
+                        Mic time: 00:00:00
+                    </div>
+                    </div>
+                  </Column>
+                </Row>
+                */
+              }
 
             </Column>
           </Row>
@@ -239,3 +161,22 @@ export default class VoiceInputWindow extends Component {
     );
   }
 }
+
+const MicConnectedVoiceInputWindow = hocConnect(VoiceInputWindow, VoiceInputLinkedState, (updatedState) => {
+  const { isMicRequested, isMicOn } = updatedState;
+
+  const filteredState = {};
+
+  if (typeof isMicRequested !== 'undefined') {
+    filteredState.isMicRequested = isMicRequested;
+  }
+
+  if (typeof isMicOn !== 'undefined') {
+    filteredState.isMicOn = isMicOn;
+  }
+
+  return filteredState;
+});
+
+
+export default MicConnectedVoiceInputWindow;
