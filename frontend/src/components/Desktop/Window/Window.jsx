@@ -12,8 +12,10 @@ import StackingContext from 'components/StackingContext';
 import './style.css';
 import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
-import animate from 'utils/animate'; // TODO: Debug why this doesn't work on Windows
+
+// TODO: Debug why this doesn't work on Windows
+// import animate, { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
+
 import PropTypes from 'prop-types';
 import { getWindowStackCentral } from 'core/ShellDesktop/'; // TODO: Import from ShellDesktop
 
@@ -22,9 +24,9 @@ import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
 const { DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE, DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
-const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
-const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
-const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
+// const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
+// const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
+// const EFFECT_RESTORE = ANIMATE_ZOOM_IN;
 
 // Begin exported events ***********
 //
@@ -198,7 +200,7 @@ class Window extends Component {
 
       // TODO: Fix implementation
       // (works on Chrome in Linux; not on Windows)
-      await this.animate(EFFECT_CREATE);
+      // await this.animate(EFFECT_CREATE);
 
       this.emit(EVT_MOUNT);
 
@@ -477,7 +479,7 @@ class Window extends Component {
       // this.emit(EVT_BEFORE_MINIMIZE);
   
       if (!this._isMinimized) {
-        await this.animate(EFFECT_MINIMIZE);
+        // await this.animate(EFFECT_MINIMIZE);
 
         // IMPORANT! Set boolean flag before any resize operations take place,
         // so the sizes & positions are not recorded
@@ -514,7 +516,7 @@ class Window extends Component {
 
       console.warn('TODO: Apply restore position and size');
 
-      await this.animate(EFFECT_RESTORE);
+      // await this.animate(EFFECT_RESTORE);
 
       // this.emit(EVT_RESTORE); 
     } catch (exc) {
@@ -577,6 +579,7 @@ class Window extends Component {
    * https://daneden.github.io/animate.css/
    * @return {Promise<void>}
    */
+  /*
   async animate(effect) {
     try {
       await animate(this._el, effect);
@@ -584,6 +587,7 @@ class Window extends Component {
       throw exc;
     }
   }
+  */
 
   /**
    * @return {WindowPosition}
