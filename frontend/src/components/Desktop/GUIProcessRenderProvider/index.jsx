@@ -50,14 +50,14 @@ class GUIProcessRenderProvider extends Component {
 
 const ConnectedGUIProcessRenderProvider = (() => {
   // A cache of AppRuntime process IDs
-  let prevPIDs = [];
+  let _prevPIDs = [];
 
   return hocConnect(GUIProcessRenderProvider, ClientProcessLinkedState, (updatedState) => {
     const { guiProcesses } = updatedState;
 
     if (typeof guiProcesses !== 'undefined') {
-      const appRuntimePIDs = guiProcesses.map(proc => {
-        return proc.getPID();
+      const appRuntimePIDs = guiProcesses.map(testProc => {
+        return testProc.getPID();
       });
 
       // TODO: Filter out PID of Shell Desktop
@@ -65,8 +65,8 @@ const ConnectedGUIProcessRenderProvider = (() => {
       // Determine if the previous AppRuntime IDs are the same as the current
       // in order to prevent unnecessary render cycles
       // @see https://www.npmjs.com/package/equals
-      if (!equals(prevPIDs, appRuntimePIDs)) {
-        prevPIDs = appRuntimePIDs;
+      if (!equals(_prevPIDs, appRuntimePIDs)) {
+        _prevPIDs = appRuntimePIDs;
 
         return {
           guiProcesses
