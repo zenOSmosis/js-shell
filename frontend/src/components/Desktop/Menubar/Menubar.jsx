@@ -33,13 +33,16 @@ class Menubar extends Component {
 
     const { focusedAppRuntime } = this.props;
     if (focusedAppRuntime) {
-      const menubar = focusedAppRuntime.getMenubar();
+      // Wait until next tick to set Menubar, as the data may change before then
+      setTimeout(() => {
+        const menubar = focusedAppRuntime.getMenubar();
 
-      const menus = menubar.getMenus();
-
-      this.setState({
-        menus
-      });
+        const menus = menubar.getMenus();
+  
+        this.setState({
+          menus
+        });
+      }, 1);
     } else {
       // TODO: Temporary fix; don't leave like this
       this.setState({

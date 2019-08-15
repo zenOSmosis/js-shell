@@ -241,9 +241,9 @@ class WindowStackCentral extends ClientProcess {
     // Set focused app runtime in LinkedState
     const appRuntime = desktopWindow.getAppRuntimeIfExists();
     if (appRuntime) {
-      const isFocused = desktopWindow.getIsFocused();
+      // const isFocused = desktopWindow.getIsFocused();
 
-      appRuntime.setIsFocused(isFocused);
+      appRuntime.setIsFocused(true);
     }
   }
 
