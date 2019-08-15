@@ -40,8 +40,7 @@ app.use(express.json());
     // console.log(req.session);
     next();
   });
-
-
+  
 })();
 
 // Socket.io
@@ -118,9 +117,6 @@ app.use(express.static(PATH_PUBLIC));
 const start = () => {
   console.log(`Starting Express Server on *:${HTTP_LISTEN_PORT}`);
 
-  /*app.listen(3002, ()=>{
-    console.log('app listening')
-  })*/
   // WARNING: app.listen(80) will NOT work here
   // @see https://socket.io/docs/
   server.listen(HTTP_LISTEN_PORT, () => {

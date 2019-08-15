@@ -206,12 +206,6 @@ class AppRuntime extends ClientGUIProcess {
     // TODO: Remove
     console.debug(`${isFocused ? 'Focusing' : 'Blurring'} app runtime`, this._title, this);
 
-    // Ignore duplicate
-    if (this._isFocused === isFocused) {
-      console.warn('isFocused is already set to:', isFocused);
-      return;
-    }
-
     this._isFocused = isFocused;
 
     if (isFocused) {

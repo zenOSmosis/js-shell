@@ -16,6 +16,7 @@ import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
+// import './SettingsApp';
 import './SourceCodeApp';
 import './TextEditorApp';
 import './TerminalApp';

@@ -149,12 +149,16 @@ class AppRegistration extends EventEmitter {
     return this._isLaunched;
   }
 
+  /**
+   * @return {boolean} Whether multiple instances of this View (or Window) are
+   * allowed.
+   */
   getAllowMultipleWindows() {
     return this._allowMultipleWindows;
   }
-  
+
   /**
-   * Retrieves the launched app's process runtime, if available.
+   * Retrieves the launched app's process runtimes, if available.
    * 
    * @return {AppRuntime[]}
    */

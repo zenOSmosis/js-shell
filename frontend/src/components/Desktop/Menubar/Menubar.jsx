@@ -29,7 +29,7 @@ class Menubar extends Component {
     }
 
     // TODO: Handle accordingly
-    console.debug('Menubar component updated', this.props);
+    // console.debug('Menubar component updated', this.props);
 
     const { focusedAppRuntime } = this.props;
     if (focusedAppRuntime) {
@@ -41,8 +41,9 @@ class Menubar extends Component {
         menus
       });
     } else {
+      // TODO: Temporary fix; don't leave like this
       this.setState({
-        menus: [new MenubarSystemMenu(this)]
+        menus: []
       });
     }
   }

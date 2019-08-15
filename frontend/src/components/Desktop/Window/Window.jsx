@@ -1,6 +1,7 @@
 // TODO: Enable optional debugger:  https://github.com/redsunsoft/react-render-visualizer
 
 import React, { Component } from 'react';
+import EventEmitter from 'events';
 import WindowHeader from './Header';
 import ContextMenu from 'components/ContextMenu';
 import Cover from 'components/Cover';
@@ -256,7 +257,7 @@ class Window extends Component {
    * @param {number} height 
    */
   resize(width, height) {
-    this._resizableComponent.resize(width, height)
+    this._resizableComponent.resize(width, height);
   }
 
   /**
@@ -646,7 +647,7 @@ class Window extends Component {
     this._isActiveHeaderGesture = true;
 
     this.doCoverIfShould();
-  }
+  };
 
   /**
    * Internally called when the Window Header has stopped detecting a gesture
@@ -658,13 +659,13 @@ class Window extends Component {
     this._isActiveHeaderGesture = false;
 
     this.doCoverIfShould();
-  }
+  };
 
   _handleResizeStart = (evt) => {
     this._isResizing = true;
 
     this.doCoverIfShould();
-  }
+  };
 
   /**
    * Called when the <DragResizable /> layer is being resized.
@@ -707,7 +708,7 @@ class Window extends Component {
 
   _handleResizeEnd = (evt) => {
     this._isResizing = false;
-    
+
     this.doCoverIfShould();
   };
 
@@ -794,7 +795,7 @@ class Window extends Component {
             <DragResizable
               ref={c => this._resizableComponent = c}
               onResizeStart={this._handleResizeStart}
-              // onResize={this._handleResize}
+              onResize={this._handleResize}
               onResizeEnd={this._handleResizeEnd}
               moveableComponent={this._moveableComponent}
               minWidth={minWidth}
@@ -917,7 +918,7 @@ class Window extends Component {
       if (appRuntime) {
         await appRuntime.close();
       }
-  
+
       this._isClosed = true;
 
       this.emit(EVT_CLOSE);

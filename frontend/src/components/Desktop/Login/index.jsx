@@ -11,11 +11,11 @@ const fail_effect = ANIMATE_SHAKE;
 const ok_effect = ANIMATE_FADE_OUT;
 
 class Login extends Component {
-  state={
-    username :'',
+  state = {
+    username: '',
     password: ''
-  }
- 
+  };
+
   constructor(props = {}) {
     super();
 
@@ -27,12 +27,12 @@ class Login extends Component {
     evt.preventDefault();
     const res = await fetch(`${config.HOST_REST_URI}/auth/login`, {
       method: 'post',
-      headers: {'Content-Type':'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state)
     });
     const ret = await res.json();
     console.log(ret)
-    if(ret.ok) {
+    if (ret.ok) {
       this._desktopLinkedState.setIsLogged(true);
       this.animate(this._form, ok_effect);
     } else {
@@ -54,7 +54,7 @@ class Login extends Component {
       throw exc;
     }
   }
-  
+
   render() {
     return (
       <div ref={ref => this._form = ref} >
@@ -62,11 +62,11 @@ class Login extends Component {
           <img src={`${config.HOST_ICON_URI_PREFIX}user/user.jpg`} alt="user logo" class="avatar" />
           <h2>JS Shell</h2>
           <form onSubmit={this.handleSubmit.bind(this)}>
-              <p>Username</p>
-              <input type="text" onChange={this.handleChange('username')} name="username" placeholder="Enter Username" />
-              <p>Password</p>
-              <input type="password" ref={ref => this._pwd = ref} onChange={this.handleChange('password')} name="password" placeholder="Enter Password" />
-              <input type="submit" name="" value="Sign In" />
+            <p>Username</p>
+            <input type="text" onChange={this.handleChange('username')} name="username" placeholder="Enter Username" />
+            <p>Password</p>
+            <input type="password" ref={ref => this._pwd = ref} onChange={this.handleChange('password')} name="password" placeholder="Enter Password" />
+            <input type="submit" name="" value="Sign In" />
           </form>
         </div>
       </div>
