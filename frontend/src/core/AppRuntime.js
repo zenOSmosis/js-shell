@@ -212,18 +212,16 @@ class AppRuntime extends ClientGUIProcess {
       return;
     }
 
-    this.setImmediate(() => {
-      this._isFocused = isFocused;
+    this._isFocused = isFocused;
 
-      if (isFocused) {
-        // TODO: Possibly move this handling to AppControlCentral
-        _appRuntimeLinkedState.setFocusedAppRuntime(this);
-        
-        this.emit(EVT_FOCUS);
-      } else {
-        this.emit(EVT_BLUR);
-      }
-    });
+    if (isFocused) {
+      // TODO: Possibly move this handling to AppControlCentral
+      _appRuntimeLinkedState.setFocusedAppRuntime(this);
+      
+      this.emit(EVT_FOCUS);
+    } else {
+      this.emit(EVT_BLUR);
+    }
   }
 
   /**
