@@ -43,20 +43,20 @@ export default class DockItem extends Component {
   _handleContextMenu = (evt) => {
     evt.stopPropagation();
     evt.preventDefault();
-    this.setState({ menuVisible: true });
+    this.setState({ isMenuVisible: true });
   };
 
   _handleDocClick = (evt) => {
-    if(this._overlay) {
-      const { menuVisible } = this.state;
+    if (this._overlay) {
+      const { isMenuVisible } = this.state;
       const wasOutside = !(this._overlay.contains(evt.target));
-      if (wasOutside && menuVisible) this.setState({ menuVisible: false, });
+      if (wasOutside && isMenuVisible) this.setState({ isMenuVisible: false });
     }
   };
 
   _handleDocScroll = () => {
-    const { menuVisible } = this.state;
-    if (menuVisible) this.setState({ menuVisible: false, });
+    const { isMenuVisible } = this.state;
+    if (isMenuVisible) this.setState({ isMenuVisible: false });
   };
   
   _handleDockItemClick = (appRegistration) => {
@@ -67,7 +67,7 @@ export default class DockItem extends Component {
     } else {
       this._showAllAppRegistrationWindows(appRegistration);
     }
-  }
+  };
 
   _showAllAppRegistrationWindows(appRegistration) {
     const windowStackCentral = getWindowStackCentral();
@@ -86,7 +86,7 @@ export default class DockItem extends Component {
 
     return (
       <div
-        ref={ c => this._root = c }
+        ref={c => this._root = c}
         // effect="wobble" // TODO: Use variable
         className={`zd-desktop-dock-item ${isLaunched ? 'open' : ''}`}
       >

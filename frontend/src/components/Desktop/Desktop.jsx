@@ -13,7 +13,7 @@ import ContextMenu from 'components/ContextMenu';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
-import Login from './Login';
+// import Login from './Login';
 // import URIRedirector from './URIRedirector';
 // import AppRouteController from './AppRouteController';
 // import { BrowserRouter as Router } from 'react-router-dom';
@@ -54,7 +54,7 @@ class Desktop extends Component {
         $body.addClass(CSS_CLASS_NAME_BLUR);
       }
     }
-  }
+  };
 
   render() {
     const { isFullScreenRequested } = this.props;
@@ -118,7 +118,9 @@ class Desktop extends Component {
 
               </DesktopBackground>
               {
+                /*
                 !isLoggedIn && <Login />
+                */
               }
 
 

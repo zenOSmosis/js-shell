@@ -20,6 +20,7 @@ import IFrame from 'components/IFrame';
 import Window from 'components/Desktop/Window';
 import WebSearchTileList from 'components/WebSearchTileList';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
+import SocketChannel from 'shared/socketAPI/SocketChannel';
 
 // Note: Currently commented-out due to inconsistent exports
 // import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
@@ -54,6 +55,7 @@ class UI_JITRuntime extends ClientJITRuntime {
       React,
       Component,      
       CPUThreadTimer,
+      SocketChannel,
 
       // (e.g. reference this.zdComponents in evaluated scripting)
       components: {

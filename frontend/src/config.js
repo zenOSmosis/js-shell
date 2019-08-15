@@ -12,12 +12,12 @@ let config = {
   DOM_ROOT_ID: 'root'
 };
 
-// TODO: Enable this to work w/o window
+// TODO: Enable this to work w/o global window object
 if (typeof window !== 'undefined') {
   const parsedWinURL = parseURL(window.location.href);
 
   config = Object.assign(config, {
-    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}:3001`,
+    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
   }); 
 }
 
