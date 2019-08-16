@@ -3,6 +3,7 @@ import Full from 'components/Full';
 import TileList, { Tile } from 'components/TileList';
 import Center from 'components/Center';
 import Cover from 'components/Cover';
+import Heart from '../Heart';
 import { Spin, Icon } from 'antd';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import { SOCKET_API_ROUTE_WEB_SEARCH } from 'shared/socketAPI/socketAPIRoutes';
@@ -109,8 +110,10 @@ class WebSearchTileList extends Component {
                 <Tile
                   key={idx}
                   header={
-                    <div style={{textAlign: 'left'}}>
-                      <Icon type="heart" style={{fontSize: 20}} theme="filled" />
+                    <div style={{ textAlign: 'left' }}>
+                      <Heart
+                        isLoved={false}
+                      />
                     </div>
                   }
                   title={title}
@@ -130,7 +133,7 @@ class WebSearchTileList extends Component {
               <div>
                 <div style={{ margin: 20 }}>
                   Searching...
-                    </div>
+                </div>
 
                 <div>
                   <Spin size="large" indicator={AntIcon} />
