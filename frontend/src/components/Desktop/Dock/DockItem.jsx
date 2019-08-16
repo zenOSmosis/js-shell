@@ -116,12 +116,13 @@ export default class DockItem extends Component {
               >
                 {
                   // Title
-                  appRuntimes.map((runtime, idx) => (
+                  appRuntimes.map((appRuntime, idx) => (
                     <MenuItem
                       key={`focus-${idx}`}
                       style={{ fontWeight: 'bold' }}
+                      onClick={ evt => { appRuntime.focus() }}
                     >
-                      {runtime.getTitle()}
+                      {appRuntime.getTitle()}
                     </MenuItem>
                   ))
                 }
