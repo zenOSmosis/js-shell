@@ -18,6 +18,11 @@ class WrappedReactPlayer extends Component {
     this._mediaPlayerLinkedState = mediaPlayerLinkedState;
   }
 
+  componentWillUnmount() {
+    this._mediaPlayerLinkedState.destroy();
+    this._mediaPlayerLinkedState = null;
+  }
+
   _handleReady = (reactPlayer) => {
     console.warn('ready', reactPlayer);
 
