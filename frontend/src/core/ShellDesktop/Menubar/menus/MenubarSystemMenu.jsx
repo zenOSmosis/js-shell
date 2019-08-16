@@ -3,10 +3,13 @@ import MenubarMenu from '../MenubarMenu';
 import { Icon } from 'antd';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
+// TODO: Move this into MenubarSystemMenu lifecycle, once available (currently
+// no destructor)
+const _desktopLinkedState = new DesktopLinkedState();
+
 export default class MenubarSystemMenu extends MenubarMenu {
   constructor(...args) {
     super(...args);
-    this._desktopLinkedState = new DesktopLinkedState();
 
     this.setData({
       title: <Icon type="deployment-unit" />,
@@ -57,7 +60,7 @@ export default class MenubarSystemMenu extends MenubarMenu {
         {
           title: 'Logout',
           onClick: () => {
-            this._desktopLinkedState.setIsLogged(false);
+            _desktopLinkedState.setIsLogged(false);
           }
         }
       ]
