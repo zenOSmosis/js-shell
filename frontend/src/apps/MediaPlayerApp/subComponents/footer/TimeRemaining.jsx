@@ -1,18 +1,17 @@
 import React from 'react';
-import MediaPlayerLinkedState from '../MediaPlayerLinkedState';
+import MediaPlayerLinkedState from '../../MediaPlayerLinkedState';
 import hocConnect from 'state/hocConnect';
 import secondsToHHMMSS from 'utils/time/secondsToHHMMSS';
 
-// TODO: Rename to TimeRemaining
-const Duration = (props) => {
+const TimeRemaining = (props) => {
   const { timeRemaining } = props;
   
   return (
-    <span>{timeRemaining ? secondsToHHMMSS(timeRemaining) : '(Length Unknown)'}</span>
+    <span>{timeRemaining ? secondsToHHMMSS(timeRemaining) : ''}</span>
   );
 };
 
-const ConnectedDuration = hocConnect(Duration, MediaPlayerLinkedState, (updatedState) => {
+const ConnectedTimeRemaining = hocConnect(TimeRemaining, MediaPlayerLinkedState, (updatedState) => {
   const { /* duration,*/ timeRemaining } = updatedState;
 
   const filteredState = {};
@@ -24,4 +23,4 @@ const ConnectedDuration = hocConnect(Duration, MediaPlayerLinkedState, (updatedS
   return filteredState;
 });
 
-export default ConnectedDuration;
+export default ConnectedTimeRemaining;

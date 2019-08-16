@@ -1,10 +1,10 @@
 import React from 'react';
-import MediaPlayerLinkedState from '../MediaPlayerLinkedState';
+import MediaPlayerLinkedState from '../../MediaPlayerLinkedState';
 import hocConnect from 'state/hocConnect';
 
 // TODO: Rename to TimeRemaining
 const NowPlayingHeaderApplet = (props) => {
-  const { title, thumbnail } = props;
+  const { title, /* thumbnail */ } = props;
   
   return (
     <span style={{fontStyle: 'italic'}}>

@@ -5,6 +5,8 @@ import Button from '../Button';
 import {Button as AntdButton} from 'antd';
 const {Group: ButtonGroup} = AntdButton;
 
+export default ButtonGroup;
+
 // Mixed components/Button w/ Antd ButtonGroup
 export {
   Button,

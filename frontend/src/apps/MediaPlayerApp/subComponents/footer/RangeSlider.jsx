@@ -1,5 +1,5 @@
 import React from 'react';
-import MediaPlayerLinkedState from '../MediaPlayerLinkedState';
+import MediaPlayerLinkedState from '../../MediaPlayerLinkedState';
 import { Slider } from 'antd';
 import secondsToHHMMSS from 'utils/time/secondsToHHMMSS';
 import hocConnect from 'state/hocConnect';

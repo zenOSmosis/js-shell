@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import Full from 'components/Full';
-import Center from 'components/Center';
 import Window from 'components/Desktop/Window';
 import LabeledComponent from 'components/LabeledComponent';
 import ConnectedReactPlayer from './subComponents/ConnectedReactPlayer';
-import ConnectedDuration from './subComponents/ConnectedDuration';
-import ConnectedRangeSlider from './subComponents/ConnectedRangeSlider';
-import ConnectedNowPlayingHeaderApplet from './subComponents/ConnectedNowPlayingHeaderApplet';
+import NowPlayingHeaderApplet from './subComponents/header/NowPlaying';
+import MediaPlayerFooter from './subComponents/footer/Footer';
 import SplitterLayout from 'components/SplitterLayout';
 import WebSearchTileList from 'components/WebSearchTileList';
 import { Layout, /* Sider, */ Content, Footer, Row, Column } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
 import { Input, Icon, Switch } from 'antd';
 import 'shared/socketAPI/socketAPITypedefs';
-import './MediaPlayerWindow.css';
 import MediaPlayerLinkedState from './MediaPlayerLinkedState';
 const { Search } = Input;
 
@@ -116,7 +113,7 @@ export default class MediaPlayerWindow extends Component {
             </Column>
 
             <Column style={{textAlign: 'center'}}>
-              <ConnectedNowPlayingHeaderApplet />
+              <NowPlayingHeaderApplet />
             </Column>
 
             <Column>
@@ -163,38 +160,7 @@ export default class MediaPlayerWindow extends Component {
           </Content>
 
           <Footer>
-            <div style={{ width: '100%' }}>
-              <Row>
-                <Column style={{ maxWidth: 140, overflow: 'no-wrap' }}>
-                  <ButtonGroup style={{ margin: '5px 10px' }}>
-                    <Button style={{ fontSize: 24, height: 34 }}>
-                      { /* Prev */}
-                      <Icon type="backward" />
-                    </Button>
-
-                    <Button style={{ fontSize: 24, height: 34 }}>
-                      { /* Play */}
-                      <Icon type="caret-right" />
-                    </Button>
-
-                    <Button style={{ fontSize: 24, height: 34 }}>
-                      { /* Next */}
-                      <Icon type="forward" />
-                    </Button>
-                  </ButtonGroup>
-                </Column>
-                <Column style={{ padding: '0px 10px' }}>
-                  <Center>
-                    <ConnectedRangeSlider />
-                  </Center>
-                </Column>
-                <Column style={{ maxWidth: 100 }}>
-                  <Center>
-                    <ConnectedDuration />
-                  </Center>
-                </Column>
-              </Row>
-            </div>
+            <MediaPlayerFooter />
           </Footer>
 
         </Layout>
