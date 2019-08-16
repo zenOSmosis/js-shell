@@ -4,17 +4,18 @@ import hocConnect from 'state/hocConnect';
 
 // TODO: Rename to TimeRemaining
 const NowPlayingHeaderApplet = (props) => {
-  const { title, /* thumbnail */ } = props;
+  const { title, isLoading } = props;
   
   return (
     <span style={{fontStyle: 'italic'}}>
+        {isLoading ? 'Loading' : ''}
         {title}
     </span>
   );
 };
 
 const ConnectedNowPlayingHeaderApplet = hocConnect(NowPlayingHeaderApplet, MediaPlayerLinkedState, (updatedState) => {
-  const { title, thumbnail } = updatedState;
+  const { title, thumbnail, isLoading } = updatedState;
 
   const filteredState = {};
 
@@ -24,6 +25,10 @@ const ConnectedNowPlayingHeaderApplet = hocConnect(NowPlayingHeaderApplet, Media
 
   if (thumbnail !== undefined) {
     filteredState.thumbnail = thumbnail;
+  }
+
+  if (isLoading !== undefined) {
+    filteredState.isLoading = isLoading;
   }
 
   return filteredState;

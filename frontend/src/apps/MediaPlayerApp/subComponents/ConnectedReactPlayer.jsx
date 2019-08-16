@@ -13,9 +13,20 @@ class WrappedReactPlayer extends Component {
     this._duration = null;
   }
 
-  componentDidUpdate() {
-    const { mediaPlayerLinkedState } = this.props;
-    this._mediaPlayerLinkedState = mediaPlayerLinkedState;
+  componentDidUpdate(prevProps) {
+    if (!this._mediaPlayerLinkedState) {
+      const { mediaPlayerLinkedState } = this.props;
+      this._mediaPlayerLinkedState = mediaPlayerLinkedState;
+    }
+
+    const { mediaURL: prevMediaURL } = prevProps;
+    const { mediaURL } = this.props;
+
+    if (prevMediaURL !== mediaURL) {
+      this._mediaPlayerLinkedState.setState({
+        isLoading: true
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -23,6 +34,10 @@ class WrappedReactPlayer extends Component {
     this._mediaPlayerLinkedState = null;
   }
 
+  /**
+   * Internally called when the underlying ReactPlayer component has loaded
+   * its media.
+   */
   _handleReady = (reactPlayer) => {
     console.warn('ready', reactPlayer);
 
@@ -32,7 +47,8 @@ class WrappedReactPlayer extends Component {
     this._duration = reactPlayer.getDuration();
 
     this._mediaPlayerLinkedState.setState({
-      duration: this._duration
+      duration: this._duration,
+      isLoading: false
     });
   };
   
@@ -44,18 +60,20 @@ class WrappedReactPlayer extends Component {
       playedSeconds
     } = evt;
 
-    const timeRemaining = this.getTimeRemaining(playedSeconds);
-    const playedPercent = this.getPlayedPercent(timeRemaining);
-
-    this._mediaPlayerLinkedState.setState({
-      timeRemaining,
-      playedPercent
-    });
-
-    console.warn({
-      timeRemaining,
-      playedPercent
-    });
+    if (this._mediaPlayerLinkedState) {
+      const timeRemaining = this.getTimeRemaining(playedSeconds);
+      const playedPercent = this.getPlayedPercent(timeRemaining);
+  
+      this._mediaPlayerLinkedState.setState({
+        timeRemaining,
+        playedPercent
+      });
+  
+      console.warn({
+        timeRemaining,
+        playedPercent
+      });
+    }
   };
 
   getTimeRemaining(playedSeconds) {
@@ -68,6 +86,12 @@ class WrappedReactPlayer extends Component {
 
   _handleEnded = (evt) => {
     console.warn('Media playing ended', evt);
+
+    if (this._mediaPlayerLinkedState) {
+      this._mediaPlayerLinkedState.setState({
+        isEnded: true
+      });
+    }
   };
 
   render() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Center from 'components/Center';
 import ButtonGroup, { Button } from 'components/ButtonGroup';
-import { Layout, /* Sider, */ Content, Footer, Row, Column } from 'components/Layout';
+import { /* Layout, Sider, Content, Footer, */ Row, Column } from 'components/Layout';
 import { Icon } from 'antd';
 import RangeSlider from './RangeSlider';
 import TimeRemaining from './TimeRemaining';
