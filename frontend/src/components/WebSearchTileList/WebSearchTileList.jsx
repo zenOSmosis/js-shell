@@ -108,6 +108,11 @@ class WebSearchTileList extends Component {
               return (
                 <Tile
                   key={idx}
+                  header={
+                    <div style={{textAlign: 'left'}}>
+                      <Icon type="heart" style={{fontSize: 20}} theme="filled" />
+                    </div>
+                  }
                   title={title}
                   onClick={evt => { this._handleResultSelect(result) }}
                 >

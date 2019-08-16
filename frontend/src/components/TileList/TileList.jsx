@@ -22,7 +22,7 @@ class TileList extends Component {
               tiles.map((tile, idx) => {
                 const { title } = tile;
 
-                // TODO: Conver to <Tile />
+                // TODO: Convert to <Tile />
                 return (
                   <div
                     key={idx}

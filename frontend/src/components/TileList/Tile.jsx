@@ -2,7 +2,7 @@ import React from 'react';
 import Cover from 'components/Cover';
 
 const Tile = (props) => {
-  const { children, className, title, ...propsRest } = props;
+  const { children, className, header, title, ...propsRest } = props;
 
   return (
     <button
@@ -13,6 +13,10 @@ const Tile = (props) => {
         children
       }
       <Cover>
+        <div className="header">
+          { header }
+        </div>
+
         <div className="title">
           { title }
         </div>

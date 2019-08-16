@@ -7,6 +7,8 @@ class MediaPlayerLinkedState extends LinkedState {
   constructor() {
     super('media-player-app', {
       mediaURL: null,
+      title: null,
+      thumbnail: null,
       duration: null,
       timeRemaining: null,
       playedPercent: null

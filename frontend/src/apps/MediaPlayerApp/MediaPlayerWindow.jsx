@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import Full from 'components/Full';
 import Center from 'components/Center';
 import Window from 'components/Desktop/Window';
+import LabeledComponent from 'components/LabeledComponent';
 import ConnectedReactPlayer from './subComponents/ConnectedReactPlayer';
 import ConnectedDuration from './subComponents/ConnectedDuration';
 import ConnectedRangeSlider from './subComponents/ConnectedRangeSlider';
+import ConnectedNowPlayingHeaderApplet from './subComponents/ConnectedNowPlayingHeaderApplet';
 import SplitterLayout from 'components/SplitterLayout';
 import WebSearchTileList from 'components/WebSearchTileList';
 import { Layout, /* Sider, */ Content, Footer, Row, Column } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
-import { Input, Icon } from 'antd';
+import { Input, Icon, Switch } from 'antd';
 import 'shared/socketAPI/socketAPITypedefs';
 import './MediaPlayerWindow.css';
 import MediaPlayerLinkedState from './MediaPlayerLinkedState';
@@ -71,15 +73,17 @@ export default class MediaPlayerWindow extends Component {
   _handleResultSelect = (result) => {
     const {
       url,
-      // thumbnail,
-      // title,
+      thumbnail,
+      title,
       // content,
       // template,
       // publishedDate
     } = result;
 
     this._mediaPlayerLinkedState.setState({
-      mediaURL: url
+      mediaURL: url,
+      thumbnail,
+      title
     });
   };
 
@@ -99,6 +103,43 @@ export default class MediaPlayerWindow extends Component {
               size="small"
             />
           </div>
+        }
+        subToolbar={
+          <Row>
+            <Column>
+              <div style={{textAlign: 'left'}}>
+                <LabeledComponent label="Native Controls">
+                  <Switch />
+                </LabeledComponent>
+              </div>
+             
+            </Column>
+
+            <Column style={{textAlign: 'center'}}>
+              <ConnectedNowPlayingHeaderApplet />
+            </Column>
+
+            <Column>
+              <div style={{textAlign: 'right'}}>
+                <LabeledComponent label="Layout">
+                  <ButtonGroup>
+                    <Button>
+                      <Icon type="menu-fold" />
+                    </Button>
+
+                    <Button disabled>
+                      {
+                        /**
+                         * Sections
+                         */
+                      }
+                      <Icon type="layout" />
+                    </Button>
+                  </ButtonGroup>
+                </LabeledComponent>
+              </div>
+            </Column>
+          </Row>
         }
       >
         <Layout className="media-player-app">
