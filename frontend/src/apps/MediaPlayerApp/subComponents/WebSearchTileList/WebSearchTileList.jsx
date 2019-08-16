@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Full from '../Full';
-import TileList, { Tile } from '../TileList';
-import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
-import { Spin, Icon } from 'antd';
+import Full from 'components/Full';
+import TileList, { Tile } from 'components/TileList';
 import Center from 'components/Center';
 import Cover from 'components/Cover';
+import { Spin, Icon } from 'antd';
+import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import { SOCKET_API_ROUTE_WEB_SEARCH } from 'shared/socketAPI/socketAPIRoutes';
 import 'shared/socketAPI/socketAPITypedefs';
 

@@ -6,7 +6,7 @@ import ConnectedReactPlayer from './subComponents/ConnectedReactPlayer';
 import NowPlayingHeaderApplet from './subComponents/header/NowPlaying';
 import MediaPlayerFooter from './subComponents/footer/Footer';
 import SplitterLayout from 'components/SplitterLayout';
-import WebSearchTileList from 'components/WebSearchTileList';
+import WebSearchTileList from './subComponents/WebSearchTileList';
 import { Layout, /* Sider, */ Content, Footer, Row, Column } from 'components/Layout';
 import { ButtonGroup, Button } from 'components/ButtonGroup';
 import { Input, Icon, Switch } from 'antd';
