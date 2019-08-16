@@ -1,4 +1,5 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_TICK } from 'process/ClientGUIProcess';
+import { EVT_EXIT, EVT_TICK } from 'process/ClientProcess';
+import ClientGUIProcess, { EVT_FIRST_RENDER } from 'process/ClientGUIProcess';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
@@ -93,7 +94,7 @@ class AppRuntime extends ClientGUIProcess {
       });
 
       // Handle exit cleanup
-      this.once(EVT_BEFORE_EXIT, () => {        
+      this.once(EVT_EXIT, () => {        
         // Unregister from DesktopLinkedState
         _appRuntimeLinkedState.removeAppRuntime(this);
       });
