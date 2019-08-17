@@ -1,0 +1,21 @@
+.save-for-later {
+  display: inline-block;
+  background-color: rgba(0,0,0,.4);
+  border: 0px !important;
+}
+
+.save-for-later .icon {
+  font-size: 1.2rem;
+}
+
+.save-for-later:hover,
+.save-for-later.saved {
+  color: rgb(131, 210, 255);
+}
+
+.save-for-later .text {
+  display: inline-block;
+  margin-left: .4rem;
+  vertical-align: middle;
+  font-size: .8rem;
+}

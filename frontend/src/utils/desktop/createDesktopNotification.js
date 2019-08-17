@@ -3,7 +3,13 @@ import DesktopLinkedState from 'state/DesktopLinkedState';
 
 const commonDesktopLinkedState = new DesktopLinkedState();
 
-const createDesktopNotification = (message, description, onClick = null) => {
+/**
+ * 
+ * @param {string} message 
+ * @param {string} description?
+ * @param {function} onClick? 
+ */
+const createDesktopNotification = (message, description = null, onClick = null) => {
   if (typeof message === 'object') {
     onClick = message.onClick;
     description = message.description;

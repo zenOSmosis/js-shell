@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Full from 'components/Full';
 import Window from 'components/Desktop/Window';
 import LabeledComponent from 'components/LabeledComponent';
-import ConnectedReactPlayer from './subComponents/ConnectedReactPlayer';
+import MediaView from './subComponents/main/MediaView/MediaView';
 import NowPlayingHeaderApplet from './subComponents/header/NowPlaying';
 import MediaPlayerFooter from './subComponents/footer/Footer';
 import SplitterLayout from 'components/SplitterLayout';
@@ -28,11 +28,12 @@ export default class MediaPlayerWindow extends Component {
     this._elSearchInput = null;
     this._webSearchTileList = null;
 
-    this._mediaPlayerLinkedState = new MediaPlayerLinkedState(); 
+    this._mediaPlayerLinkedState = new MediaPlayerLinkedState();
   }
 
   componentWillUnmount() {
     this._mediaPlayerLinkedState.destroy();
+    this._mediaPlayerLinkedState = null;
   }
 
   _handleSearchKeypress = (evt) => {
@@ -58,7 +59,11 @@ export default class MediaPlayerWindow extends Component {
    */
   _handleSearchQuery = async (query) => {
     try {
-      await this._webSearchTileList.query(query);
+      if (this._webSearchTileList) {
+        await this._webSearchTileList.query(query);
+      } else {
+        console.warn('webSearchTileList does not exist');
+      }
     } catch (exc) {
       throw exc;
     }
@@ -68,11 +73,13 @@ export default class MediaPlayerWindow extends Component {
    * @param {SearxResponseResult} result
    */
   _handleResultSelect = (result) => {
+    console.warn(result);
+
     const {
       url,
       thumbnail,
       title,
-      // content,
+      content: description,
       // template,
       // publishedDate
     } = result;
@@ -80,7 +87,8 @@ export default class MediaPlayerWindow extends Component {
     this._mediaPlayerLinkedState.setState({
       mediaURL: url,
       thumbnail,
-      title
+      title,
+      description
     });
   };
 
@@ -146,7 +154,7 @@ export default class MediaPlayerWindow extends Component {
                 secondaryInitialSize={240}
               >
                 <Full>
-                  <ConnectedReactPlayer />
+                  <MediaView />
                 </Full>
 
                 <Full>

@@ -3,6 +3,7 @@ import Full from '../Full';
 import Scrollable from '../Scrollable';
 import './TileList.css';
 
+// TODO: Utilize Grid component
 class TileList extends Component {
   render() {
     const { children, className, ...propsRest } = this.props; 

@@ -24,6 +24,7 @@
   position: absolute;
   top: 0px;
   width: 100%;
+  overflow: visible;
 }
 
 .zd-tile-list
@@ -36,4 +37,5 @@
   bottom: 0px;
   padding: .4rem;
   font-weight: bold;
+  overflow: hidden;
 }

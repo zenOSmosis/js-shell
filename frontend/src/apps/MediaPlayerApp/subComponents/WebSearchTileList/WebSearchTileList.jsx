@@ -3,11 +3,12 @@ import Full from 'components/Full';
 import TileList, { Tile } from 'components/TileList';
 import Center from 'components/Center';
 import Cover from 'components/Cover';
-import Heart from '../Heart';
+import SaveForLater from '../SaveForLater';
 import { Spin, Icon } from 'antd';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import { SOCKET_API_ROUTE_WEB_SEARCH } from 'shared/socketAPI/socketAPIRoutes';
 import 'shared/socketAPI/socketAPITypedefs';
+import MediaPlayerLinkedState from '../../MediaPlayerLinkedState';
 
 const AntIcon = <Icon type="loading" style={{ fontSize: 68 }} spin />;
 
@@ -33,6 +34,13 @@ class WebSearchTileList extends Component {
       results: [],
       isSearching: false
     };
+
+    this._mediaPlayerLinkedState = new MediaPlayerLinkedState();
+  }
+
+  componentWillUnmount() {
+    this._mediaPlayerLinkedState.destroy();
+    this._mediaPlayerLinkedState = null;
   }
 
   /**
@@ -74,17 +82,18 @@ class WebSearchTileList extends Component {
   /**
    * @param{SearxResponseResult} result
    */
-  _handleResultSelect = (result) => {
+  _handleResultSelect(result) {
     const { onResultSelect } = this.props;
     if (typeof onResultSelect === 'function') {
       onResultSelect(result);
     }
-  };
+  }
 
   render() {
     const {
       query,
       onResultSelect,
+      mediaPlayerLinkedState,
       ...propsRest
     } = this.props;
 
@@ -111,15 +120,17 @@ class WebSearchTileList extends Component {
                   key={idx}
                   header={
                     <div style={{ textAlign: 'left' }}>
-                      <Heart
-                        isLoved={false}
+                      <SaveForLater
+                        isSaved={false}
+                        mediaPlayerLinkedState={this._mediaPlayerLinkedState}
                       />
                     </div>
                   }
+                  alt={title}
                   title={title}
                   onClick={evt => { this._handleResultSelect(result) }}
                 >
-                  <img alt={title} src={thumbnail} width="100%" />
+                  <img alt={null} src={thumbnail} style={{maxWidth: '100%', maxHeight: '100%'}} />
                 </Tile>
               );
             })

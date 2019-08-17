@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'components/ReactPlayer';
-import MediaPlayerLinkedState from '../MediaPlayerLinkedState';
+import MediaPlayerLinkedState from '../../MediaPlayerLinkedState';
 import hocConnect from 'state/hocConnect';
 
 class WrappedReactPlayer extends Component {

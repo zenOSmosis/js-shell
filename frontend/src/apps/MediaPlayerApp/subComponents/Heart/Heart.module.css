@@ -1,8 +1,0 @@
-.heart {
-  font-size: 20px;
-}
-
-.heart:hover,
-.heart.loved {
-  color: red;
-}
