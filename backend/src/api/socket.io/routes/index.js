@@ -2,26 +2,7 @@
  * API routing for the client Socket.io connection.
  */
 
-const echo = require('./echo');
-const { createXTermSocketChannel } = require('./socketChannel');
-const p2p = require('./p2p');
-const env = require('./env');
-const ping = require('./ping');
-const fileSystem = require('./fileSystem');
-const systemTime = require('./systemTime');
-const debugError = require('./debugError');
-const xApps = require('./xApps');
-const appCategories = require('./appCategories');
-
-const webSearch = require('./webSearch');
-
-// const systemCommand = require('./systemCommand');
-// const portAudio = require('./portAudio');
-const wallpapers = require('./wallpapers');
-// const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemInformation');
-const routes = require('./routes');
-
-const {
+import {
   SOCKET_API_ROUTE_ECHO,
   SOCKET_API_ROUTE_ENV,
   SOCKET_API_ROUTE_DEBUG_ERROR,
@@ -47,7 +28,26 @@ const {
   SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL,
 
   SOCKET_API_ROUTE_REQUEST_DISCONNECT
-} = routes;
+} from './routes';
+
+
+const echo = require('./echo');
+const { createXTermSocketChannel } = require('./socketChannel');
+const p2p = require('./p2p');
+const env = require('./env');
+const ping = require('./ping');
+const fileSystem = require('./fileSystem');
+const systemTime = require('./systemTime');
+const debugError = require('./debugError');
+const xApps = require('./xApps');
+const appCategories = require('./appCategories');
+
+const webSearch = require('./webSearch');
+
+// const systemCommand = require('./systemCommand');
+// const portAudio = require('./portAudio');
+const wallpapers = require('./wallpapers');
+// const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemInformation');
 
 /**
  * Initializes socket.io routes for the given socket connection.
@@ -65,7 +65,7 @@ const initSocket = (socket) => {
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
-  
+
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APPS, xApps);
   socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);

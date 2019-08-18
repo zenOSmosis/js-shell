@@ -1,4 +1,4 @@
-import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import { SOCKET_API_ROUTE_FILESYSTEM } from 'shared/socketAPI/socketAPIRoutes';
 import socketAPIQuery from '../socketAPI/socketAPIQuery';
 
 const ls = async (dirName) => {
@@ -8,7 +8,7 @@ const ls = async (dirName) => {
       dirName
     };
     
-    return await socketAPIQuery(socketAPIRoutes.SOCKET_API_ROUTE_FILESYSTEM, requestData);
+    return await socketAPIQuery(SOCKET_API_ROUTE_FILESYSTEM, requestData);
   } catch (exc) {
     throw exc;
   }

@@ -70,28 +70,20 @@ The {root}/docker_modules directory specifies additional Docker packages which h
 
 #### Main Node.js Server
 
-Currently developed with Node.js 10, run straight from source (not compiled) and supports ES5 require statements.
+Currently developed with Node.js 10, run straight from source (not compiled).
 
 - Source file compilation: None
-- Module import syntax:
-  ```
-  const package = require('module-name');
-  ```
-
 - Module path resolution definitions: backend/package.json (_moduleAliases)
+- Supports ES6+ import w/ Node.js 10 via https://www.npmjs.com/package/esm
 
 ### Frontend
 
-Currently developed with Node.js 10, compiled with Webpack, and supports ES6+ / CommonJS import statements.
+Currently developed with Node.js 10, compiled with Webpack.
 
 - Built on: [Facebook's Create React App](https://github.com/facebook/create-react-app)
 - Source file compilation: Webpack
 - [react-app-rewired](https://github.com/timarney/react-app-rewired) config: frontend/config-overrides.js
 - HMR (Hot Module Replacement) supported: Yes
-- Module import syntax (ES6+ / CommonJS):
-  ```
-  import package from 'module-name';
-  ```
 - Module path resolution definitions: frontend/jsonconfig.json (compilerOptions.paths)
 
 Path resolutions:

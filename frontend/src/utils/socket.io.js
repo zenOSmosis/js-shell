@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import config from './../config';
 import SocketLinkedState from '../state/SocketLinkedState';
-import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
 
 const socketLinkedState = new SocketLinkedState();
 
@@ -21,7 +21,7 @@ const socket = io.connect(config.SOCKET_IO_URI);
  * not seem to be a way to disconnect the Socket directly from the client side.
  */
 socket.disconnect = () => {
-  socket.emit(socketAPIRoutes.SOCKET_API_ROUTE_REQUEST_DISCONNECT);
+  socket.emit(SOCKET_API_ROUTE_REQUEST_DISCONNECT);
 };
 
 // Socket connect

@@ -1,6 +1,5 @@
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
-import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
-const { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } = socketAPIRoutes;
+import { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } from 'shared/socketAPI/socketAPIRoutes';
 
 /**
  * Retrieves socket IDs of remote peers, connected to the server.

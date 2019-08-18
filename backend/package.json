@@ -4,13 +4,14 @@
   "description": "Server for JS shell, a web-based desktop environment for JavaScript.",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js -L",
+    "start": "nodemon -r esm src/index.js -L",
     "test": "jest backend/tests"
   },
   "author": "Jeremy Harris (zenOSmosis)",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
+    "esm": "^3.2.25",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
     "fs-readdir-recursive": "^1.1.0",
@@ -22,8 +23,7 @@
     "stacktrace-js": "^2.0.0",
     "systeminformation": "^4.14.4",
     "urlencode": "^1.1.0",
-    "uuidv4": "^4.0.0",
-    "v8-compile-cache": "^2.0.3"
+    "uuidv4": "^4.0.0"
   },
   "devDependencies": {
     "jest": "^24.5.0"

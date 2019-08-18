@@ -1,4 +1,3 @@
-# TODO: Use node:12
 FROM node:10
 
 WORKDIR /shell/frontend
