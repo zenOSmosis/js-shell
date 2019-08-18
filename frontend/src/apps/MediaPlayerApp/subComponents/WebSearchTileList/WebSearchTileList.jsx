@@ -130,7 +130,7 @@ class WebSearchTileList extends Component {
                   title={title}
                   onClick={evt => { this._handleResultSelect(result) }}
                 >
-                  <img alt={null} src={thumbnail} style={{maxWidth: '100%', maxHeight: '100%'}} />
+                  <img alt={title} src={thumbnail} style={{maxWidth: '100%', maxHeight: '100%'}} />
                 </Tile>
               );
             })

@@ -26,7 +26,7 @@ class MediaView extends Component {
           <Full style={{textAlign: 'left'}}>
             <Cover>
               <Center>
-                  <img src={thumbnail} style={{float: 'left', transform: 'rotate(-10deg)'}} />
+                  <img alt={title} src={thumbnail} style={{float: 'left', transform: 'rotate(-10deg)'}} />
               </Center>
             </Cover>
             
