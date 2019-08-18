@@ -2,6 +2,21 @@
 // @see [further reading] https://medium.com/@felixrieseberg/javascript-on-the-desktop-fast-and-slow-2b744dfb8b55
 require('v8-compile-cache');
 
+const { execFileSync } = require('child_process');
+
+process.env.REACT_APP_SHELL_UI_BUILD_INFO = (() => {
+  // This must run synchronously
+  const gitSignature = execFileSync('../scripts/./echo-git-public-signature.sh').toString();
+
+  const data = {
+    gitSignature
+  };
+
+  console.log('Exporting REACT_APP_SHELL_BUILD_INFO', data);
+
+  return JSON.stringify(data);
+})();
+
 // Override create-react-app webpack configs without ejecting
 // @see https://github.com/timarney/react-app-rewired
 

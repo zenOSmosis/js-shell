@@ -1,11 +1,12 @@
 import React from 'react';
+import getShellUIBuildInfo from 'utils/buildInfo/getShellUIBuildInfo';
 
 const year = new Date().getFullYear();
 
 const PublicGitSignature = () => {
-  let {REACT_APP_PUBLIC_GIT_SIGNATURE: publicGitSignature} = process.env;
+  const { gitSignature } = getShellUIBuildInfo();
 
-  if (!publicGitSignature) {
+  if (!gitSignature) {
     console.warn('Unable to aquire public git signature');
     return false;
   }
@@ -14,7 +15,7 @@ const PublicGitSignature = () => {
     <div>
       Build info:<br />
       {
-        publicGitSignature.split('\n').map((line, idx) => 
+        gitSignature.split('\n').map((line, idx) => 
           (idx===2 ? new Date(line).toLocaleString() : line + ' ')
         )
       }
