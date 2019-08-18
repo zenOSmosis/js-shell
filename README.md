@@ -56,7 +56,7 @@ TODO: Document out further
 
 The entire backend environment can be run locally, for development by following the "Building / Running" section above.
 
-#### Nginx Reverse Proxy
+#### Nginx (Reverse Proxy / SSL Termination Endpoint)
 
 Nginx is the primary SSL termination endpoint and reverse proxy for https://github.com/zenOSmosis/docker-dev-ssl-proxy in the development environment.
 
@@ -68,7 +68,7 @@ TODO: Determine if docker-letsencrypt STAGING set to true can replace using dock
 
 The {root}/docker_modules directory specifies additional Docker packages which help form the infrastructure of the Shell and its related services.
 
-#### Main Node.js Server
+#### Node.js Server
 
 Currently developed with Node.js 10, run straight from source (not compiled).
 
