@@ -1,5 +1,5 @@
 export const SOCKET_API_ROUTE_ECHO = 'api/echo';
-export const SOCKET_API_ROUTE_ENV = 'api/env'; // TODO: Rename to fetchEnv
+export const SOCKET_API_ROUTE_NODE_ENV = 'api/env'; // TODO: Rename to fetchEnv
 export const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
 export const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
 export const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
@@ -28,7 +28,7 @@ export const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
 
 export const SOCKET_API_ROUTES = [
   SOCKET_API_ROUTE_ECHO,
-  SOCKET_API_ROUTE_ENV,
+  SOCKET_API_ROUTE_NODE_ENV,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,

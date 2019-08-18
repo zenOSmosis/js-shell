@@ -3,7 +3,7 @@ import Scrollable from 'components/Scrollable';
 import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 import { Layout, Header, Content, Footer } from 'components/Layout';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
-import { SOCKET_API_ROUTE_ENV } from 'shared/socketAPI/socketAPIRoutes';
+import { SOCKET_API_ROUTE_NODE_ENV } from 'shared/socketAPI/socketAPIRoutes';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 // import SocketLinkedState from 'state/SocketLinkedState';
 import hocConnect from 'state/hocConnect';
@@ -40,7 +40,7 @@ class Environment extends Component {
 
   async fetchRemoteEnv() {
     try {
-      const remoteEnv = await socketAPIQuery(SOCKET_API_ROUTE_ENV);
+      const remoteEnv = await socketAPIQuery(SOCKET_API_ROUTE_NODE_ENV);
 
       this.setState({
         remoteEnv

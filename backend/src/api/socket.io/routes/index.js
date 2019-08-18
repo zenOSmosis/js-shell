@@ -4,7 +4,7 @@
 
 import {
   SOCKET_API_ROUTE_ECHO,
-  SOCKET_API_ROUTE_ENV,
+  SOCKET_API_ROUTE_NODE_ENV,  
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
@@ -30,11 +30,12 @@ import {
   SOCKET_API_ROUTE_REQUEST_DISCONNECT
 } from './routes';
 
+import fetchNodeEnv from './nodeEnv';
 
 const echo = require('./echo');
 const { createXTermSocketChannel } = require('./socketChannel');
 const p2p = require('./p2p');
-const env = require('./env');
+
 const ping = require('./ping');
 const fileSystem = require('./fileSystem');
 const systemTime = require('./systemTime');
@@ -61,7 +62,7 @@ const initSocket = (socket) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
   socket.on(SOCKET_API_ROUTE_ECHO, echo);
-  socket.on(SOCKET_API_ROUTE_ENV, env);
+  socket.on(SOCKET_API_ROUTE_NODE_ENV, fetchNodeEnv);
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
