@@ -10,5 +10,5 @@ export default registerApp({
       <TextEditorWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}text/text.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}text/text.svg`
 });

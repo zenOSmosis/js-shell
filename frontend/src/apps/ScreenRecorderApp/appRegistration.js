@@ -103,5 +103,5 @@ export default registerApp({
       // videoElem = null;
     });
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}record/record.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}record/record.svg`
 });

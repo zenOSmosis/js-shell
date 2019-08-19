@@ -36,7 +36,7 @@ class DesktopLinkedState extends LinkedState {
       redirectLocation: '/',
 
       // The background image location of the Desktop
-      backgroundURI: config.DESKTOP_DEFAULT_BACKGROUND_URI,
+      backgroundURL: config.DESKTOP_DEFAULT_BACKGROUND_URL,
 
       // Whether the browser window is focused or not
       // TODO: Rename [back] to viewportIsFocused
@@ -78,13 +78,13 @@ class DesktopLinkedState extends LinkedState {
   }
 
   /**
-   * Sets the Desktop's background URI.
+   * Sets the Desktop's background URL.
    *
-   * @param {string} backgroundURI 
+   * @param {string} backgroundURL 
    */
-  setBackgroundURI(backgroundURI) {
+  setBackgroundURL(backgroundURL) {
     this.setState({
-      backgroundURI
+      backgroundURL
     });
   }
 

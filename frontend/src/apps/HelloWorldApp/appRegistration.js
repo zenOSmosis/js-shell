@@ -10,5 +10,5 @@ export default registerApp({
       <HelloWorldWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}hello/hello.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}hello/hello.svg`
 });

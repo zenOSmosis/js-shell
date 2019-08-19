@@ -4,7 +4,7 @@
 
 // Note: Some of these values may be overridden by other parts of the program
 
-// import getRequestURI from './utils/fileSystem/getRequestURI';
+// import getRequestURL from './utils/fileSystem/getRequestURL';
 
 import parseURL from './utils/parseURL';
 
@@ -17,18 +17,18 @@ if (typeof window !== 'undefined') {
   const parsedWinURL = parseURL(window.location.href);
 
   config = Object.assign(config, {
-    HOST_REST_URI: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
+    HOST_REST_URL: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
   }); 
 }
 
 config = Object.assign(config, {
-  SOCKET_IO_URI: config.HOST_REST_URI,
+  SOCKET_IO_URL: config.HOST_REST_URL,
 
-  HOST_ICON_URI_PREFIX: config.HOST_REST_URI + `/icons/`,
-  HOST_FILES_URI_PREFIX: config.HOST_REST_URI + `/files/?filePath=`,
+  HOST_ICON_URL_PREFIX: config.HOST_REST_URL + `/icons/`,
+  HOST_FILES_URL_PREFIX: config.HOST_REST_URL + `/files/?filePath=`,
 
   // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URI: config.HOST_REST_URI +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
+  DESKTOP_DEFAULT_BACKGROUND_URL: config.HOST_REST_URL +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
   
   // If the Desktop should intercept the context menu by default
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: false,

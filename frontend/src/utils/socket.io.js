@@ -14,7 +14,7 @@ export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 // TODO: Wrap w/ LinkedState
 // TODO: Enable multiple connections
 
-const socket = io.connect(config.SOCKET_IO_URI);
+const socket = io.connect(config.SOCKET_IO_URL);
 
 /**
  * Overrides socket.disconnect() with request disconnect event, as there does

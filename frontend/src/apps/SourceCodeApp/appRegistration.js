@@ -10,5 +10,5 @@ export default registerApp({
       <AppBlueprintBaseWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}blueprint/blueprint.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`
 });

@@ -108,7 +108,7 @@ export default class FilesWindow extends Component {
     } else {
       const apps = this.getAppRegistrationsByMime(node.mime);
       if(apps.length) {
-        apps[0].launchApp(config.HOST_FILES_URI_PREFIX + node.pathName);
+        apps[0].launchApp(config.HOST_FILES_URL_PREFIX + node.pathName);
       }
       console.log('open file:', node.mime, node)
     }
@@ -310,12 +310,12 @@ export default class FilesWindow extends Component {
             </Content>
           </Layout>
           {
-            // Prototype of URI-based file open (not deal w/ streams directly)
+            // Prototype of URL-based file open (not deal w/ streams directly)
             /*
             this.state.renderFilePath &&
             <div style={{width: 500, height: 500}}>
-              To render... {`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`}<br />
-              <IFrame src={`${config.HOST_REST_URI}/files?filePath=${this.state.renderFilePath}`} />
+              To render... {`${config.HOST_REST_URL}/files?filePath=${this.state.renderFilePath}`}<br />
+              <IFrame src={`${config.HOST_REST_URL}/files?filePath=${this.state.renderFilePath}`} />
             </div>
             */
           }

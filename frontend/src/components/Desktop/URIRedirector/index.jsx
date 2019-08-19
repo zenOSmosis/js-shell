@@ -5,16 +5,16 @@ import { withRouter } from 'react-router-dom';
 let _isInstantiated = false;
 
 /**
- * Handles browser URI redirection based on redirectLocation property.
+ * Handles browser URL redirection based on redirectLocation property.
  * 
  * Note: This should be treated as a singleton, having only one instance.
  */
-class URIRedirector extends Component {
+class URLRedirector extends Component {
   _redirectLocation = null;
 
   constructor(props = {}) {
     if (_isInstantiated) {
-      throw new Error('URIRedirector is already instantiated');
+      throw new Error('URLRedirector is already instantiated');
     }
 
     super(props);
@@ -38,9 +38,9 @@ class URIRedirector extends Component {
 }
 
 /**
- * Binds URIRedirectory w/ DesktopLinkedState.
+ * Binds URLRedirectory w/ DesktopLinkedState.
  */
-export default withRouter(hocConnect(URIRedirector, DesktopLinkedState, (updatedState) => {
+export default withRouter(hocConnect(URLRedirector, DesktopLinkedState, (updatedState) => {
   const {redirectLocation} = updatedState;
 
   if (redirectLocation) {

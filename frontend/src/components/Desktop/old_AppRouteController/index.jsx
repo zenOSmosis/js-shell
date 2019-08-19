@@ -5,13 +5,13 @@ import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinked
 import { withRouter } from 'react-router';
 import redirectTo from 'utils/desktop/redirectTo';
 import setBrowserTitle from 'utils/desktop/setBrowserTitle';
-import titleToURI from 'utils/desktop/titleToURI';
+import titleToURL from 'utils/desktop/titleToURL';
 
 /**
- * Window / URI mapping.
+ * Window / URL mapping.
  */
 const {setAppRouteKey, getWindowWithRouteKey} = (() => {
-  console.warn('TODO: Fix window / URI pairing');
+  console.warn('TODO: Fix window / URL pairing');
 
   let _appRouteKeymaps = [];
   
@@ -108,8 +108,8 @@ class AppRouteController extends Component {
         // TODO: Listen to a LinkedState, instead of activeWindow.state
         const {title} = activeWindow.state;
 
-        // Set browser URI bar
-        redirectTo(`/app/${titleToURI(title)}`);
+        // Set browser URL bar
+        redirectTo(`/app/${titleToURL(title)}`);
         
         setBrowserTitle(title);
       }, 0);

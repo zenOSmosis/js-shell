@@ -11,5 +11,5 @@ export default registerApp({
       <FileManager {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}folder/folder.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}folder/folder.svg`
 });

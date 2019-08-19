@@ -10,5 +10,5 @@ export default registerApp({
       <DocsWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}documentation/documentation.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}documentation/documentation.svg`
 });

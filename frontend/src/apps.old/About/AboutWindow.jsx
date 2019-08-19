@@ -18,12 +18,12 @@ export default class AboutWindow extends Component {
           // TODO: Handle onLoad
           onLoad={(component, iframe, evt)=>component.postMessage('hello')}
           
-          src={`${config.HOST_REST_URI}/about`}
+          src={`${config.HOST_REST_URL}/about`}
         />
         {
           /*
           <Center style={{backgroundColor: 'rgba(255,255,255,.8)'}}>
-            <Image width="100%" height="100%" src={`${config.HOST_ICON_URI_PREFIX}brands/zenOSmosis-logo.svg`} />
+            <Image width="100%" height="100%" src={`${config.HOST_ICON_URL_PREFIX}brands/zenOSmosis-logo.svg`} />
           </Center>
           */
         }

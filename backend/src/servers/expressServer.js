@@ -9,7 +9,7 @@ const io = require('socket.io')(server);
 const socketAPIRoutes = require('../api/socket.io/routes');
 const { addSocketID, removeSocketID } = require('../utils/p2p/socketIDs');
 const { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } = require('../api/socket.io/events');
-const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URI, HTTP_LISTEN_PORT } = require('../config');
+const { EXPRESS_CUSTOM_RESPONSE_HEADERS, PATH_PUBLIC, FRONTEND_PROXY_URL, HTTP_LISTEN_PORT } = require('../config');
 
 // Apply custom reponse headers
 app.all('*', (req, res, next) => {
@@ -102,7 +102,7 @@ app.use(express.static(PATH_PUBLIC));
   const reactProxy = httpProxy.createProxyServer();
 
   app.get('/*', (req, res) => {
-    reactProxy.web(req, res, { target: FRONTEND_PROXY_URI }, (err) => {
+    reactProxy.web(req, res, { target: FRONTEND_PROXY_URL }, (err) => {
       // TODO: Implement better frontend server error handling
       console.error(err);
       res.status(404).send('Frontend server offline');

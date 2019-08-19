@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import fetchwallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
-import getRequestURI from 'utils/fileSystem/getRequestURI';
+import getRequestURL from 'utils/fileSystem/getRequestURL';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
 export default class DesktopBackground extends Component {
@@ -31,16 +31,16 @@ export default class DesktopBackground extends Component {
       <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
         {
           wallpaperPaths.map((wallpaperPath, idx) => {
-            const imageURI = getRequestURI(wallpaperPath);
+            const imageURL = getRequestURL(wallpaperPath);
 
             return (
               <button
                 style={{color: '#000', padding: 0, margin: 4, borderRadius: 4}}
                 key={idx}
-                onClick={ (evt) => DesktopLinkedState.setBackgroundURI(wallpaperPath) }
+                onClick={ (evt) => DesktopLinkedState.setBackgroundURL(wallpaperPath) }
               >
                 <img
-                  src={imageURI}
+                  src={imageURL}
                   alt="" // Presentational image
                   style={{width: 150, height: 150}}
                 />

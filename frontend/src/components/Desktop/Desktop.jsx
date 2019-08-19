@@ -14,7 +14,7 @@ import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
 // import Login from './Login';
-// import URIRedirector from './URIRedirector';
+// import URLRedirector from './URLRedirector';
 // import AppRouteController from './AppRouteController';
 // import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -68,7 +68,7 @@ class Desktop extends Component {
           <FullViewport>
 
             {
-              // <URIRedirector /> 
+              // <URLRedirector /> 
             }
 
             <ContextMenu>
@@ -101,7 +101,7 @@ class Desktop extends Component {
                   }
 
                   {
-                    // Binds windows to URI location; sets page title
+                    // Binds windows to URL location; sets page title
                     // <AppRouteController />
                   }
 

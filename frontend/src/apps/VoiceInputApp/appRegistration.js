@@ -195,5 +195,5 @@ export default registerApp({
       })();
     });
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}transcribe/transcribe.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}transcribe/transcribe.svg`
 });

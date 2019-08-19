@@ -10,5 +10,5 @@ export default registerApp({
       <SystemDetailWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}system/system.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}system/system.svg`
 });

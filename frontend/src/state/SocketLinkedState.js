@@ -14,7 +14,7 @@ export const CONNECTION_STATUS_ERROR = 'error';
 export default class SocketLinkedState extends LinkedState {
   constructor() {
     super(SOCKET_LINKED_SCOPE_NAME, {
-      hostURI: null, //socket.io.uri,
+      hostURL: null, //socket.io.uri,
       socketId: null,
       isConnected: false, // socket.io.connected
       isReconnecting: false, //socket.io.reconnecting

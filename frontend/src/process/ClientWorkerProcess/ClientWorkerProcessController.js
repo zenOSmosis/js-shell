@@ -60,7 +60,7 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
 
     // This is set by the ClientWorkerProcess (or extension) after it has
     // initialized
-    this._serviceURI = '[Initializing...]';
+    this._serviceURL = '[Initializing...]';
 
     // Important! It is IMPERATIVE to use setImmediate (or timeout w/ 0 time
     // value) here, or the command will not be utilize class extensions, and

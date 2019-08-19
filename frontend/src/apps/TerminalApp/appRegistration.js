@@ -11,5 +11,5 @@ export default registerApp({
       <TerminalWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}terminal/terminal.svg`
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}terminal/terminal.svg`
 });

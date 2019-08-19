@@ -25,7 +25,7 @@ class ClientWorkerProcess extends ClientWorkerProcessCommonCore {
     // This is a native Web Worker, running in its own thread
     this._isNativeWorker = true;
 
-    this._serviceURI = (() => {
+    this._serviceURL = (() => {
       if (nativeWorker.location) {
         return nativeWorker.location.href;
       } else {
