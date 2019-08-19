@@ -3,18 +3,9 @@ import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import { getAppControlCentral } from './ShellDesktop/AppControlCentral';
 import { EVT_TICK, EVT_EXIT } from 'process/ClientProcess';
+import './AppRegistration.typedefs.js';
 
 const _appRegistryLinkedState = new AppRegistryLinkedState();
-
-/**
- * @typedef {Object} AppRegistrationProps
- * @property {string} title
- * @property {string} iconSrc
- * @property {React.Component} mainView // TODO: Rename to view
- * @property {function} cmd Command to run inside of AppRuntime's
- * ClientGUIProcess.
- * @property {boolean} allowMultipleWindows? [default = false]
- */
 
 /**
  * Creates a registration which automatically populates app menus and the Dock

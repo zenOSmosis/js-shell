@@ -9,8 +9,7 @@ RUN apt-get update \
   && apt-get install -y git \
   && apt-get clean
 
-# Specifically used during development (TODO: Run from package instead?)
-RUN npm install -g nodemon
+RUN npm install -g nodemon jest
 
 # TODO: Install user account & don't run as root
 

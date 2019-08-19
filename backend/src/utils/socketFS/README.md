@@ -1,0 +1,1 @@
+Note, intentionally skipping fs.promises support in original Node 10 socketFileSystem implementation.

@@ -9,7 +9,12 @@ export const SOCKET_API_ROUTE_FETCH_GIT_SHORT_HASH = 'api/fetch-git-short-hash';
 export const SOCKET_API_ROUTE_ECHO = 'api/echo';
 export const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
 export const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
-export const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
+
+export const SOCKET_API_ROUTE_SOCKET_FS = 'api/socketFS';
+
+// Old
+// export const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
+
 export const SOCKET_API_ROUTE_FETCH_SYSTEM_TIME = 'api/fetch-system-time';
 export const SOCKET_API_ROUTE_FETCH_X_APPS = 'api/fetch-apps';
 export const SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES = 'api/fetch-app-categories';
@@ -44,7 +49,10 @@ export const SOCKET_API_ROUTES = [
   SOCKET_API_ROUTE_ECHO,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
-  SOCKET_API_ROUTE_FILESYSTEM,
+
+  SOCKET_API_ROUTE_SOCKET_FS,
+  // SOCKET_API_ROUTE_FILESYSTEM,
+  
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,

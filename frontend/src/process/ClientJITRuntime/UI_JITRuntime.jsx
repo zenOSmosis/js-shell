@@ -28,6 +28,7 @@ import SocketChannel from 'shared/socketAPI/SocketChannel';
 import beep from 'utils/audio/beep';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import getPrototypeChain from 'utils/class/getPrototypeChain';
+import * as socketFS from 'utils/socketFS';
 
 /**
  * @extends ClientJITRuntime
@@ -74,6 +75,8 @@ class UI_JITRuntime extends ClientJITRuntime {
         socketAPIQuery,
         // socketAPIRoutes,
         // socketAPIEvents
+
+        socketFS
       }
     };
 

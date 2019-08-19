@@ -7,7 +7,7 @@
  * replacement (HMR) functionality.
  */
 
-import './FilesApp';
+// import './FilesApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
 import './P2PConnectionsApp';

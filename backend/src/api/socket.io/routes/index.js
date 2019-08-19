@@ -14,7 +14,10 @@ import {
   SOCKET_API_ROUTE_ECHO,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
-  SOCKET_API_ROUTE_FILESYSTEM,
+
+  SOCKET_API_ROUTE_SOCKET_FS,
+  // SOCKET_API_ROUTE_FILESYSTEM,
+  
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   SOCKET_API_ROUTE_FETCH_X_APPS,
   SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,
@@ -50,18 +53,20 @@ const echo = require('./echo');
 const { createXTermSocketChannel } = require('./socketChannel');
 const p2p = require('./p2p');
 
+import socketFS from './socketFS';
+
 const ping = require('./ping');
-const fileSystem = require('./fileSystem');
+// const fileSystem = require('./fileSystem');
 const systemTime = require('./systemTime');
 const debugError = require('./debugError');
-const xApps = require('./xApps');
-const appCategories = require('./appCategories');
+// const xApps = require('./xApps');
+// const appCategories = require('./appCategories');
 
 const webSearch = require('./webSearch');
 
 // const systemCommand = require('./systemCommand');
 // const portAudio = require('./portAudio');
-const wallpapers = require('./wallpapers');
+// const wallpapers = require('./wallpapers');
 // const {fetchSystemInformation, fetchSystemInformationModes} = require('./systemInformation');
 
 /**
@@ -86,13 +91,15 @@ const initSocket = (socket) => {
   socket.on(SOCKET_API_ROUTE_ECHO, echo);
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
-  socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
+
+  socket.on(SOCKET_API_ROUTE_SOCKET_FS, socketFS);
+  // socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);
 
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
-  socket.on(SOCKET_API_ROUTE_FETCH_X_APPS, xApps);
-  socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);
+  // socket.on(SOCKET_API_ROUTE_FETCH_X_APPS, xApps);
+  // socket.on(SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES, appCategories);
 
-  socket.on(SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS, wallpapers.fetchWallpaperPaths);
+  // socket.on(SOCKET_API_ROUTE_WALLPAPERS_FETCH_WALLPAPER_PATHS, wallpapers.fetchWallpaperPaths);
 
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
 
