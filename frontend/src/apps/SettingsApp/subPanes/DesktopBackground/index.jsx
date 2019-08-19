@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import fetchwallpaperPaths from 'utils/desktop/fetchWallpaperPaths';
-import getRequestURL from 'utils/fileSystem/getRequestURL';
+import getRequestURL from 'utils/socketFileSystem/getRequestURL';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
 export default class DesktopBackground extends Component {

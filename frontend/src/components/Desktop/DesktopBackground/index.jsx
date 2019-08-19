@@ -1,6 +1,6 @@
 import Background from 'components/Background';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import getRequestURL from 'utils/fileSystem/getRequestURL';
+import getRequestURL from 'utils/socketFileSystem/getRequestURL';
 import hocConnect from 'state/hocConnect';
 
 export default hocConnect(Background, DesktopLinkedState, (updatedState) => {
