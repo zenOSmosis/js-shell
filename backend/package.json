@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon -r esm src/index.js -L",
-    "test": "jest backend/tests"
+    "test": "jest"
   },
   "author": "Jeremy Harris (zenOSmosis)",
   "license": "ISC",
@@ -26,7 +26,8 @@
     "uuidv4": "^4.0.0"
   },
   "devDependencies": {
-    "jest": "^24.5.0"
+    "jest": "^24.5.0",
+    "jest-esm-transformer": "^1.0.0"
   },
   "_moduleAliases": {
     "api": "src/api",
