@@ -1,6 +1,7 @@
 // @see https://www.npmjs.com/package/systeminformation
 const {fetchSystemInformation: fSI, SYSINFO_MODES} = require('utils/systemInformation');
 
+// TODO: Implement handleSocketRoute
 const fetchSystemInformationModes = async (options = {}, ack) => {
   ack(SYSINFO_MODES);
 };

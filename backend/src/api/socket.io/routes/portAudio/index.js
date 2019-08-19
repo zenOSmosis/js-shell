@@ -1,6 +1,7 @@
 // @see https://github.com/Streampunk/naudiodon#readme
 const portAudio = require('utils/portAudio');
 
+// TODO: Remove this API
 const fetchDevices = async (options = {}, ack) => {
   try {
     ack(portAudio.getDevices());    

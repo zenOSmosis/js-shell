@@ -6,6 +6,7 @@ RUN apt-get update \
   && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
   && apt-get install -y nodejs \
   && curl -L https://www.npmjs.com/install.sh | sh \
+  && apt-get install -y git \
   && apt-get clean
 
 # Specifically used during development (TODO: Run from package instead?)

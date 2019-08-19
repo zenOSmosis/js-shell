@@ -3,8 +3,15 @@
  */
 
 import {
+  SOCKET_API_ROUTE_FETCH_NODE_ENV,
+  SOCKET_API_ROUTE_FETCH_NODE_UPTIME,
+
+  SOCKET_API_ROUTE_FETCH_GIT_BRANCH,
+  SOCKET_API_ROUTE_FETCH_GIT_COMMIT_DATE,
+  SOCKET_API_ROUTE_FETCH_GIT_PUBLIC_SIGNATURE,
+  SOCKET_API_ROUTE_FETCH_GIT_SHORT_HASH,
+
   SOCKET_API_ROUTE_ECHO,
-  SOCKET_API_ROUTE_NODE_ENV,  
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,
@@ -30,7 +37,14 @@ import {
   SOCKET_API_ROUTE_REQUEST_DISCONNECT
 } from './routes';
 
-import fetchNodeEnv from './nodeEnv';
+import {
+  fetchGitBranch,
+  fetchGitCommitDate,
+  fetchGitPublicSignature,
+  fetchGitShortHash
+} from './git';
+
+import { fetchNodeEnv, fetchNodeUptime } from './node';
 
 const echo = require('./echo');
 const { createXTermSocketChannel } = require('./socketChannel');
@@ -61,8 +75,15 @@ const wallpapers = require('./wallpapers');
 const initSocket = (socket) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
+  socket.on(SOCKET_API_ROUTE_FETCH_NODE_ENV, fetchNodeEnv);
+  socket.on(SOCKET_API_ROUTE_FETCH_NODE_UPTIME, fetchNodeUptime);
+
+  socket.on(SOCKET_API_ROUTE_FETCH_GIT_BRANCH, fetchGitBranch);
+  socket.on(SOCKET_API_ROUTE_FETCH_GIT_COMMIT_DATE, fetchGitCommitDate);
+  socket.on(SOCKET_API_ROUTE_FETCH_GIT_PUBLIC_SIGNATURE, fetchGitPublicSignature);
+  socket.on(SOCKET_API_ROUTE_FETCH_GIT_SHORT_HASH, fetchGitShortHash);
+
   socket.on(SOCKET_API_ROUTE_ECHO, echo);
-  socket.on(SOCKET_API_ROUTE_NODE_ENV, fetchNodeEnv);
   socket.on(SOCKET_API_ROUTE_DEBUG_ERROR, debugError);
   socket.on(SOCKET_API_ROUTE_PING, ping);
   socket.on(SOCKET_API_ROUTE_FILESYSTEM, fileSystem);

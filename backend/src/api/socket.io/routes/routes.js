@@ -1,5 +1,12 @@
+export const SOCKET_API_ROUTE_FETCH_NODE_ENV = 'api/fetch-env';
+export const SOCKET_API_ROUTE_FETCH_NODE_UPTIME = 'api/fetch-node-uptime';
+
+export const SOCKET_API_ROUTE_FETCH_GIT_BRANCH = 'api/fetch-git-branch';
+export const SOCKET_API_ROUTE_FETCH_GIT_COMMIT_DATE = 'api/fetch-git-commit-date';
+export const SOCKET_API_ROUTE_FETCH_GIT_PUBLIC_SIGNATURE = 'api/fetch-git-public-signature';
+export const SOCKET_API_ROUTE_FETCH_GIT_SHORT_HASH = 'api/fetch-git-short-hash';
+
 export const SOCKET_API_ROUTE_ECHO = 'api/echo';
-export const SOCKET_API_ROUTE_NODE_ENV = 'api/env'; // TODO: Rename to fetchEnv
 export const SOCKET_API_ROUTE_DEBUG_ERROR = 'api/debug:error';
 export const SOCKET_API_ROUTE_PING = 'api/host:ping'; // ping is a reserved Socket.io word
 export const SOCKET_API_ROUTE_FILESYSTEM = 'api/fileSystem';
@@ -27,8 +34,14 @@ export const SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL = 'api/create-xterm-so
 export const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/request-disconnect';
 
 export const SOCKET_API_ROUTES = [
+  SOCKET_API_ROUTE_FETCH_NODE_ENV,
+  SOCKET_API_ROUTE_FETCH_NODE_UPTIME,
+
+  SOCKET_API_ROUTE_FETCH_GIT_BRANCH,
+  SOCKET_API_ROUTE_FETCH_GIT_COMMIT_DATE,
+  SOCKET_API_ROUTE_FETCH_GIT_PUBLIC_SIGNATURE,
+  
   SOCKET_API_ROUTE_ECHO,
-  SOCKET_API_ROUTE_NODE_ENV,
   SOCKET_API_ROUTE_DEBUG_ERROR,
   SOCKET_API_ROUTE_PING,
   SOCKET_API_ROUTE_FILESYSTEM,

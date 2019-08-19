@@ -1,4 +1,4 @@
-const ChildProcess = require('../ChildProcess');
+const ChildProcess = require('../old.ChildProcess');
 
 class LinuxGPUChildProcess extends ChildProcess {
   constructor(gpuNumber = 0, command, args=[]) {

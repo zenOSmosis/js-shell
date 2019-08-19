@@ -1,5 +1,8 @@
 // TODO: Implement ability to cancel https://dev.to/chromiumdev/cancellable-async-functions-in-javascript-5gp7
 // Would be nice to keep async / await structure, and have it cancelable at the same time
+// Should we implement a disconnect / reconnect cycle in order to force the cancel?  There must be a better way.
+
+// TODO: Implement throwing of error if Socket disconnects before the response
 
 import socket from 'utils/socket.io';
 

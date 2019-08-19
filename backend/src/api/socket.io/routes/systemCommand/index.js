@@ -2,6 +2,7 @@
 
 // const LinuxGPUChildProcess = require('utils/linux/LinuxGPUChildProcess');
 
+// TODO: Remove this API
 const systemCommand = (commandData, ack) => {
   console.error('Ignoring system command', commandData);
 

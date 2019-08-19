@@ -6,8 +6,8 @@ require('utils/p2p/SocketPeerDataPacket.typedef');
  * @param {SocketPeerDataPacket} socketPeerDataPacket 
  * @param {function} ack 
  */
-const sendSocketPeerData = async(socketPeerDataPacket, ack) => {
-  return handleSocketAPIRoute( () => {
+const sendSocketPeerData = async (socketPeerDataPacket, ack) => {
+  return await handleSocketAPIRoute(() => {
     const {
       toSocketPeerID,
       fromSocketPeerID,

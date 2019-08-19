@@ -1,6 +1,6 @@
 const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
 
-const error = async(options = {}, ack) => {
+const error = async (options = {}, ack) => {
   return await handleSocketAPIRoute(async () => {
     try {
       return await new Promise(async (resolve, reject) => {

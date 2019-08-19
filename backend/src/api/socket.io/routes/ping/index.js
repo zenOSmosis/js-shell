@@ -1,7 +1,7 @@
 const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
 
-const ping = async(options = {}, ack) => {
-  return /*await*/ handleSocketAPIRoute(/*async*/ () => {
+const ping = async (options = {}, ack) => {
+  return await handleSocketAPIRoute(() => {
     return 'host:pong';
   }, ack);
 };
