@@ -18,6 +18,7 @@ import './SystemDetailApp';
 import './CalculatorApp';
 import './SourceCodeApp';
 import './TextEditorApp';
+import './A3DApp';
 import './TerminalApp';
 // import './DocsApp';
 // import './SettingsApp';
