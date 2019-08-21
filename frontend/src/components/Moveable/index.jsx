@@ -1,3 +1,5 @@
+// TODO: Rename to Moveable3D
+
 import React, { Component } from 'react';
 
 /**

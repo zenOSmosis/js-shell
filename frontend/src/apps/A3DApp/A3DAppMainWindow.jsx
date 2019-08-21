@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
 import Section from 'components/Section';
 import Joystick from 'components/Joystick';
-import { Layout, Content, Footer } from 'components/Layout';
+import Scrollable from 'components/Scrollable';
 import { SegmentedControl, SegmentedControlItem } from 'components/SegmentedControl';
 import LabeledComponent from 'components/LabeledComponent';
 import Center from 'components/Center';
@@ -43,41 +43,39 @@ class WindowController extends Component {
     });
 
     return (
-      <Layout>
-        <Content>
-          <Section>
-            <h1>Window Selector</h1>
-            <p>
-              Select a window to manipulate.
+      <Scrollable>
+        <Section>
+          <h1>Window Selector</h1>
+          <p>
+            Select a window to manipulate.
             </p>
 
-            <select onChange={evt => this._handleSelectWindowChange(evt)}>
-              <option value="">Choose...</option>
-              {
-                desktopWindows.map((desktopWindow, idx) => {
-                  return (
-                    <option value={idx} key={idx}>
-                      {
-                        desktopWindow.getTitle()
-                      }
-                    </option>
-                  )
-                })
-              }
-            </select>
-          </Section>
-        </Content>
+          <select onChange={evt => this._handleSelectWindowChange(evt)}>
+            <option value="">Choose...</option>
+            {
+              desktopWindows.map((desktopWindow, idx) => {
+                return (
+                  <option value={idx} key={idx}>
+                    {
+                      desktopWindow.getTitle()
+                    }
+                  </option>
+                )
+              })
+            }
+          </select>
+        </Section>
 
         {
           selectedWindow &&
-          <Footer>
+          <div>
             <Section>
               <h1>Dials</h1>
               <Center>
                 <div style={{ margin: 10, display: 'inline-block' }}>
                   <LabeledComponent label="X Rotation">
                     <Knob
-                      onChange={degX => {selectedWindow.setRotation({degX}) }}
+                      onChange={percent => { selectedWindow.setRotation({ degX: percent * 3.6 }) }}
                     />
                   </LabeledComponent>
                 </div>
@@ -85,7 +83,7 @@ class WindowController extends Component {
                 <div style={{ margin: 10, display: 'inline-block' }}>
                   <LabeledComponent label="Y Rotation">
                     <Knob
-                      onChange={degY => {selectedWindow.setRotation({degY}) }}
+                      onChange={percent => { selectedWindow.setRotation({ degY: percent * 3.6 }) }}
                     />
                   </LabeledComponent>
                 </div>
@@ -93,7 +91,7 @@ class WindowController extends Component {
                 <div style={{ margin: 10, display: 'inline-block' }}>
                   <LabeledComponent label="Z Translation">
                     <Knob
-                      onChange={translateZ => {selectedWindow.setRotation({translateZ}) }}
+                      onChange={percent => { selectedWindow.setRotation({ translateZ: percent * 3.6 }) }}
                     />
                   </LabeledComponent>
                 </div>
@@ -101,12 +99,13 @@ class WindowController extends Component {
                 <div style={{ margin: 10, display: 'inline-block' }}>
                   <LabeledComponent label="Perspective">
                     <Knob
-                      onChange={perspective => {selectedWindow.setPerspective(perspective * 10) }}
+                      onChange={perspective => { selectedWindow.setPerspective(perspective * 10) }}
                     />
                   </LabeledComponent>
                 </div>
               </Center>
             </Section>
+
             <Section>
               <h1>Joystick</h1>
               <Section style={{ marginTop: 0, marginBottom: 0 }}>
@@ -130,9 +129,9 @@ class WindowController extends Component {
                 </div>
               </Section>
             </Section>
-          </Footer>
+          </div>
         }
-      </Layout>
+      </Scrollable>
     );
   }
 }

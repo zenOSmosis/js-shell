@@ -10,7 +10,7 @@ body {
   background-color: #282c34 !important;
   color: #999;
 
-  overflow: hidden;
+  overflow: none;
 }
 
 .blurred {

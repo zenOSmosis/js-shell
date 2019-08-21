@@ -60,7 +60,7 @@ class Desktop extends Component {
     const { isFullScreenRequested } = this.props;
 
     return (
-      <div ref={c => this._el = c}>
+      <div ref={c => this._el = c} style={{overflow: 'none', width: '100%', height: 'none'}}>
         <Fullscreen
           enabled={isFullScreenRequested}
           // onChange={isFullScreenRequested => this.setState({isFullScreenRequested})}
