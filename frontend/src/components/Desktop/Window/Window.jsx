@@ -140,6 +140,8 @@ class Window extends Component {
     this._isClosing = false;
     this._isClosed = false;
 
+    this._perspective = 0;
+
     /**
      * @type {WindowSize}
      */
@@ -612,6 +614,19 @@ class Window extends Component {
 
   setRotation(rotation = {degX: undefined, degY: undefined, translateZ: undefined}) {
     this._moveableComponent.setRotation(rotation);
+  }
+
+  setPerspective(perspective) {
+    if (!this._el) {
+      return;
+    }
+
+    perspective = parseInt(perspective);
+    this._perspective = perspective;
+
+    window.requestAnimationFrame(() => {
+      this._el.style.perspective = `${perspective}px`;
+    });
   }
 
   /**

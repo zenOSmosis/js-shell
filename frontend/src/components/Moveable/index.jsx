@@ -23,6 +23,9 @@ export default class Moveable extends Component {
   componentDidMount() {
     const { initialX, initialY } = this.props;
     this.moveTo(initialX, initialY);
+
+    // TODO: Move to CSS class
+    this._root.style.transformStyle = 'preserve-3d';
   }
 
   componentWillUnmount() {

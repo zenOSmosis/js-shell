@@ -1,9 +1,9 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import A3DAppMainWindow from './A3DAppMainWindow';
-import ClientGUIProcess from 'process/ClientGUIProcess';
-import Box3D from 'components/Box3D';
-import Window from 'components/Desktop/Window';
+// import ClientGUIProcess from 'process/ClientGUIProcess';
+// import Box3D from 'components/Box3D';
+// import Window from 'components/Desktop/Window';
 import config from 'config';
 
 export default registerApp({
@@ -13,6 +13,7 @@ export default registerApp({
       <A3DAppMainWindow {...props} />
     );
   },
+  /*
   cmd: (app) => {
     new ClientGUIProcess(app, (subGUIProcess) => {
       subGUIProcess.setView(props => {
@@ -36,5 +37,6 @@ export default registerApp({
       });
     });
   },
+  */
   iconSrc: `${config.HOST_ICON_URL_PREFIX}cube/cube.svg`
 });
