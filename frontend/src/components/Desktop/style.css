@@ -8,7 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   background-color: #282c34 !important;
-  color: #fff;
+  color: #999;
 
   overflow: hidden;
 }
@@ -35,11 +35,24 @@ body.blur {
 */
 
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
+  color: #999 !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  border-bottom: 1px #999 solid;
+  text-align: left;
+  font-family: "Arial Black", Gadget, sans-serif;
 }
 
 h2 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+p {
+  display: block;
+  margin: 1rem 0rem;
 }
 
 h1,h2,h3,h4,h5,h6 {
