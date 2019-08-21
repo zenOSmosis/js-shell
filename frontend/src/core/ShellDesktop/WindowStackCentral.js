@@ -9,6 +9,7 @@ import Window, {
   EVT_BEFORE_CLOSE,
   EVT_FOCUS
 } from 'components/Desktop/Window';
+import DesktopWindowLinkedState from 'state/DesktopWindowLinkedState';
 
 let _windowStackCentral = null;
 
@@ -42,6 +43,8 @@ class WindowStackCentral extends ClientProcess {
      * @type {Window[]}
      */
     this._stack = [];
+
+    this._desktopWindowLinkedState = new DesktopWindowLinkedState();
 
     // Register process flag
     _windowStackCentral = this;
@@ -260,6 +263,11 @@ class WindowStackCentral extends ClientProcess {
 
     this._stack.push(desktopWindow);
 
+    // Set on next tick, so that the Window can fully set for any initial listeners
+    this.setImmediate(() => {
+      this._desktopWindowLinkedState.addWindow(desktopWindow);
+    });
+
     // Apply Window position once mounted
     desktopWindow.once(EVT_MOUNT, () => {
       desktopWindow.setPosition(this._nextDefaultPosition);
@@ -293,6 +301,8 @@ class WindowStackCentral extends ClientProcess {
     this._stack = this._stack.filter(testWindow => {
       return !Object.is(testWindow, desktopWindow);
     });
+
+    this._desktopWindowLinkedState.removeWindow(desktopWindow);
 
     // Render the updated stack, or there will be problems with auto Window
     // focusing after closing other Windows, etc.
