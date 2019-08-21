@@ -609,6 +609,11 @@ class Window extends Component {
     this._moveableComponent.moveTo(posX, posY);
   }
 
+
+  setRotation(rotation = {degX: undefined, degY: undefined, translateZ: undefined}) {
+    this._moveableComponent.setRotation(rotation);
+  }
+
   /**
    * Determines whether the Window should be overlaid with <Cover /> (a
    * transparent <div> tag), in order to prevent inadvertent interaction of
