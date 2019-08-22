@@ -2,16 +2,19 @@
 
 #!/bin/sh
 
+echo "Production build isn't available at this time"
+exit 125
+
 # Ensure we're running sub-scripts from this directory, if called from another
 # directory
-cd "$(dirname "$0")"
+# cd "$(dirname "$0")"
 
 # Initialize git submodules
-git submodule init
-git submodule update
+# git submodule init
+# git submodule update
 
 # Build the Docker Compose configuration
-docker-compose build
+# docker-compose build
 
 # @see https://docs.docker.com/compose/reference/build/
 # Usage: build [options] [--build-arg key=val...] [SERVICE...]

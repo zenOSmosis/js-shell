@@ -1,5 +1,8 @@
 FROM node:10
 
+# TODO: Implement ability to obtain dynamic username
+RUN useradd -ms /bin/bash user
+
 WORKDIR /shell/frontend
 
 COPY ./ ./

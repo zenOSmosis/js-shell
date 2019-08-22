@@ -13,9 +13,9 @@ git submodule update
 # Install npm modules to HOST machine
 # In the Docker Compose config, these volumes are mounted to the container
 # This should ONLY happen during development
-cd backend && npm install && cd ../
-cd frontend && npm install && cd ../
+# cd backend && npm install && cd ../
+# cd frontend && npm install && cd ../
 
 # Build the Docker Compose configuration
 # TODO: Utilize development Docker Compose configuration
-docker-compose build
+CURRENT_UID=$(id -u):$(id -g) docker-compose build
