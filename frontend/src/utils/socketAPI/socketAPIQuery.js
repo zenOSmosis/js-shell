@@ -20,7 +20,7 @@ const socketAPIQuery = (eventName, requestData = null) => {
       throw new Error(`Unknown socketAPI route: ${eventName}`);
     }
 
-    socket.emit(eventName, requestData, (resp) => {
+    socket.emit(eventName, requestData, ([err, resp]) => {
       if (typeof resp === 'undefined') {
         // TODO: Document this object
         return reject({
@@ -30,20 +30,14 @@ const socketAPIQuery = (eventName, requestData = null) => {
         });
       }
 
-      if (typeof resp !== 'undefined') {
-        const { err } = resp;
-
-        if (err) {
-          console.error('Socket API error:', err);
-          return reject(err);
-        }
-  
-        return resolve(resp);
-      } else {
-        return resolve();
+      if (err) {
+        console.error('Socket API error:', err);
+        return reject(err);
       }
+
+      return resolve(resp);
     });
-  });
+});
 };
 
 export default socketAPIQuery;

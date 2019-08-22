@@ -18,13 +18,13 @@ const handleSocketAPIRoute = async (serviceCall, ack = null) => {
   try {
     if (typeof ack !== 'function') {
       // Forge ack call if one does not exist
-      ack = () => null;
+      ack = ([]) => null;
     }
 
     const serviceResp = await serviceCall();
 
     // Send acknowledgement to client
-    ack(serviceResp);
+    ack([null, serviceResp]);
   } catch (err) {
     // Emit error to local console
     console.error(err);
@@ -43,7 +43,7 @@ const handleSocketAPIRoute = async (serviceCall, ack = null) => {
         // Debuggable error stack
         const stack = await fetchStackTrace.fromError(err);
   
-        const serialzedErr = {
+        const serializedErr = {
           err: {
             message,
             name,
@@ -55,10 +55,10 @@ const handleSocketAPIRoute = async (serviceCall, ack = null) => {
           }
         };
   
-        ack(serialzedErr);
+        ack([serializedErr]);
       } catch (exc) {
         console.error(exc);
-        ack();
+        ack([]);
       }
     })();
   }
