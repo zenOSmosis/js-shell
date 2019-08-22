@@ -11,7 +11,8 @@ RUN apt-get update \
 
 RUN npm install -g nodemon jest
 
-# TODO: Install user account & don't run as root
+# TODO: Implement ability to obtain dynamic username
+RUN useradd -ms /bin/bash user
 
 WORKDIR /shell/backend
 
