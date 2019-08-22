@@ -1,5 +1,5 @@
 const path = require('path');
-const fetchFSNodeDetail = require('./fetchFSNodeDetail');
+const fetchFSNodeDetail = require('./pathDetail');
 const ls = require('./ls');
 
 const chdir = async (dirName) => {

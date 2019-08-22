@@ -20,8 +20,12 @@ class FileTree extends Component {
         },
         {
           name: 'loading parent',
-          loading: true,
-          children: []
+          toggled: true,
+          // loading: true,
+          children: [
+            { name: 'child1' },
+            { name: 'child2' }
+          ]
         },
         {
           name: 'parent',

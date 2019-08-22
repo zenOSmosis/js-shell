@@ -13,8 +13,6 @@ class Joystick extends Component {
     this.state = {
       isMounted: false
     };
-
-    const _elRoot = null;
   }
 
   componentDidMount() {

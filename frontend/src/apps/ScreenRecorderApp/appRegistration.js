@@ -5,6 +5,8 @@ import registerApp from 'utils/desktop/registerApp';
 import ScreenRecorderWindow from './ScreenRecorderWindow';
 import config from 'config';
 
+import * as socketFS from 'utils/socketFS';
+
 export default registerApp({
   title: 'Screen Recorder',
   mainView: (props) => {
@@ -34,21 +36,59 @@ export default registerApp({
     });
 
     const startCapture = async () => {
-      const { videoElem: stateVideoElem } = appProcess.getState();
-      videoElem = stateVideoElem;
-
-      const displayMediaOptions = {
-        video: {
-          cursor: 'never'
-        },
-        audio: false
-      };
-
       try {
-        videoElem.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+        const { videoElem: stateVideoElem } = appProcess.getState();
+        videoElem = stateVideoElem;
+
+        const displayMediaOptions = {
+          video: {
+            cursor: 'never'
+          },
+          audio: false
+        };
+
+        let stream;
+
+        videoElem.srcObject = stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
         dumpOptionsInfo();
 
         videoElem.play();
+
+        // Prototype video recording on remote
+        (async () => {
+          try {
+            const TEMP_PATH = '/tmp/screen_record.webm';
+
+            await socketFS.rm(TEMP_PATH);
+
+            let fd = await socketFS.open(TEMP_PATH, 'w');
+
+            let totalBytes = 0;
+            
+            var rec = new MediaRecorder(stream);
+            rec.ondataavailable = e => {
+              new Response(e.data).arrayBuffer().then(buffer => {
+                const newBytes = buffer.byteLength;
+  
+                socketFS.write(fd, buffer, 0, newBytes, totalBytes);
+  
+                totalBytes += newBytes;
+              });
+            }
+            rec.start(1000);
+  
+
+            appProcess.on('beforeExit', () => {
+              rec.stop();
+
+              socketFS.close(fd);
+
+              fd = null;
+            });
+          } catch (exc) {
+            throw exc;
+          }
+        })();
 
         appProcess.setState({
           isCapturing: true

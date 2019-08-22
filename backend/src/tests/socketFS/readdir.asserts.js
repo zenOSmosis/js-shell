@@ -2,6 +2,8 @@ import { readdir } from '../../utils/socketFS';
 
 describe('readdir', () => {
   test('Directory read', async () => {
+    expect.assertions(1);
+    
     try {
       const read = await readdir('/tmp');
 

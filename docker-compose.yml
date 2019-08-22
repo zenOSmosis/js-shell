@@ -36,6 +36,7 @@ services:
     build: ./backend
     volumes:
       # - ./backend:/shell/backend # Only during development
+      - /tmp:/tmp # Only during development
       - ./:/shell # Only during development
     environment:
       - NODE_ENV=development

@@ -1,8 +1,8 @@
 const nodeJSPath = require('path');
 const stat = require('./stat');
-const getPathSeparator = require('./getPathSeparator');
+const fetchPathSeparator = require('./fetchPathSeparator');
 
-const pathSeparator = getPathSeparator();
+const pathSeparator = fetchPathSeparator();
 
 const fetchFSNodeDetail = async (pathName) => {
   try {
@@ -25,6 +25,7 @@ const fetchFSNodeDetail = async (pathName) => {
       isDir = stats.isDirectory();
     }
 
+    // Unix-only
     const isHidden = path.base.startsWith('.');
   
     return Object.assign(

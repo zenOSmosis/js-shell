@@ -1,7 +1,7 @@
 const fs = require('fs');
 const nodeJSPath = require('path');
 const stat = require('./stat');
-const fetchFSNodeDetail = require('./fetchFSNodeDetail');
+const fetchFSNodeDetail = require('./pathDetail');
 
 const ls = (dirName) => {
   return new Promise((resolve, reject) => {

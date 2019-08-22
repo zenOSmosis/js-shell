@@ -30,7 +30,7 @@ const socketAPIQuery = (eventName, requestData = null) => {
         });
       }
 
-      if (resp) {
+      if (typeof resp !== 'undefined') {
         const { err } = resp;
 
         if (err) {

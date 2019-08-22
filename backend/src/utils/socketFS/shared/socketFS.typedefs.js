@@ -1,3 +1,5 @@
+
+
 /**
  * @typedef {string} FileFlag Can be any of 'r', 'r+', 'rs', 'rs+', 'w', 'wx',
  * 'w+', 'wx+', 'a', 'ax', 'a+', 'ax+'.
@@ -39,3 +41,18 @@
   * @property {string} ctime e.g. "Mon, 10 Oct 2011 23:24:11 GMT"
   * @property {string} birthtime e.g. "Mon, 10 Oct 2011 23:24:11 GMT"
   */
+
+/**
+ * An object whose properties represent significant elements of a path.
+ * 
+ * Trailing directory separators are ignored.
+ * 
+ * @see https://nodejs.org/api/path.html#path_path_parse_path
+ * 
+ * @typedef {Object} PathParse
+ * @property {string} Root
+ * @property {string} dir
+ * @property {string} base
+ * @property {string} ext
+ * @property {string} name
+ */

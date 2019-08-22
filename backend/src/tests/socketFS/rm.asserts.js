@@ -1,4 +1,4 @@
-import { mkdir, rm, readdir, getPathSeparator } from '../../utils/socketFS';
+import { mkdir, rm, readdir, fetchPathSeparator } from '../../utils/socketFS';
 
 describe('rm', () => {
   test('Create a directory and delete it', async () => {
@@ -6,7 +6,7 @@ describe('rm', () => {
 
     const TEST_DIR = '/tmp';
     const TEST_FILENAME = '_b_';
-    const TEST_PATH = `${TEST_DIR}${getPathSeparator()}${TEST_FILENAME}`;
+    const TEST_PATH = `${TEST_DIR}${fetchPathSeparator()}${TEST_FILENAME}`;
 
     try {
       // Setup

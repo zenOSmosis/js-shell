@@ -1,13 +1,13 @@
 const chdir = require('./chdir');
 const fetchRecursiveFilePaths = require('./fetchRecursiveFilePaths');
-const getPathSeparator = require('./getPathSeparator');
+const fetchPathSeparator = require('./fetchPathSeparator');
 const ls = require('./ls');
 const stat = require('./stat');
 
 module.exports = {
   chdir,
   fetchRecursiveFilePaths,
-  getPathSeparator,
+  fetchPathSeparator,
   ls,
   stat
 };

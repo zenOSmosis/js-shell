@@ -3,6 +3,7 @@ import 'shared/socketFS/socketFS.typedefs';
 import socketFSCall from './_socketFSCall';
 
 /**
+ * @param {string} Path
  * @return {Promise<boolean>}
  */
 const isDir = async (path) => {

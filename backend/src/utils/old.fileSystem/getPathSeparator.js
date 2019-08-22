@@ -1,7 +1,7 @@
 const path = require('path');
 
-const getPathSeparator = () => {
+const fetchPathSeparator = () => {
   return path.sep;
 };
 
-module.exports = getPathSeparator;
+module.exports = fetchPathSeparator;
