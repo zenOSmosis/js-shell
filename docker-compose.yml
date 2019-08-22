@@ -4,7 +4,7 @@
 
 # TODO: Autorestart all environments in production
 
-version: '3.7'
+version: '3.3'
 
 networks:
   # Establish base network to resolve container hostnames (esp. w/ Nginx)
