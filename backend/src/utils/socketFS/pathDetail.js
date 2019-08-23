@@ -9,10 +9,13 @@ const pathDetail = async (path) => {
 
     // Normalize path
     path = path.toString().trim();
+    // Remove trailing slash
     if (path.length > 1 &&
       path[path.length - 1] === pathSeparator) {
       path.slice(0, -1);
     }
+    // Replace double-occurrences of path separator w/ single
+    path = path.replace(new RegExp(pathSeparator + pathSeparator), pathSeparator);
 
     const stats = await stat(path);
     /**
