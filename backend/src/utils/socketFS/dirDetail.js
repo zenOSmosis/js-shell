@@ -21,7 +21,8 @@ const dirDetail = async (path) => {
       try {
         children[i] = await pathDetail(`${path}${pathSeparator}${children[i]}`);
       } catch (exc) {
-        // console.error(exc);
+        console.error(exc);
+        
         children[i] = {
           error: exc
         };
