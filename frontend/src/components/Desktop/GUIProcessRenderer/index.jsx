@@ -12,7 +12,7 @@ import equals from 'equals';
  * 
  * @extends Component
  */
-class GUIProcessRenderProvider extends Component {
+class GUIProcessRenderer extends Component {
   render() {
     let { guiProcesses } = this.props;
     guiProcesses = guiProcesses || [];
@@ -49,12 +49,12 @@ class GUIProcessRenderProvider extends Component {
   }
 }
 
-const ConnectedGUIProcessRenderProvider = (() => {
+const ConnectedGUIProcessRenderer = (() => {
   // A cache of AppRuntime process IDs
   let _prevPIDs = [];
   let _shellGUIProcessID = null;
 
-  return hocConnect(GUIProcessRenderProvider, ClientProcessLinkedState, (updatedState) => {
+  return hocConnect(GUIProcessRenderer, ClientProcessLinkedState, (updatedState) => {
     if (!_shellGUIProcessID) {
       const shellGUIProcess = getShellDesktopProcess();
       _shellGUIProcessID = shellGUIProcess.getPID();
@@ -86,7 +86,7 @@ const ConnectedGUIProcessRenderProvider = (() => {
   });
 })();
 
-export default ConnectedGUIProcessRenderProvider;
+export default ConnectedGUIProcessRenderer;
 export {
-  GUIProcessRenderProvider
+  GUIProcessRenderer
 };

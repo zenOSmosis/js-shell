@@ -20,7 +20,7 @@ import VersionLabel from './VersionLabel';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
-import GUIProcessRenderProvider from './GUIProcessRenderProvider';
+import GUIProcessRenderer from './GUIProcessRenderer';
 
 // Registers default Shell Desktop apps
 // TODO: If refactoring this to another location, update the reference to that
@@ -105,7 +105,7 @@ class Desktop extends Component {
                     // <AppRouteController />
                   }
 
-                  <GUIProcessRenderProvider />
+                  <GUIProcessRenderer />
 
                   <VersionLabel />
 
