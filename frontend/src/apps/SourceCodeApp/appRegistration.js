@@ -17,7 +17,18 @@ export default registerApp({
   iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
   cmd: (app) => {
     app.editorLinkedState = new LinkedState(`editor-${uuidv4()}`, {
-      requestOpenPaths: []
+      requestOpenPaths: [],
+
+      cursorPosition: {
+        endColumn: 0,
+        endLineNumber: 0,
+        positionColumn: 0,
+        positionLineNumber: 0,
+        selectionStartColumn: 0,
+        selectionStartLineNumber: 0,
+        startColumn: 0,
+        startLineNumber: 0
+      }
     });
 
     app.on(EVT_BEFORE_EXIT, () => {

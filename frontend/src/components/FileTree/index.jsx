@@ -1,3 +1,7 @@
 import FileTree from './FileTree';
+import FileTreeWithHeaderControls from './FileTreeWithHeaderControls';
 
-export default FileTree;
+export default FileTreeWithHeaderControls;
+export {
+  FileTree
+};

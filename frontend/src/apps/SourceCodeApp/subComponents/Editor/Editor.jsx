@@ -6,9 +6,7 @@ export default class Editor extends Component {
   constructor(...args) {
     super(...args);
 
-    this.state = {
-      monacoEditor: null
-    };
+    this._monacoEditor = null;
   }
 
   componentDidMount() {
@@ -35,21 +33,22 @@ export default class Editor extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this._monacoEditor.dispose();
+    this._monacoEditor = null;
+  }
+
   /**
    * Retrieves the code in the editor.
    * 
    * @return {string} The code 
    */
   getValue() {
-    const { monacoEditor } = this.state;
-
-    return monacoEditor.getValue();
+    return this._monacoEditor.getValue();
   }
 
   setValue(value) {
-    const { monacoEditor } = this.state;
-
-    monacoEditor.setValue(value);
+    this._monacoEditor.setValue(value);
   }
 
   render() {
@@ -61,8 +60,16 @@ export default class Editor extends Component {
   }
 
   _setMonacoEditor(monacoEditor) {
-    this.setState({
-      monacoEditor
+    this._monacoEditor = monacoEditor;
+
+    this._monacoEditor.onDidChangeCursorSelection((evt) => {
+      const { selection } = evt;
+
+      if (selection !== undefined && this._editorLinkedState) {
+        this._editorLinkedState.setState({
+          cursorPosition: selection
+        });
+      }
     });
   }
 }
