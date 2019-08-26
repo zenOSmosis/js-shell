@@ -58,7 +58,7 @@ const socketFS = async (options = {}, ack) => {
 
       switch (socketFSMethod) {
         case SOCKET_FS_METHOD_ACCESS:
-          return access(...socketFSArgs);
+          return await access(...socketFSArgs);
         
         case SOCKET_FS_METHOD_CLOSE:
           return await close(...socketFSArgs);
@@ -67,10 +67,10 @@ const socketFS = async (options = {}, ack) => {
           return await dirDetail(...socketFSArgs);
 
         case SOCKET_FS_METHOD_EXISTS:
-          return exists(...socketFSArgs);
+          return await exists(...socketFSArgs);
 
         case SOCKET_FS_METHOD_FETCH_PATH_SEPARATOR:
-          return fetchPathSeparator(...socketFSArgs);
+          return await fetchPathSeparator(...socketFSArgs);
         
         case SOCKET_FS_METHOD_IS_DIR:
           return await isDir(...socketFSArgs);

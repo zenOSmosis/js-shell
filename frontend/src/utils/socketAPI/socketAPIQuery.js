@@ -21,21 +21,19 @@ const socketAPIQuery = (eventName, requestData = null) => {
     }
 
     socket.emit(eventName, requestData, ([err, resp]) => {
-      if (typeof resp === 'undefined') {
+      if (err) {
+        console.error('Socket API error:', err);
+        return reject(err);
+      } else if (resp === undefined) {
         // TODO: Document this object
         return reject({
           message: 'No response for query',
           eventName,
           requestData
         });
+      } else {
+        return resolve(resp);
       }
-
-      if (err) {
-        console.error('Socket API error:', err);
-        return reject(err);
-      }
-
-      return resolve(resp);
     });
 });
 };

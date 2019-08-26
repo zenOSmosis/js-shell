@@ -6,9 +6,9 @@ import FileTree from 'components/FileTree';
 const ProtoWindow = (props) => {
   return (
     <Window>
-      <Scrollable style={{textAlign: 'left'}}>
-        <FileTree />
-      </Scrollable>
+      <FileTree
+        onFileOpenRequest={ path => alert('request to open file ' + path)}
+      />
     </Window>
   );
 };

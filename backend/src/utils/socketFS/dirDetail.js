@@ -6,7 +6,7 @@ const dirDetail = async (path) => {
   try {
     const isDir = await checkIsDir(path);
     if (!isDir) {
-      throw new error('Path is not a directory');
+      throw new Error('Path is not a directory');
     }
 
     const detail = await pathDetail(path);

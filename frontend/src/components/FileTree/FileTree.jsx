@@ -1,11 +1,17 @@
 // Note, out of simplicity, this FileTree is directly attached to socketFS
 
 import React, { Component } from 'react';
+import Scrollable from '../Scrollable';
 import { Treebeard } from 'react-treebeard';
 import { dirDetail } from 'utils/socketFS';
 import './FileTree.typedefs';
+import PropTypes from 'prop-types';
 
 class FileTree extends Component {
+  static propTypes = {
+    onFileOpenRequest: PropTypes.func.isRequired
+  };
+
   constructor(...args) {
     super(...args);
 
@@ -57,8 +63,7 @@ class FileTree extends Component {
             return !child.error
           }).map(child => {
             return {
-              name: child.name,
-              path: child.path,
+              ...child,
               toggled: false,
               // Children of the child are an array of strings (string[])
               children: (child.isFile ? undefined : child.children && child.children.map(subChild => {
@@ -149,6 +154,19 @@ class FileTree extends Component {
     // }
   }
 
+  async handleTreebeardToggle(treeNode) {
+    const { path, isFile } = treeNode;
+
+    if (isFile) {
+      const { onFileOpenRequest } = this.props;
+      if (typeof onFileOpenRequest === 'function') {
+        onFileOpenRequest(path);
+      }
+    } else {
+      this.toggleTreeNodeWithPath(path);
+    }
+  }
+
   async toggleTreeNodeWithPath(path) {
     try {
       let { walkPath, treeNode } = this.findTreeNodeWithPath(path);
@@ -160,9 +178,9 @@ class FileTree extends Component {
 
       // Detect if already open, or closed, and handle accordingly
       if (!treeNode.toggled) {
-        await this.openTreeNode(treeNode, walkPath);
+        await this.expandTreeNode(treeNode, walkPath);
       } else {
-        await this.closeTreeNode(treeNode, walkPath);
+        await this.collapseTreeNode(treeNode, walkPath);
       }
     } catch (exc) {
       throw exc;
@@ -183,7 +201,7 @@ class FileTree extends Component {
     });
   }
 
-  async openTreeNode(treeNode, walkPath) {
+  async expandTreeNode(treeNode, walkPath) {
     try {
       const { path } = treeNode;
 
@@ -207,7 +225,7 @@ class FileTree extends Component {
 
   }
 
-  async closeTreeNode(treeNode, walkPath) {
+  async collapseTreeNode(treeNode, walkPath) {
     try {
       treeNode.toggled = false;
 
@@ -227,10 +245,12 @@ class FileTree extends Component {
     const { treeData } = this.state;
 
     return (
-      <Treebeard
-        data={treeData}
-        onToggle={evt => this.toggleTreeNodeWithPath(evt.path)}
-      />
+      <Scrollable style={{textAlign: 'left'}}>
+        <Treebeard
+          data={treeData}
+          onToggle={treeNode => this.handleTreebeardToggle(treeNode)}
+        />
+      </Scrollable>
     )
   }
 }
