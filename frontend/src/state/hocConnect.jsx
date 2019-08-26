@@ -14,9 +14,10 @@ import { EVT_LINKED_STATE_UPDATE } from './LinkedState/LinkedState';
  * @see https://reactjs.org/docs/higher-order-components.html
  * 
  * @param {Component} WrappedComponent 
- * @param {LinkedState} LinkedState A passed LinkeState class, or extension of.
- * @param {Function | null} stateUpdateFilter [default = null] Applies this filtered
- * value to the component props when the state is updated.
+ * @param {LinkedState} LinkedState A passed LinkedState class, extension, or
+ * instance of.
+ * @param {Function | null} stateUpdateFilter [default = null] Applies this
+ * filtered value to the component props when the state is updated.
  */
 const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* onConstruct = null */) => {
   // Enables ref to be obtained from stateful components, ignoring ref if not.
@@ -32,6 +33,9 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
       );
     }
   });
+
+  // Whether or not the passed LinkedState is a class, or a constructed object
+  const isLinkedStateClass = (LinkedState.prototype && LinkedState.prototype.constructor ? true : false);
 
   // ...and returns another component...
   return class extends Component {
@@ -53,7 +57,11 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
           return;
         }
 
-        this._linkedStateInstance = new LinkedState();
+        if (isLinkedStateClass) {
+          this._linkedStateInstance = new LinkedState();
+        } else {
+          this._linkedStateInstance = LinkedState;
+        }
 
         if (!this._linkedStateInstance) {
           throw new Error('No LinkedState present');
@@ -73,8 +81,10 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
       (() => {
         this._linkedStateInstance.off(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
 
-        this._linkedStateInstance.destroy();
-        this._linkedStateInstance = null;
+        if (isLinkedStateClass) {
+          this._linkedStateInstance.destroy();
+          this._linkedStateInstance = null;
+        }
       })();
     }
 
