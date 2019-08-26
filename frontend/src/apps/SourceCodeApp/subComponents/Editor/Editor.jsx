@@ -53,8 +53,6 @@ export default class Editor extends Component {
   }
 
   render() {
-    const {/*hasOrientationControls,*/ splitEditor } = this.props;
-
     return (
       <MonacoEditor
         editorDidMount={monacoEditor => this._setMonacoEditor(monacoEditor)}
