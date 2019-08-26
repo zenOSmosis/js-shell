@@ -5,11 +5,11 @@ import './style.css';
 import './style-scrollbar.css';
 
 import React, { Component } from 'react';
-import Fullscreen from 'react-full-screen';
+import FullscreenProvider from 'react-full-screen';
 import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
-import ContextMenu from 'components/ContextMenu';
+import ContextMenuProvider from 'components/ContextMenuProvider';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
@@ -25,43 +25,17 @@ import GUIProcessRenderer from './GUIProcessRenderer';
 // Registers default Shell Desktop apps
 // TODO: If refactoring this to another location, update the reference to that
 // location in apps/defaultApps.js comments
-import $ from 'jquery';
-
 import 'apps/defaultApps';
 
-const CSS_CLASS_NAME_BLUR = 'blur';
+// const CSS_CLASS_NAME_BLUR = 'blur';
 
 class Desktop extends Component {
-  componentDidMount() {
-    this._handleViewportFocusUpdate();
-  }
-
-  componentDidUpdate() {
-    this._handleViewportFocusUpdate();
-  }
-
-  _handleViewportFocusUpdate = () => {
-    const { isViewportFocused } = this.props;
-
-    if (typeof isViewportFocused !== 'undefined') {
-      const $body = $(window.document.body);
-
-      if (isViewportFocused) {
-        // Remove blur when in focused
-        $body.removeClass(CSS_CLASS_NAME_BLUR);
-      } else {
-        // Add blur when not in focused
-        $body.addClass(CSS_CLASS_NAME_BLUR);
-      }
-    }
-  };
-
   render() {
     const { isFullScreenRequested } = this.props;
 
     return (
-      <div ref={c => this._el = c} style={{overflow: 'none', width: '100%', height: 'none'}}>
-        <Fullscreen
+      <div ref={c => this._el = c}>
+        <FullscreenProvider
           enabled={isFullScreenRequested}
           // onChange={isFullScreenRequested => this.setState({isFullScreenRequested})}
         >
@@ -71,50 +45,46 @@ class Desktop extends Component {
               // <URLRedirector /> 
             }
 
-            <ContextMenu>
+            <ContextMenuProvider>
 
               <DesktopBackground ref={c => this._desktopBackground = c}>
 
-                <div ref={c => this._elDesktopInteractLayer = c} style={{ width: '100%', height: '100%' }}>
+                {
+                  // Top Panel
+                }
+                <Panel />
 
-                  {
-                    // Top Panel
-                  }
-                  <Panel />
+                <Notifications />
 
-                  <Notifications />
+                {
+                  // TODO: Implement DrawersLayer as a separate component
+                  // @see https://ant.design/components/drawer/
+                  /*
+                  <Drawer
+                    mask={false}
+                    bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                    onContextMenu={ (evt) => alert('context') }
+                    placement="right"
+                    visible={true}
+                  >
+                    Well, hello
+                  </Drawer>
+                  */
+                }
 
-                  {
-                    // TODO: Implement DrawersLayer as a separate component
-                    // @see https://ant.design/components/drawer/
-                    /*
-                    <Drawer
-                      mask={false}
-                      bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                      onContextMenu={ (evt) => alert('context') }
-                      placement="right"
-                      visible={true}
-                    >
-                      Well, hello
-                    </Drawer>
-                    */
-                  }
+                {
+                  // Binds windows to URL location; sets page title
+                  // <AppRouteController />
+                }
 
-                  {
-                    // Binds windows to URL location; sets page title
-                    // <AppRouteController />
-                  }
+                <GUIProcessRenderer />
 
-                  <GUIProcessRenderer />
+                <VersionLabel />
 
-                  <VersionLabel />
-
-                  {
-                    // Bottom Dock
-                  }
-                  <Dock />
-
-                </div>
+                {
+                  // Bottom Dock
+                }
+                <Dock />
 
               </DesktopBackground>
               {
@@ -124,23 +94,19 @@ class Desktop extends Component {
               }
 
 
-            </ContextMenu>
+            </ContextMenuProvider>
 
           </FullViewport>
-        </Fullscreen>
+        </FullscreenProvider>
       </div>
     );
   }
 }
 
 export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
-  const { isViewportFocused, isFullScreenRequested } = updatedState;
+  const { isFullScreenRequested } = updatedState;
 
   let filteredState = {};
-
-  if (typeof isViewportFocused !== 'undefined') {
-    filteredState.isViewportFocused = isViewportFocused;
-  }
 
   if (typeof isFullScreenRequested !== 'undefined') {
     filteredState.isFullScreenRequested = isFullScreenRequested;

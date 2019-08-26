@@ -6,7 +6,7 @@ import DesktopLinkedState from 'state/DesktopLinkedState';
 import './style.css';
 import hocConnect from '../../state/hocConnect';
 
-class ContextMenu extends Component {
+class ContextMenuProvider extends Component {
   state = {
     isVisible: false
   };
@@ -165,7 +165,7 @@ class ContextMenu extends Component {
   };
 }
 
-export default hocConnect(ContextMenu, DesktopLinkedState, (updatedState) => {
+export default hocConnect(ContextMenuProvider, DesktopLinkedState, (updatedState) => {
   const {contextMenuIsTrapping: isTrapping} = updatedState;
 
   let filteredState = {};
