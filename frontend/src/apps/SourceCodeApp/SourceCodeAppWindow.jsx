@@ -34,7 +34,10 @@ export default class SourceCodeAppWindow extends Component {
         appRuntime={appRuntime}
       >
         <Full>
-          <SplitterLayout>
+          <SplitterLayout
+            primaryIndex={1}
+            secondaryInitialSize={220}
+          >
             <Full>
               <FileTree onFileOpenRequest={path => this._handleFileOpenRequest(path)} />
             </Full>
