@@ -4,6 +4,7 @@ import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
 import Window from 'components/Desktop/Window';
 import Editor from './subComponents/Editor';
+import EditorFooter from './subComponents/Footer';
 import { Layout, Content, Footer } from 'components/Layout';
 
 export default class SourceCodeAppWindow extends Component {
@@ -66,7 +67,7 @@ export default class SourceCodeAppWindow extends Component {
             </Full>
           </Content>
           <Footer>
-            Ln y, Col x
+            <EditorFooter editorLinkedState={editorLinkedState} />
           </Footer>
         </Layout>
 
