@@ -1,14 +1,80 @@
 // Note, out of simplicity, this FileTree is directly attached to socketFS
 
 import React, { Component } from 'react';
-import FileTreeNode from './FileTreeNode';
+import FileTreeNodeComponent from './FileTreeNode';
 import Scrollable from '../Scrollable';
 import { Treebeard } from 'react-treebeard';
+// import decorators from 'react-treebeard/lib/components/decorators';
 import { dirDetail } from 'utils/socketFS';
 import './FileTree.typedefs';
 import PropTypes from 'prop-types';
 
 const _absorb = () => null;
+
+const decorators = {
+  Loading: (props) => {
+    return (
+      <div style={props.style}>
+        loading...
+      </div>
+    );
+  },
+
+  /*
+  Toggle: (props) => {
+    console.debug('toggled?', props.isToggled);
+
+    return (
+      <div style={props.style}>
+        {
+          <svg height={props.height} width={props.width}>
+            // Vector Toggle Here
+        </svg>
+        }
+      </div>
+    );
+  },
+  */
+
+  /*
+  Header: (props) => {
+    return (
+      <div style={props.style}>
+        {props.node && props.node.name}
+      </div>
+    );
+  },
+  */
+
+  Container: (props) => {
+    const { node } = props;
+    const { isDir, name, toggled: isToggled } = node;
+
+    return (
+      <div
+        style={{ width: '100%' }}
+        onClick={props.onClick}
+      >
+        {
+          /*
+          <props.decorators.Header />
+          */
+        }
+        {
+          /*
+          <props.decorators.Toggle isToggled={props.node.toggled} />
+          */
+        }
+        <FileTreeNodeComponent
+          name={name}
+          isDir={isDir}
+          isToggled={isToggled}
+          onClick={ evt => console.debug(node) }
+        />
+      </div>
+    );
+  }
+};
 
 class FileTree extends Component {
   static propTypes = {
@@ -26,6 +92,7 @@ class FileTree extends Component {
 
   async componentDidMount() {
     try {
+      // TODO: Fetch root path / directory separator (don't hardcode)
       const treeData = await this.fetchDirTreeData('/');
 
       this.setState({
@@ -41,7 +108,8 @@ class FileTree extends Component {
       const rawDirDetail = await dirDetail(path);
 
       const branchData = {
-        name: <FileTreeNode name={rawDirDetail.base} />,
+        isDir: rawDirDetail.isDir,
+        name: rawDirDetail.base,
         path: rawDirDetail.path, // Normalized path
         toggled: true,
         children: (() => {
@@ -56,15 +124,17 @@ class FileTree extends Component {
             }
             return !child.error
           }).map(child => {
-            const { base: childBase, ...childRest } = child;
+            const { base: childBase, isDir, ...childRest } = child;
 
             return {
-              ...childRest,
-              name: <FileTreeNode name={childBase} />,
-              toggled: false,
               // Sub-children don't need to render values at this branch level,
               // and setting undefined as the value removes the dropdown toggle
-              children: (child.isDir ? [] : undefined)
+              children: (isDir ? [] : undefined),
+              
+              ...childRest,
+              isDir,
+              name: childBase,
+              toggled: false
             }
           });
         })()
@@ -243,6 +313,7 @@ class FileTree extends Component {
     return (
       <Scrollable style={{ textAlign: 'left' }}>
         <Treebeard
+          decorators={decorators}
           data={treeData}
           onToggle={fileTreeNode => this.handleTreebeardToggle(fileTreeNode)}
         />
