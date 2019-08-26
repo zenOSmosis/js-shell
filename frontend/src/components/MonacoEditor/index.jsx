@@ -1,7 +1,7 @@
 // @see https://github.com/react-monaco-editor/react-monaco-editor
 // @see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html#autoindent
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Full from '../Full';
 import createAsyncComponent from 'utils/react/createAsyncComponent';
 
@@ -33,14 +33,14 @@ export default class MonacoEditor extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this._pollingLayoutInterval);
+    this._stopLayoutPolling();
   }
 
   editorDidMount(editor) {
-    const {editorDidMount} = this.props;
+    const { editorDidMount } = this.props;
 
     this._editor = editor;
-    
+
     // Set default properties
     this.updateModelOptions({
       tabSize: DEFAULT_TAB_SIZE
@@ -65,10 +65,10 @@ export default class MonacoEditor extends Component {
     }
 
     if (this._pollingLayoutInterval) {
-      console.warn('Already polling.');
+      console.warn('Monaco Editor layout is already polling');
       return;
     }
-  
+
     this._pollingLayoutInterval = setInterval(() => {
       this._editor.layout();
     }, this._pollingLayoutIntervalTime);
@@ -91,7 +91,7 @@ export default class MonacoEditor extends Component {
   }
 
   render() {
-    const {width, height, automaticLayout, theme, ...propsRest} = this.props;
+    const { width, height, automaticLayout, theme, ...propsRest } = this.props;
     const { ReactMonacoEditor } = this.state;
 
     return (
@@ -99,7 +99,7 @@ export default class MonacoEditor extends Component {
         {
           ReactMonacoEditor &&
           <ReactMonacoEditor
-          {...propsRest}
+            {...propsRest}
             width="100%"
             height="100%"
             // automaticLayout={true}

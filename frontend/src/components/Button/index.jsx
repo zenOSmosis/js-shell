@@ -15,7 +15,7 @@ const Button = (props = {}) => {
       className={`zd-button ${active ? 'active': ''} ${className ? className : ''}`}
     />
   );
-}
+};
 
 export default Button;
 export {

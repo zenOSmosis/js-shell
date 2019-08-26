@@ -3,6 +3,7 @@ import ReactSplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
 import './style.css';
 
+// @see https://github.com/zesik/react-splitter-layout
 const SplitterLayout = (props = {}) => {
   const {...propsRest} = props;
 

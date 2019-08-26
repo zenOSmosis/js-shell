@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Window from 'components/Desktop/Window';
-import Scrollable from 'components/Scrollable';
 import FileTree from 'components/FileTree';
 
 const ProtoWindow = (props) => {
   return (
-    <Window>
+    <Window
+      {...props}
+    >
       <FileTree
         onFileOpenRequest={ path => alert('request to open file ' + path)}
       />

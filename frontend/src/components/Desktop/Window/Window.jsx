@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import EventEmitter from 'events';
 import WindowHeader from './Header';
-import ContextMenu from 'components/ContextMenu';
+import ContextMenuProvider from 'components/ContextMenuProvider';
 import Cover from 'components/Cover';
 import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -810,7 +810,7 @@ class Window extends Component {
         // initialX={...}
         // initialY={...}
         >
-          <ContextMenu>
+          <ContextMenuProvider>
 
             <DragResizable
               ref={c => this._resizableComponent = c}
@@ -912,7 +912,7 @@ class Window extends Component {
               }
 
             </DragResizable>
-          </ContextMenu>
+          </ContextMenuProvider>
         </Moveable>
       </div>
     );
