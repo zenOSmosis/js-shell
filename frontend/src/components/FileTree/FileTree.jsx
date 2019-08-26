@@ -1,6 +1,7 @@
 // Note, out of simplicity, this FileTree is directly attached to socketFS
 
 import React, { Component } from 'react';
+import FileTreeNode from './FileTreeNode';
 import Scrollable from '../Scrollable';
 import { Treebeard } from 'react-treebeard';
 import { dirDetail } from 'utils/socketFS';
@@ -40,7 +41,7 @@ class FileTree extends Component {
       const rawDirDetail = await dirDetail(path);
 
       const branchData = {
-        name: rawDirDetail.base,
+        name: <FileTreeNode name={rawDirDetail.base} />,
         path: rawDirDetail.path, // Normalized path
         toggled: true,
         children: (() => {
@@ -55,11 +56,11 @@ class FileTree extends Component {
             }
             return !child.error
           }).map(child => {
-            const { base, ...childRest } = child;
+            const { base: childBase, ...childRest } = child;
 
             return {
               ...childRest,
-              name: base,
+              name: <FileTreeNode name={childBase} />,
               toggled: false,
               // Sub-children don't need to render values at this branch level,
               // and setting undefined as the value removes the dropdown toggle
@@ -77,12 +78,12 @@ class FileTree extends Component {
 
   /**
    * @param {string} path
-   * @return {TreeNodeWithWalkPath} 
+   * @return {FileTreeNodeWithWalkPath} 
    */
-  findTreeNodeWithPath(path) {
+  findFileTreeNodeWithPath(path) {
     const { treeData } = this.state;
 
-    // Absorb treeNode data to mute compiler warnings with eval'd code
+    // Absorb fileTreeNode data to mute compiler warnings with eval'd code
     _absorb(treeData);
 
     const SEARCH_KEY_PATH = 'path';
@@ -150,17 +151,17 @@ class FileTree extends Component {
 
     // if (walkPath) {
     // eslint-disable-next-line 
-    const treeNode = eval(`this.state.treeData${walkPath}`);
+    const fileTreeNode = eval(`this.state.treeData${walkPath}`);
 
     return {
       walkPath,
-      treeNode
+      fileTreeNode
     };
     // }
   }
 
-  async handleTreebeardToggle(treeNode) {
-    const { path, isFile } = treeNode;
+  async handleTreebeardToggle(fileTreeNode) {
+    const { path, isFile } = fileTreeNode;
 
     if (isFile) {
       const { onFileOpenRequest } = this.props;
@@ -168,24 +169,24 @@ class FileTree extends Component {
         onFileOpenRequest(path);
       }
     } else {
-      this.toggleTreeNodeWithPath(path);
+      this.toggleFileTreeNodeWithPath(path);
     }
   }
 
-  async toggleTreeNodeWithPath(path) {
+  async toggleFileTreeNodeWithPath(path) {
     try {
-      let { walkPath, treeNode } = this.findTreeNodeWithPath(path);
+      let { walkPath, fileTreeNode } = this.findFileTreeNodeWithPath(path);
 
-      if (!treeNode) {
-        console.error('Could not locate treeNode');
+      if (!fileTreeNode) {
+        console.error('Could not locate fileTreeNode');
         return;
       }
 
       // Detect if already open, or closed, and handle accordingly
-      if (!treeNode.toggled) {
-        await this.expandTreeNode(treeNode, walkPath);
+      if (!fileTreeNode.toggled) {
+        await this.expandFileTreeNode(fileTreeNode, walkPath);
       } else {
-        await this.collapseTreeNode(treeNode, walkPath);
+        await this.collapseFileTreeNode(fileTreeNode, walkPath);
       }
     } catch (exc) {
       throw exc;
@@ -195,42 +196,42 @@ class FileTree extends Component {
   /**
    * Grafts the given tree node into the file tree, setting the updated state.
    * 
-   * @param {TreeNode} treeNode 
+   * @param {FileTreeNode} fileTreeNode 
    * @param {string} walkPath 
    */
-  graftTreeNode(treeNode, walkPath) {
+  graftFileTreeNode(fileTreeNode, walkPath) {
     const { treeData } = this.state;
 
-    // Absorb treeNode data to mute compiler warnings with eval'd code
-    _absorb(treeNode);
+    // Absorb fileTreeNode data to mute compiler warnings with eval'd code
+    _absorb(fileTreeNode);
 
-    // Graft in the new treeNode data
+    // Graft in the new fileTreeNode data
     // eslint-disable-next-line 
-    eval(`treeData${walkPath} = treeNode`);
+    eval(`treeData${walkPath} = fileTreeNode`);
 
     this.setState({
       treeData
     });
   }
 
-  async expandTreeNode(treeNode, walkPath) {
+  async expandFileTreeNode(fileTreeNode, walkPath) {
     try {
-      const { path } = treeNode;
+      const { path } = fileTreeNode;
 
-      treeNode = await this.fetchDirTreeData(path);
-      treeNode.toggled = true;
+      fileTreeNode = await this.fetchDirTreeData(path);
+      fileTreeNode.toggled = true;
 
-      this.graftTreeNode(treeNode, walkPath);
+      this.graftFileTreeNode(fileTreeNode, walkPath);
     } catch (exc) {
       throw exc;
     }
   }
 
-  async collapseTreeNode(treeNode, walkPath) {
+  async collapseFileTreeNode(fileTreeNode, walkPath) {
     try {
-      treeNode.toggled = false;
+      fileTreeNode.toggled = false;
 
-      this.graftTreeNode(treeNode, walkPath);
+      this.graftFileTreeNode(fileTreeNode, walkPath);
     } catch (exc) {
       throw exc;
     }
@@ -243,7 +244,7 @@ class FileTree extends Component {
       <Scrollable style={{ textAlign: 'left' }}>
         <Treebeard
           data={treeData}
-          onToggle={treeNode => this.handleTreebeardToggle(treeNode)}
+          onToggle={fileTreeNode => this.handleTreebeardToggle(fileTreeNode)}
         />
       </Scrollable>
     )

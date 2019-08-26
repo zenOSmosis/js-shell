@@ -1,11 +1,11 @@
 /**
  * TODO: Document
  * 
- * @typedef {Object} TreeNode
+ * @typedef {Object} FileTreeNode
  */
 
 /**
- * @typedef {Object} TreeNodeWithWalkPath
- * @property {TreeNode} treeNode
+ * @typedef {Object} FileTreeNodeWithWalkPath
+ * @property {FileTreeNode} fileTreeNode
  * @property {string} walkPath Stringified walk resolution beyond base tree path.
  */
