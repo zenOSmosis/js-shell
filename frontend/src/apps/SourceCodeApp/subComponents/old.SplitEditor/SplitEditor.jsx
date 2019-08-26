@@ -1,14 +1,31 @@
 import React, {Component} from 'react';
 // import Editor from '../Editor';
-import TabbedPane from './TabbedPane';
+import EditorTab from './EditorTab';
 import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
 
 export default class SplitEditor extends Component {
-  state = {
-    isSplit: false,
-    splitDirection: null
-  };
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      isSplit: false,
+      splitDirection: null
+    };
+
+    this._editorLinkedState = null;
+  }
+
+  componentDidMount() {
+    const { editorLinkedState } = this.props;
+    this._editorLinkedState = editorLinkedState;
+    
+    this._editorLinkedState.on('update', (updatedState) => {
+      console.debug({
+        updatedState
+      });
+    });
+  }
 
   split(splitDirection) {
     this.setState({
@@ -27,18 +44,20 @@ export default class SplitEditor extends Component {
 
         {
           !this.state.isSplit &&
-          <TabbedPane key="1" splitEditor={this} />
+          <EditorTab key="1" splitEditor={this} />
         }
         {
+          /*
           this.state.isSplit &&
           <SplitterLayout
             // Keep left pane (if vertical) locked when resizing
             primaryIndex={1}
           >
-            <TabbedPane key="1" splitEditor={this} />
+            <EditorTab key="1" splitEditor={this} />
 
             <SplitEditor key="2" />
           </SplitterLayout>
+          */
         }
       </Full>
     );

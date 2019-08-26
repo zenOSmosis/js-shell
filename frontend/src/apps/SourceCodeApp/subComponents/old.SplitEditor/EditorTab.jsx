@@ -18,7 +18,7 @@ const RUN_TARGETS = [
   RUN_TARGET_APP_REGISTRATION
 ];
 
-export default class TabbedPane extends Component {
+export default class EditorTab extends Component {
   constructor(...args) {
     super(...args);
 

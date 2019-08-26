@@ -1,7 +1,10 @@
+import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
-import AppBlueprintBaseWindow from './AppBlueprintBaseWindow';
+import AppBlueprintBaseWindow from './SourceCodeAppWindow';
+import LinkedState from 'state/LinkedState';
 import config from 'config';
+import uuidv4 from 'uuidv4';
 
 export default registerApp({
   title: 'Source Code',
@@ -10,5 +13,16 @@ export default registerApp({
       <AppBlueprintBaseWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`
+  allowMultipleWindows: true,
+  iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  cmd: (app) => {
+    app.editorLinkedState = new LinkedState(`editor-${uuidv4()}`, {
+      requestOpenPaths: []
+    });
+
+    app.on(EVT_BEFORE_EXIT, () => {
+      app.editorLinkedState.destroy();
+      app.editorLinkedState = null;
+    });
+  }
 });
