@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import style from './FileTreeNode.module.css';
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
 class FileTreeNode extends Component {
   render() {
@@ -19,7 +20,12 @@ class FileTreeNode extends Component {
         {...propsRest}
         className={className}
       >
-        { isDir && (isToggled && '/' || '-') }
+        <div style={{display: 'inline-block', marginRight: 4}}>
+          {
+            isDir && (!isToggled ? <FaChevronRight /> : <FaChevronDown />)
+          }
+        </div>
+        
         {name}
       </div>
     );

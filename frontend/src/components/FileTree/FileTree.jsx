@@ -1,4 +1,6 @@
-// Note, out of simplicity, this FileTree is directly attached to socketFS
+/**
+ * IMPORTANT! FileTree is directly attached to socketFS.
+ */
 
 import React, { Component } from 'react';
 import FileTreeNodeComponent from './FileTreeNode';
