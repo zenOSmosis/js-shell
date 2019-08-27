@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CURSOR_POSITION } from '../../../utils/SourceCodeAppLinkedState';
 import MonacoEditor from 'components/MonacoEditor';
 import { readFile } from 'utils/socketFS';
 
@@ -62,12 +63,13 @@ export default class Editor extends Component {
   _setMonacoEditor(monacoEditor) {
     this._monacoEditor = monacoEditor;
 
+    // Handle cursor position change
     this._monacoEditor.onDidChangeCursorSelection((evt) => {
       const { selection } = evt;
 
       if (selection !== undefined && this._editorLinkedState) {
         this._editorLinkedState.setState({
-          cursorPosition: selection
+          [CURSOR_POSITION]: selection
         });
       }
     });

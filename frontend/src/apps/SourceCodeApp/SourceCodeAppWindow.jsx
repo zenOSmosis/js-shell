@@ -3,9 +3,22 @@ import FileTree from 'components/FileTree';
 import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
 import Window from 'components/Desktop/Window';
-import Editor from './subComponents/Editor';
-import EditorFooter from './subComponents/Footer';
+import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
+import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
+
+const RUN_TARGET_MAIN = {
+  name: 'Main Thread',
+  value: 'main-thread'
+};
+const RUN_TARGET_WORKER = {
+  name: 'Worker Thread',
+  value: 'worker-thread'
+};
+const RUN_TARGETS = [
+  RUN_TARGET_MAIN,
+  RUN_TARGET_WORKER
+];
 
 export default class SourceCodeAppWindow extends Component {
   constructor(...args) {
@@ -21,8 +34,12 @@ export default class SourceCodeAppWindow extends Component {
   }
 
   _handleFileOpenRequest(path) {
+    const { openedFilePaths } = this._editorLinkedState.getState();
+
+    openedFilePaths.push(path);
+
     this._editorLinkedState.setState({
-      lastFileOpenPath: path
+      openedFilePaths
     });
   }
 
@@ -36,12 +53,33 @@ export default class SourceCodeAppWindow extends Component {
         appRuntime={appRuntime}
         subToolbar={
           <div>
-            <button>Execute</button>
-            <div style={{display: 'inline-block', margin: '0rem 1rem'}}>
+            <button>
+              Execute
+            </button>
+            
+            <div style={{
+              display: 'inline-block',
+              margin: '0rem .5rem'
+            }}>
               on target:
               <select>
-                <option value="main">Main Thread</option>
-                <option value="worker">Worker Thread</option>
+                {
+                  RUN_TARGETS.map((runTarget, idx) => {
+                    const {
+                      name: runTargetName,
+                      value: runTargetValue
+                    } = runTarget;
+                    
+                    return (
+                      <option
+                        key={idx}
+                        value={runTargetValue}
+                      >
+                        {runTargetName}
+                      </option>
+                    );
+                  })
+                }
               </select>
             </div>
           </div>
@@ -55,11 +93,15 @@ export default class SourceCodeAppWindow extends Component {
                 secondaryInitialSize={220}
               >
                 <Full>
-                  <FileTree onFileOpenRequest={path => this._handleFileOpenRequest(path)} />
+                  <FileTree
+                    // TODO: Remove hardcoded value
+                    rootDirectory="/shell"
+                    onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                  />
                 </Full>
 
                 <Full>
-                  <Editor
+                  <EditorWithFileTabs
                     editorLinkedState={editorLinkedState}
                   />
                 </Full>
@@ -67,7 +109,7 @@ export default class SourceCodeAppWindow extends Component {
             </Full>
           </Content>
           <Footer>
-            <EditorFooter editorLinkedState={editorLinkedState} />
+            <AppFooter editorLinkedState={editorLinkedState} />
           </Footer>
         </Layout>
 
