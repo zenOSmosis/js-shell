@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
+import TabBar from 'components/TabBar';
 import FileTab from './FileTab';
-import styles from './FileTabs.module.css';
 
 /**
  * @extends React.Component
@@ -41,12 +41,7 @@ class FileTabs extends Component {
           const openedFilePaths = renderProps.openedFilePaths || [];
           
           return (
-            <div
-              className={styles['file-tabs']}
-
-              // TODO: Handle horizontal overflow scrolling
-              onWheel={evt => console.debug(evt.deltaY)}
-            >
+            <TabBar>
               {
                 openedFilePaths.map((filePath, idx) => {
                   return (
@@ -62,7 +57,7 @@ class FileTabs extends Component {
                   );
                 })
               }
-            </div>
+            </TabBar>
           );
         }}
       />
