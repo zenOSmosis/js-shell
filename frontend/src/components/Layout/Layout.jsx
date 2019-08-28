@@ -16,7 +16,10 @@ export const Layout = (props) => {
   const { className, children, ...propsRest } = props;
 
   return (
-    <Full className={classNames(style['layout'], className)}>
+    <Full
+      { ...propsRest }
+      className={classNames(style['layout'], className)}
+    >
       {
         children
       }

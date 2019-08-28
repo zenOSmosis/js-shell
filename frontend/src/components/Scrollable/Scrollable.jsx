@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Full from '../Full';
 import style from './Scrollable.module.css';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
