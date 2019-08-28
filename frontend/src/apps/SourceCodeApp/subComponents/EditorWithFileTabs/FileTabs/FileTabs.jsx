@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
+import ScrollablePanel from 'components/ScrollablePanel';
 import FileTab from './FileTab';
-import styles from './FileTabs.module.css';
 
 /**
  * @extends React.Component
@@ -39,14 +39,9 @@ class FileTabs extends Component {
         }}
         render={(renderProps) => {
           const openedFilePaths = renderProps.openedFilePaths || [];
-          
-          return (
-            <div
-              className={styles['file-tabs']}
 
-              // TODO: Handle horizontal overflow scrolling
-              onWheel={evt => console.debug(evt.deltaY)}
-            >
+          return (
+            <ScrollablePanel>
               {
                 openedFilePaths.map((filePath, idx) => {
                   return (
@@ -54,7 +49,6 @@ class FileTabs extends Component {
                       // Important! Key must not be the idx or it will update
                       // incorrectly when removing existing file paths
                       key={`${filePath}-${idx}`}
-                      
                       filePath={filePath}
                       editorLinkedState={editorLinkedState}
                       onClose={ evt => this._handleFilePathCloseWithIdx(idx) }
@@ -62,7 +56,7 @@ class FileTabs extends Component {
                   );
                 })
               }
-            </div>
+            </ScrollablePanel>
           );
         }}
       />
