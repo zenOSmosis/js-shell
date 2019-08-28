@@ -6,6 +6,8 @@ import Window from 'components/Desktop/Window';
 import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
 import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
+import openFile from './utils/file/openFile';
+import { ACTIVE_FILE } from './state/SourceCodeAppLinkedState';
 
 const RUN_TARGET_MAIN = {
   name: 'Main Thread',
@@ -28,6 +30,10 @@ export default class SourceCodeAppWindow extends Component {
   constructor(...args) {
     super(...args);
 
+    this.state = {
+      windowTitleOverride: null
+    };
+
     this._editorLinkedState = null;
   }
 
@@ -35,26 +41,44 @@ export default class SourceCodeAppWindow extends Component {
     const { appRuntime } = this.props;
     const { editorLinkedState } = appRuntime;
     this._editorLinkedState = editorLinkedState;
+
+    this._editorLinkedState.on('update', (updatedState) => {
+      if (updatedState[ACTIVE_FILE] !== undefined) {
+        let windowTitleOverride = null;
+
+        if (updatedState[ACTIVE_FILE]) {
+          const { fileDetail } = updatedState[ACTIVE_FILE];
+
+          const { path } = fileDetail;
+  
+          windowTitleOverride = path;
+        }
+
+        this.setState({
+          windowTitleOverride
+        });
+      }
+    });
   }
 
-  _handleFileOpenRequest(path) {
-    const { openedFilePaths } = this._editorLinkedState.getState();
-
-    openedFilePaths.push(path);
-
-    this._editorLinkedState.setState({
-      openedFilePaths
-    });
+  async _handleFileOpenRequest(filePath) {
+    try {
+      await openFile(this._editorLinkedState, filePath);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   render() {
     const { appRuntime, ...propsRest } = this.props;
     const { editorLinkedState } = appRuntime;
+    const { windowTitleOverride } = this.state;
 
     return (
       <Window
         {...propsRest}
         appRuntime={appRuntime}
+        title={windowTitleOverride}
         subToolbar={
           <div>
             <button>

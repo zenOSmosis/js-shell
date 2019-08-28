@@ -1,6 +1,8 @@
 import React from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import { CURSOR_POSITION } from '../../utils/SourceCodeAppLinkedState';
+import { ACTIVE_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/SourceCodeAppLinkedState';
+import { Row, Column } from 'components/Layout';
+import style from './AppFooter.module.css';
 
 const AppFooter = (props) => {
   const { editorLinkedState } = props;
@@ -9,43 +11,76 @@ const AppFooter = (props) => {
     <LinkedStateRenderer
       linkedState={editorLinkedState}
       onUpdate={(updatedState) => {
-        if (updatedState[CURSOR_POSITION] !== undefined) {
+        let filteredState = {};
+
+        if (updatedState[LANGUAGES]) {
+          filteredState.languages = updatedState[LANGUAGES];
+        }
+
+        if (updatedState[ACTIVE_FILE]) {
+          const { language } = updatedState[ACTIVE_FILE];
+
+          filteredState.language = language;
+        }
+
+        if (updatedState[CURSOR_POSITION]) {
           const { positionColumn, positionLineNumber } = updatedState[CURSOR_POSITION];
 
           if (positionColumn !== undefined &&
               positionLineNumber !== undefined) {
-            return ({
-              positionColumn,
-              positionLineNumber
-            });
+              filteredState = {...filteredState, ...{
+                positionColumn,
+                positionLineNumber
+              }};
           }
         }
+
+        return filteredState;
       }}
       render={renderProps => {
-        const { positionLineNumber, positionColumn } = renderProps;
+        const { positionLineNumber, positionColumn, language, languages: propsLanguages } = renderProps;
+        const languages = propsLanguages ? propsLanguages : [];
 
         return (
-          <div>
-            <div style={{ display: 'inline-block' }}>
+          <Row className={style['app-footer']}>
+            <Column>
               Ln {positionLineNumber}, Col {positionColumn}
-            </div>
+            </Column>
 
-            <div style={{ display: 'inline-block' }}>
+            <Column>
               [ Spaces ]
-            </div>
+            </Column>
 
-            <div style={{ display: 'inline-block' }}>
-              [ EOL Sequence ]
-            </div>
+            {
+              /*
+              <Column>
+                [ EOL Sequence ]
+              </Column>
+              */
+            }
 
-            <div style={{ display: 'inline-block' }}>
+            <Column>
               [ Encoding ]
-            </div>
+            </Column>
 
-            <div style={{ display: 'inline-block' }}>
-              [ Script Type ]
-            </div>
-          </div>
+            <Column>
+              { language }
+              <select>
+                {
+                  languages.map((_language, idx) => {
+                    return (
+                      <option
+                        key={idx}
+                        value={_language}
+                      >
+                        {_language}
+                      </option>
+                    );
+                  })
+                }
+              </select>
+            </Column>
+          </Row>
         );
       }}
     />

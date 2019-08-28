@@ -3,7 +3,8 @@ import TransparentButton from 'components/TransparentButton';
 // import textEllipsis from 'utils/text/textEllipsis';
 import style from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
-import { pathDetail } from 'utils/socketFS';
+import activateFile from '../../../utils/file/activateFile';
+import closeFile from '../../../utils/file/closeFile';
 
 class FileTab extends Component {
   constructor(...args) {
@@ -17,11 +18,11 @@ class FileTab extends Component {
   // TODO: Move pathDetail aquisition to file open & handle there
   async componentDidMount() {
     try {
-      const { filePath } = this.props;
+      const { file } = this.props;
 
-      const detail = await pathDetail(filePath);
+      const { fileDetail } = file;
 
-      const { base } = detail;
+      const { base } = fileDetail;
 
       this.setState({
         base
@@ -31,10 +32,24 @@ class FileTab extends Component {
     }
   }
 
-  _handleClose() {
-    const { onClose } = this.props;
+  async _handleActivate() {
+    try {
+      const { editorLinkedState, file } = this.props;
 
-    onClose();
+      await activateFile(editorLinkedState, file);
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  async _handleClose() {
+    try {
+      const { editorLinkedState, file } = this.props;
+
+      await closeFile(editorLinkedState, file);  
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   render() {
@@ -47,15 +62,18 @@ class FileTab extends Component {
     return (
       <div
         className={style['file-tab']}
-      // onClick={evt => }
       >
         <Row>
           <Column>
-            i  
+            <TransparentButton onClick={evt => this._handleActivate()}>
+              i
+            </TransparentButton>
           </Column>
 
           <Column>
-            <div className={style['file-name']}>{base}</div>
+            <TransparentButton onClick={evt => this._handleActivate()}>
+              <div className={style['file-name']}>{base}</div>
+            </TransparentButton>
           </Column>
 
           <Column>

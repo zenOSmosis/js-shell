@@ -16,6 +16,7 @@
     "express-session": "^1.16.1",
     "fs-readdir-recursive": "^1.1.0",
     "http-proxy": "^1.17.0",
+    "mime-types": "^2.1.24",
     "module-alias": "^2.2.1",
     "node-pty": "^0.8.1",
     "request-ip": "^2.1.3",

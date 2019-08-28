@@ -1,6 +1,8 @@
 import LinkedState from 'state/LinkedState';
 
-export const OPENED_FILE_PATHS = 'openedFilePaths';
+export const OPENED_FILES = 'openedFiles';
+export const ACTIVE_FILE = 'activeFile';
+export const LANGUAGES = 'languages';
 export const CURSOR_POSITION = 'cursorPosition';
 
 const _uuids = [];
@@ -14,7 +16,11 @@ class SourceCodeAppLinkedState extends LinkedState {
     }
 
     super(`source-code-app-${uuid}`, {
-      [OPENED_FILE_PATHS]: [],
+      [OPENED_FILES]: [],
+
+      [ACTIVE_FILE]: null,
+
+      [LANGUAGES]: [],
 
       [CURSOR_POSITION]: {
         endColumn: 0,

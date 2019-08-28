@@ -7,17 +7,6 @@ import FileTab from './FileTab';
  * @extends React.Component
  */
 class FileTabs extends Component {
-  _handleFilePathCloseWithIdx(idx) {
-    const { editorLinkedState } = this.props;
-    const { openedFilePaths } = editorLinkedState.getState();
-
-    openedFilePaths.splice(idx, 1);
-
-    editorLinkedState.setState({
-      openedFilePaths
-    });
-  }
-
   render() {
     const { editorLinkedState } = this.props;
 
@@ -25,33 +14,30 @@ class FileTabs extends Component {
       <LinkedStateRenderer
         linkedState={editorLinkedState}
         onUpdate={(updatedState) => {
-          const { openedFilePaths } = updatedState;
+          const { openedFiles } = updatedState;
 
-          console.debug({
-            openedFilePaths
-          });
-
-          if (openedFilePaths !== undefined) {
+          if (openedFiles !== undefined) {
             return {
-              openedFilePaths
+              openedFiles
             };
           }
         }}
         render={(renderProps) => {
-          const openedFilePaths = renderProps.openedFilePaths || [];
+          const openedFiles = renderProps.openedFiles || [];
 
           return (
             <ScrollablePanel>
               {
-                openedFilePaths.map((filePath, idx) => {
+                openedFiles.map((file, idx) => {
+                  const { filePath } = file;
+
                   return (
                     <FileTab
                       // Important! Key must not be the idx or it will update
                       // incorrectly when removing existing file paths
                       key={`${filePath}-${idx}`}
-                      filePath={filePath}
+                      file={file}
                       editorLinkedState={editorLinkedState}
-                      onClose={ evt => this._handleFilePathCloseWithIdx(idx) }
                     />
                   );
                 })

@@ -1,4 +1,4 @@
-import SourceCodeAppLinkedState from './SourceCodeAppLinkedState';
+import SourceCodeAppLinkedState from '../state/SourceCodeAppLinkedState';
 import uuidv4 from 'uuidv4';
 
 const createSourceCodeAppLinkedState = () => {
