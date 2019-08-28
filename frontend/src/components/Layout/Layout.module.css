@@ -1,0 +1,27 @@
+/*
+  @see https://codepen.io/anthonyLukes/pen/DLBeE
+*/
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.header {
+  flex: 0 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1 1 auto;
+  position: relative;
+  overflow: hidden; /* This is actually required to work with optional <Scrollable /> child */
+}
+
+.footer {
+  flex: 0 0 auto;
+  position: relative;
+  overflow: hidden;
+}
