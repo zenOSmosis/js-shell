@@ -49,17 +49,19 @@ class FileTab extends Component {
         className={style['file-tab']}
       // onClick={evt => }
       >
-        <Row style={{ whiteSpace: 'nowrap' }}>
+        <Row>
           <Column>
-            i
-          </Column>
-
-          <Column style={{ margin: '0em .5em' }}>
-            <span className={style['file-name']}>{base}</span>
+            i  
           </Column>
 
           <Column>
-            <TransparentButton onClick={evt => this._handleClose()}>
+            <div className={style['file-name']}>{base}</div>
+          </Column>
+
+          <Column>
+            <TransparentButton
+              onClick={evt => this._handleClose()}
+            >
               x
             </TransparentButton>
           </Column>
