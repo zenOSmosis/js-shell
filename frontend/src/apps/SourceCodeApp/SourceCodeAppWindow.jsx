@@ -20,6 +20,10 @@ const RUN_TARGETS = [
   RUN_TARGET_WORKER
 ];
 
+// TODO: Remove
+console.warn('TODO: Remove hardcoded DEFAULT_ROOT_DIRECTORY');
+const DEFAULT_ROOT_DIRECTORY = '/shell';
+
 export default class SourceCodeAppWindow extends Component {
   constructor(...args) {
     super(...args);
@@ -94,8 +98,7 @@ export default class SourceCodeAppWindow extends Component {
               >
                 <Full>
                   <FileTree
-                    // TODO: Remove hardcoded value
-                    rootDirectory="/shell"
+                    rootDirectory={DEFAULT_ROOT_DIRECTORY}
                     onFileOpenRequest={path => this._handleFileOpenRequest(path)}
                   />
                 </Full>
