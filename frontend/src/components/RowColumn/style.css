@@ -4,6 +4,7 @@
   flex-wrap: nowrap;
   width: 100%;
   position: relative;
+  overflow: hidden;
 }
 
 .zd-column {
@@ -12,4 +13,5 @@
   flex-basis: 100%;
   flex: 1;
   position: relative;
+  overflow: hidden;
 }
