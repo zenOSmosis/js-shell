@@ -7,7 +7,7 @@ import config from 'config';
  * @return {string}
  */
 const getFileDownloadRequestURL = (serverResourcePath) => {
-  return `${config.HOST_REST_URL}/files?filePath=${urlencode(serverResourcePath)}`;
+  return `${config.HOST_REST_URL}/files?filePath=${encodeURIComponent(serverResourcePath)}`;
 };
 
 export default getFileDownloadRequestURL;
