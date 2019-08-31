@@ -2,6 +2,7 @@ import pathLib from 'path';
 import stat from './stat';
 import fetchPathSeparator from './fetchPathSeparator';
 import readdir from './readdir';
+import mime from 'mime-types';
 
 const pathDetail = async (path) => {
   try {
@@ -45,9 +46,12 @@ const pathDetail = async (path) => {
     const isHidden = parsedPath.base.startsWith('.');
     const parent = parsedPath.dir !== path ? parsedPath.dir : null;
 
+    const mimeType = mime.lookup(path);
+
     return {
       children,
       constituents,
+      mimeType,
       parent,
       path,
       ...parsedPath,

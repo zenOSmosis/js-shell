@@ -82,6 +82,7 @@ const decorators = {
 
 class FileTree extends Component {
   static propTypes = {
+    rootDirectory: PropTypes.string,
     onFileOpenRequest: PropTypes.func.isRequired
   };
 
@@ -96,8 +97,9 @@ class FileTree extends Component {
 
   async componentDidMount() {
     try {
-      // TODO: Fetch root path / directory separator (don't hardcode)
-      const treeData = await fetchDirTreeData('/');
+      const rootDirectory = this.props.rootDirectory || '/';
+
+      const treeData = await fetchDirTreeData(rootDirectory);
 
       this.setState({
         treeData

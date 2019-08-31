@@ -3,13 +3,36 @@ import FileTree from 'components/FileTree';
 import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
 import Window from 'components/Desktop/Window';
-import Editor from './subComponents/Editor';
-import EditorFooter from './subComponents/Footer';
+import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
+import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
+import openFile from './utils/file/openFile';
+import { ACTIVE_FILE } from './state/SourceCodeAppLinkedState';
+
+const RUN_TARGET_MAIN = {
+  name: 'Main Thread',
+  value: 'main-thread'
+};
+const RUN_TARGET_WORKER = {
+  name: 'Worker Thread',
+  value: 'worker-thread'
+};
+const RUN_TARGETS = [
+  RUN_TARGET_MAIN,
+  RUN_TARGET_WORKER
+];
+
+// TODO: Remove
+console.warn('TODO: Remove hardcoded DEFAULT_ROOT_DIRECTORY');
+const DEFAULT_ROOT_DIRECTORY = '/shell';
 
 export default class SourceCodeAppWindow extends Component {
   constructor(...args) {
     super(...args);
+
+    this.state = {
+      windowTitleOverride: null
+    };
 
     this._editorLinkedState = null;
   }
@@ -18,30 +41,73 @@ export default class SourceCodeAppWindow extends Component {
     const { appRuntime } = this.props;
     const { editorLinkedState } = appRuntime;
     this._editorLinkedState = editorLinkedState;
+
+    this._editorLinkedState.on('update', (updatedState) => {
+      if (updatedState[ACTIVE_FILE] !== undefined) {
+        let windowTitleOverride = null;
+
+        if (updatedState[ACTIVE_FILE]) {
+          const { fileDetail } = updatedState[ACTIVE_FILE];
+
+          const { path } = fileDetail;
+  
+          windowTitleOverride = path;
+        }
+
+        this.setState({
+          windowTitleOverride
+        });
+      }
+    });
   }
 
-  _handleFileOpenRequest(path) {
-    this._editorLinkedState.setState({
-      lastFileOpenPath: path
-    });
+  async _handleFileOpenRequest(filePath) {
+    try {
+      await openFile(this._editorLinkedState, filePath);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   render() {
     const { appRuntime, ...propsRest } = this.props;
     const { editorLinkedState } = appRuntime;
+    const { windowTitleOverride } = this.state;
 
     return (
       <Window
         {...propsRest}
         appRuntime={appRuntime}
+        title={windowTitleOverride}
         subToolbar={
           <div>
-            <button>Execute</button>
-            <div style={{display: 'inline-block', margin: '0rem 1rem'}}>
+            <button>
+              Execute
+            </button>
+            
+            <div style={{
+              display: 'inline-block',
+              margin: '0rem .5rem'
+            }}>
               on target:
               <select>
-                <option value="main">Main Thread</option>
-                <option value="worker">Worker Thread</option>
+                {
+                  RUN_TARGETS.map((runTarget, idx) => {
+                    const {
+                      name: runTargetName,
+                      value: runTargetValue
+                    } = runTarget;
+                    
+                    return (
+                      <option
+                        key={idx}
+                        value={runTargetValue}
+                      >
+                        {runTargetName}
+                      </option>
+                    );
+                  })
+                }
               </select>
             </div>
           </div>
@@ -55,11 +121,14 @@ export default class SourceCodeAppWindow extends Component {
                 secondaryInitialSize={220}
               >
                 <Full>
-                  <FileTree onFileOpenRequest={path => this._handleFileOpenRequest(path)} />
+                  <FileTree
+                    rootDirectory={DEFAULT_ROOT_DIRECTORY}
+                    onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                  />
                 </Full>
 
                 <Full>
-                  <Editor
+                  <EditorWithFileTabs
                     editorLinkedState={editorLinkedState}
                   />
                 </Full>
@@ -67,7 +136,7 @@ export default class SourceCodeAppWindow extends Component {
             </Full>
           </Content>
           <Footer>
-            <EditorFooter editorLinkedState={editorLinkedState} />
+            <AppFooter editorLinkedState={editorLinkedState} />
           </Footer>
         </Layout>
 
