@@ -91,9 +91,12 @@ const _desktopLinkedState = new DesktopLinkedState();
  * @extends React.Component
  */
 class Window extends Component {
-  static propTypes = {
-    // Optional
-    appRuntime: PropTypes.instanceOf(AppRuntime),
+  static propTypes = { 
+    // TODO: Fix this
+    // Currently throws the following error message:
+    // "Failed prop type: Right-hand side of 'instanceof' is not an object"
+    // appRuntime: PropTypes.instanceOf(AppRuntime),
+    
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
     sizeable: PropTypes.bool
