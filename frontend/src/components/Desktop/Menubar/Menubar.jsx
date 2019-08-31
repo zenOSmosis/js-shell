@@ -99,6 +99,10 @@ class Menubar extends Component {
           menus.map((menu, idx) => {
             const menuData = menu.getMenuData();
 
+            if (!menuData) {
+              return false;
+            }
+
             const {
               title: menuTitle,
               items: menuItems

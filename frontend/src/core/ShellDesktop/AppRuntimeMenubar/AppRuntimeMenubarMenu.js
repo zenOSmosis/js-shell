@@ -32,8 +32,7 @@ export default class AppRuntimeMenubarMenu extends EventEmitter {
       items: items || []
     };
 
-    // Emit update event w/ menuData
-    this.emit(EVT_UPDATE, this._menuData);
+    this.emit(EVT_UPDATE);
   }
 
   getAppRuntimeMenubar() {

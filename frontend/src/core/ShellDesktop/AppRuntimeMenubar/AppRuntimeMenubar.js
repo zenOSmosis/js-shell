@@ -2,6 +2,7 @@
 // as necessary
 
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import { EVT_UPDATE as EVT_MENU_UPDATE } from './AppRuntimeMenubarMenu';
 import EventEmitter from 'events';
 import {
   AppRuntimeMenubarSystemMenu,
@@ -27,26 +28,30 @@ export default class AppRuntimeMenubar extends EventEmitter {
     this._appRuntime = appRuntime;
 
     // Core menus
-    this._systemMenu = new AppRuntimeMenubarSystemMenu(this);
-    this._appMenu = new AppRuntimeMenubarAppMenu(this);
-    this._windowMenu = new AppRuntimeMenubarWindowMenu(this);
-
-    // Clean up core menus before exit
-    this._appRuntime.once(EVT_BEFORE_EXIT, () => {
-      this._systemMenu.removeAllListeners();
-      this._systemMenu = null;
-
-      this._appMenu.removeAllListeners();
-      this._appMenu = null;
-
-      this._windowMenu.removeAllListeners();
-      this._windowMenu = null;
-    });
+    this._systemMenu = this._initCoreMenuClass(AppRuntimeMenubarSystemMenu);
+    this._appMenu = this._initCoreMenuClass(AppRuntimeMenubarAppMenu);
+    this._windowMenu = this._initCoreMenuClass(AppRuntimeMenubarWindowMenu);
     
     this._auxMenus = [];
     this._auxMenusData = auxMenusData;
 
     this.setAuxMenusData(auxMenusData);
+  }
+
+  _initCoreMenuClass(AppRuntimeMenubarMenu) {
+    let coreMenuInstance = new AppRuntimeMenubarMenu(this);
+
+    coreMenuInstance.on(EVT_MENU_UPDATE, () => {
+      this.emit(EVT_UPDATE);
+    });
+
+    this._appRuntime.once(EVT_BEFORE_EXIT, () => {
+      coreMenuInstance.removeAllListeners();
+
+      coreMenuInstance = null;
+    });
+
+    return coreMenuInstance;
   }
 
   /**
@@ -74,6 +79,7 @@ export default class AppRuntimeMenubar extends EventEmitter {
       return auxMenu;
     });
 
+    // Emit update event
     this.emit(EVT_UPDATE);
   }
 
