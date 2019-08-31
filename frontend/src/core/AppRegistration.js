@@ -27,7 +27,7 @@ class AppRegistration extends EventEmitter {
     const {
       title,
       iconSrc,
-      mainView, // TODO: Rename to view
+      view, // TODO: Rename to view
       cmd: runCmd,
       supportedMimes, // TODO: Rename to supportedMimeTypes
       menuItems,
@@ -41,7 +41,7 @@ class AppRegistration extends EventEmitter {
     // [8/12/2019] TODO: Map all appRegistrationProps as properties
     this._title = title;
     this._iconSrc = iconSrc;
-    this._view = mainView; // TODO: Rename to view
+    this._view = view;
     this._runCmd = runCmd;
 
     // TODO: Handle accordingly

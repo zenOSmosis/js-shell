@@ -6,7 +6,7 @@ import config from 'config';
 export default registerApp({
   allowMultipleWindows: true,
   title: 'Terminal',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <TerminalWindow {...props} />
     )

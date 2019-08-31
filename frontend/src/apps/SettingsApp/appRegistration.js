@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Settings',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <SettingsWindow {...props} />
     )

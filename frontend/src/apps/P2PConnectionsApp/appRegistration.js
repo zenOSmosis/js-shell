@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'P2P Connections',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <P2PConnectionsWindow {...props} />
     );

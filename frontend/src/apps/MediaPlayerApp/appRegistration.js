@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Media Player',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <MediaPlayerWindow {...props} />
     )

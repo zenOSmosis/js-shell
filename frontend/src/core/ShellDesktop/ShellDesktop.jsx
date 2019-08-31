@@ -35,7 +35,7 @@ class ShellDesktop extends AppRuntime {
     const shellRegistration = (() => {
       const shellRegistration = new AppRegistration({
         title: 'Shell Desktop',
-        mainView: () => {
+        view: () => {
           return (
             <App />
           );

@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Docs',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <DocsWindow {...props} />
     );

@@ -8,7 +8,7 @@ import config from 'config';
 
 export default registerApp({
   title: '3D App',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <A3DAppMainWindow {...props} />
     );

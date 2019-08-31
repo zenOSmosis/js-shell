@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Calculator',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <CalculatorWindow {...props} />
     )

@@ -5,7 +5,7 @@ import config from 'config';
 
 export default registerApp({
   title: 'Text Editor',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <TextEditorWindow {...props} />
     )

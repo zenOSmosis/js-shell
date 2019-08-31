@@ -33,7 +33,7 @@ class AppRuntime extends ClientGUIProcess {
 
     // this._defaultTitle = null;
     // this._iconSrc = null;
-    // this._mainView = null;
+    // this._view = null;
     // this._appCmd = null;
 
     // this._isFocused = false;
@@ -54,7 +54,7 @@ class AppRuntime extends ClientGUIProcess {
 
       const {
         title,
-        mainView: view,
+        view: view,
         cmd: runCmd
       } = appRegistrationProps;
 

@@ -12,7 +12,7 @@ import VoiceInputLinkedState from './VoiceInputLinkedState';
 
 export default registerApp({
   title: 'Voice Input',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <VoiceInputWindow {...props} />
     );

@@ -9,7 +9,7 @@ import * as socketFS from 'utils/socketFS';
 
 export default registerApp({
   title: 'Screen Recorder',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <ScreenRecorderWindow {...props} />
     );

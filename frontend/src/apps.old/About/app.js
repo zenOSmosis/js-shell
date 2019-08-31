@@ -5,6 +5,6 @@ import config from 'config';
 
 export default registerApp({
   title: 'About',
-  mainView: <AboutWindow />,
+  view: <AboutWindow />,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}about-us/about-us.svg`
 });

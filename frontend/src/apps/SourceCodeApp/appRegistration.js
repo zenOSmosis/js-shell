@@ -7,7 +7,7 @@ import createSourceCodeAppLinkedState from './utils/createSourceCodeAppLinkedSta
 
 export default registerApp({
   title: 'Source Code',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <SourceCodeAppWindow {...props} />
     );
