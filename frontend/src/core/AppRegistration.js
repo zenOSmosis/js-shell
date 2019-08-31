@@ -27,10 +27,10 @@ class AppRegistration extends EventEmitter {
     const {
       title,
       iconSrc,
-      view, // TODO: Rename to view
+      view,
       cmd: runCmd,
       supportedMimes, // TODO: Rename to supportedMimeTypes
-      menuItems,
+      menus,
       allowMultipleWindows,
     } = appRegistrationProps;
 
@@ -38,14 +38,13 @@ class AppRegistration extends EventEmitter {
 
     this._isLaunched = false;
 
-    // [8/12/2019] TODO: Map all appRegistrationProps as properties
+    // TODO: Map all appRegistrationProps as properties
     this._title = title;
     this._iconSrc = iconSrc;
     this._view = view;
     this._runCmd = runCmd;
 
-    // TODO: Handle accordingly
-    this._menuItems = menuItems || [];
+    this._menus = menus || [];
 
     // Previous position and size
     // this._lastPosition = { x: 0, y: 0 };
@@ -85,7 +84,7 @@ class AppRegistration extends EventEmitter {
       }
       
       if (!appRuntime) {
-        console.debug('AppControlCentral blocked launching of app registration', this);
+        console.warn('AppControlCentral blocked launching of app registration', this);
         return;
       }
 
@@ -146,6 +145,10 @@ class AppRegistration extends EventEmitter {
    */
   getAllowMultipleWindows() {
     return this._allowMultipleWindows;
+  }
+
+  getMenus() {
+    return this._menus;
   }
 
   /**

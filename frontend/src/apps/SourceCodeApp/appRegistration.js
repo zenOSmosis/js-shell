@@ -14,6 +14,26 @@ export default registerApp({
   },
   allowMultipleWindows: true,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  menus: [
+    {
+      title: 'File',
+      items: [
+        {
+          title: 'Open File',
+          onClick: (evt, app) => {
+            alert('TODO: This should bring up the file picker!');
+          }
+        },
+        {
+          title: 'Proto Clear',
+          onClick: (evt, app) => {
+            // TODO: Remove; debugging; This should clear the menubar
+            app.setMenubarData([]);
+          }
+        }
+      ]
+    }
+  ],
   cmd: (app) => {
     app.editorLinkedState = createSourceCodeAppLinkedState();
 

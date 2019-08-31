@@ -1,13 +1,13 @@
 import React from 'react';
-import MenubarMenu from '../MenubarMenu';
+import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
 import { Icon } from 'antd';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
-// TODO: Move this into MenubarSystemMenu lifecycle, once available (currently
+// TODO: Move this into AppRuntimeMenubarSystemMenu lifecycle, once available (currently
 // no destructor)
 const _desktopLinkedState = new DesktopLinkedState();
 
-export default class MenubarSystemMenu extends MenubarMenu {
+export default class AppRuntimeMenubarSystemMenu extends AppRuntimeMenubarMenu {
   constructor(...args) {
     super(...args);
 
@@ -15,7 +15,7 @@ export default class MenubarSystemMenu extends MenubarMenu {
       title: <Icon type="deployment-unit" />,
       items: [
         /**
-         * @type {MenubarMenuItem}
+         * @type {AppRuntimeMenubarMenuItem}
          */
         {
           title: 'System Information',
@@ -35,7 +35,7 @@ export default class MenubarSystemMenu extends MenubarMenu {
           ]
         },
         /**
-         * @type {MenubarMenuItem}
+         * @type {AppRuntimeMenubarMenuItem}
          */
         {
           title: 'Dock Items',
@@ -55,7 +55,7 @@ export default class MenubarSystemMenu extends MenubarMenu {
           ]
         },
         /**
-         * @type {MenubarMenuItem}
+         * @type {AppRuntimeMenubarMenuItem}
          */
         {
           title: 'Logout',

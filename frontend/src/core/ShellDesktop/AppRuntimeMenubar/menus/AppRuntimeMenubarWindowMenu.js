@@ -1,7 +1,7 @@
 // import React from 'react';
-import MenubarMenu from '../MenubarMenu';
+import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
 
-export default class MenubarSystemMenu extends MenubarMenu {
+export default class AppRuntimeMenubarSystemMenu extends AppRuntimeMenubarMenu {
   constructor(...args) {
     super(...args);
     

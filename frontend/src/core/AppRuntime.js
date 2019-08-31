@@ -3,12 +3,15 @@ import ClientGUIProcess, { EVT_FIRST_RENDER } from 'process/ClientGUIProcess';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
-import Menubar from './ShellDesktop/Menubar';
+import AppRuntimeMenubar, { EVT_UPDATE as EVT_MENUBAR_UPDATE } from './ShellDesktop/AppRuntimeMenubar';
 
 const _appRuntimeLinkedState = new AppRuntimeLinkedState();
 
 export const EVT_FOCUS = 'focus';
 export const EVT_BLUR = 'blur';
+export {
+  EVT_MENUBAR_UPDATE
+};
 
 /**
  * Application runtime for Shell Desktop.
@@ -31,14 +34,6 @@ class AppRuntime extends ClientGUIProcess {
 
     this._appRegistration = appRegistration;
 
-    // this._defaultTitle = null;
-    // this._iconSrc = null;
-    // this._view = null;
-    // this._appCmd = null;
-
-    // this._isFocused = false;
-    // this._isMinimized = false;
-
     /**
      * @type {Window | null} Shell Desktop Window.
      */
@@ -47,16 +42,26 @@ class AppRuntime extends ClientGUIProcess {
     //TODO: do get set?
     // this.menuItems = runProps.menuItems || [];
 
-    this._menubar = new Menubar(this);
-
     (() => {
       const appRegistrationProps = appRegistration.getProps();
 
       const {
         title,
         view: view,
-        cmd: runCmd
+        cmd: runCmd,
+        menus: menusData
       } = appRegistrationProps;
+
+      // Handle menubar
+      (() => {
+        this._menubar = new AppRuntimeMenubar(this, menusData);
+        this._menubar.on(EVT_MENUBAR_UPDATE, () => {
+          this.emit(EVT_MENUBAR_UPDATE);
+        });
+        this.once(EVT_EXIT, () => {
+          this._menubar = null;
+        });
+      })();
 
       if (title) {
         this.setTitle(title);
@@ -134,10 +139,30 @@ class AppRuntime extends ClientGUIProcess {
   /**
    * TODO: Document
    * 
-   * @return {Menubar}
+   * @return {AppRuntimeMenubar}
    */
   getMenubar() {
     return this._menubar;
+  }
+
+  /**
+   * Sets menubar data, outside of System/App/Window default menus.
+   * 
+   * TODO: Document Object type
+   * 
+   * @param {Object[]} menusData 
+   */
+  setMenubarData(menusData) {
+    this._menubar.setAuxMenusData(menusData);
+  }
+
+  /**
+   * Retrieves menubar data, outside of System/App/Window default menus.
+   * 
+   * @return {Object[]}
+   */
+  getAppRuntimeMenubarData() {
+    return this._menubar.getAuxMenusData();
   }
 
   setWindow(desktopWindow) {
@@ -184,7 +209,7 @@ class AppRuntime extends ClientGUIProcess {
     this._isFocused = isFocused;
 
     if (isFocused) {
-      // This allows the Menubar to accurately set on the first render by
+      // This allows the AppRuntimeMenubar to accurately set on the first render by
       // waiting until it might have information
       _appRuntimeLinkedState.setFocusedAppRuntime(this);
 

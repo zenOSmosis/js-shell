@@ -4,7 +4,7 @@ import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Men
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import hocConnect from 'state/hocConnect';
 import './style.css';
-// import { Menubar as MenubarModel } from 'core/ShellDesktop';
+import { EVT_MENUBAR_UPDATE } from 'core/AppRuntime';
 
 class Menubar extends Component {
   constructor(...args) {
@@ -21,33 +21,55 @@ class Menubar extends Component {
     // this._visibleChangeBatchTimeout = null;
   }
 
-  componentDidUpdate(prevProps) {
-    
-    // Don't contiune if props haven't updated
-    if (Object.is(prevProps.focusedAppRuntime, this.props.focusedAppRuntime)) {
-      return;
-    }
-
-    // TODO: Handle accordingly
-    // console.debug('Menubar component updated', this.props);
-
+  _handleAppRuntimeMenubarUpdate = () => {
     const { focusedAppRuntime } = this.props;
     if (focusedAppRuntime) {
       // Wait until next tick to set Menubar, as the data may change before then
       setTimeout(() => {
-        const menubar = focusedAppRuntime.getMenubar();
+        if (focusedAppRuntime) {
+          const menubar = focusedAppRuntime.getMenubar();
 
-        const menus = menubar.getMenus();
-  
-        this.setState({
-          menus
-        });
+          let menus = [];
+
+          if (menubar) {
+            menus = menubar.getMenus();
+          }
+
+          this.setState({
+            menus
+          });
+        }
       }, 1);
     } else {
-      // TODO: Temporary fix; don't leave like this
+      // TODO: Fall back to ShellDesktop menu
       this.setState({
         menus: []
       });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { focusedAppRuntime: prevFocusedAppRuntime } = prevProps;
+    const { focusedAppRuntime: focusedAppRuntime } = this.props;
+
+    // Don't contiune if focused appRuntime hasn't updated
+    if (Object.is(prevFocusedAppRuntime, focusedAppRuntime)) {
+      return;
+    } else if (prevFocusedAppRuntime) {
+      prevFocusedAppRuntime.off(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
+    }
+    
+    if (focusedAppRuntime) {
+      focusedAppRuntime.on(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
+    }
+
+    this._handleAppRuntimeMenubarUpdate();
+  }
+
+  componentWillUnmount() {
+    const { focusedAppRuntime } = this.props;
+    if (focusedAppRuntime) {
+      focusedAppRuntime.off(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
     }
   }
 
@@ -57,13 +79,16 @@ class Menubar extends Component {
     });
   }
 
-  /*
-  handleMenuClick = (e) => {
-    if (e.key === '3') {
-      this.setState({ visible: false });
+  _handleMenuItemClick(evt, onClickHandler) {
+    if (typeof onClickHandler !== 'function') {
+      console.warn('onClickHandler is not a function!');
+      return;
     }
+
+    const { focusedAppRuntime } = this.props;
+
+    onClickHandler(evt, focusedAppRuntime);
   }
-  */
 
   render() {
     const { activeIdx, menus } = this.state;
@@ -78,7 +103,7 @@ class Menubar extends Component {
               title: menuTitle,
               items: menuItems
             } = menuData;
-            
+
             return (
               <Dropdown
                 key={idx}
@@ -95,13 +120,18 @@ class Menubar extends Component {
                       menuItems.map((menuItem, itemIdx) => {
                         const {
                           title,
-                          onClick
+                          onClick,
+                          isDisabled: propsIsDisabled,
                         } = menuItem;
+
+                        // Disable menus w/o an active callback
+                        const isDisabled = (typeof onClick !== 'function' || propsIsDisabled);
 
                         return (
                           <MenuItem
                             key={itemIdx}
-                            onClick={onClick} // TODO: Use proper click handler, and allow usage for click, touch, and Enter / Return
+                            disabled={isDisabled}
+                            onClick={evt => this._handleMenuItemClick(evt, onClick)} // TODO: Use proper click handler, and allow usage for click, touch, and Enter / Return
                           >
                             {
                               title
@@ -131,11 +161,13 @@ class Menubar extends Component {
 export default hocConnect(Menubar, AppRuntimeLinkedState, (updatedState) => {
   const { focusedAppRuntime } = updatedState;
 
-  if (typeof focusedAppRuntime !== 'undefined') {
-    return {
-      focusedAppRuntime
-    };
+  const filteredState = {};
+
+  if (focusedAppRuntime !== undefined) {
+    filteredState.focusedAppRuntime = focusedAppRuntime;
   }
+
+  return filteredState;
 });
 
 // Old menu code

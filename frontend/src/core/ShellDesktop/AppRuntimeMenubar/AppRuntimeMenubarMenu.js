@@ -1,7 +1,7 @@
-// TODO: Emit update event when Menubar data has been changed
+// TODO: Emit update event when AppRuntimeMenubar data has been changed
 
 import EventEmitter from 'events';
-import './MenubarMenu.typedef';
+import './AppRuntimeMenubarMenu.typedef';
 
 /**
  * TODO: Document event object
@@ -10,7 +10,7 @@ import './MenubarMenu.typedef';
  */
 export const EVT_UPDATE = 'update';
 
-export default class MenubarMenu extends EventEmitter {
+export default class AppRuntimeMenubarMenu extends EventEmitter {
   constructor(menubar) {
     super();
 
@@ -36,14 +36,14 @@ export default class MenubarMenu extends EventEmitter {
     this.emit(EVT_UPDATE, this._menuData);
   }
 
-  getMenubar() {
+  getAppRuntimeMenubar() {
     return this._menubar;
   }
 
-  getGUIProcess() {
-    const menubar = this.getMenubar();
+  getAppRuntime() {
+    const menubar = this.getAppRuntimeMenubar();
 
-    return menubar.getGUIProcess();
+    return menubar.getAppRuntime();
   }
 
   getMenuData() {
