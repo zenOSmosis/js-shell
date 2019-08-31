@@ -4,6 +4,7 @@ import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
 import AppRuntimeMenubar, { EVT_UPDATE as EVT_MENUBAR_UPDATE } from './ShellDesktop/AppRuntimeMenubar';
+import Window, { EVT_MINIMIZE, EVT_MAXIMIZE, EVT_RESTORE } from 'components/Desktop/Window';
 
 const _appRuntimeLinkedState = new AppRuntimeLinkedState();
 
@@ -166,8 +167,27 @@ class AppRuntime extends ClientGUIProcess {
   }
 
   setWindow(desktopWindow) {
+    if (this._window) {
+      console.warn('A window is already associated with this runtime');
+      return;
+    } else if (!(desktopWindow instanceof Window)) {
+      throw new Error('desktopWindow is not a Window instance');
+    }
+
     this.setImmediate(() => {
       this._window = desktopWindow;
+
+      this._window.on(EVT_MINIMIZE, () => {
+        this.setImmediate();
+      });
+
+      this._window.on(EVT_MAXIMIZE, () => {
+        this.setImmediate();
+      });
+
+      this._window.on(EVT_RESTORE, () => {
+        this.setImmediate();
+      });
     });
   }
 

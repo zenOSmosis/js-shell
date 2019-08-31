@@ -60,6 +60,9 @@ export const EVT_MINIMIZE = 'minimize';
 export const EVT_BEFORE_MAXIMIZE = 'willMaximize';
 export const EVT_MAXIMIZE = 'maximize';
 
+export const EVT_BEFORE_RESTORE = 'beforeRestore';
+export const EVT_RESTORE = 'restore';
+
 export const EVT_BEFORE_RESIZE = 'beforeResize';
 export const EVT_RESIZE = 'resize';
 
@@ -474,11 +477,7 @@ class Window extends Component {
   // TODO: Await for any effects to complete
   async minimize() {
     try {
-      // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
-      this.emit(EVT_BEFORE_RESIZE);
-
-      // this.emit(EVT_BEFORE_MINIMIZE);
+      this.emit(EVT_BEFORE_MINIMIZE);
   
       if (!this._isMinimized) {
         // await this.animate(EFFECT_MINIMIZE);
@@ -491,20 +490,20 @@ class Window extends Component {
         await this.hide();
       }
   
-      // this.emit(EVT_MINIMIZE);
-  
-      // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
-      this.emit(EVT_RESIZE);
+      this.emit(EVT_MINIMIZE);
     } catch (exc) {
       throw exc;
     }
   }
 
+  getIsMinimized() {
+    return this._isMinimized;
+  }
+
   // TODO: Await for any effects to complete
   async restore() {
     try {
-      // this.emit(EVT_BEFORE_RESTORE);
+      this.emit(EVT_BEFORE_RESTORE);
 
       if(this._isMinimized) {
         this._isMinimized = false;
@@ -520,7 +519,7 @@ class Window extends Component {
 
       // await this.animate(EFFECT_RESTORE);
 
-      // this.emit(EVT_RESTORE); 
+      this.emit(EVT_RESTORE); 
     } catch (exc) {
       throw exc;
     }
@@ -572,6 +571,10 @@ class Window extends Component {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  getIsMaximized() {
+    return this._isMaximized;
   }
 
   /**
