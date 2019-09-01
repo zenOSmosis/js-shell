@@ -37,6 +37,9 @@ const pathDetail = async (path) => {
       isDir = stats.isDirectory();
     }
 
+    // A user-friendly, string representation of the path type
+    let kind = (isFile ? 'File' : isDir ? 'Directory' : '?');
+
     let children = [];
     if (isDir) {
       children = await readdir(path);
@@ -57,6 +60,7 @@ const pathDetail = async (path) => {
       ...parsedPath,
       isFile,
       isDir,
+      kind,
       isHidden,
       stats
     };

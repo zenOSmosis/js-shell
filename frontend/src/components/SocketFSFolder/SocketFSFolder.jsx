@@ -93,6 +93,21 @@ class SocketFSFolder extends Component {
               </SocketFSFolderNode>
           },
           {
+            Header: 'Kind',
+            accessor: 'kind',
+            Cell: (props) => 
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+                {
+                  props.value
+                }
+              </SocketFSFolderNode>
+            }
+          ,
+          /*
+          {
             Header: 'Created',
             accessor: 'stats.ctimeMs',
             Cell: (props) => 
