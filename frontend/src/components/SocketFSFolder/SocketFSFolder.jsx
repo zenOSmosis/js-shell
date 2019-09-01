@@ -119,77 +119,52 @@ class SocketFSFolder extends Component {
                   unixTimeToHumanReadable(Math.floor(props.value) / 1000)
                 }
               </SocketFSFolderNode>
-          }
-          /*
-          {
-            Header: 'Created',
-            id: 'created',
-            accessor: child => child.stat.ctimeMS
           },
           */
+          {
+            Header: 'Modified',
+            accessor: 'stats.mtimeMs',
+            Cell: (props) => 
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+                {
+                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                }
+              </SocketFSFolderNode>
+          },
           /*
           {
-            Header: 'Visits',
-            // id: 'visits',
-            accessor: 'visits'
-          }
+            Header: 'Accessed',
+            accessor: 'stats.atimeMs',
+            Cell: (props) => 
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+                {
+                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                }
+              </SocketFSFolderNode>
+          },
           */
+          {
+            Header: 'Size',
+            accessor: 'stats.size',
+            Cell: (props) => 
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+               {
+                 props.value
+               }
+              </SocketFSFolderNode>
+          },
         ]}
       />
     );
-
-    /*
-    return (
-      <Full>
-        <table style={{width: '100%'}}>
-          <thead>
-            <tr>
-              <td>Name</td>
-              <td>Created</td>
-              <td>Modified</td>
-              <td>Size</td>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              dirChildren.map((dirChild, idx) => {
-                const { base, stats, error } = dirChild;
-
-                if (error) {
-                  console.error(error);
-                  return false;
-                }
-
-                const { ctimeMs, mtimeMs, size } = stats;
-
-                return (
-                  <tr
-                    key={idx}
-                    onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
-                    onDoubleClick={ evt => this._handleDirNav(dirChild) }
-                    onTouchEnd={ evt => this._handleDirNav(dirChild) }
-                  >
-                    <td>
-                      { base }
-                    </td>
-                    <td>
-                      { unixTimeToHumanReadable(Math.floor(ctimeMs) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A') }
-                    </td>
-                    <td>
-                      { unixTimeToHumanReadable(Math.floor(mtimeMs) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A') }
-                    </td>
-                    <td>
-                      { size }
-                    </td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </table>
-      </Full>
-    )
-    */
 
     /*
     return (

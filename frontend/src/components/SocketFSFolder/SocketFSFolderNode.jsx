@@ -11,6 +11,8 @@ const SocketFSFolderNode = (props) => {
   return (
     <div
       onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
+      // onTouchStart={}
+
       onDoubleClick={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
       onTouchEnd={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
     >
