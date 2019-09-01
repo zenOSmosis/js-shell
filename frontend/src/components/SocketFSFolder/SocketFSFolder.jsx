@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Full from '../Full';
 import { dirDetail } from 'utils/socketFS';
-import moment from 'moment';
 import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
+import ScrollableReactTable from '../ScrollableReactTable';
 
 class SocketFSFolder extends Component {
   static propTypes = {
@@ -65,6 +65,73 @@ class SocketFSFolder extends Component {
   render() {
     const { dirChildren } = this.state;
 
+    const ClickableCell = (props) => {
+      const { children, dirChild } = props;
+      
+      return (
+        <div
+          onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
+          onDoubleClick={ evt => this._handleDirNav(dirChild) }
+          onTouchEnd={ evt => this._handleDirNav(dirChild) }
+        >
+          {
+            children
+          }
+        </div>
+      );
+    };
+
+    return (
+      <ScrollableReactTable
+        data={dirChildren}
+        showPagination={false}
+        pageSize={dirChildren.length}
+        columns={[
+          {
+            Header: 'Name',
+            accessor: 'name',
+            Cell: (props) => <ClickableCell dirChild={props.original}>{props.value}</ClickableCell>
+          },
+          {
+            Header: 'Created',
+            accessor: 'stats.ctimeMs',
+            Cell: (props) => {
+              if (!props.value) {
+                return false;
+              }
+
+              console.debug({
+                props
+              });
+
+              return (
+                <ClickableCell dirChild={props.original}>
+                  {
+                    unixTimeToHumanReadable(Math.floor(props.value) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A')
+                  }
+                </ClickableCell>
+              );
+            }
+          }
+          /*
+          {
+            Header: 'Created',
+            id: 'created',
+            accessor: child => child.stat.ctimeMS
+          },
+          */
+          /*
+          {
+            Header: 'Visits',
+            // id: 'visits',
+            accessor: 'visits'
+          }
+          */
+        ]}
+      />
+    );
+
+    /*
     return (
       <Full>
         <table style={{width: '100%'}}>
@@ -115,6 +182,7 @@ class SocketFSFolder extends Component {
         </table>
       </Full>
     )
+    */
 
     /*
     return (

@@ -43,6 +43,7 @@
     "react-rte": "^0.16.1",
     "react-scripts": "^3.0.1",
     "react-splitter-layout": "^4.0.0",
+    "react-table": "^6.10.0",
     "react-treebeard": "^3.2.4",
     "react-video-js-player": "^1.1.1",
     "react-with-gesture": "^4.0.8",

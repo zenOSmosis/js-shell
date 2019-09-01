@@ -1,0 +1,10 @@
+.scrollable-react-table {
+  height: 100% !important;
+}
+
+.scrollable-react-table input,
+.scrollable-react-table select,
+.scrollable-react-table option {
+  background-color: #000 !important; /* Inherit just does not work here for dropdown options it seems */
+  color: inherit !important;
+}
