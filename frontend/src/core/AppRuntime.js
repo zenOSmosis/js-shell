@@ -48,7 +48,7 @@ class AppRuntime extends ClientGUIProcess {
 
       const {
         title,
-        view: view,
+        view,
         cmd: runCmd,
         menus: menusData
       } = appRegistrationProps;

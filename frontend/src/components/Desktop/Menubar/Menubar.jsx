@@ -50,7 +50,7 @@ class Menubar extends Component {
 
   componentDidUpdate(prevProps) {
     const { focusedAppRuntime: prevFocusedAppRuntime } = prevProps;
-    const { focusedAppRuntime: focusedAppRuntime } = this.props;
+    const { focusedAppRuntime } = this.props;
 
     // Don't contiune if focused appRuntime hasn't updated
     if (Object.is(prevFocusedAppRuntime, focusedAppRuntime)) {
