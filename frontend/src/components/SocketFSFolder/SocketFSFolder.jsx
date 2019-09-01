@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Full from '../Full';
+import ScrollableReactTable from '../ScrollableReactTable';
+import SocketFSFolderNode from './SocketFSFolderNode';
 import { dirDetail } from 'utils/socketFS';
 import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
-import ScrollableReactTable from '../ScrollableReactTable';
 
 class SocketFSFolder extends Component {
   static propTypes = {
@@ -28,12 +29,21 @@ class SocketFSFolder extends Component {
     try {
       const detail = await dirDetail(path);
 
-      console.debug({detail});
-
       // Normalize the path
       path = detail.path;
 
-      const { children: dirChildren } = detail;
+      let { children: dirChildren } = detail;
+
+      // Filter out errored children
+      dirChildren = dirChildren.filter(child => {
+        if (child.error) {
+          console.error(child.error);
+
+          return false;
+        } else {
+          return true;
+        }
+      });
 
       this.setState({
         dirChildren
@@ -65,22 +75,6 @@ class SocketFSFolder extends Component {
   render() {
     const { dirChildren } = this.state;
 
-    const ClickableCell = (props) => {
-      const { children, dirChild } = props;
-      
-      return (
-        <div
-          onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
-          onDoubleClick={ evt => this._handleDirNav(dirChild) }
-          onTouchEnd={ evt => this._handleDirNav(dirChild) }
-        >
-          {
-            children
-          }
-        </div>
-      );
-    };
-
     return (
       <ScrollableReactTable
         data={dirChildren}
@@ -90,28 +84,26 @@ class SocketFSFolder extends Component {
           {
             Header: 'Name',
             accessor: 'name',
-            Cell: (props) => <ClickableCell dirChild={props.original}>{props.value}</ClickableCell>
+            Cell: (props) =>
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+                {props.value}
+              </SocketFSFolderNode>
           },
           {
             Header: 'Created',
             accessor: 'stats.ctimeMs',
-            Cell: (props) => {
-              if (!props.value) {
-                return false;
-              }
-
-              console.debug({
-                props
-              });
-
-              return (
-                <ClickableCell dirChild={props.original}>
-                  {
-                    unixTimeToHumanReadable(Math.floor(props.value) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A')
-                  }
-                </ClickableCell>
-              );
-            }
+            Cell: (props) => 
+              <SocketFSFolderNode
+                dirChild={props.original}
+                socketFSFolderComponent={this}
+              >
+                {
+                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                }
+              </SocketFSFolderNode>
           }
           /*
           {
