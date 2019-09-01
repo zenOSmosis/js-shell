@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 // import FileManager from './FilesWindow';
-import ProtoWindow from './_Proto_Window';
+import SocketFSFilePickerWindow from 'components/SocketFSFilePickerWindow';
 import config from 'config';
 
 export default registerApp({
@@ -9,7 +9,7 @@ export default registerApp({
   title: 'Files',
   view: (props) => {
     return (
-      <ProtoWindow {...props} />
+      <SocketFSFilePickerWindow {...props} />
     );
   },
   iconSrc: `${config.HOST_ICON_URL_PREFIX}folder/folder.svg`

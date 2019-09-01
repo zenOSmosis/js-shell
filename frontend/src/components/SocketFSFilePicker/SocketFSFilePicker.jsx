@@ -7,6 +7,7 @@ import SocketFSFolder from '../SocketFSFolder';
 
 class SocketFSFilePicker extends Component {
   _handleDirChange(detail) {
+    // TODO: Remove
     console.debug('Dir change detail', {
       detail
     });
