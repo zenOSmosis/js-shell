@@ -10,9 +10,8 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
 import './style.css';
-import AppRuntime from 'core/AppRuntime';
+// import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import deepDiff from 'deep-diff';
 
 // TODO: Debug why this doesn't work on Windows
 // import animate, { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
