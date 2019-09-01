@@ -94,7 +94,8 @@ textarea {
   border: 1px rgba(255,255,255,.4) solid;
 }
 
-select {
+select,
+option {
   background-color: #000;
   color: #fff;
 }
