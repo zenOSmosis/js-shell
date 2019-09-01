@@ -12,6 +12,7 @@ import StackingContext from 'components/StackingContext';
 import './style.css';
 import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
+import deepDiff from 'deep-diff';
 
 // TODO: Debug why this doesn't work on Windows
 // import animate, { ANIMATE_JACK_IN_THE_BOX, ANIMATE_ZOOM_OUT, ANIMATE_ZOOM_IN } from 'utils/animate';
@@ -129,6 +130,9 @@ class Window extends Component {
 
     // Base DOM element for the Window
     this._el = null;
+    
+    // Whether to prevent updates from props / state
+    this._isSkippingUpdates = false;
 
     this._moveableComponent = null;
     this._resizableComponent = null;
@@ -212,10 +216,15 @@ class Window extends Component {
 
       this.emit(EVT_MOUNT);
 
+      // Automatically focus on mount
       this.focus();
     } catch (exc) {
       throw exc;
     }
+  }
+
+  shouldComponentUpdate() {
+    return !this._isSkippingUpdates;
   }
 
   componentDidUpdate() {
@@ -346,8 +355,20 @@ class Window extends Component {
       return;
     }
 
-    // Focus window if touched
-    this.focus();
+    // Skip / re-allow update cycle utilized to prevent loss of touch control
+    // while focusing.  Without this in place, Windows cannot be focused and
+    // resized / moved without clicking twice.
+    if (!this._isFocused) {
+      // Prevent updates during window focus cycle
+      this._isSkippingUpdates = true;
+      
+      this.focus();
+      
+      // Allow updates to continue after focus
+      setTimeout(() => {
+        this._isSkippingUpdates = false;
+      }, 1);
+    }
   };
 
   async focus() {
