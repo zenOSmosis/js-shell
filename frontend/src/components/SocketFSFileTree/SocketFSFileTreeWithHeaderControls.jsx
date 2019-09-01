@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Layout, Header, Content } from '../Layout';
-import FileTree from './FileTree';
+import SocketFSFileTree from './SocketFSFileTree';
 import { IoIosRefresh } from 'react-icons/io';
 
-class FileTreeWithHeaderControls extends Component {
+class SocketFSFileTreeWithHeaderControls extends Component {
   render() {
     const { ...propsRest} = this.props;
 
@@ -15,7 +15,7 @@ class FileTreeWithHeaderControls extends Component {
           </button>
         </Header>
         <Content>
-          <FileTree 
+          <SocketFSFileTree 
             {...propsRest}
           />
         </Content>
@@ -24,4 +24,4 @@ class FileTreeWithHeaderControls extends Component {
   }
 }
 
-export default FileTreeWithHeaderControls;
+export default SocketFSFileTreeWithHeaderControls;

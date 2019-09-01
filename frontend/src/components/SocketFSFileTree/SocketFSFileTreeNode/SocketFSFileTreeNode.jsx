@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './FileTreeNode.module.css';
+import style from './SocketFSFileTreeNode.module.css';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
-class FileTreeNode extends Component {
+class SocketFSFileTreeNode extends Component {
   render() {
     const {
       className: propsClassName,
@@ -32,4 +32,4 @@ class FileTreeNode extends Component {
   }
 }
 
-export default FileTreeNode;
+export default SocketFSFileTreeNode;

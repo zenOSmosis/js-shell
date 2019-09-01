@@ -1,15 +1,13 @@
 import React from 'react';
 import Window from 'components/Desktop/Window';
-import FileTree from 'components/FileTree';
+import SocketFSFilePicker from 'components/SocketFSFilePicker';
 
 const ProtoWindow = (props) => {
   return (
     <Window
       {...props}
     >
-      <FileTree
-        onFileOpenRequest={ path => alert('request to open file ' + path)}
-      />
+      <SocketFSFilePicker />
     </Window>
   );
 };

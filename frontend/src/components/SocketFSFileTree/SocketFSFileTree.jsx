@@ -1,18 +1,18 @@
 /**
- * IMPORTANT! FileTree is directly attached to socketFS.
+ * IMPORTANT! SocketFSFileTree is directly attached to socketFS.
  */
 
 import React, { Component } from 'react';
-import FileTreeNodeComponent from './FileTreeNode';
+import SocketFSFileTreeNodeComponent from './SocketFSFileTreeNode';
 import {
   absorb,
   fetchDirTreeData,
-  findFileTreeNodeWithPath
-} from './FileTree.utils';
+  findSocketFSFileTreeNodeWithPath
+} from './SocketFSFileTree.utils';
 import Scrollable from '../Scrollable';
 import { Treebeard } from 'react-treebeard';
 // import decorators from 'react-treebeard/lib/components/decorators';
-import './FileTree.typedefs';
+import './SocketFSFileTree.typedefs';
 import PropTypes from 'prop-types';
 
 const decorators = {
@@ -69,7 +69,7 @@ const decorators = {
           <props.decorators.Toggle isToggled={props.node.toggled} />
           */
         }
-        <FileTreeNodeComponent
+        <SocketFSFileTreeNodeComponent
           name={name}
           isDir={isDir}
           isToggled={isToggled}
@@ -80,7 +80,7 @@ const decorators = {
   }
 };
 
-class FileTree extends Component {
+class SocketFSFileTree extends Component {
   static propTypes = {
     rootDirectory: PropTypes.string,
     onFileOpenRequest: PropTypes.func.isRequired
@@ -118,14 +118,14 @@ class FileTree extends Component {
         onFileOpenRequest(path);
       }
     } else {
-      this.toggleFileTreeNodeWithPath(path);
+      this.toggleSocketFSFileTreeNodeWithPath(path);
     }
   }
 
-  async toggleFileTreeNodeWithPath(path) {
+  async toggleSocketFSFileTreeNodeWithPath(path) {
     try {
       const { treeData } = this.state;
-      let { walkPath, fileTreeNode } = findFileTreeNodeWithPath(treeData, path);
+      let { walkPath, fileTreeNode } = findSocketFSFileTreeNodeWithPath(treeData, path);
 
       if (!fileTreeNode) {
         console.error('Could not locate fileTreeNode');
@@ -134,9 +134,9 @@ class FileTree extends Component {
 
       // Detect if already open, or closed, and handle accordingly
       if (!fileTreeNode.toggled) {
-        await this.expandFileTreeNode(fileTreeNode, walkPath);
+        await this.expandSocketFSFileTreeNode(fileTreeNode, walkPath);
       } else {
-        await this.collapseFileTreeNode(fileTreeNode, walkPath);
+        await this.collapseSocketFSFileTreeNode(fileTreeNode, walkPath);
       }
     } catch (exc) {
       throw exc;
@@ -146,10 +146,10 @@ class FileTree extends Component {
   /**
    * Grafts the given tree node into the file tree, setting the updated state.
    * 
-   * @param {FileTreeNode} fileTreeNode 
+   * @param {SocketFSFileTreeNode} fileTreeNode 
    * @param {string} walkPath 
    */
-  graftFileTreeNode(fileTreeNode, walkPath) {
+  graftSocketFSFileTreeNode(fileTreeNode, walkPath) {
     const { treeData } = this.state;
 
     // Absorb fileTreeNode data to mute compiler warnings with eval'd code
@@ -164,24 +164,24 @@ class FileTree extends Component {
     });
   }
 
-  async expandFileTreeNode(fileTreeNode, walkPath) {
+  async expandSocketFSFileTreeNode(fileTreeNode, walkPath) {
     try {
       const { path } = fileTreeNode;
 
       fileTreeNode = await fetchDirTreeData(path);
       fileTreeNode.toggled = true;
 
-      this.graftFileTreeNode(fileTreeNode, walkPath);
+      this.graftSocketFSFileTreeNode(fileTreeNode, walkPath);
     } catch (exc) {
       throw exc;
     }
   }
 
-  async collapseFileTreeNode(fileTreeNode, walkPath) {
+  async collapseSocketFSFileTreeNode(fileTreeNode, walkPath) {
     try {
       fileTreeNode.toggled = false;
 
-      this.graftFileTreeNode(fileTreeNode, walkPath);
+      this.graftSocketFSFileTreeNode(fileTreeNode, walkPath);
     } catch (exc) {
       throw exc;
     }
@@ -202,4 +202,4 @@ class FileTree extends Component {
   }
 }
 
-export default FileTree;
+export default SocketFSFileTree;

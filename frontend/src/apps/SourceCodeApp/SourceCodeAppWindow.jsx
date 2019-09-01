@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import FileTree from 'components/FileTree';
+import SocketFSFileTree from 'components/SocketFSFileTree';
 import Full from 'components/Full';
 import SplitterLayout from 'components/SplitterLayout';
 import Window from 'components/Desktop/Window';
@@ -121,7 +121,7 @@ export default class SourceCodeAppWindow extends Component {
                 secondaryInitialSize={220}
               >
                 <Full>
-                  <FileTree
+                  <SocketFSFileTree
                     rootDirectory={DEFAULT_ROOT_DIRECTORY}
                     onFileOpenRequest={path => this._handleFileOpenRequest(path)}
                   />

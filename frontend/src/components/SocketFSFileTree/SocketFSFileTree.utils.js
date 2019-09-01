@@ -49,9 +49,9 @@ const fetchDirTreeData = async (path) => {
 
 /**
  * @param {string} path
- * @return {FileTreeNodeWithWalkPath} 
+ * @return {SocketFSFileTreeNodeWithWalkPath} 
  */
-const findFileTreeNodeWithPath = (treeData, path) => {
+const findSocketFSFileTreeNodeWithPath = (treeData, path) => {
   // Absorb fileTreeNode data to mute compiler warnings with eval'd code
   absorb(treeData);
 
@@ -132,5 +132,5 @@ const findFileTreeNodeWithPath = (treeData, path) => {
 export {
   absorb,
   fetchDirTreeData,
-  findFileTreeNodeWithPath
+  findSocketFSFileTreeNodeWithPath
 };
