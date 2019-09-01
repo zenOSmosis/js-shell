@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL maintainer="jeremy.harris@zenosmosis.com"
+LABEL maintainer "jeremy.harris@zenosmosis.com"
 
 RUN apt-get update \
   && apt-get install -y curl \
