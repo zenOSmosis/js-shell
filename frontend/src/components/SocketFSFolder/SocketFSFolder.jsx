@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Full from '../Full';
 import { dirDetail } from 'utils/socketFS';
 import moment from 'moment';
+import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
 
 class SocketFSFolder extends Component {
@@ -85,7 +86,7 @@ class SocketFSFolder extends Component {
                   return false;
                 }
 
-                const { ctimeMs, mtime, size } = stats;
+                const { ctimeMs, mtimeMs, size } = stats;
 
                 return (
                   <tr
@@ -98,10 +99,10 @@ class SocketFSFolder extends Component {
                       { base }
                     </td>
                     <td>
-                      { moment.unix(Math.floor(ctimeMs) / 1000).format('dddd, MMMM Do, YYYY h:mm:ss A') }
+                      { unixTimeToHumanReadable(Math.floor(ctimeMs) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A') }
                     </td>
                     <td>
-                      { mtime } 
+                      { unixTimeToHumanReadable(Math.floor(mtimeMs) / 1000, 'dddd, MMMM Do, YYYY h:mm:ss A') }
                     </td>
                     <td>
                       { size }
