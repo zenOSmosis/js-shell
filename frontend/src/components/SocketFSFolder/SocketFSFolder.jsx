@@ -5,6 +5,8 @@ import SocketFSFolderNode from './SocketFSFolderNode';
 import { dirDetail } from 'utils/socketFS';
 import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
+import style from './SocketFSFolderNode.module.scss';
+import classNames from 'classnames';
 
 class SocketFSFolder extends Component {
   static propTypes = {
@@ -17,7 +19,8 @@ class SocketFSFolder extends Component {
     this.state = {
       cwd: '/',
 
-      dirChildren: []
+      dirChildren: [],
+      selectedDirChildren: []
     };
   }
 
@@ -58,6 +61,31 @@ class SocketFSFolder extends Component {
     }    
   }
 
+  selectDirChild(dirChild) {
+    const { selectedDirChildren } = this.state;
+
+    selectedDirChildren.push(dirChild);
+
+    this.setState({
+      selectedDirChildren
+    });
+  }
+
+  unselectDirChild(dirChild) {
+    const { selectedDirChildren } = this.state;
+
+    for (let i = 0; i < selectedDirChildren.length; i++) {
+      if (Object.is(selectedDirChildren[i], dirChild)) {
+        selectedDirChildren.splice(i, 1);
+      }
+    }
+
+    this.setState({
+      selectedDirChildren
+    });
+  }
+
+  /*
   async _handleDirNav(dirChild) {
     try {
       const { isDir, path } = dirChild;
@@ -71,15 +99,29 @@ class SocketFSFolder extends Component {
       throw exc;
     }
   }
+  */
 
   render() {
-    const { dirChildren } = this.state;
+    const { dirChildren, selectedDirChildren } = this.state;
 
     return (
       <ScrollableReactTable
         data={dirChildren}
         showPagination={false}
         pageSize={dirChildren.length}
+        getTrProps={(state, rowInfo, column) => {
+          const dirChild = rowInfo.original;
+
+          if (selectedDirChildren.includes(dirChild)) {
+            return {
+              className: classNames(style['node'], style['selected'])
+            }
+          } else {
+            return {
+              className: classNames(style['node'])
+            }
+          }
+        }}
         columns={[
           {
             Header: 'Name',

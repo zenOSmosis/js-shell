@@ -2,7 +2,7 @@ import React from 'react';
 import Full from '../Full';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import style from './ScrollableReactTable.module.css';
+import style from './ScrollableReactTable.module.scss';
 import classNames from 'classnames';
 
 const ScrollableReactTable = (props) => {

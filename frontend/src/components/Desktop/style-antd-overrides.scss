@@ -1,0 +1,46 @@
+@import 'core/core.styles.scss';
+
+div[role="combobox"],
+li[role="option"],
+.ant-select-dropdown-menu-item {
+  font-size: .8rem;
+  color: $inputTextColor;
+  background-color: transparent;
+}
+
+.ant-select-dropdown-menu-item {
+  text-align: left;
+  background-color: $inputBgColor !important;
+}
+
+.ant-select-dropdown-menu-item:hover {
+  background-color: $inputBorderColor !important;
+  color: $inputBgColor;
+}
+
+.ant-tree-switcher,
+.ant-tree-title {
+  color: $bodyTextColor;
+}
+.ant-tree-treenode-selected .ant-tree-title {
+  color: $bodyBgColor;
+}
+
+button.ant-btn,
+input.ant-input {
+  background-color: $inputBgColor;
+  color: $inputTextColor;
+  border: 1px $inputBorderColor solid;
+}
+
+button.ant-btn:disabled,
+button.ant-btn:disabled:hover {
+  color: $inputTextColorDisabled;
+  background-color: $inputBgColorDisabled;
+  border: 1px $inputBorderColorDisabled solid;
+}
+
+button.ant-btn:hover {
+  background-color: $activeHighlightBgColor;
+  color: $activeHighlightTextColor;
+}

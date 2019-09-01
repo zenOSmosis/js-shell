@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button as RSButton } from 'antd';
-import './style.css';
+import './style.scss';
 
 const Button = (props = {}) => {
   const {className, active: propsActive, size: propsSize, ...propsRest} = props;

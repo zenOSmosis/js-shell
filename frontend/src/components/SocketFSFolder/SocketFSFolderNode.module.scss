@@ -1,0 +1,10 @@
+@import 'core/core.styles.scss';
+
+.node:hover {
+  background-color: $inputBgColorHover;
+  color: $inputTextColor;
+}
+
+.node.selected {
+  background-color: $activeHighlightBgColor;
+}

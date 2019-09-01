@@ -1,8 +1,8 @@
 import 'normalize.css/normalize.css';
 import 'antd/dist/antd.css';
-import './style-antd-overrides.css';
-import './style.css';
-import './style-scrollbar.css';
+import './style-antd-overrides.scss';
+import './style.scss';
+import './style-scrollbar.scss';
 
 import React, { Component } from 'react';
 import FullscreenProvider from 'react-full-screen';

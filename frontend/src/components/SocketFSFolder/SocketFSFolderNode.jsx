@@ -4,17 +4,19 @@ import PropTypes from 'prop-types';
 const SocketFSFolderNode = (props) => {
   const {
     children: renderedChildren,
-    dirChild: pathDetailChild,
+    dirChild,
     socketFSFolderComponent
   } = props;
   
   return (
     <div
-      onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
+      onMouseDown={evt => socketFSFolderComponent.selectDirChild(dirChild)}
+      onMouseUp={evt => socketFSFolderComponent.unselectDirChild(dirChild)}
+      // onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
       // onTouchStart={}
 
-      onDoubleClick={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
-      onTouchEnd={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
+      // onDoubleClick={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
+      // onTouchEnd={ evt => socketFSFolderComponent._handleDirNav(pathDetailChild) }
     >
       {
         renderedChildren

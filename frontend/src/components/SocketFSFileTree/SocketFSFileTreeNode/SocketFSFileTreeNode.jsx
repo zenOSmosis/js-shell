@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './SocketFSFileTreeNode.module.css';
+import style from './SocketFSFileTreeNode.module.scss';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
 class SocketFSFileTreeNode extends Component {
