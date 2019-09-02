@@ -7,10 +7,10 @@ import uuidv4 from 'uuidv4';
  * @extends LinkedState
  */
 class UniqueLinkedState extends LinkedState {
-  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState = {}) {
+  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = {}) {
     linkedScopeName = `[unique]${linkedScopeName}${uuidv4()}`;
 
-    super(linkedScopeName, initialDefaultState);
+    super(linkedScopeName, initialDefaultState, options);
   }
 }
 

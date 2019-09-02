@@ -23,8 +23,9 @@ class LinkedState extends EventEmitter {
    * @param {Object} initialDefaultState The default state of the instance. The
    * keys of this initial state must be utilized when updating the state, or
    * it will raise an error.
+   * @param {Object} options TODO: Document these
    */
-  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState) {
+  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = {}) {
     super();
 
     // Whether this is the original instance in the collective scope
@@ -41,14 +42,26 @@ class LinkedState extends EventEmitter {
     // Important! Initial state is kept as a clone so it isn't altered
     // TODO: Move this handling to the master controller
     this._initialDefaultState = Object.freeze({
-      ...{},
+      ...{}, 
       ...initialDefaultState
     });
+
+    this._options = options;
 
     // TODO: Move this handling to the master controller
     this._initialDefaultKeys = Object.keys(this._initialDefaultState);
 
     mlscs.addLinkedState(this, initialDefaultState);
+  }
+
+  dispatchAction(actionName, ...actionData) {
+    const { actions } = this._options;
+    if (!actions || typeof actions[actionName] !== 'function') {
+      throw new Error(`No dispatchable action with name: ${actionName}`);
+    }
+
+    const action = actions[actionName];
+    action(this, ...actionData);
   }
 
   /**
