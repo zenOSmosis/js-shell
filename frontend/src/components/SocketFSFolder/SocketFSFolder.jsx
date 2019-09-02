@@ -8,6 +8,13 @@ import PropTypes from 'prop-types';
 import style from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
 
+export const LAYOUT_TYPE_ICON = 'icon';
+export const LAYOUT_TYPE_TABLE = 'table';
+export const LAYOUT_TYPES = [
+  LAYOUT_TYPE_ICON,
+  LAYOUT_TYPE_TABLE
+];
+
 class SocketFSFolder extends Component {
   static propTypes = {
     onDirChange: PropTypes.func
@@ -74,7 +81,7 @@ class SocketFSFolder extends Component {
       }
     } catch (exc) {
       throw exc;
-    }    
+    }
   }
 
   selectDirChild(dirChild) {
@@ -131,135 +138,139 @@ class SocketFSFolder extends Component {
 
   render() {
     const { dirChildren, selectedDirChildren } = this.state;
+    const { layoutType } = this.props;
 
-    return (
-      <ScrollableReactTable
-        data={dirChildren}
-        showPagination={false}
-        pageSize={dirChildren.length}
-        getTrProps={(state, rowInfo, column) => {
-          const dirChild = rowInfo.original;
+    switch (layoutType) {
+      case LAYOUT_TYPE_TABLE:
+        return (
+          <ScrollableReactTable
+            data={dirChildren}
+            showPagination={false}
+            pageSize={dirChildren.length}
+            getTrProps={(state, rowInfo, column) => {
+              const dirChild = rowInfo.original;
 
-          const isSelected = selectedDirChildren.includes(dirChild);
+              const isSelected = selectedDirChildren.includes(dirChild);
 
-          return {
-            className: classNames(style['node'], (isSelected ? style['selected'] : null)),
-            onMouseDown: (evt) => this._handleDirChildInteract(evt, dirChild),
-            onTouchStart: (evt) => this._handleDirChildInteract(evt, dirChild)
-          };
-        }}
-        columns={[
-          {
-            Header: 'Name',
-            accessor: 'name',
-            Cell: (props) =>
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-                {props.value}
-              </SocketFSFolderNode>
-          },
-          {
-            Header: 'Kind',
-            accessor: 'kind',
-            Cell: (props) => 
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-                {
-                  props.value
-                }
-              </SocketFSFolderNode>
+              return {
+                className: classNames(style['node'], (isSelected ? style['selected'] : null)),
+                onMouseDown: (evt) => this._handleDirChildInteract(evt, dirChild),
+                onTouchStart: (evt) => this._handleDirChildInteract(evt, dirChild)
+              };
+            }}
+            columns={[
+              {
+                Header: 'Name',
+                accessor: 'name',
+                Cell: (props) =>
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {props.value}
+                  </SocketFSFolderNode>
+              },
+              {
+                Header: 'Kind',
+                accessor: 'kind',
+                Cell: (props) =>
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {
+                      props.value
+                    }
+                  </SocketFSFolderNode>
+              }
+              ,
+              /*
+              {
+                Header: 'Created',
+                accessor: 'stats.ctimeMs',
+                Cell: (props) => 
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {
+                      unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                    }
+                  </SocketFSFolderNode>
+              },
+              */
+              {
+                Header: 'Modified',
+                accessor: 'stats.mtimeMs',
+                Cell: (props) =>
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {
+                      unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                    }
+                  </SocketFSFolderNode>
+              },
+              /*
+              {
+                Header: 'Accessed',
+                accessor: 'stats.atimeMs',
+                Cell: (props) => 
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {
+                      unixTimeToHumanReadable(Math.floor(props.value) / 1000)
+                    }
+                  </SocketFSFolderNode>
+              },
+              */
+              {
+                Header: 'Size',
+                accessor: 'stats.size',
+                Cell: (props) =>
+                  <SocketFSFolderNode
+                    dirChild={props.original}
+                    socketFSFolderComponent={this}
+                  >
+                    {
+                      props.value
+                    }
+                  </SocketFSFolderNode>
+              },
+            ]}
+          />
+        );
+        break;
+
+      case LAYOUT_TYPE_ICON:
+      default:
+        return (
+          <Full>
+            {
+              dirChildren.map((dirChild, idx) => {
+                const isSelected = selectedDirChildren.includes(dirChild);
+
+                const { base } = dirChild;
+
+                return (
+                  <div
+                    key={idx}
+                    className={classNames(style['node'], (isSelected ? style['selected'] : null))}
+                    onMouseDown={evt => this._handleDirChildInteract(evt, dirChild)}
+                    onTouchStart={evt => this._handleDirChildInteract(evt, dirChild)}
+                  >
+                    {base}
+                  </div>
+                )
+              })
             }
-          ,
-          /*
-          {
-            Header: 'Created',
-            accessor: 'stats.ctimeMs',
-            Cell: (props) => 
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-                {
-                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
-                }
-              </SocketFSFolderNode>
-          },
-          */
-          {
-            Header: 'Modified',
-            accessor: 'stats.mtimeMs',
-            Cell: (props) => 
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-                {
-                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
-                }
-              </SocketFSFolderNode>
-          },
-          /*
-          {
-            Header: 'Accessed',
-            accessor: 'stats.atimeMs',
-            Cell: (props) => 
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-                {
-                  unixTimeToHumanReadable(Math.floor(props.value) / 1000)
-                }
-              </SocketFSFolderNode>
-          },
-          */
-          {
-            Header: 'Size',
-            accessor: 'stats.size',
-            Cell: (props) => 
-              <SocketFSFolderNode
-                dirChild={props.original}
-                socketFSFolderComponent={this}
-              >
-               {
-                 props.value
-               }
-              </SocketFSFolderNode>
-          },
-        ]}
-      />
-    );
-
-    /*
-    return (
-      <Full>
-        {
-          dirChildren.map((dirChild, idx) => {
-            console.debug({
-              child: dirChild
-            });
-
-            const { base } = dirChild;
-
-            return (
-              <div
-                key={idx}
-                onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
-                onDoubleClick={ evt => this._handleDirNav(dirChild) }
-                onTouchEnd={ evt => this._handleDirNav(dirChild) }
-              >
-                { base }
-              </div>
-            )
-          })
-        }
-      </Full>
-    );
-    */
+          </Full>
+        );
+        break;
+    }
   }
 }
 

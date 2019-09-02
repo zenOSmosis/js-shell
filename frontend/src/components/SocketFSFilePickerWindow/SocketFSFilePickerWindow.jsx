@@ -4,19 +4,16 @@ import Layout, { Content, Footer } from '../Layout';
 import Window from '../Desktop/Window';
 import SplitterLayout from '../SplitterLayout';
 import SocketFSFileTree from '../SocketFSFileTree';
-import SocketFSFolder from '../SocketFSFolder';
+import SocketFSFolder, {
+  LAYOUT_TYPE_ICON,
+  LAYOUT_TYPE_TABLE,
+  // LAYOUT_TYPES
+} from '../SocketFSFolder';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
 import { Row, Column } from '../Layout';
 import { ButtonGroup, Button } from '../ButtonGroup';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
 import HostFileDropZone from 'components/HostFileDropZone';
-
-export const LAYOUT_TYPE_ICON = 'icon';
-export const LAYOUT_TYPE_TABLE = 'table';
-export const LAYOUT_TYPES = [
-  LAYOUT_TYPE_ICON,
-  LAYOUT_TYPE_TABLE
-];
 
 class SocketFSFilePickerWindow extends Component {
   state = {
