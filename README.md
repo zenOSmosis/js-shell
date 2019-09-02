@@ -42,8 +42,8 @@ $ ./build.prod.sh
 $ ./build.dev.sh
 # ---------------
 
-# Running
-$ docker-compose up
+# Launch
+$ ./run.sh
 ```
 
 ## System Design
