@@ -46,34 +46,30 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
 
       super(props);
 
-      this._linkedStateInstance = null;
-    }
+      if (isLinkedStateClass) {
+        this._linkedStateInstance = new LinkedState();
+      } else {
+        this._linkedStateInstance = LinkedState;
+      }
 
-    componentDidMount() {
-      // Register LinkedState connection
-      (() => {
-        if (this._linkedStateInstance) {
-          console.warn('LinkedState instance is already set');
-          return;
-        }
+      if (!this._linkedStateInstance) {
+        throw new Error('No LinkedState present');
+      }
 
-        if (isLinkedStateClass) {
-          this._linkedStateInstance = new LinkedState();
+      // Set initial state
+      this.state = (() => {
+        const currState = this._linkedStateInstance.getState();
+        
+        if (!stateUpdateFilter) {
+          // Pass the current state as the initial state
+          return currState;
         } else {
-          this._linkedStateInstance = LinkedState;
+          // Pass the filtered state as the initial state
+          return stateUpdateFilter(currState, this._linkedStateInstance);
         }
-
-        if (!this._linkedStateInstance) {
-          throw new Error('No LinkedState present');
-        }
-
-        this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
-
-        const state = this._linkedStateInstance.getState();
-
-        // Set initial state
-        this._handleLinkedStateUpdate(state);
       })();
+
+      this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
     }
 
     componentWillUnmount() {
