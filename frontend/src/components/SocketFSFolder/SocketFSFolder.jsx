@@ -7,7 +7,6 @@ import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
 import style from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
-import arrayEquals from 'utils/array/arrayEquals';
 
 class SocketFSFolder extends Component {
   static propTypes = {
