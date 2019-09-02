@@ -46,7 +46,9 @@ class DesktopLinkedState extends LinkedState {
       viewportSize: { width: 0, height: 0},
 
       // Whether the desktop is requested to be in full-screen mode
-      isFullScreenRequested: false
+      isFullScreenRequested: false,
+
+      shellDesktopProcess: null
     });
   }
 
