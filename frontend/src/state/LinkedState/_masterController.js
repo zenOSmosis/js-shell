@@ -56,7 +56,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     let isScopeOriginalInstance = null;
 
     // Register initial default state
-    if (typeof this._sharedStates[linkedScopeName] === 'undefined') {
+    if (this._sharedStates[linkedScopeName] === undefined) {
       this._sharedStates[linkedScopeName] = initialDefaultState;
       isScopeOriginalInstance = true;
     } else {
@@ -68,7 +68,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     if (this._masterLinkedStateListener) {
       // Update MasterLinkedStateListener count
       this._masterLinkedStateListener.setState({
-        lenLengthStates: this._linkedStateInstances.length
+        lenLinkedStateInstances: this._linkedStateInstances.length
       });
     }
 
@@ -80,7 +80,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
       });
     }
 
-    // TODO: Debug if this is necessary (refer to initialDefaultState above)
+    // Set the initial default state, if the original state
     if (isScopeOriginalInstance) {
       linkedState.setState(initialDefaultState);
     }
@@ -96,7 +96,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     if (this._masterLinkedStateListener) {
       // Update MasterLinkedStateListener count
       this._masterLinkedStateListener.setState({
-        lenLengthStates: this._linkedStateInstances.length
+        lenLinkedStateInstances: this._linkedStateInstances.length
       });
     }
   }

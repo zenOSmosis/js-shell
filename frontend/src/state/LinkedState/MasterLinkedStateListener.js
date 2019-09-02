@@ -12,7 +12,7 @@ class MasterLinkedStateListener extends LinkedState {
   constructor() {
     super(MASTER_LINKED_STATE_LISTENER_SCOPE_NAME, {
       mlscs,
-      lenLengthStates: 0
+      lenLinkedStateInstances: 0
     });
   }
 
@@ -21,9 +21,9 @@ class MasterLinkedStateListener extends LinkedState {
   }
 
   getLinkedStateCount() {
-    const { lenLengthStates } = this.getState();
+    const { lenLinkedStateInstances } = this.getState();
 
-    return lenLengthStates;
+    return lenLinkedStateInstances;
   }
 
   getLinkedStateInstancesByScopeName(linkedScopeName) {
