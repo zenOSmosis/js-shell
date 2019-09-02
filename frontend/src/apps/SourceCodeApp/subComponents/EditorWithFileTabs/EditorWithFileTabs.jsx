@@ -5,7 +5,7 @@ import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import MonacoEditor from 'components/MonacoEditor';
 import FileTabs from '../FileTabs';
 import style from './EditorWithFileTabs.module.css';
-import { CURSOR_POSITION } from '../../state/SourceCodeAppLinkedState';
+import { CURSOR_POSITION } from '../../state/UniqueSourceCodeAppLinkedState';
 import classNames from 'classnames';
 
 class EditorWithFileTabs extends Component {

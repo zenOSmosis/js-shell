@@ -7,7 +7,7 @@ import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
 import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
 import openFile from './utils/file/openFile';
-import { ACTIVE_FILE } from './state/SourceCodeAppLinkedState';
+import { ACTIVE_FILE } from './state/UniqueSourceCodeAppLinkedState';
 
 const RUN_TARGET_MAIN = {
   name: 'Main Thread',

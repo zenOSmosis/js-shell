@@ -1,6 +1,6 @@
 import React from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import { ACTIVE_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/SourceCodeAppLinkedState';
+import { ACTIVE_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
 import { Row, Column } from 'components/Layout';
 import style from './AppFooter.module.css';
 

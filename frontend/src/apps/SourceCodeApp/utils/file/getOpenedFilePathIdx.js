@@ -1,4 +1,4 @@
-import '../../state/SourceCodeAppLinkedState';
+import '../../state/UniqueSourceCodeAppLinkedState';
 
 /**
  * @param {SourceCodeAppLinkedState} editorLinkedState 

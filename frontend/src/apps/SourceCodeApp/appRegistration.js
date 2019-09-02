@@ -3,7 +3,7 @@ import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
-import createSourceCodeAppLinkedState from './utils/createSourceCodeAppLinkedState';
+import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 
 export default registerApp({
   title: 'Source Code',
@@ -35,7 +35,7 @@ export default registerApp({
     }
   ],
   cmd: (app) => {
-    app.editorLinkedState = createSourceCodeAppLinkedState();
+    app.editorLinkedState = new UniqueSourceCodeAppLinkedState();
 
     app.on(EVT_BEFORE_EXIT, () => {
       app.editorLinkedState.destroy();

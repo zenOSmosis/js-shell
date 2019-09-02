@@ -1,21 +1,13 @@
-import LinkedState from 'state/LinkedState';
+import UniqueLinkedState from 'state/UniqueLinkedState';
 
 export const OPENED_FILES = 'openedFiles';
 export const ACTIVE_FILE = 'activeFile';
 export const LANGUAGES = 'languages';
 export const CURSOR_POSITION = 'cursorPosition';
 
-const _uuids = [];
-
-class SourceCodeAppLinkedState extends LinkedState {
-  constructor(uuid) {
-    if (_uuids.includes(uuid)) {
-      throw new Error('uuid is not unique!');
-    } else {
-      _uuids.push(uuid);
-    }
-
-    super(`source-code-app-${uuid}`, {
+class UniqueSourceCodeAppLinkedState extends UniqueLinkedState {
+  constructor() {
+    super('source-code-app', {
       [OPENED_FILES]: [],
 
       [ACTIVE_FILE]: null,
@@ -36,4 +28,4 @@ class SourceCodeAppLinkedState extends LinkedState {
   }
 }
 
-export default SourceCodeAppLinkedState;
+export default UniqueSourceCodeAppLinkedState;
