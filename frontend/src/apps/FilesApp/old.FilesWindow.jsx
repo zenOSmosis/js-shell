@@ -19,7 +19,7 @@ import mime from 'mime-types';
 import config from '../../config';
 
 import 'react-dropzone-uploader/dist/styles.css'
-import DropFile from 'components/DropFile'
+import HostFileDropZone from 'components/HostFileDropZone'
 
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 const commonAppRegistryLinkedState = new AppRegistryLinkedState();
@@ -253,7 +253,7 @@ export default class FilesWindow extends Component {
           </Row>
         }
       >
-        <DropFile>
+        <HostFileDropZone>
         <Layout className="FileNavigator">
           <Layout>
             {
@@ -364,7 +364,7 @@ export default class FilesWindow extends Component {
             </Row>
           </Footer>
         </Layout>
-        </DropFile>
+        </HostFileDropZone>
       </Window>
     );
   }

@@ -10,8 +10,8 @@ const SocketFSFolderNode = (props) => {
   
   return (
     <div
-      onMouseDown={evt => socketFSFolderComponent.selectDirChild(dirChild)}
-      onMouseUp={evt => socketFSFolderComponent.unselectDirChild(dirChild)}
+      // onMouseDown={evt => socketFSFolderComponent.selectDirChild(dirChild)}
+      // onMouseUp={evt => socketFSFolderComponent.unselectDirChild(dirChild)}
       // onMouseDown={evt => console.debug('mouseDown', {evt, ctrlKey: evt.ctrlKey, shiftKey: evt.shiftKey})}
       // onTouchStart={}
 

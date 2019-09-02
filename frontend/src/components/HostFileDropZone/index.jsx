@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import 'react-dropzone-uploader/dist/styles.css';
 
-class DropFile extends Component {
+class HostFileDropZone extends Component {
   constructor() {
     super();
     this.state = {
@@ -20,7 +21,7 @@ class DropFile extends Component {
     e.stopPropagation()
 
     this.dragCounter++
-    this.setState({dragging: true})
+    this.setState({ dragging: true })
   }
 
   handleDragOut = (e) => {
@@ -29,22 +30,22 @@ class DropFile extends Component {
 
     this.dragCounter--
     if (this.dragCounter === 0) {
-      this.setState({dragging: false})
+      this.setState({ dragging: false })
     }
   }
 
   handleDrop = (e) => {
-    const {handleDrop} = this.props;
+    const { handleDrop } = this.props;
     e.preventDefault()
     e.stopPropagation()
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      if(typeof handleDrop != 'undefined') {
+      if (typeof handleDrop != 'undefined') {
         handleDrop(e.dataTransfer.files)
       }
-      this.setState({dragging: false})
+      this.setState({ dragging: false })
       e.dataTransfer.clearData()
-      this.dragCounter = 0    
+      this.dragCounter = 0
     }
   }
 
@@ -69,23 +70,23 @@ class DropFile extends Component {
     return (
       <div
         id="dropZone"
-        style={{widht: '100%', height: '100%'}}
+        style={{ widht: '100%', height: '100%' }}
         ref={ref => this.dropRef = ref}
       >
         {dragging &&
-          <div 
+          <div
             style={{
               border: 'dashed grey 2px',
               backgroundColor: 'rgba(255,255,255,.5)',
               position: 'absolute',
               top: 0,
               bottom: 0,
-              left: 0, 
+              left: 0,
               right: 0,
               zIndex: 9999
             }}
           >
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 top: '50%',
@@ -105,4 +106,4 @@ class DropFile extends Component {
     )
   }
 }
-export default DropFile
+export default HostFileDropZone

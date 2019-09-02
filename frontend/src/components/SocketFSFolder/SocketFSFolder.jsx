@@ -7,6 +7,7 @@ import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
 import style from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
+import arrayEquals from 'utils/array/arrayEquals';
 
 class SocketFSFolder extends Component {
   static propTypes = {
@@ -22,6 +23,21 @@ class SocketFSFolder extends Component {
       dirChildren: [],
       selectedDirChildren: []
     };
+  }
+
+  setState(newState, callback = null) {
+    // const { selectedDirChildren } = this.state;
+    const { selectedDirChildren: newSelectedDirChildren } = newState;
+
+    if (newSelectedDirChildren !== undefined) {
+      const { onSelectedDirChildrenChange } = this.props;
+
+      if (typeof onSelectedDirChildrenChange === 'function') {
+        onSelectedDirChildrenChange(newSelectedDirChildren);
+      }
+    }
+
+    return super.setState(newState, callback);
   }
 
   componentDidMount() {
@@ -49,7 +65,8 @@ class SocketFSFolder extends Component {
       });
 
       this.setState({
-        dirChildren
+        dirChildren,
+        selectedDirChildren: []
       });
 
       const { onDirChange } = this.props;
@@ -85,21 +102,33 @@ class SocketFSFolder extends Component {
     });
   }
 
-  /*
-  async _handleDirNav(dirChild) {
-    try {
-      const { isDir, path } = dirChild;
+  _handleDirChildInteract(evt, dirChild) {
+    let { selectedDirChildren } = this.state;
 
-      if (isDir) {
-        await this.chdir(path);
-      } else {
-        alert(`TODO: Handle path: ${path}`);
-      }
-    } catch (exc) {
-      throw exc;
+    const which = evt.nativeEvent.which;
+    const isLeftClick = which === 1;
+
+    if (!isLeftClick) {
+      return;
     }
+
+    const isCurrentlySelected = selectedDirChildren.includes(dirChild);
+
+    const isShift = evt.shiftKey;
+    const isCtrl = evt.ctrlKey;
+
+    if (!isShift && !isCtrl) {
+      selectedDirChildren = [];
+    }
+
+    if (!isCurrentlySelected) {
+      selectedDirChildren.push(dirChild);
+    }
+
+    this.setState({
+      selectedDirChildren
+    });
   }
-  */
 
   render() {
     const { dirChildren, selectedDirChildren } = this.state;
@@ -112,15 +141,13 @@ class SocketFSFolder extends Component {
         getTrProps={(state, rowInfo, column) => {
           const dirChild = rowInfo.original;
 
-          if (selectedDirChildren.includes(dirChild)) {
-            return {
-              className: classNames(style['node'], style['selected'])
-            }
-          } else {
-            return {
-              className: classNames(style['node'])
-            }
-          }
+          const isSelected = selectedDirChildren.includes(dirChild);
+
+          return {
+            className: classNames(style['node'], (isSelected ? style['selected'] : null)),
+            onMouseDown: (evt) => this._handleDirChildInteract(evt, dirChild),
+            onTouchStart: (evt) => this._handleDirChildInteract(evt, dirChild)
+          };
         }}
         columns={[
           {
