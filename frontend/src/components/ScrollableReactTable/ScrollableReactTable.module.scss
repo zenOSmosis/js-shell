@@ -1,8 +1,13 @@
 @import 'core/core.styles.scss';
 
+.scrollable-react-table {
+  /* Enables the table to scroll */
+  height: 100%;
+}
+
 .scrollable-react-table input,
 .scrollable-react-table select,
 .scrollable-react-table option {
-  background-color: $inputBgColor; /* Inherit just does not work here for dropdown options it seems */
+  background-color: $inputBgColor;
   color: $inputTextColor;
 }
