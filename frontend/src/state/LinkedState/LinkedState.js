@@ -20,9 +20,11 @@ export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 class LinkedState extends EventEmitter {
   /**
    * @param {string} linkedScopeName The name of the shared linked scope.
-   * @param {Object} initialDefaultState The default state of the instance. 
+   * @param {Object} initialDefaultState The default state of the instance. The
+   * keys of this initial state must be utilized when updating the state, or
+   * it will raise an error.
    */
-  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState = {}) {
+  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState) {
     super();
 
     // Whether this is the original instance in the collective scope
@@ -36,15 +38,17 @@ class LinkedState extends EventEmitter {
 
     this._linkedScopeName = linkedScopeName;
 
-    mlscs.addLinkedState(this, initialDefaultState);
-
     // Important! Initial state is kept as a clone so it isn't altered
+    // TODO: Move this handling to the master controller
     this._initialDefaultState = Object.freeze({
       ...{},
       ...initialDefaultState
     });
 
-    // this.setState(initialDefaultState);
+    // TODO: Move this handling to the master controller
+    this._initialDefaultKeys = Object.keys(this._initialDefaultState);
+
+    mlscs.addLinkedState(this, initialDefaultState);
   }
 
   /**
@@ -114,17 +118,21 @@ class LinkedState extends EventEmitter {
   }
 
   /**
-   * Sets a common state across all shared LinkedState instances.
+   * Sets a common state across all LinkedState instances with the same scope.
    * 
    * @param {Object} updatedState 
-   * @param {function} onSet [default = null] Optional callback to be
-   * performed after state has been updated
+   * @param {function} onSet? Optional callback to be performed after state has
+   * been updated.
+   * @throws {Error} If trying to set a key in the updatedState which is not
+   * present in the initial state, an error will be thrown.
    */
   setState(updatedState = {}, onSet = null) {
-    // const prevState = this.getState();
-
-    // Pre-set event hook
-    // this.emit(EVT_LINKED_STATE_WILL_UPDATE, prevState);
+    // TODO: Move this handling to the master controller
+    for (let updatedKey of Object.keys(updatedState)) {
+      if (this._initialDefaultKeys.indexOf(updatedKey) === -1) {
+        throw new Error(`Updated key "${updatedKey}" is not present in initial keys`);
+      }
+    }
 
     mlscs.setSharedState(this, {
       updatedState,
