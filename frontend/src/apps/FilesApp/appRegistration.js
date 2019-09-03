@@ -1,8 +1,8 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 // import FileManager from './FilesWindow';
-import SocketFSFilePickerWindow from 'components/SocketFSFilePickerWindow';
-import { ACTION_REQUEST_CREATE_FILE_DIALOG, ACTION_REQUEST_CREATE_DIR_DIALOG } from 'state/UniqueFilePickerLinkedState';
+import SocketFSFileChooserWindow from 'components/SocketFSFileChooserWindow';
+import { ACTION_REQUEST_CREATE_FILE_DIALOG, ACTION_REQUEST_CREATE_DIR_DIALOG } from 'state/UniqueFileChooserLinkedState';
 import config from 'config';
 
 export default registerApp({
@@ -12,14 +12,14 @@ export default registerApp({
     const { appRuntime } = props;
 
     return (
-      <SocketFSFilePickerWindow
+      <SocketFSFileChooserWindow
         {...props}
         appRuntime={appRuntime}
-        onMount={(filePickerWindow) => {
-          const filePickerLinkedState = filePickerWindow.getLinkedState();
+        onMount={(fileChooserWindow) => {
+          const fileChooserLinkedState = fileChooserWindow.getLinkedState();
 
           appRuntime.setState({
-            filePickerLinkedState
+            fileChooserLinkedState
           });
         }}
       />
@@ -33,17 +33,17 @@ export default registerApp({
         {
           title: 'Create new File',
           onClick: (evt, appRuntime) => {
-            const { filePickerLinkedState } = appRuntime.getState();
+            const { fileChooserLinkedState } = appRuntime.getState();
 
-            filePickerLinkedState.dispatchAction(ACTION_REQUEST_CREATE_FILE_DIALOG);
+            fileChooserLinkedState.dispatchAction(ACTION_REQUEST_CREATE_FILE_DIALOG);
           }
         },
         {
           title: 'Create new Folder',
           onClick: (evt, appRuntime) => {
-            const { filePickerLinkedState } = appRuntime.getState();
+            const { fileChooserLinkedState } = appRuntime.getState();
 
-            filePickerLinkedState.dispatchAction(ACTION_REQUEST_CREATE_DIR_DIALOG);
+            fileChooserLinkedState.dispatchAction(ACTION_REQUEST_CREATE_DIR_DIALOG);
           }
         }
       ]

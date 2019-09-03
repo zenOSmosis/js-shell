@@ -6,14 +6,14 @@ export const ACTION_CHDIR = 'chdir';
 export const ACTION_REQUEST_CREATE_FILE_DIALOG = 'requestCreateFile';
 export const ACTION_REQUEST_CREATE_DIR_DIALOG = 'requestCreateDirectory';
 
-class UniqueFilePickerLinkedState extends UniqueLinkedState {
+class UniqueFileChooserLinkedState extends UniqueLinkedState {
   constructor() {
     super(`file-picker`, {
       cwd: '/',
 
       dirDetail: {},
 
-      filePickerWindow: null,
+      fileChooserWindow: null,
 
       layoutType: null,
   
@@ -52,4 +52,4 @@ class UniqueFilePickerLinkedState extends UniqueLinkedState {
   }
 }
 
-export default UniqueFilePickerLinkedState;
+export default UniqueFileChooserLinkedState;

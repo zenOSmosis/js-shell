@@ -18,21 +18,21 @@ import { Row, Column } from '../Layout';
 import { ButtonGroup, Button } from '../ButtonGroup';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
 import HostFileDropZone from 'components/HostFileDropZone';
-import UniqueFilePickerLinkedState, {
+import UniqueFileChooserLinkedState, {
   ACTION_CHDIR
-} from 'state/UniqueFilePickerLinkedState';
+} from 'state/UniqueFileChooserLinkedState';
 import openFile from 'utils/desktop/openFile';
 
-class SocketFSFilePickerWindow extends Component {
+class SocketFSFileChooserWindow extends Component {
   constructor(props) {
     super(props);
 
-    this._linkedState = new UniqueFilePickerLinkedState();
+    this._linkedState = new UniqueFileChooserLinkedState();
   }
 
   componentDidMount() {
     this._linkedState.setState({
-      filePickerWindow: this,
+      fileChooserWindow: this,
       layoutType: LAYOUT_TYPE_TABLE,
     });
 
@@ -220,4 +220,4 @@ class SocketFSFilePickerWindow extends Component {
   }
 }
 
-export default SocketFSFilePickerWindow;
+export default SocketFSFileChooserWindow;
