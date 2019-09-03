@@ -2,7 +2,7 @@ import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 // import FileManager from './FilesWindow';
 import SocketFSFilePickerWindow from 'components/SocketFSFilePickerWindow';
-import { ACTION_CREATE_FILE, ACTION_CREATE_DIRECTORY } from 'components/SocketFSFilePickerWindow/state/UniqueSocketFSFilePickerLinkedState';
+import { ACTION_REQUEST_CREATE_FILE_DIALOG, ACTION_REQUEST_CREATE_DIR_DIALOG } from 'state/UniqueFilePickerLinkedState';
 import config from 'config';
 
 export default registerApp({
@@ -35,7 +35,7 @@ export default registerApp({
           onClick: (evt, appRuntime) => {
             const { filePickerLinkedState } = appRuntime.getState();
 
-            filePickerLinkedState.dispatchAction(ACTION_CREATE_FILE);
+            filePickerLinkedState.dispatchAction(ACTION_REQUEST_CREATE_FILE_DIALOG);
           }
         },
         {
@@ -43,7 +43,7 @@ export default registerApp({
           onClick: (evt, appRuntime) => {
             const { filePickerLinkedState } = appRuntime.getState();
 
-            filePickerLinkedState.dispatchAction(ACTION_CREATE_DIRECTORY);
+            filePickerLinkedState.dispatchAction(ACTION_REQUEST_CREATE_DIR_DIALOG);
           }
         }
       ]

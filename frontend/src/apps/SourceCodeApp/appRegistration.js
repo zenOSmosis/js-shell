@@ -4,6 +4,7 @@ import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
+import openFile from './utils/file/openFile';
 
 export default registerApp({
   title: 'Source Code',
@@ -14,32 +15,43 @@ export default registerApp({
   },
   allowMultipleWindows: true,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  mimeTypes: ['*'],
   menus: [
     {
       title: 'File',
       items: [
         {
           title: 'Open File',
-          onClick: (evt, app) => {
+          onClick: (evt, appRuntime) => {
             alert('TODO: This should bring up the file picker!');
           }
         },
+        // TODO: Remove; debugging; This should clear the menubar
         {
           title: 'Proto Clear',
-          onClick: (evt, app) => {
-            // TODO: Remove; debugging; This should clear the menubar
+          onClick: (evt, appRuntime) => {
+            // TODO: Rename to app.setMenus()
             app.setMenubarData([]);
           }
         }
       ]
     }
   ],
-  cmd: (app) => {
-    app.editorLinkedState = new UniqueSourceCodeAppLinkedState();
+  
+  cmd: (appRuntime) => {
+    appRuntime.editorLinkedState = new UniqueSourceCodeAppLinkedState();
 
-    app.on(EVT_BEFORE_EXIT, () => {
-      app.editorLinkedState.destroy();
-      app.editorLinkedState = null;
+    appRuntime.on(EVT_BEFORE_EXIT, () => {
+      appRuntime.editorLinkedState.destroy();
+      appRuntime.editorLinkedState = null;
     });
+  },
+
+  onFileOpenRequest: async (appRuntime, filePath) => {
+    try {
+      await openFile(appRuntime.editorLinkedState, filePath);
+    } catch (exc) {
+      throw exc;
+    }
   }
 });

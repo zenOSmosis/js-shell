@@ -4,8 +4,10 @@ import { Breadcrumb } from 'antd';
 const { Item } = Breadcrumb;
 
 const PathBreadcrumb = (props = {}) => {
-  // TODO: Rename pathParts to pathConstituents
-  const { pathParts, filesWindow, ...propsRest } = props;
+  // TODO: Rename pathConstituents to pathConstituents
+  const { dirDetail, filesWindow, ...propsRest } = props;
+
+  const pathConstituents = dirDetail.constituents || [];
 
   return (
     <Breadcrumb
@@ -15,12 +17,12 @@ const PathBreadcrumb = (props = {}) => {
       }
     >
       {
-        pathParts.map((part, idx) => {
+        pathConstituents.map((part, idx) => {
           const link = (() => {
             let link = '';
 
             for (let i = 0; i <= idx; i++) {
-              link += '/' + pathParts[i];
+              link += '/' + pathConstituents[i];
             }
 
             return link;
@@ -30,7 +32,7 @@ const PathBreadcrumb = (props = {}) => {
             <Item
               key={idx}
             >
-              <Button disabled={idx === pathParts.length - 1} onClick={(evt) => filesWindow.chdir(link)} >
+              <Button disabled={idx === pathConstituents.length - 1} onClick={(evt) => filesWindow.chdir(link)} >
                 {
                   idx === 0 &&
                   <span>root</span>

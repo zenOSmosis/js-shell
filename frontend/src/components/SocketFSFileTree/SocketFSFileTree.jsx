@@ -15,71 +15,6 @@ import { Treebeard } from 'react-treebeard';
 import './SocketFSFileTree.typedefs';
 import PropTypes from 'prop-types';
 
-const decorators = {
-  Loading: (props) => {
-    return (
-      <div style={props.style}>
-        loading...
-      </div>
-    );
-  },
-
-  /*
-  Toggle: (props) => {
-    console.debug('toggled?', props.isToggled);
-
-    return (
-      <div style={props.style}>
-        {
-          <svg height={props.height} width={props.width}>
-            // Vector Toggle Here
-        </svg>
-        }
-      </div>
-    );
-  },
-  */
-
-  /*
-  Header: (props) => {
-    return (
-      <div style={props.style}>
-        {props.node && props.node.name}
-      </div>
-    );
-  },
-  */
-
-  Container: (props) => {
-    const { node } = props;
-    const { isDir, name, toggled: isToggled } = node;
-
-    return (
-      <div
-        style={{ width: '100%' }}
-        onClick={props.onClick}
-      >
-        {
-          /*
-          <props.decorators.Header />
-          */
-        }
-        {
-          /*
-          <props.decorators.Toggle isToggled={props.node.toggled} />
-          */
-        }
-        <SocketFSFileTreeNodeComponent
-          name={name}
-          isDir={isDir}
-          isToggled={isToggled}
-          onClick={ evt => console.debug(node) }
-        />
-      </div>
-    );
-  }
-};
-
 class SocketFSFileTree extends Component {
   static propTypes = {
     rootDirectory: PropTypes.string,
@@ -201,5 +136,70 @@ class SocketFSFileTree extends Component {
     )
   }
 }
+
+const decorators = {
+  Loading: (props) => {
+    return (
+      <div style={props.style}>
+        loading...
+      </div>
+    );
+  },
+
+  /*
+  Toggle: (props) => {
+    console.debug('toggled?', props.isToggled);
+
+    return (
+      <div style={props.style}>
+        {
+          <svg height={props.height} width={props.width}>
+            // Vector Toggle Here
+        </svg>
+        }
+      </div>
+    );
+  },
+  */
+
+  /*
+  Header: (props) => {
+    return (
+      <div style={props.style}>
+        {props.node && props.node.name}
+      </div>
+    );
+  },
+  */
+
+  Container: (props) => {
+    const { node } = props;
+    const { isDir, name, toggled: isToggled } = node;
+
+    return (
+      <div
+        style={{ width: '100%' }}
+        onClick={props.onClick}
+      >
+        {
+          /*
+          <props.decorators.Header />
+          */
+        }
+        {
+          /*
+          <props.decorators.Toggle isToggled={props.node.toggled} />
+          */
+        }
+        <SocketFSFileTreeNodeComponent
+          name={name}
+          isDir={isDir}
+          isToggled={isToggled}
+          onClick={ evt => console.debug(node) }
+        />
+      </div>
+    );
+  }
+};
 
 export default SocketFSFileTree;

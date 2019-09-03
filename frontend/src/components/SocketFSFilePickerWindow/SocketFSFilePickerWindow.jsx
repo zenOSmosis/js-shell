@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Full from '../Full';
 import Cover from '../Cover';
 import Center from '../Center';
+import LabeledComponent from '../LabeledComponent';
 import Layout, { Content, Footer } from '../Layout';
 import LinkedStateRenderer from '../LinkedStateRenderer';
 import Window from '../Desktop/Window';
@@ -17,13 +18,16 @@ import { Row, Column } from '../Layout';
 import { ButtonGroup, Button } from '../ButtonGroup';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
 import HostFileDropZone from 'components/HostFileDropZone';
-import UniqueSocketFSFilePickerLinkedState from './state/UniqueSocketFSFilePickerLinkedState';
+import UniqueFilePickerLinkedState, {
+  ACTION_CHDIR
+} from 'state/UniqueFilePickerLinkedState';
+import openFile from 'utils/desktop/openFile';
 
 class SocketFSFilePickerWindow extends Component {
   constructor(props) {
     super(props);
 
-    this._linkedState = new UniqueSocketFSFilePickerLinkedState();
+    this._linkedState = new UniqueFilePickerLinkedState();
   }
 
   componentDidMount() {
@@ -48,21 +52,36 @@ class SocketFSFilePickerWindow extends Component {
   }
 
   chdir(path) {
-    // TODO: Verify path is a real directory
-
-    this._linkedState.setState({
-      cwd: path
-    });
+    this._linkedState.dispatchAction(ACTION_CHDIR, path);
   }
 
-  _handleDirChange(detail) {
-    // TODO: Remove
-    console.debug('Dir change detail', {
-      detail
-    });
+  async _handleFileOpenRequest(filePath) {
+    try {
+      await openFile(filePath);
+    } catch (exc) {
+      throw exc;
+    }
   }
 
-  _handleSelectedDirChildrenChange(selectedDirChildren) {
+  /**
+   * Internally called when SocketFSFolder changes directory.
+   * 
+   * @param {Object} detail 
+   */
+  _handleSocketFSFolderDirChange(detail) {
+    const { path } = detail;
+
+    if (path) {
+      this.chdir(path);
+    }
+  }
+
+  /**
+ * Internally called when SocketFSFolder changes path selection.
+ * 
+ * @param {Object[]} detail 
+ */
+  _handleSocketFSFolderSelectedDirChildrenChange(selectedDirChildren) {
     // TODO: Remove
     console.debug('Selected dir children change', {
       selectedDirChildren
@@ -86,47 +105,52 @@ class SocketFSFilePickerWindow extends Component {
       <LinkedStateRenderer
         linkedState={this._linkedState}
         onUpdate={updatedState => {
+          console.warn({ updatedState });
+
           return updatedState;
         }}
         render={(renderProps) => {
-          const { selectedDirChildren, layoutType, isRequestingCreateFile, isRequestingCreateDirectory } = renderProps;
+          const {
+            cwd,
+            dirDetail,
+            selectedDirChildren,
+            layoutType,
+            isRequestingCreateFile,
+            isRequestingCreateDirectory
+          } = renderProps;
 
           return (
             <Window
               {...propsRest}
               toolbar={
                 <PathBreadcrumb
-                  pathParts={['', 'shell']}
+                  cwd={cwd}
+                  dirDetail={dirDetail}
                   filesWindow={this}
                 />
               }
-              subToolbar={
-                <div style={{ marginTop: 8, marginBottom: 8 }}>
-                  <Row>
-                    <Column style={{ textAlign: 'center' }}>
-                      {
-                        // Layout options (grid or list)
-                        <ButtonGroup>
-                          <Button
-                            disabled={layoutType === LAYOUT_TYPE_ICON}
-                            onClick={evt => this.setLayoutType(LAYOUT_TYPE_ICON)}
-                            title="Grid"
-                          >
-                            <AntdIcon type="table" />
-                          </Button>
+              toolbarRight={
+                <LabeledComponent
+                  label="Layout"
+                >
+                  <ButtonGroup>
+                    <Button
+                      disabled={layoutType === LAYOUT_TYPE_ICON}
+                      onClick={evt => this.setLayoutType(LAYOUT_TYPE_ICON)}
+                      title="Grid"
+                    >
+                      <AntdIcon type="table" />
+                    </Button>
 
-                          <Button
-                            disabled={layoutType === LAYOUT_TYPE_TABLE}
-                            onClick={evt => this.setLayoutType(LAYOUT_TYPE_TABLE)}
-                            title="List"
-                          >
-                            <AntdIcon type="unordered-list" />
-                          </Button>
-                        </ButtonGroup>
-                      }
-                    </Column>
-                  </Row>
-                </div>
+                    <Button
+                      disabled={layoutType === LAYOUT_TYPE_TABLE}
+                      onClick={evt => this.setLayoutType(LAYOUT_TYPE_TABLE)}
+                      title="List"
+                    >
+                      <AntdIcon type="unordered-list" />
+                    </Button>
+                  </ButtonGroup>
+                </LabeledComponent>
               }
             >
               <HostFileDropZone>
@@ -139,16 +163,18 @@ class SocketFSFilePickerWindow extends Component {
                       >
                         <Full>
                           <SocketFSFileTree
-                          // rootDirectory={DEFAULT_ROOT_DIRECTORY}
-                          // onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                          rootDirectory={cwd}
+                          onFileOpenRequest={path => this._handleFileOpenRequest(path)}
                           />
                         </Full>
 
                         <Full>
                           <SocketFSFolder
                             layoutType={layoutType}
-                            onDirChange={detail => this._handleDirChange(detail)}
-                            onSelectedDirChildrenChange={selectedDirChildren => this._handleSelectedDirChildrenChange(selectedDirChildren)}
+                            cwd={cwd}
+                            onDirChange={detail => this._handleSocketFSFolderDirChange(detail)}
+                            onSelectedDirChildrenChange={selectedDirChildren => this._handleSocketFSFolderSelectedDirChildrenChange(selectedDirChildren)}
+                            onFileOpenRequest={path => this._handleFileOpenRequest(path)}
                           />
                         </Full>
                       </SplitterLayout>
@@ -161,18 +187,28 @@ class SocketFSFilePickerWindow extends Component {
                   </Footer>
                 </Layout>
               </HostFileDropZone>
-              
+
               {
                 (isRequestingCreateFile || isRequestingCreateDirectory) &&
                 <Cover>
                   <Center>
-                    <button onClick={evt => this._linkedState.setState({
-                      isRequestingCreateFile: false,
-                      isRequestingCreateDirectory: false
-                    })}>
-                      <input type="text" />
-                      Cancel
-                    </button>
+                    <div>
+                      <div>
+                        [ Create X ]
+                          <button onClick={evt => this._linkedState.setState({
+                          isRequestingCreateFile: false,
+                          isRequestingCreateDirectory: false
+                        })}>
+
+                          Cancel
+                          </button>
+                      </div>
+                      <div>
+                        <input type="text" />
+
+                        <button>Create</button>
+                      </div>
+                    </div>
                   </Center>
                 </Cover>
               }

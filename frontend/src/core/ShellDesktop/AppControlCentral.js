@@ -48,7 +48,7 @@ class AppControlCentral extends ClientProcess {
    * @param {AppRegistration} appRegistration
    * @return {Promise<AppRuntime>}
    */
-  async launchAppRegistration(appRegistration) {
+  async launchAppRegistration(appRegistration, cmdArguments = []) {
     try {
       if (!(appRegistration instanceof AppRegistration)) {
         throw new Error('appRegistration is not an AppRegistration instance');
@@ -64,7 +64,7 @@ class AppControlCentral extends ClientProcess {
       }
 
       // Create the app process
-      const appRuntime = new AppRuntime(appRegistration);
+      const appRuntime = new AppRuntime(appRegistration, cmdArguments);
 
       appRuntime.once(EVT_BEFORE_EXIT, () => {
         this._removeConnectedAppRuntime(appRuntime);

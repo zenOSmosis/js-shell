@@ -15,6 +15,7 @@
     "caniuse-lite": "^1.0.30000974",
     "chai": "^4.2.0",
     "classnames": "^2.2.6",
+    "debounce": "^1.2.0",
     "equals": "^1.0.5",
     "fast-safe-stringify": "^2.0.6",
     "html2canvas": "^1.0.0-rc.3",

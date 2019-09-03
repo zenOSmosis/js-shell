@@ -121,7 +121,7 @@ export default class FilesWindow extends Component {
   
     const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   
-    return appRegistrations.filter(app=>(app.getSupportedMimes().indexOf(mime)>-1));
+    return appRegistrations.filter(app=>(app.getMimeTypes().indexOf(mime)>-1));
     
   };
 

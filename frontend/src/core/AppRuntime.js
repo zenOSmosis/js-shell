@@ -21,9 +21,10 @@ export {
  */
 class AppRuntime extends ClientGUIProcess {
   /**
-   * @param {AppRegistration} appRegistration 
+   * @param {AppRegistration} appRegistration
+   * @param {any[]} cmdArguments?
    */
-  constructor(appRegistration) {
+  constructor(appRegistration, cmdArguments = []) {
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration is not of AppRegistration type');
     }
@@ -40,6 +41,8 @@ class AppRuntime extends ClientGUIProcess {
      */
     this._window = null;
 
+    this._cmdArguments = cmdArguments;
+
     //TODO: do get set?
     // this.menuItems = runProps.menuItems || [];
 
@@ -52,6 +55,8 @@ class AppRuntime extends ClientGUIProcess {
         cmd: runCmd,
         menus: menusData
       } = appRegistrationProps;
+
+      this._runCmd = runCmd;
 
       // Handle menubar
       (() => {
@@ -70,12 +75,6 @@ class AppRuntime extends ClientGUIProcess {
 
       if (view) {
         this.setView(view);
-      }
-
-      if (runCmd) {
-        this.setImmediate(() => {
-          this.evalInProcessContext(runCmd);
-        });
       }
     })();
   }
@@ -123,6 +122,10 @@ class AppRuntime extends ClientGUIProcess {
       })();
 
       await super._init();
+
+      if (this._runCmd) {
+        await this.evalInProcessContext(this._runCmd);
+      }
     } catch (exc) {
       throw exc;
     }
@@ -135,6 +138,13 @@ class AppRuntime extends ClientGUIProcess {
    */
   getAppRegistration() {
     return this._appRegistration;
+  }
+
+  /**
+   * @return {any[]}
+   */
+  getCmdArguments() {
+    return this._cmdArguments;
   }
 
   /**

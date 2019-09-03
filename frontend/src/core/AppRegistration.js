@@ -29,9 +29,10 @@ class AppRegistration extends EventEmitter {
       iconSrc,
       view,
       cmd: runCmd,
-      supportedMimes, // TODO: Rename to supportedMimeTypes
+      mimeTypes,
       menus,
       allowMultipleWindows,
+      onFileOpenRequest,
     } = appRegistrationProps;
 
     this._appRegistrationProps = appRegistrationProps;
@@ -51,9 +52,11 @@ class AppRegistration extends EventEmitter {
     // this._lastSize = { width: 0, height: 0 };
 
     this._isUnregistered = false;
-    this._supportedMimes = supportedMimes || [];
+    this._mimeTypes = mimeTypes || [];
 
     this._allowMultipleWindows = allowMultipleWindows;
+
+    this._onFileOpenRequest = onFileOpenRequest;
 
     // Add this app registration to the registry
     _appRegistryLinkedState.addAppRegistration(this);
@@ -66,14 +69,40 @@ class AppRegistration extends EventEmitter {
     return this._appRegistrationProps;
   }
 
+  async processFileOpenRequest(filePath) {
+    try {
+      const { onFileOpenRequest } = this._appRegistrationProps;
+
+      if (typeof onFileOpenRequest !== 'function') {
+        throw new Error(`No onFileOpenRequest available for appRegistration with title: ${this._title}`);
+      }
+
+      let appRuntime;
+
+      if (!this.getIsLaunched()) {
+        appRuntime = await this.launchApp();
+      } else {
+        const joinedAppRuntimes = this.getJoinedAppRuntimes();
+
+        // Use most recent appRuntime as the launcher
+        // TODO: Launch in most recently focused AppRuntime
+        appRuntime = joinedAppRuntimes[joinedAppRuntimes.length -1];
+      }
+
+      await onFileOpenRequest(appRuntime, filePath);
+    } catch (exc) {
+      throw exc;
+    }  
+  }
+
   /**
    * Launches an AppRuntime based on this registration.
    * 
-   * @param {any} cmdArguments? Optional cmd data to be sent to the
+   * @param {any[]} cmdArguments? cmd data to be sent to the
    * AppRuntime instance.
    * @return {Promise<AppRuntime> | boolean}
    */
-  async launchApp(cmdArguments = null) {
+  async launchApp(cmdArguments = []) {
     try {
       const appControlCentral = getAppControlCentral();
 
@@ -166,8 +195,8 @@ class AppRegistration extends EventEmitter {
    * TODO: Document
    * TODO: Rename to getSupportedMimeTypes
    */
-  getSupportedMimes() {
-    return this._supportedMimes;
+  getMimeTypes() {
+    return this._mimeTypes;
   }
 
   /**

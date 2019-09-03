@@ -7,6 +7,7 @@ import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
 import style from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
+import debounce from 'debounce';
 
 export const LAYOUT_TYPE_ICON = 'icon';
 export const LAYOUT_TYPE_TABLE = 'table';
@@ -17,7 +18,8 @@ export const LAYOUT_TYPES = [
 
 class SocketFSFolder extends Component {
   static propTypes = {
-    onDirChange: PropTypes.func
+    onDirChange: PropTypes.func,
+    onFileOpenRequest: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -47,7 +49,19 @@ class SocketFSFolder extends Component {
   }
 
   componentDidMount() {
-    this.chdir('/');
+    const { cwd } = this.props;
+    if (cwd) {
+      this.chdir(cwd);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { cwd: prevCwd } = prevProps;
+    const { cwd } = this.props;
+
+    if (prevCwd !== cwd) {
+      this.chdir(cwd);
+    }
   }
 
   async chdir(path) {
@@ -108,33 +122,47 @@ class SocketFSFolder extends Component {
     });
   }
 
-  _handleDirChildInteract(evt, dirChild) {
-    let { selectedDirChildren } = this.state;
+  /**
+   * Important!  The event must be persisted prior to calling this method.
+   */
+  _handleNodeInteract = debounce((evt, dirChild) => {
+    if (evt.type === 'dblclick') {
+      if (dirChild.isDir) {
+        this.chdir(dirChild.path);
+      } else if (dirChild.isFile) {
+        const { onFileOpenRequest } = this.props;
+        if (typeof onFileOpenRequest === 'function') {
+          onFileOpenRequest(dirChild.path);
+        }
+      } else {
+        console.error('Unhandled dirChild open request', dirChild);
+      }
+    } else {
+      let { selectedDirChildren } = this.state;
 
-    const which = evt.nativeEvent.which;
-    const isLeftClick = which === 1;
+      const which = evt.nativeEvent.which;
+      const isLeftClick = which === 1;
 
-    if (!isLeftClick) {
-      return;
-    }
+      if (!isLeftClick) {
+        return;
+      }
 
-    const isCurrentlySelected = selectedDirChildren.includes(dirChild);
+      // const isCurrentlySelected = selectedDirChildren.includes(dirChild);
 
-    const isShift = evt.shiftKey;
-    const isCtrl = evt.ctrlKey;
+      const isShift = evt.shiftKey;
+      const isCtrl = evt.ctrlKey;
 
-    if (!isShift && !isCtrl) {
-      selectedDirChildren = [];
-    }
+      if (!isShift && !isCtrl) {
+        selectedDirChildren = [];
+      }
 
-    if (!isCurrentlySelected) {
       selectedDirChildren.push(dirChild);
-    }
 
-    this.setState({
-      selectedDirChildren
-    });
-  }
+      this.setState({
+        selectedDirChildren
+      });
+    }
+  }, 50);
 
   render() {
     const { dirChildren, selectedDirChildren } = this.state;
@@ -154,14 +182,15 @@ class SocketFSFolder extends Component {
 
               return {
                 className: classNames(style['node'], (isSelected ? style['selected'] : null)),
-                onMouseDown: (evt) => this._handleDirChildInteract(evt, dirChild),
-                onTouchStart: (evt) => this._handleDirChildInteract(evt, dirChild)
+                onDoubleClick: (evt) => { evt.persist(); this._handleNodeInteract(evt, dirChild) },
+                onMouseDown: (evt) => { evt.persist(); this._handleNodeInteract(evt, dirChild) },
+                // onTouchStart: (evt) => this._handleNodeInteract(evt, dirChild)
               };
             }}
             columns={[
               {
                 Header: 'Name',
-                accessor: 'name',
+                accessor: 'base',
                 Cell: (props) =>
                   <SocketFSFolderNode
                     dirChild={props.original}
@@ -259,8 +288,8 @@ class SocketFSFolder extends Component {
                   <div
                     key={idx}
                     className={classNames(style['node'], (isSelected ? style['selected'] : null))}
-                    onMouseDown={evt => this._handleDirChildInteract(evt, dirChild)}
-                    onTouchStart={evt => this._handleDirChildInteract(evt, dirChild)}
+                    onMouseDown={evt => this._handleNodeInteract(evt, dirChild)}
+                  // onTouchStart={evt => this._handleNodeInteract(evt, dirChild)}
                   >
                     {base}
                   </div>
