@@ -5,6 +5,7 @@ import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 import openFile from './utils/file/openFile';
+import launchFileChooserOverlay from 'utils/desktop/launchFileChooserOverlay';
 
 export default registerApp({
   title: 'Source Code',
@@ -23,10 +24,11 @@ export default registerApp({
         {
           title: 'Open File',
           onClick: (evt, appRuntime) => {
-            alert('TODO: This should bring up the file picker!');
+            launchFileChooserOverlay();
           }
         },
         // TODO: Remove; debugging; This should clear the menubar
+        /*
         {
           title: 'Proto Clear',
           onClick: (evt, appRuntime) => {
@@ -34,6 +36,7 @@ export default registerApp({
             app.setMenubarData([]);
           }
         }
+        */
       ]
     }
   ],

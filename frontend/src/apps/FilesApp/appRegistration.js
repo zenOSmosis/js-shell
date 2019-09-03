@@ -15,6 +15,7 @@ export default registerApp({
       <SocketFSFileChooserWindow
         {...props}
         appRuntime={appRuntime}
+        shouldCloseOnFileOpen={false}
         onMount={(fileChooserWindow) => {
           const fileChooserLinkedState = fileChooserWindow.getLinkedState();
 

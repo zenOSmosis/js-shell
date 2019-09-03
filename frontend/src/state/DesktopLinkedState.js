@@ -9,7 +9,12 @@ export {
   hocConnect
 };
 
+export const ACTION_OPEN_FILE_CHOOSER = 'launchFileChooserOverlay';
+export const ACTION_CLOSE_FILE_CHOOSER = 'closeFileChooser';
+
 const DESKTOP_LINKED_SCOPE_NAME = `desktopLinkedState`;
+
+export const STATE_IS_SHOWING_FILE_CHOOSER = 'isShowingFileChooser';
 
 /**
  * Maintains state directly related to the Shell Desktop and its running
@@ -48,7 +53,23 @@ class DesktopLinkedState extends LinkedState {
       // Whether the desktop is requested to be in full-screen mode
       isFullScreenRequested: false,
 
-      shellDesktopProcess: null
+      shellDesktopProcess: null,
+
+      [STATE_IS_SHOWING_FILE_CHOOSER]: false
+    }, {
+      actions: {
+        [ACTION_OPEN_FILE_CHOOSER]: (desktopLinkedState) => {
+          desktopLinkedState.setState({
+            [STATE_IS_SHOWING_FILE_CHOOSER]: true
+          });
+        },
+
+        [ACTION_CLOSE_FILE_CHOOSER]: (desktopLinkedState) => {
+          desktopLinkedState.setState({
+            [STATE_IS_SHOWING_FILE_CHOOSER]: false
+          });
+        }
+      }
     });
   }
 

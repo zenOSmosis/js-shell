@@ -14,7 +14,6 @@ import SocketFSFolder, {
   // LAYOUT_TYPES
 } from '../SocketFSFolder';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
-import { Row, Column } from '../Layout';
 import { ButtonGroup, Button } from '../ButtonGroup';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
 import HostFileDropZone from 'components/HostFileDropZone';
@@ -28,9 +27,22 @@ class SocketFSFileChooserWindow extends Component {
     super(props);
 
     this._linkedState = new UniqueFileChooserLinkedState();
+    this._windowComponent = null;
+    this._shouldCloseOnFileOpen = true;
   }
 
   componentDidMount() {
+    const { shouldCloseOnFileOpen: propsShouldCloseOnFileOpen } = this.props;
+    const shouldCloseOnFileOpen = (
+      propsShouldCloseOnFileOpen === undefined ?
+      
+        // Default
+      this._shouldCloseOnFileOpen :
+      
+      propsShouldCloseOnFileOpen
+    );
+    this._shouldCloseOnFileOpen = shouldCloseOnFileOpen;
+
     this._linkedState.setState({
       fileChooserWindow: this,
       layoutType: LAYOUT_TYPE_TABLE,
@@ -58,6 +70,10 @@ class SocketFSFileChooserWindow extends Component {
   async _handleFileOpenRequest(filePath) {
     try {
       await openFile(filePath);
+
+      if (this._shouldCloseOnFileOpen) {
+        await this._windowComponent.close();
+      }
     } catch (exc) {
       throw exc;
     }
@@ -122,6 +138,7 @@ class SocketFSFileChooserWindow extends Component {
           return (
             <Window
               {...propsRest}
+              ref={ c => this._windowComponent = c }
               toolbar={
                 <PathBreadcrumb
                   cwd={cwd}

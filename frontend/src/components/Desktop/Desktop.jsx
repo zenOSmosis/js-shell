@@ -13,6 +13,7 @@ import ContextMenuProvider from 'components/ContextMenuProvider';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
+import FileChooserOverlayContext from './FileChooserOverlayContext';
 // import Login from './Login';
 // import URLRedirector from './URLRedirector';
 // import AppRouteController from './AppRouteController';
@@ -31,71 +32,71 @@ import 'apps/defaultApps';
 
 class Desktop extends Component {
   render() {
-    const { isFullScreenRequested } = this.props;
+    const { isFullScreenRequested, isShowingFileChooser, desktopLinkedState } = this.props;
 
     return (
       <div ref={c => this._el = c}>
         <FullscreenProvider
           enabled={isFullScreenRequested}
-          // onChange={isFullScreenRequested => this.setState({isFullScreenRequested})}
+        // onChange={isFullScreenRequested => this.setState({isFullScreenRequested})}
         >
           <FullViewport>
+            <FileChooserOverlayContext>
 
-            {
-              // <URLRedirector /> 
-            }
+              {
+                // <URLRedirector /> 
+              }
 
-            <ContextMenuProvider>
+              <ContextMenuProvider>
 
-              <DesktopBackground ref={c => this._desktopBackground = c}>
+                <DesktopBackground ref={c => this._desktopBackground = c}>
 
+                  {
+                    // Top Panel
+                  }
+                  <Panel />
+
+                  <Notifications />
+
+                  {
+                    // TODO: Implement DrawersLayer as a separate component
+                    // @see https://ant.design/components/drawer/
+                    /*
+                    <Drawer
+                      mask={false}
+                      bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                      onContextMenu={ (evt) => alert('context') }
+                      placement="right"
+                      visible={true}
+                    >
+                      Well, hello
+                    </Drawer>
+                    */
+                  }
+
+                  {
+                    // Binds windows to URL location; sets page title
+                    // <AppRouteController />
+                  }
+
+                  <GUIProcessRenderer />
+
+                  <VersionLabel />
+
+                  {
+                    // Bottom Dock
+                  }
+                  <Dock />
+
+                </DesktopBackground>
                 {
-                  // Top Panel
-                }
-                <Panel />
-
-                <Notifications />
-
-                {
-                  // TODO: Implement DrawersLayer as a separate component
-                  // @see https://ant.design/components/drawer/
                   /*
-                  <Drawer
-                    mask={false}
-                    bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                    onContextMenu={ (evt) => alert('context') }
-                    placement="right"
-                    visible={true}
-                  >
-                    Well, hello
-                  </Drawer>
+                  !isLoggedIn && <Login />
                   */
                 }
 
-                {
-                  // Binds windows to URL location; sets page title
-                  // <AppRouteController />
-                }
-
-                <GUIProcessRenderer />
-
-                <VersionLabel />
-
-                {
-                  // Bottom Dock
-                }
-                <Dock />
-
-              </DesktopBackground>
-              {
-                /*
-                !isLoggedIn && <Login />
-                */
-              }
-
-
-            </ContextMenuProvider>
-
+              </ContextMenuProvider>
+            </FileChooserOverlayContext>
           </FullViewport>
         </FullscreenProvider>
       </div>
@@ -103,12 +104,14 @@ class Desktop extends Component {
   }
 }
 
-export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
+export default hocConnect(Desktop, DesktopLinkedState, (updatedState, desktopLinkedState) => {
   const { isFullScreenRequested } = updatedState;
 
-  let filteredState = {};
+  let filteredState = {
+    desktopLinkedState
+  };
 
-  if (typeof isFullScreenRequested !== 'undefined') {
+  if (isFullScreenRequested !== undefined) {
     filteredState.isFullScreenRequested = isFullScreenRequested;
   }
 

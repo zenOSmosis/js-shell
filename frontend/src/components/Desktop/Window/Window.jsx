@@ -99,7 +99,9 @@ class Window extends Component {
     
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
-    sizeable: PropTypes.bool
+    sizeable: PropTypes.bool, // TODO: Rename to isResizable
+
+    onClose: PropTypes.func,
 
     // TODO: PropType additional types
   };
@@ -973,6 +975,11 @@ class Window extends Component {
 
       // Unregister event listeners
       this._events.removeAllListeners();
+
+      const { onClose } = this.props;
+      if (typeof onClose === 'function') {
+        onClose();
+      }
       this._events = null;
     } catch (exc) {
       throw exc;

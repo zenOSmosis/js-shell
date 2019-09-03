@@ -69,6 +69,13 @@ class AppRegistration extends EventEmitter {
     return this._appRegistrationProps;
   }
 
+  /**
+   * Note: This is placed in AppRegistration, instead of AppRuntime, as there
+   * might not already be a running app when a file is requested to be opened.
+   * 
+   * @param {string} filePath
+   * @return {Promise<void>}
+   */
   async processFileOpenRequest(filePath) {
     try {
       const { onFileOpenRequest } = this._appRegistrationProps;
@@ -87,12 +94,15 @@ class AppRegistration extends EventEmitter {
         // Use most recent appRuntime as the launcher
         // TODO: Launch in most recently focused AppRuntime
         appRuntime = joinedAppRuntimes[joinedAppRuntimes.length -1];
+
+        // Focus existing AppRuntime instance
+        appRuntime.focus();
       }
 
       await onFileOpenRequest(appRuntime, filePath);
     } catch (exc) {
       throw exc;
-    }  
+    }
   }
 
   /**
