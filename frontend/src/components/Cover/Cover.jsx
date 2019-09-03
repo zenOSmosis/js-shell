@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Full from '../Full';
+import StackingContext from '../StackingContext';
 import './style.css';
 
 export default class Cover extends Component {
@@ -27,9 +28,11 @@ export default class Cover extends Component {
         {...propsRest}
         className={`zd-cover ${!isVisible ? 'no-display' : ''} ${className ? className : ''}`}
       >
-        {
-          children
-        }
+        <StackingContext>
+          {
+            children
+          }
+        </StackingContext>
       </Full>
     );
   }
