@@ -181,7 +181,7 @@ class SocketFSFileChooserWindow extends Component {
                         <Full>
                           <SocketFSFileTree
                           rootDirectory={cwd}
-                          onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                          onExternalFileOpenRequest={path => this._handleFileOpenRequest(path)}
                           />
                         </Full>
 
@@ -191,7 +191,7 @@ class SocketFSFileChooserWindow extends Component {
                             cwd={cwd}
                             onDirChange={detail => this._handleSocketFSFolderDirChange(detail)}
                             onSelectedDirChildrenChange={selectedDirChildren => this._handleSocketFSFolderSelectedDirChildrenChange(selectedDirChildren)}
-                            onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                            onExternalFileOpenRequest={path => this._handleFileOpenRequest(path)}
                           />
                         </Full>
                       </SplitterLayout>

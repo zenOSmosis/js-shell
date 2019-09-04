@@ -50,7 +50,7 @@ export default registerApp({
     });
   },
 
-  onFileOpenRequest: async (appRuntime, filePath) => {
+  onExternalFileOpenRequest: async (appRuntime, filePath) => {
     try {
       await openFile(appRuntime.editorLinkedState, filePath);
     } catch (exc) {

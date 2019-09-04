@@ -19,7 +19,7 @@ export const LAYOUT_TYPES = [
 class SocketFSFolder extends Component {
   static propTypes = {
     onDirChange: PropTypes.func,
-    onFileOpenRequest: PropTypes.func.isRequired
+    onExternalFileOpenRequest: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -130,9 +130,9 @@ class SocketFSFolder extends Component {
       if (dirChild.isDir) {
         this.chdir(dirChild.path);
       } else if (dirChild.isFile) {
-        const { onFileOpenRequest } = this.props;
-        if (typeof onFileOpenRequest === 'function') {
-          onFileOpenRequest(dirChild.path);
+        const { onExternalFileOpenRequest } = this.props;
+        if (typeof onExternalFileOpenRequest === 'function') {
+          onExternalFileOpenRequest(dirChild.path);
         }
       } else {
         console.error('Unhandled dirChild open request', dirChild);

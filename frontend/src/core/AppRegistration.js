@@ -32,7 +32,7 @@ class AppRegistration extends EventEmitter {
       mimeTypes,
       menus,
       allowMultipleWindows,
-      onFileOpenRequest,
+      onExternalFileOpenRequest,
     } = appRegistrationProps;
 
     this._appRegistrationProps = appRegistrationProps;
@@ -56,7 +56,7 @@ class AppRegistration extends EventEmitter {
 
     this._allowMultipleWindows = allowMultipleWindows;
 
-    this._onFileOpenRequest = onFileOpenRequest;
+    this._onExternalFileOpenRequest = onExternalFileOpenRequest;
 
     // Add this app registration to the registry
     _appRegistryLinkedState.addAppRegistration(this);
@@ -78,10 +78,10 @@ class AppRegistration extends EventEmitter {
    */
   async processFileOpenRequest(filePath) {
     try {
-      const { onFileOpenRequest } = this._appRegistrationProps;
+      const { onExternalFileOpenRequest } = this._appRegistrationProps;
 
-      if (typeof onFileOpenRequest !== 'function') {
-        throw new Error(`No onFileOpenRequest available for appRegistration with title: ${this._title}`);
+      if (typeof onExternalFileOpenRequest !== 'function') {
+        throw new Error(`No onExternalFileOpenRequest available for appRegistration with title: ${this._title}`);
       }
 
       let appRuntime;
@@ -99,7 +99,7 @@ class AppRegistration extends EventEmitter {
         appRuntime.focus();
       }
 
-      await onFileOpenRequest(appRuntime, filePath);
+      await onExternalFileOpenRequest(appRuntime, filePath);
     } catch (exc) {
       throw exc;
     }

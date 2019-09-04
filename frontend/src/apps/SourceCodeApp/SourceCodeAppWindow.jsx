@@ -123,7 +123,7 @@ export default class SourceCodeAppWindow extends Component {
                 <Full>
                   <SocketFSFileTree
                     rootDirectory={DEFAULT_ROOT_DIRECTORY}
-                    onFileOpenRequest={path => this._handleFileOpenRequest(path)}
+                    onExternalFileOpenRequest={path => this._handleFileOpenRequest(path)}
                   />
                 </Full>
 

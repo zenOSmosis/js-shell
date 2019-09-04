@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 class SocketFSFileTree extends Component {
   static propTypes = {
     rootDirectory: PropTypes.string,
-    onFileOpenRequest: PropTypes.func.isRequired
+    onExternalFileOpenRequest: PropTypes.func.isRequired
   };
 
   constructor(...args) {
@@ -48,9 +48,9 @@ class SocketFSFileTree extends Component {
     const { path, isFile } = fileTreeNode;
 
     if (isFile) {
-      const { onFileOpenRequest } = this.props;
-      if (typeof onFileOpenRequest === 'function') {
-        onFileOpenRequest(path);
+      const { onExternalFileOpenRequest } = this.props;
+      if (typeof onExternalFileOpenRequest === 'function') {
+        onExternalFileOpenRequest(path);
       }
     } else {
       this.toggleSocketFSFileTreeNodeWithPath(path);
