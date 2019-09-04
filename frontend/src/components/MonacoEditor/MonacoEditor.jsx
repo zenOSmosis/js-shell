@@ -108,7 +108,7 @@ export default class MonacoEditor extends Component {
    * @param {string} value 
    */
   setValue(value) {
-    value = value.toString();
+    value = value ? value.toString() : '';
 
     return this._editor.setValue(value);
   }
