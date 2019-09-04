@@ -49,9 +49,14 @@ export default class SourceCodeAppWindow extends Component {
         if (updatedState[ACTIVE_FILE]) {
           const { fileDetail } = updatedState[ACTIVE_FILE];
 
-          const { path } = fileDetail;
+          if (fileDetail) {
+            const { path } = fileDetail;
   
-          windowTitleOverride = path;
+            windowTitleOverride = path;
+          } else {
+            
+            windowTitleOverride = null;
+          }
         }
 
         this.setState({

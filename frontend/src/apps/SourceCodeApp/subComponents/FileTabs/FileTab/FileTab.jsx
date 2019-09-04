@@ -20,13 +20,15 @@ class FileTab extends Component {
     try {
       const { file } = this.props;
 
-      const { fileDetail } = file;
+      if ('fileDetail' in file) {
+        const { fileDetail } = file;
 
-      const { base } = fileDetail;
-
-      this.setState({
-        base
-      });
+        const { base } = fileDetail;
+  
+        this.setState({
+          base
+        });
+      }
     } catch (exc) {
       throw exc;
     }
@@ -55,10 +57,6 @@ class FileTab extends Component {
   render() {
     const { base } = this.state;
 
-    if (!base) {
-      return false;
-    }
-
     return (
       <div
         className={style['file-tab']}
@@ -72,7 +70,16 @@ class FileTab extends Component {
 
           <Column>
             <TransparentButton onClick={evt => this._handleActivate()}>
-              <div className={style['file-name']}>{base}</div>
+              <div className={style['file-name']}>
+                {
+                  base &&
+                  <span>{base}</span>
+                }
+                {
+                  !base &&
+                  <span style={{fontStyle: 'italic'}}>Untitled</span>
+                }
+              </div>
             </TransparentButton>
           </Column>
 

@@ -65,7 +65,9 @@ class EditorWithFileTabs extends Component {
                   {
                     openedFiles &&
                     openedFiles.map((file, idx) => {
+                      // Is set to true if the file is not the active file
                       const isHidden = !Object.is(activeFile, file);
+                      
                       const { language, fileContent } = file;
 
                       const { filePath } = file;
@@ -74,7 +76,7 @@ class EditorWithFileTabs extends Component {
                         <MonacoEditor
                           ref={ c => this._editorRefs[idx] = c }
                           containerClassName={classNames(style['editor'], isHidden ? style['hidden'] : null)}
-                          key={filePath}
+                          key={`${filePath}-${idx}`}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}
                           language={language}
                           initialValue={fileContent}

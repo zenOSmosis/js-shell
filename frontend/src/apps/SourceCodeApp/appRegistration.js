@@ -5,6 +5,7 @@ import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 import openFile from './utils/file/openFile';
+import openNewFile from './utils/file/openNewFile';
 import saveFile from './utils/file/saveFile';
 import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_OPEN,
@@ -31,6 +32,12 @@ export default registerApp({
       title: 'File',
       items: [
         {
+          title: 'New File',
+          onClick: (evt, appRuntime) => {
+            openNewFile(appRuntime.editorLinkedState);
+          }
+        },
+        {
           title: 'Open',
           onClick: (evt, appRuntime) => {
             launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_OPEN);
@@ -42,7 +49,11 @@ export default registerApp({
             try {
               const activeFilePath = getActiveFilePath(appRuntime.editorLinkedState);
 
-              await saveFile(appRuntime.editorLinkedState, activeFilePath);
+              if (activeFilePath) {
+                await saveFile(appRuntime.editorLinkedState, activeFilePath);
+              } else {
+                launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE);
+              }
             } catch (exc) {
               throw exc;
             }
