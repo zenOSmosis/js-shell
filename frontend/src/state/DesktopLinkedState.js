@@ -9,12 +9,11 @@ export {
   hocConnect
 };
 
-export const ACTION_OPEN_FILE_CHOOSER = 'launchFileChooserOverlay';
-export const ACTION_CLOSE_FILE_CHOOSER = 'closeFileChooser';
+const DESKTOP_LINKED_SCOPE_NAME = 'desktop-linked-state';
 
-const DESKTOP_LINKED_SCOPE_NAME = `desktopLinkedState`;
-
-export const STATE_IS_SHOWING_FILE_CHOOSER = 'isShowingFileChooser';
+export const ACTION_OPEN_FILE_CHOOSER_DIALOG = 'launchFileChooserDialog';
+export const ACTION_CLOSE_FILE_CHOOSER_DIALOG = 'closeFileChooserDialog';
+export const STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS = 'isShowingFileChooser';
 
 /**
  * Maintains state directly related to the Shell Desktop and its running
@@ -55,18 +54,20 @@ class DesktopLinkedState extends LinkedState {
 
       shellDesktopProcess: null,
 
-      [STATE_IS_SHOWING_FILE_CHOOSER]: false
+      [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
     }, {
       actions: {
-        [ACTION_OPEN_FILE_CHOOSER]: (desktopLinkedState) => {
+        [ACTION_OPEN_FILE_CHOOSER_DIALOG]: (desktopLinkedState, params) => {
+          // const { appRuntime, fileChooserMode, filePath } = params;
+
           desktopLinkedState.setState({
-            [STATE_IS_SHOWING_FILE_CHOOSER]: true
+            [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: params
           });
         },
 
-        [ACTION_CLOSE_FILE_CHOOSER]: (desktopLinkedState) => {
+        [ACTION_CLOSE_FILE_CHOOSER_DIALOG]: (desktopLinkedState) => {
           desktopLinkedState.setState({
-            [STATE_IS_SHOWING_FILE_CHOOSER]: false
+            [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
           });
         }
       }

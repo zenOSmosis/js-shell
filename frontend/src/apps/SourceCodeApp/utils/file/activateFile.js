@@ -1,4 +1,4 @@
-import getOpenedFilePathIdx from './getOpenedFilePathIdx';
+import getOpenedFileIdxWithPath from './getOpenedFileIdxWithPath';
 
 const activateFile = (editorLinkedState, file) => {
   try {
@@ -6,7 +6,7 @@ const activateFile = (editorLinkedState, file) => {
     const { filePath } = file;
 
     // If file already is opened, switch to it in the editor
-    const openedFilePathIdx = getOpenedFilePathIdx(editorLinkedState, filePath);
+    const openedFilePathIdx = getOpenedFileIdxWithPath(editorLinkedState, filePath);
     if (openedFilePathIdx > -1) {
       editorLinkedState.setState({
         activeFile: openedFiles[openedFilePathIdx]

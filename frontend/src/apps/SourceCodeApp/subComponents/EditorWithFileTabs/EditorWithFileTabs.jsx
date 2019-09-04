@@ -7,8 +7,11 @@ import FileTabs from '../FileTabs';
 import style from './EditorWithFileTabs.module.css';
 import { CURSOR_POSITION } from '../../state/UniqueSourceCodeAppLinkedState';
 import classNames from 'classnames';
+import updateFileWithIdx from '../../utils/file/updateFileWithIdx';
 
 class EditorWithFileTabs extends Component {
+  _editorRefs = [];
+  
   _handleEditorMount(editor, monaco, monacoEditorComponent) {
     const { editorLinkedState } = this.props;
     let { languages } = editorLinkedState.getState();
@@ -65,10 +68,13 @@ class EditorWithFileTabs extends Component {
                       const isHidden = !Object.is(activeFile, file);
                       const { language, fileContent } = file;
 
+                      const { filePath } = file;
+
                       return (
                         <MonacoEditor
+                          ref={ c => this._editorRefs[idx] = c }
                           containerClassName={classNames(style['editor'], isHidden ? style['hidden'] : null)}
-                          key={idx}
+                          key={filePath}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}
                           language={language}
                           initialValue={fileContent}
@@ -79,7 +85,10 @@ class EditorWithFileTabs extends Component {
                           }}
                           onDidChangeContent={evt => {
                             // TODO: Use this to trigger dirty / clean state w/ files
-                            console.debug('Changed content', evt);
+                            // updateFileWithIdx()
+                            const updatedFileContent = this._editorRefs[idx].getValue();
+
+                            updateFileWithIdx(editorLinkedState, idx, updatedFileContent);
                           }}
                         />
                       );

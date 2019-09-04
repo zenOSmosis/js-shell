@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
 import Cover from 'components/Cover';
 import SocketFSFileChooserWindow from 'components/SocketFSFileChooserWindow';
-import DesktopLinkedState, { hocConnect, STATE_IS_SHOWING_FILE_CHOOSER, ACTION_CLOSE_FILE_CHOOSER } from 'state/DesktopLinkedState';
+import DesktopLinkedState, { hocConnect, STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS, ACTION_CLOSE_FILE_CHOOSER_DIALOG } from 'state/DesktopLinkedState';
 import style from './FileChooserOverlayContent.module.scss';
 
+/**
+ * IMPORTANT!  This should run as a singleton!
+ */
 const FileChooserOverlayContext = (props) => {
   const {
-    [STATE_IS_SHOWING_FILE_CHOOSER]: isShowingFileChooser,
+    [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: activeFileChooserDialogParams,
     desktopLinkedState,
     children,
   } = props;
@@ -18,13 +21,15 @@ const FileChooserOverlayContext = (props) => {
       }
 
       {
-        isShowingFileChooser &&
+        activeFileChooserDialogParams &&
         <Cover className={style['overlay']}>
           <SocketFSFileChooserWindow
+            dialogParams={activeFileChooserDialogParams}
+
             shouldCloseOnFileOpen={true}
 
             // Close the overlay when the Window closes
-            onClose={evt => desktopLinkedState.dispatchAction(ACTION_CLOSE_FILE_CHOOSER)}
+            onClose={evt => desktopLinkedState.dispatchAction(ACTION_CLOSE_FILE_CHOOSER_DIALOG)}
           />
         </Cover>
       }
@@ -33,10 +38,10 @@ const FileChooserOverlayContext = (props) => {
 };
 
 export default hocConnect(FileChooserOverlayContext, DesktopLinkedState, (updatedState, desktopLinkedState) => {
-  if (updatedState[STATE_IS_SHOWING_FILE_CHOOSER] !== undefined) {
+  if (updatedState[STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS] !== undefined) {
     return {
       desktopLinkedState,
-      [STATE_IS_SHOWING_FILE_CHOOSER]: updatedState[STATE_IS_SHOWING_FILE_CHOOSER]
+      [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: updatedState[STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]
     };
   }
 });

@@ -1,6 +1,11 @@
 import { pathDetail } from 'utils/socketFS';
 import getAppRegistrationsWithMimeType from './getAppRegistrationsWithMimeType';
 
+/**
+ * Opens a given file path in a registered app.
+ * 
+ * @param {string} filePath 
+ */
 const openFile = async (filePath) => {
   try {
     const fileDetail = await pathDetail(filePath);

@@ -1,4 +1,4 @@
-import getOpenedFilePathIdx from './getOpenedFilePathIdx';
+import getOpenedFileIdxWithPath from './getOpenedFileIdxWithPath';
 import activateFile from './activateFile';
 import { readFile, pathDetail } from 'utils/socketFS';
 import './EditorFile.typedef';
@@ -8,7 +8,7 @@ const openFile = async (editorLinkedState, filePath) => {
     const { openedFiles } = editorLinkedState.getState();
 
     // If file already is opened, switch to it in the editor
-    const openedFilePathIdx = getOpenedFilePathIdx(editorLinkedState, filePath);
+    const openedFilePathIdx = getOpenedFileIdxWithPath(editorLinkedState, filePath);
     if (openedFilePathIdx > -1) {
       const file = openedFiles[openedFilePathIdx];
       activateFile(editorLinkedState, file);

@@ -32,16 +32,26 @@ class SocketFSFileChooserWindow extends Component {
   }
 
   componentDidMount() {
-    const { shouldCloseOnFileOpen: propsShouldCloseOnFileOpen } = this.props;
-    const shouldCloseOnFileOpen = (
-      propsShouldCloseOnFileOpen === undefined ?
-      
-        // Default
-      this._shouldCloseOnFileOpen :
-      
-      propsShouldCloseOnFileOpen
-    );
-    this._shouldCloseOnFileOpen = shouldCloseOnFileOpen;
+    // Determine if the Window should close after file is opened
+    (() => {
+      const { shouldCloseOnFileOpen: propsShouldCloseOnFileOpen } = this.props;
+      const shouldCloseOnFileOpen = (
+        propsShouldCloseOnFileOpen === undefined ?
+        
+          // Default
+        this._shouldCloseOnFileOpen :
+        
+        propsShouldCloseOnFileOpen
+      );
+      this._shouldCloseOnFileOpen = shouldCloseOnFileOpen;
+    })();
+
+    const { dialogParams } = this.props;
+    if (dialogParams) {
+      console.warn('TODO: Handle file chooser dialog params', {
+        dialogParams
+      });
+    }
 
     this._linkedState.setState({
       fileChooserWindow: this,

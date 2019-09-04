@@ -5,7 +5,13 @@ import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 import openFile from './utils/file/openFile';
-import launchFileChooserOverlay from 'utils/desktop/launchFileChooserOverlay';
+import saveFile from './utils/file/saveFile';
+import launchFileChooserDialog, {
+  FILE_CHOOSER_MODE_OPEN,
+  // FILE_CHOOSER_MODE_SAVE,
+  FILE_CHOOSER_MODE_SAVE_AS
+} from 'utils/desktop/launchFileChooserDialog';
+import getActiveFilePath from './utils/file/getActiveFilePath';
 
 export default registerApp({
   title: 'Source Code',
@@ -16,17 +22,40 @@ export default registerApp({
   },
   allowMultipleWindows: true,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  
+  // TODO: Filter list specific to this app (don't use wildcard)
   mimeTypes: ['*'],
+  
   menus: [
     {
       title: 'File',
       items: [
         {
-          title: 'Open File',
+          title: 'Open',
           onClick: (evt, appRuntime) => {
-            launchFileChooserOverlay();
+            launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_OPEN);
           }
         },
+        {
+          title: 'Save',
+          onClick: async (evt, appRuntime) => {
+            try {
+              const activeFilePath = getActiveFilePath(appRuntime.editorLinkedState);
+
+              await saveFile(appRuntime.editorLinkedState, activeFilePath);
+            } catch (exc) {
+              throw exc;
+            }
+          }
+        },
+        {
+          title: 'Save As',
+          onClick: (evt, appRuntime) => {
+            const activeFilePath = getActiveFilePath(appRuntime.editorLinkedState);
+
+            launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE_AS, activeFilePath);
+          }
+        }
         // TODO: Remove; debugging; This should clear the menubar
         /*
         {

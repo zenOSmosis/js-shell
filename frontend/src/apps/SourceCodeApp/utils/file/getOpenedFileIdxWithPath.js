@@ -5,7 +5,7 @@ import '../../state/UniqueSourceCodeAppLinkedState';
  * @param {string} filePath
  * @return {number} -1 if the path is not in the index.
  */
-const getOpenedFilePathIdx = (editorLinkedState, filePath) => {
+const getOpenedFileIdxWithPath = (editorLinkedState, filePath) => {
   const { openedFiles } = editorLinkedState.getState();
   const lenOpenedFiles = openedFiles.length;
 
@@ -18,4 +18,4 @@ const getOpenedFilePathIdx = (editorLinkedState, filePath) => {
   return -1;
 };
 
-export default getOpenedFilePathIdx;
+export default getOpenedFileIdxWithPath;
