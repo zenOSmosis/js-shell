@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} EditorFile
+ * @typedef {Object} AppFile
  * @property {boolean} isModified Whether the file has been modified since the
  * last save.
  * @property {string} language The code language of the editor's content.

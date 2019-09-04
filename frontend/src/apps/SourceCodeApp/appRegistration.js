@@ -4,15 +4,17 @@ import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
-import openFile from './utils/file/openFile';
-import openNewFile from './utils/file/openNewFile';
-import saveFile from './utils/file/saveFile';
+import openAppFile from './utils/appFile/openAppFile';
+import openNewAppFile from './utils/appFile/openNewAppFile';
+import saveAppFile from './utils/appFile/saveAppFile';
+import getActiveAppFile from './utils/appFile/getActiveAppFile';
+import closeAppFile from './utils/appFile/closeAppFile';
 import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_OPEN,
   // FILE_CHOOSER_MODE_SAVE,
   FILE_CHOOSER_MODE_SAVE_AS
 } from 'utils/desktop/launchFileChooserDialog';
-import getActiveFilePath from './utils/file/getActiveFilePath';
+import getActiveAppFilePath from './utils/appFile/getActiveAppFilePath';
 
 export default registerApp({
   title: 'Source Code',
@@ -27,6 +29,7 @@ export default registerApp({
   // TODO: Filter list specific to this app (don't use wildcard)
   mimeTypes: ['*'],
   
+  // TODO: Create setMenus(appRuntime)
   menus: [
     {
       title: 'File',
@@ -34,7 +37,7 @@ export default registerApp({
         {
           title: 'New File',
           onClick: (evt, appRuntime) => {
-            openNewFile(appRuntime.editorLinkedState);
+            openNewAppFile(appRuntime.editorLinkedState);
           }
         },
         {
@@ -47,10 +50,10 @@ export default registerApp({
           title: 'Save',
           onClick: async (evt, appRuntime) => {
             try {
-              const activeFilePath = getActiveFilePath(appRuntime.editorLinkedState);
+              const activeAppFilePath = getActiveAppFilePath(appRuntime.editorLinkedState);
 
-              if (activeFilePath) {
-                await saveFile(appRuntime.editorLinkedState, activeFilePath);
+              if (activeAppFilePath) {
+                await saveAppFile(appRuntime.editorLinkedState, activeAppFilePath);
               } else {
                 launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE);
               }
@@ -62,9 +65,19 @@ export default registerApp({
         {
           title: 'Save As',
           onClick: (evt, appRuntime) => {
-            const activeFilePath = getActiveFilePath(appRuntime.editorLinkedState);
+            const activeAppFilePath = getActiveAppFilePath(appRuntime.editorLinkedState);
 
-            launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE_AS, activeFilePath);
+            launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE_AS, activeAppFilePath);
+          }
+        },
+        {
+          title: 'Close File',
+          onClick: (evt, appRuntime) => {
+            const activeAppFile = getActiveAppFile(appRuntime.editorLinkedState);
+
+            if (activeAppFile) {
+              closeAppFile(appRuntime.editorLinkedState, activeAppFile);
+            }
           }
         }
         // TODO: Remove; debugging; This should clear the menubar
@@ -82,6 +95,7 @@ export default registerApp({
   ],
   
   cmd: (appRuntime) => {
+    // TODO: Set editorLinkedState as appRuntime state; don't create an additional property
     appRuntime.editorLinkedState = new UniqueSourceCodeAppLinkedState();
 
     appRuntime.on(EVT_BEFORE_EXIT, () => {
@@ -92,7 +106,7 @@ export default registerApp({
 
   onExternalFileOpenRequest: async (appRuntime, filePath) => {
     try {
-      await openFile(appRuntime.editorLinkedState, filePath);
+      await openAppFile(appRuntime.editorLinkedState, filePath);
     } catch (exc) {
       throw exc;
     }

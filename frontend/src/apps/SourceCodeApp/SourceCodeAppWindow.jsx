@@ -6,8 +6,8 @@ import Window from 'components/Desktop/Window';
 import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
 import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
-import openFile from './utils/file/openFile';
-import { ACTIVE_FILE } from './state/UniqueSourceCodeAppLinkedState';
+import openAppFile from './utils/appFile/openAppFile';
+import { ACTIVE_APP_FILE } from './state/UniqueSourceCodeAppLinkedState';
 
 const RUN_TARGET_MAIN = {
   name: 'Main Thread',
@@ -43,18 +43,18 @@ export default class SourceCodeAppWindow extends Component {
     this._editorLinkedState = editorLinkedState;
 
     this._editorLinkedState.on('update', (updatedState) => {
-      if (updatedState[ACTIVE_FILE] !== undefined) {
+      if (updatedState[ACTIVE_APP_FILE] !== undefined) {
         let windowTitleOverride = null;
 
-        if (updatedState[ACTIVE_FILE]) {
-          const { fileDetail } = updatedState[ACTIVE_FILE];
+        if (updatedState[ACTIVE_APP_FILE]) {
+          const { fileDetail } = updatedState[ACTIVE_APP_FILE];
 
           if (fileDetail) {
             const { path } = fileDetail;
   
             windowTitleOverride = path;
           } else {
-            
+
             windowTitleOverride = null;
           }
         }
@@ -68,7 +68,7 @@ export default class SourceCodeAppWindow extends Component {
 
   async _handleFileOpenRequest(filePath) {
     try {
-      await openFile(this._editorLinkedState, filePath);
+      await openAppFile(this._editorLinkedState, filePath);
     } catch (exc) {
       throw exc;
     }

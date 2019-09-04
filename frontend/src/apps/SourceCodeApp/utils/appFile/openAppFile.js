@@ -1,17 +1,18 @@
-import getOpenedFileIdxWithPath from './getOpenedFileIdxWithPath';
-import activateFile from './activateFile';
+import { OPENED_APP_FILES, ACTIVE_APP_FILE } from '../../state/UniqueSourceCodeAppLinkedState';
+import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithPath';
+import activateAppFile from './activateAppFile';
 import { readFile, pathDetail } from 'utils/socketFS';
-import './EditorFile.typedef';
+import './AppFile.typedef';
 
-const openFile = async (editorLinkedState, filePath) => {
+const openAppFile = async (editorLinkedState, filePath) => {
   try {
-    const { openedFiles } = editorLinkedState.getState();
+    const { [OPENED_APP_FILES]: openedAppFiles } = editorLinkedState.getState();
 
     // If file already is opened, switch to it in the editor
-    const openedFilePathIdx = getOpenedFileIdxWithPath(editorLinkedState, filePath);
-    if (openedFilePathIdx > -1) {
-      const file = openedFiles[openedFilePathIdx];
-      activateFile(editorLinkedState, file);
+    const openedAppFilePathIdx = getOpenedAppFileIdxWithPath(editorLinkedState, filePath);
+    if (openedAppFilePathIdx > -1) {
+      const file = openedAppFiles[openedAppFilePathIdx];
+      activateAppFile(editorLinkedState, file);
 
       // Halt here.  The file is already activated.
       return;
@@ -24,6 +25,7 @@ const openFile = async (editorLinkedState, filePath) => {
     const language = (() => {
       const { mimeType } = fileDetail;
 
+      // TODO: Refactor default language elsewhere
       const defaultLanguage = 'raw';
 
       if (mimeType) {
@@ -43,9 +45,9 @@ const openFile = async (editorLinkedState, filePath) => {
     });
 
     /**
-     * @type {EditorFile}
+     * @type {AppFile}
      */
-    const file = {
+    const appFile = {
       isModified: false, // Not modified since opening, as it's just been opened
       language, // Code language
       fileDetail, // via pathDetail socketFS API call
@@ -53,15 +55,15 @@ const openFile = async (editorLinkedState, filePath) => {
       fileContent // Source code
     };
 
-    openedFiles.push(file);
+    openedAppFiles.push(appFile);
   
     editorLinkedState.setState({
-      openedFiles,
-      activeFile: file
+      [OPENED_APP_FILES]: openedAppFiles,
+      [ACTIVE_APP_FILE]: appFile
     });
   } catch (exc) {
     throw exc;
   }
 };
 
-export default openFile;
+export default openAppFile;

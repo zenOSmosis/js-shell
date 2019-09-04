@@ -1,6 +1,6 @@
 import React from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import { ACTIVE_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
+import { ACTIVE_APP_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
 import { Row, Column } from 'components/Layout';
 import style from './AppFooter.module.css';
 
@@ -17,8 +17,8 @@ const AppFooter = (props) => {
           filteredState.languages = updatedState[LANGUAGES];
         }
 
-        if (updatedState[ACTIVE_FILE]) {
-          const { language } = updatedState[ACTIVE_FILE];
+        if (updatedState[ACTIVE_APP_FILE]) {
+          const { language } = updatedState[ACTIVE_APP_FILE];
 
           filteredState.language = language;
         }

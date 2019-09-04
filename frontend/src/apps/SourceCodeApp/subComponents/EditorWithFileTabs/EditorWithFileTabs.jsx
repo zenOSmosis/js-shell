@@ -5,9 +5,13 @@ import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import MonacoEditor from 'components/MonacoEditor';
 import FileTabs from '../FileTabs';
 import style from './EditorWithFileTabs.module.css';
-import { CURSOR_POSITION } from '../../state/UniqueSourceCodeAppLinkedState';
+import {
+  ACTIVE_APP_FILE,
+  OPENED_APP_FILES,
+  CURSOR_POSITION
+} from '../../state/UniqueSourceCodeAppLinkedState';
 import classNames from 'classnames';
-import updateFileWithIdx from '../../utils/file/updateFileWithIdx';
+import updateAppFileWithIdx from '../../utils/appFile/updateAppFileWithIdx';
 
 class EditorWithFileTabs extends Component {
   _editorRefs = [];
@@ -43,34 +47,40 @@ class EditorWithFileTabs extends Component {
           <LinkedStateRenderer
             linkedState={editorLinkedState}
             onUpdate={(updatedState) => {
-              const { activeFile, openedFiles } = updatedState;
+              const {
+                [ACTIVE_APP_FILE]: activeAppFile,
+                [OPENED_APP_FILES]: openedAppFiles
+              } = updatedState;
 
               const filteredState = {};
 
-              if (activeFile !== undefined) {
-                filteredState.activeFile = activeFile;
+              if (activeAppFile !== undefined) {
+                filteredState[ACTIVE_APP_FILE] = activeAppFile;
               }
 
-              if (openedFiles !== undefined) {
-                filteredState.openedFiles = openedFiles;
+              if (openedAppFiles !== undefined) {
+                filteredState[OPENED_APP_FILES] = openedAppFiles;
               }
 
               return filteredState;
             }}
             render={(renderProps) => {
-              const { activeFile, openedFiles } = renderProps;
+              const {
+                [ACTIVE_APP_FILE]: activeAppFile,
+                [OPENED_APP_FILES]: openedAppFiles
+              } = renderProps;
 
               return (
                 <Full>
                   {
-                    openedFiles &&
-                    openedFiles.map((file, idx) => {
+                    openedAppFiles &&
+                    openedAppFiles.map((appFile, idx) => {
                       // Is set to true if the file is not the active file
-                      const isHidden = !Object.is(activeFile, file);
+                      const isHidden = !Object.is(activeAppFile, appFile);
                       
-                      const { language, fileContent } = file;
+                      const { language, fileContent } = appFile;
 
-                      const { filePath } = file;
+                      const { filePath } = appFile;
 
                       return (
                         <MonacoEditor
@@ -87,10 +97,10 @@ class EditorWithFileTabs extends Component {
                           }}
                           onDidChangeContent={evt => {
                             // TODO: Use this to trigger dirty / clean state w/ files
-                            // updateFileWithIdx()
+                            // updateAppFileWithIdx()
                             const updatedFileContent = this._editorRefs[idx].getValue();
 
-                            updateFileWithIdx(editorLinkedState, idx, updatedFileContent);
+                            updateAppFileWithIdx(editorLinkedState, idx, updatedFileContent);
                           }}
                         />
                       );
