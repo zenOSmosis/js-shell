@@ -1,9 +1,9 @@
 import getOpenedAppFileWithPath from './getOpenedAppFileWithPath';
 import { writeFile } from 'utils/socketFS';
 
-const saveAppFile = async (editorLinkedState, filePath) => {
+const saveAppFile = async (uniqueMultiAppFileLinkedState, filePath) => {
   try {
-    const appFile = getOpenedAppFileWithPath(editorLinkedState, filePath);
+    const appFile = getOpenedAppFileWithPath(uniqueMultiAppFileLinkedState, filePath);
 
     if (!appFile) {
       throw new Error(`Unable to acquire opened app file with path: ${filePath}`);

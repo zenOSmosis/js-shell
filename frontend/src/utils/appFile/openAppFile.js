@@ -1,18 +1,26 @@
-import { OPENED_APP_FILES, ACTIVE_APP_FILE } from '../../state/UniqueSourceCodeAppLinkedState';
-import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithPath';
+import { OPENED_APP_FILES, ACTIVE_APP_FILE } from 'state/UniqueMultiAppFileLinkedState';
+import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithUUID';
 import activateAppFile from './activateAppFile';
 import { readFile, pathDetail } from 'utils/socketFS';
+import createAppFile from './_createAppFile';
 import './AppFile.typedef';
 
-const openAppFile = async (editorLinkedState, filePath) => {
+/**
+ * 
+ * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState 
+ * @param {string} filePath 
+ * @param {Object} readFileOptions
+ * @return {Promise<void>}
+ */
+const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOptions = { encoding: 'utf-8' }) => {
   try {
-    const { [OPENED_APP_FILES]: openedAppFiles } = editorLinkedState.getState();
+    const { [OPENED_APP_FILES]: openedAppFiles } = uniqueMultiAppFileLinkedState.getState();
 
     // If file already is opened, switch to it in the editor
-    const openedAppFilePathIdx = getOpenedAppFileIdxWithPath(editorLinkedState, filePath);
+    const openedAppFilePathIdx = getOpenedAppFileIdxWithPath(uniqueMultiAppFileLinkedState, filePath);
     if (openedAppFilePathIdx > -1) {
       const file = openedAppFiles[openedAppFilePathIdx];
-      activateAppFile(editorLinkedState, file);
+      activateAppFile(uniqueMultiAppFileLinkedState, file);
 
       // Halt here.  The file is already activated.
       return;
@@ -22,6 +30,7 @@ const openAppFile = async (editorLinkedState, filePath) => {
 
     // TODO: First inspect file size to see if it's too large to open
 
+    /*
     const language = (() => {
       const { mimeType } = fileDetail;
 
@@ -38,26 +47,22 @@ const openAppFile = async (editorLinkedState, filePath) => {
         return defaultLanguage;
       }
     })();
+    */
 
-    const fileContent = await readFile(filePath, {
-      // TODO: Incorporate dynamic value
-      encoding: 'utf-8'
-    });
+    const fileContent = await readFile(filePath, readFileOptions);
 
     /**
      * @type {AppFile}
      */
-    const appFile = {
-      isModified: false, // Not modified since opening, as it's just been opened
-      language, // Code language
+    const appFile = {...createAppFile(), ...{
       fileDetail, // via pathDetail socketFS API call
       filePath, // Absolute filesystem path
       fileContent // Source code
-    };
+    }};
 
     openedAppFiles.push(appFile);
   
-    editorLinkedState.setState({
+    uniqueMultiAppFileLinkedState.setState({
       [OPENED_APP_FILES]: openedAppFiles,
       [ACTIVE_APP_FILE]: appFile
     });

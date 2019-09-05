@@ -4,17 +4,19 @@ import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
 import config from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
-import openAppFile from './utils/appFile/openAppFile';
-import openNewAppFile from './utils/appFile/openNewAppFile';
-import saveAppFile from './utils/appFile/saveAppFile';
-import getActiveAppFile from './utils/appFile/getActiveAppFile';
-import closeAppFile from './utils/appFile/closeAppFile';
+import {
+  openAppFile,
+  openNewAppFile,
+  saveAppFile,
+  getActiveAppFile,
+  getActiveAppFilePath,
+  closeAppFile
+} from 'utils/appFile';
 import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_OPEN,
   // FILE_CHOOSER_MODE_SAVE,
   FILE_CHOOSER_MODE_SAVE_AS
 } from 'utils/desktop/launchFileChooserDialog';
-import getActiveAppFilePath from './utils/appFile/getActiveAppFilePath';
 
 export default registerApp({
   title: 'Source Code',

@@ -15,3 +15,6 @@ class UniqueLinkedState extends LinkedState {
 }
 
 export default UniqueLinkedState;
+export {
+  DEFAULT_LINKED_SCOPE_NAME
+};

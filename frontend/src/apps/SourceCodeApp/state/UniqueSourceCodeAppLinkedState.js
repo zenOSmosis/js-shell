@@ -1,20 +1,18 @@
-import UniqueLinkedState from 'state/UniqueLinkedState';
+import UniqueMultiAppFileLinkedState, {
+  OPENED_APP_FILES,
+  ACTIVE_APP_FILE
+} from 'state/UniqueMultiAppFileLinkedState';
 
-export const OPENED_APP_FILES = 'openedAppFiles';
-export const ACTIVE_APP_FILE = 'activeAppFile';
+
 export const LANGUAGES = 'languages';
 export const CURSOR_POSITION = 'cursorPosition';
 
 /**
  * @extends UniqueLinkedState
  */
-class UniqueSourceCodeAppLinkedState extends UniqueLinkedState {
+class UniqueSourceCodeAppLinkedState extends UniqueMultiAppFileLinkedState {
   constructor() {
     super('source-code-app', {
-      [OPENED_APP_FILES]: [],
-
-      [ACTIVE_APP_FILE]: null,
-
       [LANGUAGES]: [],
 
       [CURSOR_POSITION]: {
@@ -32,3 +30,7 @@ class UniqueSourceCodeAppLinkedState extends UniqueLinkedState {
 }
 
 export default UniqueSourceCodeAppLinkedState;
+export {
+  OPENED_APP_FILES,
+  ACTIVE_APP_FILE
+};

@@ -11,7 +11,9 @@ import {
   CURSOR_POSITION
 } from '../../state/UniqueSourceCodeAppLinkedState';
 import classNames from 'classnames';
-import updateAppFileWithIdx from '../../utils/appFile/updateAppFileWithIdx';
+import {
+  updateAppFileWithIdx
+} from 'utils/appFile';
 
 class EditorWithFileTabs extends Component {
   _editorRefs = [];

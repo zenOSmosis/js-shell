@@ -6,7 +6,9 @@ import Window from 'components/Desktop/Window';
 import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
 import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
-import openAppFile from './utils/appFile/openAppFile';
+import {
+  openAppFile
+} from 'utils/appFile';
 import { ACTIVE_APP_FILE } from './state/UniqueSourceCodeAppLinkedState';
 
 const RUN_TARGET_MAIN = {

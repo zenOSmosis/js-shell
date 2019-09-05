@@ -3,8 +3,10 @@ import TransparentButton from 'components/TransparentButton';
 // import textEllipsis from 'utils/text/textEllipsis';
 import style from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
-import activateAppFile from '../../../utils/appFile/activateAppFile';
-import closeAppFile from '../../../utils/appFile/closeAppFile';
+import {
+  activateAppFile,
+  closeAppFile
+} from 'utils/appFile';
 import PropTypes from 'prop-types';
 
 class FileTab extends Component {
@@ -28,15 +30,16 @@ class FileTab extends Component {
     try {
       const { appFile } = this.props;
 
-      if ('fileDetail' in appFile) {
-        const { fileDetail } = appFile;
-
+      const { fileDetail } = appFile;
+     
+      if (fileDetail) {
         const { base } = fileDetail;
-  
+
         this.setState({
           base
         });
       }
+      
     } catch (exc) {
       throw exc;
     }
