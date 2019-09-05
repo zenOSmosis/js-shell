@@ -39,7 +39,9 @@ export default registerApp({
         {
           title: 'New File',
           onClick: (evt, appRuntime) => {
-            openNewAppFile(appRuntime.editorLinkedState);
+            const { editorLinkedState } = appRuntime.getState();
+
+            openNewAppFile(editorLinkedState);
           }
         },
         {
@@ -52,10 +54,12 @@ export default registerApp({
           title: 'Save',
           onClick: async (evt, appRuntime) => {
             try {
-              const activeAppFilePath = getActiveAppFilePath(appRuntime.editorLinkedState);
+              const { editorLinkedState } = appRuntime.getState();
+
+              const activeAppFilePath = getActiveAppFilePath(editorLinkedState);
 
               if (activeAppFilePath) {
-                await saveAppFile(appRuntime.editorLinkedState, activeAppFilePath);
+                await saveAppFile(editorLinkedState, activeAppFilePath);
               } else {
                 launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE);
               }
@@ -67,7 +71,9 @@ export default registerApp({
         {
           title: 'Save As',
           onClick: (evt, appRuntime) => {
-            const activeAppFilePath = getActiveAppFilePath(appRuntime.editorLinkedState);
+            const { editorLinkedState } = appRuntime.getState();
+
+            const activeAppFilePath = getActiveAppFilePath(editorLinkedState);
 
             launchFileChooserDialog(appRuntime, FILE_CHOOSER_MODE_SAVE_AS, activeAppFilePath);
           }
@@ -75,10 +81,12 @@ export default registerApp({
         {
           title: 'Close File',
           onClick: (evt, appRuntime) => {
-            const activeAppFile = getActiveAppFile(appRuntime.editorLinkedState);
+            const { editorLinkedState } = appRuntime.getState();
+
+            const activeAppFile = getActiveAppFile(editorLinkedState);
 
             if (activeAppFile) {
-              closeAppFile(appRuntime.editorLinkedState, activeAppFile);
+              closeAppFile(editorLinkedState, activeAppFile);
             }
           }
         }
@@ -97,18 +105,24 @@ export default registerApp({
   ],
   
   cmd: (appRuntime) => {
-    // TODO: Set editorLinkedState as appRuntime state; don't create an additional property
-    appRuntime.editorLinkedState = new UniqueSourceCodeAppLinkedState();
+    // TODO: Set __editorLinkedState as appRuntime state; don't create an additional property
+    let editorLinkedState = new UniqueSourceCodeAppLinkedState();
 
     appRuntime.on(EVT_BEFORE_EXIT, () => {
-      appRuntime.editorLinkedState.destroy();
-      appRuntime.editorLinkedState = null;
+      editorLinkedState.destroy();
+      editorLinkedState = null;
+    });
+
+    appRuntime.setState({
+      editorLinkedState
     });
   },
 
   onExternalFileOpenRequest: async (appRuntime, filePath) => {
     try {
-      await openAppFile(appRuntime.editorLinkedState, filePath);
+      const { editorLinkedState } = appRuntime;
+
+      await openAppFile(editorLinkedState, filePath);
     } catch (exc) {
       throw exc;
     }

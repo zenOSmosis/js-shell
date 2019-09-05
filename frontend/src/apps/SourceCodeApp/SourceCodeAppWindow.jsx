@@ -43,7 +43,8 @@ export default class SourceCodeAppWindow extends Component {
 
   componentDidMount() {
     const { appRuntime } = this.props;
-    const { editorLinkedState } = appRuntime;
+    const { editorLinkedState } = appRuntime.getState();
+
     this._editorLinkedState = editorLinkedState;
 
     this._editorLinkedState.on('update', (updatedState) => {
@@ -79,10 +80,7 @@ export default class SourceCodeAppWindow extends Component {
   }
 
   exec() {
-    const { appRuntime } = this.props;
-    const { editorLinkedState } = appRuntime;
-
-    const activeAppFile = getActiveAppFile(editorLinkedState);
+    const activeAppFile = getActiveAppFile(this._editorLinkedState);
 
     if (!activeAppFile) {
       console.error('No active app file');
@@ -95,8 +93,11 @@ export default class SourceCodeAppWindow extends Component {
   }
 
   render() {
+    if (!this._editorLinkedState) {
+      return false;
+    }
+
     const { appRuntime, ...propsRest } = this.props;
-    const { editorLinkedState } = appRuntime;
     const { windowTitleOverride } = this.state;
 
     return (
@@ -154,14 +155,14 @@ export default class SourceCodeAppWindow extends Component {
 
                 <Full>
                   <EditorWithFileTabs
-                    editorLinkedState={editorLinkedState}
+                    editorLinkedState={this._editorLinkedState}
                   />
                 </Full>
               </SplitterLayout>
             </Full>
           </Content>
           <Footer>
-            <AppFooter editorLinkedState={editorLinkedState} />
+            <AppFooter editorLinkedState={this._editorLinkedState} />
           </Footer>
         </Layout>
 
