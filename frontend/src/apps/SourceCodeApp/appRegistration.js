@@ -120,7 +120,7 @@ export default registerApp({
 
   onExternalFileOpenRequest: async (appRuntime, filePath) => {
     try {
-      const { editorLinkedState } = appRuntime;
+      const { editorLinkedState } = appRuntime.getState();
 
       await openAppFile(editorLinkedState, filePath);
     } catch (exc) {
