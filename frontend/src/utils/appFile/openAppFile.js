@@ -1,5 +1,5 @@
 import { OPENED_APP_FILES, ACTIVE_APP_FILE } from 'state/UniqueMultiAppFileLinkedState';
-import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithUUID';
+import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithPath';
 import activateAppFile from './activateAppFile';
 import { readFile, pathDetail } from 'utils/socketFS';
 import createAppFile from './_createAppFile';
@@ -19,8 +19,8 @@ const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOpti
     // If file already is opened, switch to it in the editor
     const openedAppFilePathIdx = getOpenedAppFileIdxWithPath(uniqueMultiAppFileLinkedState, filePath);
     if (openedAppFilePathIdx > -1) {
-      const file = openedAppFiles[openedAppFilePathIdx];
-      activateAppFile(uniqueMultiAppFileLinkedState, file);
+      const appFile = openedAppFiles[openedAppFilePathIdx];
+      activateAppFile(uniqueMultiAppFileLinkedState, appFile);
 
       // Halt here.  The file is already activated.
       return;
