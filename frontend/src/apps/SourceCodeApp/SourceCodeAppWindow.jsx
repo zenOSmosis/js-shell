@@ -114,6 +114,7 @@ export default class SourceCodeAppWindow extends Component {
             </button>
             
             <div style={{
+              // TODO: Move to CSS module
               display: 'inline-block',
               margin: '0rem .5rem'
             }}>
