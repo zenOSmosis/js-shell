@@ -6,6 +6,10 @@ import createAppFile from './_createAppFile';
 import './AppFile.typedef';
 
 /**
+ * Reads file via filePath and creates a new AppFile from its contents.
+ * 
+ * IMPORTANT! This loads the entire file into memory at once and is not
+ * suitable for large file support.
  * 
  * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState 
  * @param {string} filePath 

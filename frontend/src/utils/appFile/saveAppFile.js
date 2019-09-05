@@ -1,6 +1,11 @@
 import getOpenedAppFileWithPath from './getOpenedAppFileWithPath';
 import { writeFile } from 'utils/socketFS';
 
+/**
+ * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState 
+ * @param {string} filePath
+ * @return {Promise<void>}
+ */
 const saveAppFile = async (uniqueMultiAppFileLinkedState, filePath) => {
   try {
     const appFile = getOpenedAppFileWithPath(uniqueMultiAppFileLinkedState, filePath);

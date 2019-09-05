@@ -4,7 +4,7 @@ import createAppFile from './_createAppFile';
 /**
  * Opens a new, untitled file.
  * 
- * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState 
+ * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState
  */
 const openNewAppFile = (uniqueMultiAppFileLinkedState) => {
   const { [OPENED_APP_FILES]: openedAppFiles } = uniqueMultiAppFileLinkedState.getState();
