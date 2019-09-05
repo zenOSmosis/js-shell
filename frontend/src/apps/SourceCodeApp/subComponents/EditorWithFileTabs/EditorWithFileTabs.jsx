@@ -17,7 +17,7 @@ import {
 
 class EditorWithFileTabs extends Component {
   _editorRefs = [];
-  
+
   _handleEditorMount(editor, monaco, monacoEditorComponent) {
     const { editorLinkedState } = this.props;
     let { languages } = editorLinkedState.getState();
@@ -82,13 +82,16 @@ class EditorWithFileTabs extends Component {
                       
                       const { language, fileContent } = appFile;
 
-                      const { filePath } = appFile;
+                      const { uuid: appFileUUID } = appFile;
 
                       return (
                         <MonacoEditor
-                          ref={ c => this._editorRefs[idx] = c }
+                          ref={c => this._editorRefs[idx] = c}
+
+                          // Hide editors which are not active
                           containerClassName={classNames(style['editor'], isHidden ? style['hidden'] : null)}
-                          key={`${filePath}-${idx}`}
+
+                          key={appFileUUID}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}
                           language={language}
                           initialValue={fileContent}
@@ -100,9 +103,11 @@ class EditorWithFileTabs extends Component {
                           onDidChangeContent={evt => {
                             // TODO: Use this to trigger dirty / clean state w/ files
                             // updateAppFileWithIdx()
-                            const updatedFileContent = this._editorRefs[idx].getValue();
+                            const fileContent = this._editorRefs[idx].getValue();
 
-                            updateAppFileWithIdx(editorLinkedState, idx, updatedFileContent);
+                            updateAppFileWithIdx(editorLinkedState, idx, {
+                              fileContent
+                            });
                           }}
                         />
                       );
