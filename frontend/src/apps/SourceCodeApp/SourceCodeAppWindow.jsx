@@ -7,9 +7,11 @@ import EditorWithFileTabs from './subComponents/EditorWithFileTabs';
 import AppFooter from './subComponents/AppFooter';
 import { Layout, Content, Footer } from 'components/Layout';
 import {
-  openAppFile
+  openAppFile,
+  getActiveAppFile
 } from 'utils/appFile';
 import { ACTIVE_APP_FILE } from './state/UniqueSourceCodeAppLinkedState';
+import exec from './utils/exec';
 
 const RUN_TARGET_MAIN = {
   name: 'Main Thread',
@@ -76,6 +78,22 @@ export default class SourceCodeAppWindow extends Component {
     }
   }
 
+  exec() {
+    const { appRuntime } = this.props;
+    const { editorLinkedState } = appRuntime;
+
+    const activeAppFile = getActiveAppFile(editorLinkedState);
+
+    if (!activeAppFile) {
+      console.error('No active app file');
+      return;
+    }
+
+    const { fileContent: sourceCode } = activeAppFile;
+
+    exec(appRuntime, sourceCode);
+  }
+
   render() {
     const { appRuntime, ...propsRest } = this.props;
     const { editorLinkedState } = appRuntime;
@@ -88,7 +106,7 @@ export default class SourceCodeAppWindow extends Component {
         title={windowTitleOverride}
         subToolbar={
           <div>
-            <button>
+            <button onClick={evt => this.exec()}>
               Execute
             </button>
             

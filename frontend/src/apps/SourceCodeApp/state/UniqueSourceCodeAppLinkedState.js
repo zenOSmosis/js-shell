@@ -3,7 +3,6 @@ import UniqueMultiAppFileLinkedState, {
   ACTIVE_APP_FILE
 } from 'state/UniqueMultiAppFileLinkedState';
 
-
 export const LANGUAGES = 'languages';
 export const CURSOR_POSITION = 'cursorPosition';
 
