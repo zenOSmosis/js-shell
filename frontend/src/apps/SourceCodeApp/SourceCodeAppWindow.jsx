@@ -80,6 +80,8 @@ export default class SourceCodeAppWindow extends Component {
   }
 
   exec() {
+    const { appRuntime } = this.props;
+
     const activeAppFile = getActiveAppFile(this._editorLinkedState);
 
     if (!activeAppFile) {
