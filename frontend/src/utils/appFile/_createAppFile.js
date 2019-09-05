@@ -14,7 +14,8 @@ const _createAppFile = () => {
     isModified: false, // Not modified since opening, as it's just been opened
     fileDetail: null,
     filePath: null,
-    fileContent: null
+    fileContent: null,
+    meta: {}
   }
 };
 

@@ -17,21 +17,34 @@ const AppFooter = (props) => {
           filteredState.languages = updatedState[LANGUAGES];
         }
 
+        let cursorPosition = null;
+
         if (updatedState[ACTIVE_APP_FILE]) {
-          const { language } = updatedState[ACTIVE_APP_FILE];
+          const { language, meta: activeAppFileMeta } = updatedState[ACTIVE_APP_FILE];
 
           filteredState.language = language;
+
+          // Obtain cursor position from activeAppFile meta property
+          const { [CURSOR_POSITION]: metaCursorPosition } = activeAppFileMeta;
+          if (metaCursorPosition) {
+            cursorPosition = metaCursorPosition;
+          }
+        } else if (updatedState[CURSOR_POSITION]) {
+          // Obtain cursor position from updated editorLinkedState
+          cursorPosition = updatedState[CURSOR_POSITION];
         }
 
-        if (updatedState[CURSOR_POSITION]) {
-          const { positionColumn, positionLineNumber } = updatedState[CURSOR_POSITION];
+        if (cursorPosition) {
+          const { positionColumn, positionLineNumber } = cursorPosition;
 
           if (positionColumn !== undefined &&
-              positionLineNumber !== undefined) {
-              filteredState = {...filteredState, ...{
+            positionLineNumber !== undefined) {
+            filteredState = {
+              ...filteredState, ...{
                 positionColumn,
                 positionLineNumber
-              }};
+              }
+            };
           }
         }
 
@@ -64,7 +77,7 @@ const AppFooter = (props) => {
             </Column>
 
             <Column>
-              { language }
+              {language}
               <select>
                 {
                   languages.map((_language, idx) => {

@@ -79,7 +79,7 @@ class EditorWithFileTabs extends Component {
                     openedAppFiles.map((appFile, idx) => {
                       // Is set to true if the file is not the active file
                       const isHidden = !Object.is(activeAppFile, appFile);
-                      
+
                       const { language, fileContent } = appFile;
 
                       const { uuid: appFileUUID } = appFile;
@@ -98,6 +98,12 @@ class EditorWithFileTabs extends Component {
                           onDidChangeCursorSelection={selection => {
                             editorLinkedState.setState({
                               [CURSOR_POSITION]: selection
+                            });
+
+                            updateAppFileWithIdx(editorLinkedState, idx, {
+                              meta: {
+                                [CURSOR_POSITION]: selection
+                              }
                             });
                           }}
                           onDidChangeContent={evt => {

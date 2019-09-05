@@ -47,6 +47,7 @@ export default class SourceCodeAppWindow extends Component {
 
     this._editorLinkedState = editorLinkedState;
 
+    // TODO: Use EVT_UPDATE constant
     this._editorLinkedState.on('update', (updatedState) => {
       if (updatedState[ACTIVE_APP_FILE] !== undefined) {
         let windowTitleOverride = null;
@@ -64,9 +65,12 @@ export default class SourceCodeAppWindow extends Component {
           }
         }
 
-        this.setState({
-          windowTitleOverride
-        });
+        const { windowTitleOverride: prevWindowTitleOverride } = this.state;
+        if (windowTitleOverride !== prevWindowTitleOverride) {
+          this.setState({
+            windowTitleOverride
+          });
+        }
       }
     });
   }

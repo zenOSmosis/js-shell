@@ -6,4 +6,5 @@
  * @property {Object} fileDetail The pathDetail of the file, via socketFS API.
  * @property {string} filePath The absolute file path of the file.
  * @property {string} fileContent The source code within the editor. 
+ * @property {Object} meta? Arbitrary metadata.
  */
