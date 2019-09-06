@@ -1,18 +1,45 @@
+/**
+ * @typedef {Object} ParsedURL
+ * @property {string} protocol e.g "https:"
+ * @property {string} hostname e.g. "example.com"
+ * @property {number} port e.g. 3000
+ * @property {string} pathName e.g. "/pathname/"
+ * @property {string} search e.g. "?search=test"
+ * @property {string} hash e.g. "#hash"
+ * @property {string} host e.g. "example.com:3000" 
+ */
+
+ /**
+  * @param {string} url
+  * @return {ParsedURL}
+  */
 const parseURL = (url) => {
-  const parser = document.createElement('a');
+  let parser = document.createElement('a');
   parser.href = url;
 
-  /*
-  parser.protocol; // => "http:"
-  parser.hostname; // => "example.com"
-  parser.port;     // => "3000"
-  parser.pathname; // => "/pathname/"
-  parser.search;   // => "?search=test"
-  parser.hash;     // => "#hash"
-  parser.host;     // => "example.com:3000"
-  */
+  const {
+    protocol,
+    hostname,
+    port,
+    pathname: pathName,
+    search,
+    hash,
+    host
+  } = parser;
 
-  return parser;
+  // Force nullification of parser element (in case the browser doesn't dispose
+  // it on its own)
+  parser = null;
+
+  return {
+    protocol,
+    hostname,
+    port,
+    pathname: pathName,
+    search,
+    hash,
+    host
+  };
 };
 
 export default parseURL;
