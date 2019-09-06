@@ -11,20 +11,7 @@ import {
   getActiveAppFile
 } from 'utils/appFile';
 import { ACTIVE_APP_FILE } from './state/UniqueSourceCodeAppLinkedState';
-import exec from './utils/exec';
-
-const RUN_TARGET_MAIN = {
-  name: 'Main Thread',
-  value: 'main-thread'
-};
-const RUN_TARGET_WORKER = {
-  name: 'Worker Thread',
-  value: 'worker-thread'
-};
-const RUN_TARGETS = [
-  RUN_TARGET_MAIN,
-  RUN_TARGET_WORKER
-];
+import _exec, { RUN_TARGETS } from './utils/exec';
 
 // TODO: Remove
 console.warn('TODO: Remove hardcoded DEFAULT_ROOT_DIRECTORY');
@@ -35,7 +22,9 @@ export default class SourceCodeAppWindow extends Component {
     super(...args);
 
     this.state = {
-      windowTitleOverride: null
+      windowTitleOverride: null,
+
+      selectedRunTarget: RUN_TARGETS[0]
     };
 
     this._editorLinkedState = null;
@@ -57,7 +46,7 @@ export default class SourceCodeAppWindow extends Component {
 
           if (fileDetail) {
             const { path } = fileDetail;
-  
+
             windowTitleOverride = path;
           } else {
 
@@ -85,6 +74,7 @@ export default class SourceCodeAppWindow extends Component {
 
   exec() {
     const { appRuntime } = this.props;
+    const { selectedRunTarget } = this.state;
 
     const activeAppFile = getActiveAppFile(this._editorLinkedState);
 
@@ -95,7 +85,17 @@ export default class SourceCodeAppWindow extends Component {
 
     const { fileContent: sourceCode } = activeAppFile;
 
-    exec(appRuntime, sourceCode);
+    _exec(appRuntime, selectedRunTarget, sourceCode);
+  }
+
+  selectRunTarget(runTarget) {
+    if (!RUN_TARGETS.includes(runTarget)) {
+      throw new Error(`Invalid run target: ${runTarget}`);
+    }
+
+    this.setState({
+      selectedRunTarget: runTarget
+    })
   }
 
   render() {
@@ -104,7 +104,7 @@ export default class SourceCodeAppWindow extends Component {
     }
 
     const { appRuntime, ...propsRest } = this.props;
-    const { windowTitleOverride } = this.state;
+    const { windowTitleOverride, selectedRunTarget } = this.state;
 
     return (
       <Window
@@ -116,27 +116,23 @@ export default class SourceCodeAppWindow extends Component {
             <button onClick={evt => this.exec()}>
               Execute
             </button>
-            
+
             <div style={{
               // TODO: Move to CSS module
               display: 'inline-block',
               margin: '0rem .5rem'
             }}>
               on target:
-              <select>
+              <select onChange={evt => this.selectRunTarget(evt.target.value)}>
                 {
                   RUN_TARGETS.map((runTarget, idx) => {
-                    const {
-                      name: runTargetName,
-                      value: runTargetValue
-                    } = runTarget;
-                    
                     return (
                       <option
                         key={idx}
-                        value={runTargetValue}
+                        value={runTarget}
+                        selected={runTarget === selectedRunTarget}
                       >
-                        {runTargetName}
+                        {runTarget}
                       </option>
                     );
                   })
