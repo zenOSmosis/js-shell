@@ -108,7 +108,19 @@ export default registerApp({
     // TODO: Set __editorLinkedState as appRuntime state; don't create an additional property
     let editorLinkedState = new UniqueSourceCodeAppLinkedState();
 
+    // Creates an untitled file if no new file has been set to open, in the timeout time
+    const defaultUntitledFileTimeout = setTimeout(() => {
+      const activeAppFile = getActiveAppFile(editorLinkedState);
+      
+      if (!activeAppFile) {
+        openNewAppFile(editorLinkedState);
+      }
+    }, 50);
+
     appRuntime.on(EVT_BEFORE_EXIT, () => {
+      // Remove the untitled file timeout, if it hasn't run yet
+      clearTimeout(defaultUntitledFileTimeout);
+
       editorLinkedState.destroy();
       editorLinkedState = null;
     });

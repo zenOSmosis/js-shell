@@ -2,7 +2,7 @@ import { OPENED_APP_FILES, ACTIVE_APP_FILE } from 'state/UniqueMultiAppFileLinke
 import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithPath';
 import activateAppFile from './activateAppFile';
 import { readFile, pathDetail } from 'utils/socketFS';
-import createAppFile from './_createAppFile';
+import _createAppFile from './_createAppFile';
 import './AppFile.typedef';
 
 /**
@@ -29,6 +29,16 @@ const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOpti
       // Halt here.  The file is already activated.
       return;
     }
+
+    // Create the active app file first, before loading, so that listeners can
+    // be aware of it.
+    // E.g. The SourceCode (Editor) app utilizes this to know whether to open
+    // a default, untitled file, before the network latency of the open file
+    // request.
+    let appFile = _createAppFile();
+    uniqueMultiAppFileLinkedState.setState({
+      [ACTIVE_APP_FILE]: appFile
+    });
    
     const fileDetail = await pathDetail(filePath);
 
@@ -58,7 +68,7 @@ const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOpti
     /**
      * @type {AppFile}
      */
-    const appFile = {...createAppFile(), ...{
+    appFile = {...appFile, ...{
       fileDetail, // via pathDetail socketFS API call
       filePath, // Absolute filesystem path
       fileContent // Source code
