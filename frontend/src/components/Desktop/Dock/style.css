@@ -9,6 +9,9 @@
   left: 50%;
   transform: translateX(-50%);
 
+  /* Enables horizontal scroll when overflowed */
+  max-width: 100%;
+
   z-index: 9999;
 }
 
