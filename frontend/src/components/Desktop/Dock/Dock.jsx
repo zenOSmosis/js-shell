@@ -21,7 +21,12 @@ class Dock extends Component {
 
   render() {
     // TODO: Rename to appRegistrations
-    const { className, appRegistrations: propsAppRegistrations, ...propsRest } = this.props;
+    const {
+      className,
+      appRegistrations: propsAppRegistrations,
+      ...propsRest
+    } = this.props;
+    
     const appRegistrations = propsAppRegistrations || [];
 
     return (

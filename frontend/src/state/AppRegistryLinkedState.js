@@ -56,7 +56,9 @@ class AppRegistryLinkedState extends PersistentStorageLinkedState {
       return !Object.is(testRegistration, appRegistration);
     });
 
-    return appRegistrations;
+    this.setState({
+      appRegistrations
+    });
   }
 
   /**
