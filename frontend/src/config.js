@@ -28,7 +28,7 @@ config = Object.assign(config, {
   HOST_FILES_URL_PREFIX: config.HOST_REST_URL + `/files/?filePath=`,
 
   // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URL: config.HOST_REST_URL +  '/pictures/mojave.jpg', // TODO: Debug issue where Chrome displays border around page if this is set to null
+  DESKTOP_DEFAULT_BACKGROUND_URL: 'https://source.unsplash.com/1600x900/?nature,water', // TODO: Debug issue where Chrome displays border around page if this is set to null
   
   // If the Desktop should intercept the context menu by default
   DESKTOP_CONTEXT_MENU_IS_TRAPPING: false,

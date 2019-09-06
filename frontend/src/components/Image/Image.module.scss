@@ -1,0 +1,11 @@
+@import 'core/core.styles.scss';
+
+.image {
+  opacity: 0;
+}
+
+.image.loaded {
+  opacity: 1;
+
+  transition: $imageFadeInTransitionTime;
+}

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Cover from '../Cover';
 import Full from '../Full';
+import Image from '../Image';
 import './style.css';
 
 export default class Background extends Component {
@@ -13,7 +14,7 @@ export default class Background extends Component {
         className={`zd-background ${className ? className : ''}`}
       >
         <Cover className="zd-background-cover">
-          <img className="zd-background-image" alt="" src={src} />
+          <Image className="zd-background-image" alt="" src={src} />
         </Cover>
         
         <Cover>
