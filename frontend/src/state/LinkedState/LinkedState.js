@@ -1,8 +1,12 @@
+// TODO: Add optional actions for setting individual state properties
+// (e.g. (actions).setXProperty(linkedState, prevValue)) The return value from
+// this action would be used to set the state property
+
+// TODO: Add linked list for state history?
+
 import EventEmitter from 'events';
 import mlscs, { MasterLinkedStateControllerSingleton } from './_masterController';
 import uuidv4 from 'uuid/v4';
-
-// TODO: Add linked list for state history?
 
 // This emits when the current state scope has updated
 export const EVT_LINKED_STATE_UPDATE = 'update';
@@ -25,7 +29,7 @@ class LinkedState extends EventEmitter {
    * it will raise an error.
    * @param {Object} options TODO: Document these
    */
-  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = {}) {
+  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = { actions: {} }) {
     super();
 
     // Whether this is the original instance in the collective scope
