@@ -1,0 +1,3 @@
+import DesktopKeyboardInterruptProvider from './DesktopKeyboardInterruptProvider';
+
+export default DesktopKeyboardInterruptProvider;
