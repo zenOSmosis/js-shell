@@ -23,7 +23,7 @@ const Menu = (props = {}) => {
 
   const theme = propsTheme || MENU_THEME_DARK;
 
-  console.warn('TODO: Use right triangle SVG in menu expansion');
+  // console.warn('TODO: Use right triangle SVG in menu expansion');
 
   return (
     <AntdMenu

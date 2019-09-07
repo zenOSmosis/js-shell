@@ -13,6 +13,12 @@ li[role="option"],
   background-color: $inputBgColor !important;
 }
 
+/* Prevent fade-in during menu item hover transition */
+.ant-dropdown-menu-item {
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+}
+
 .ant-select-dropdown-menu-item:hover {
   background-color: $inputBorderColor !important;
   color: $inputBgColor;

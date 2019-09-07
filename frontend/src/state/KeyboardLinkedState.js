@@ -1,15 +1,27 @@
 import LinkedState from './LinkedState';
 
+export const STATE_PRESSED_MODIFIERS = 'pressedModifiers';
+export const STATE_PRESSED_NORMALIZED_KEY = 'pressedNormalizedKey';
+export const STATE_PRESSED_KEY_CODE = 'pressedKeyCode';
+export const STATE_PRESSED_EVT = 'pressedEvt';
+
 export const ACTION_HANDLE_KEY_DOWN = 'handleKeyDown';
 export const ACTION_HANDLE_KEY_UP = 'handleKeyUp';
+
+export const NORMALIZED_KEY_ENTER = 'ENTER';
+export const NORMALIZED_KEY_ESCAPE = 'ESCAPE';
+export const NORMALIZED_KEY_ARROW_UP = 'ARROWUP';
+export const NORMALIZED_KEY_ARROW_RIGHT = 'ARROWRIGHT';
+export const NORMALIZED_KEY_ARROW_DOWN = 'ARROWDOWN';
+export const NORMALIZED_KEY_ARROW_LEFT = 'ARROWLEFT';
 
 class KeyboardLinkedState extends LinkedState {
   constructor() {
     super('keyboard-linked-state', {
-      pressedModifiers: null,
-      pressedNormalizedKey: null,
-      pressedKeyCode: null,
-      pressedEvt: null
+      [STATE_PRESSED_MODIFIERS]: null,
+      [STATE_PRESSED_NORMALIZED_KEY]: null,
+      [STATE_PRESSED_KEY_CODE]: null,
+      [STATE_PRESSED_EVT]: null
     }, {
       actions: {
         [ACTION_HANDLE_KEY_UP]: (linkedState, evt) => {
@@ -35,10 +47,10 @@ class KeyboardLinkedState extends LinkedState {
           const pressedKeyCode = evt.code;
     
           const updatedState = {
-            pressedModifiers,
-            pressedNormalizedKey,
-            pressedKeyCode,
-            pressedEvt: evt
+            [STATE_PRESSED_MODIFIERS]: pressedModifiers,
+            [STATE_PRESSED_NORMALIZED_KEY]: pressedNormalizedKey,
+            [STATE_PRESSED_KEY_CODE]: pressedKeyCode,
+            [STATE_PRESSED_EVT]: evt
           };
 
           this.setState(updatedState);

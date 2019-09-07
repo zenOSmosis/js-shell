@@ -27,11 +27,8 @@
   color: $bodyTextColor !important;
 }
 
-.menubar .item {
+.menubar .item.active {
   color: $bodyTextColor;
-}
-
-.menubar .item:hover {
   background-color: $activeHighlightBgColor;
 }
 

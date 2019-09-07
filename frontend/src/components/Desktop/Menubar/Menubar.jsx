@@ -6,6 +6,18 @@ import hocConnect from 'state/hocConnect';
 import style from './Menubar.module.scss';
 import classNames from 'classnames';
 import { EVT_MENUBAR_UPDATE } from 'core/AppRuntime';
+import KeyboardLinkedState, {
+  // STATE_PRESSED_MODIFIERS,
+  STATE_PRESSED_NORMALIZED_KEY,
+  STATE_PRESSED_EVT,
+
+  NORMALIZED_KEY_ENTER,
+  NORMALIZED_KEY_ESCAPE,
+  NORMALIZED_KEY_ARROW_UP,
+  NORMALIZED_KEY_ARROW_RIGHT,
+  NORMALIZED_KEY_ARROW_DOWN,
+  NORMALIZED_KEY_ARROW_LEFT
+} from 'state/KeyboardLinkedState';
 
 class Menubar extends Component {
   constructor(...args) {
@@ -15,11 +27,85 @@ class Menubar extends Component {
     // this._menubarModel = new MenubarModel;
 
     this.state = {
-      activeIdx: null,
-      menus: []
+      activeTopLevelIdx: null,
+      menus: [],
+
+      // TODO: Make this work for multi-level menus
+      activeMenuItemIdx: null
     };
 
     // this._visibleChangeBatchTimeout = null;
+
+    this._keyboardLinkedState = new KeyboardLinkedState();
+  }
+
+  componentDidMount() {
+    this._keyboardLinkedState.on('update', (updatedState) => {
+      let { activeTopLevelIdx, activeMenuItemIdx, menus } = this.state;
+
+      if (activeTopLevelIdx !== null) {
+        const {
+          [STATE_PRESSED_NORMALIZED_KEY]: pressedNormalizedKey,
+          [STATE_PRESSED_EVT]: pressedEvt
+        } = updatedState;
+
+        if (!pressedNormalizedKey) {
+          return;
+        }
+
+        switch (pressedNormalizedKey) {
+          case NORMALIZED_KEY_ENTER:
+            (() => {
+              const menu = menus[activeTopLevelIdx];
+              const { items } = menu.getMenuData();
+              const menuItem = items[activeMenuItemIdx];
+
+              this._handleMenuItemClick(pressedEvt, menuItem.onClick);
+            })();
+            break;
+
+          case NORMALIZED_KEY_ESCAPE:
+            this.closeMenubar();
+            break;
+
+          case NORMALIZED_KEY_ARROW_UP:
+            if (activeMenuItemIdx - 1 >= 0) {
+              activeMenuItemIdx--;
+
+              this._activateMenuItemWithIdx(activeMenuItemIdx);
+            }
+            break;
+
+          case NORMALIZED_KEY_ARROW_DOWN:
+            (() => {
+              const menu = menus[activeTopLevelIdx];
+              const { items } = menu.getMenuData();
+              if (activeMenuItemIdx + 1 < items.length) {
+                activeMenuItemIdx++;
+              }
+
+              this._activateMenuItemWithIdx(activeMenuItemIdx);
+            })();
+            break;
+
+          case NORMALIZED_KEY_ARROW_LEFT:
+            if (activeTopLevelIdx - 1 >= 0) {
+              activeTopLevelIdx--;
+
+              this._handleTopLevelMenuVisibleChange(activeTopLevelIdx, true);
+            }
+            break;
+
+          case NORMALIZED_KEY_ARROW_RIGHT:
+            if (activeTopLevelIdx + 1 < menus.length) {
+              activeTopLevelIdx++;
+
+              this._handleTopLevelMenuVisibleChange(activeTopLevelIdx, true);
+            }
+            break;
+        }
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -33,7 +119,7 @@ class Menubar extends Component {
       // Unbine menubar update from previously focused AppRuntime
       prevFocusedAppRuntime.off(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
     }
-    
+
     if (focusedAppRuntime) {
       focusedAppRuntime.on(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
     }
@@ -46,6 +132,26 @@ class Menubar extends Component {
     if (focusedAppRuntime) {
       focusedAppRuntime.off(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
     }
+
+    this._keyboardLinkedState.destroy();
+    this._keyboardLinkedState = null;
+  }
+
+  /**
+   * Determines if a top-level-menu is currently active.
+   * 
+   * @return {boolean}
+   */
+  getIsMenubarActive() {
+    const { activeTopLevelIdx } = this.state;
+
+    return activeTopLevelIdx !== null;
+  }
+
+  _activateMenuItemWithIdx(idx) {
+    this.setState({
+      activeMenuItemIdx: idx
+    });
   }
 
   _handleAppRuntimeMenubarUpdate = () => {
@@ -75,9 +181,16 @@ class Menubar extends Component {
     }
   }
 
-  _handleVisibleChange(idx, isVisible) {
+  _handleTopLevelMenuMouseOver(idx) {
+    if (this.getIsMenubarActive()) {
+      this._handleTopLevelMenuVisibleChange(idx, true);
+    }
+  }
+
+  _handleTopLevelMenuVisibleChange(idx, isVisible) {
     this.setState({
-      activeIdx: (isVisible ? idx : null)
+      activeTopLevelIdx: (isVisible ? idx : null),
+      activeMenuItemIdx: (isVisible ? 0 : null)
     });
   }
 
@@ -90,10 +203,16 @@ class Menubar extends Component {
     const { focusedAppRuntime } = this.props;
 
     onClickHandler(evt, focusedAppRuntime);
+
+    this.closeMenubar();
+  }
+
+  closeMenubar() {
+    this._handleTopLevelMenuVisibleChange(0, false)
   }
 
   render() {
-    const { activeIdx, menus } = this.state;
+    const { activeTopLevelIdx, activeMenuItemIdx, menus } = this.state;
 
     return (
       <ul className={style['menubar']}>
@@ -115,14 +234,15 @@ class Menubar extends Component {
                 key={idx}
                 getPopupContainer={trigger => trigger.parentNode}
                 trigger={['click']}
-                onVisibleChange={(isVisible) => this._handleVisibleChange(idx, isVisible)}
+                onClick={evt => this._handleAppRuntimeMenubarUpdate(idx, true)}
+                visible={activeTopLevelIdx === idx}
+                onVisibleChange={(isVisible) => this._handleTopLevelMenuVisibleChange(idx, isVisible)}
                 overlay={
                   // Override passed Menu container, using only the children of it
                   <Menu
                     className={style['dropdown-menu']}
                     mode="vertical"
-                    // Close dropdown when clicking on menu item
-                    onClick={(evt) => this._handleVisibleChange(idx, false)}>
+                  >
                     {
                       menuItems &&
                       menuItems.map((menuItem, itemIdx) => {
@@ -137,9 +257,10 @@ class Menubar extends Component {
 
                         return (
                           <MenuItem
-                            className={style['item']}
+                            className={classNames(style['item'], (activeMenuItemIdx === itemIdx ? style['active'] : null))}
                             key={itemIdx}
                             disabled={isDisabled}
+                            onMouseOver={evt => this._activateMenuItemWithIdx(itemIdx)}
                             onClick={evt => this._handleMenuItemClick(evt, onClick)} // TODO: Use proper click handler, and allow usage for click, touch, and Enter / Return
                           >
                             {
@@ -152,7 +273,10 @@ class Menubar extends Component {
                   </Menu>
                 }
               >
-                <li className={classNames(style['title'], (activeIdx === idx ? style['active'] : null))}>
+                <li
+                  className={classNames(style['title'], (activeTopLevelIdx === idx ? style['active'] : null))}
+                  onMouseOver={evt => this._handleTopLevelMenuMouseOver(idx)}
+                >
                   {
                     menuTitle
                   }
@@ -195,15 +319,15 @@ export default hocConnect(Menubar, AppRuntimeLinkedState, (updatedState) => {
           <Menu
             mode="vertical"
             // Close dropdown when clicking on menu item
-            onClick={(evt) => this._handleVisibleChange(idx, false)}>
+            onClick={(evt) => this._handleTopLevelMenuVisibleChange(idx, false)}>
             {
               menuComponent.props.children
             }
           </Menu>
         }
-        onVisibleChange={(isVisible) => this._handleVisibleChange(idx, isVisible)}
+        onVisibleChange={(isVisible) => this._handleTopLevelMenuVisibleChange(idx, isVisible)}
       >
-        <li style={menuTitleStyle} className={`zd-menubar-title ${activeIdx === idx ? 'active' : ''}`}>
+        <li style={menuTitleStyle} className={`zd-menubar-title ${activeTopLevelIdx === idx ? 'active' : ''}`}>
           {
             menuTitle
           }
