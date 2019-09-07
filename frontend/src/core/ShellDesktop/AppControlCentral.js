@@ -13,14 +13,14 @@ let _appControlCentral = null;
  */
 
 /**
- * A collection of joined app registrations with app runtimes.
+ * A collection of joined AppRgistration instances with AppRuntime instances.
  * 
  * @type {AppRegistrationRuntimeJoin[]}
  */
 let _appRegistrationRuntimeJoinStack = [];
 
 /**
- * App Control Central manages all AppRuntimes instances.
+ * App Control Central manages all AppRuntime instances.
  * 
  * @extends ClientProcess
  */
