@@ -22,41 +22,15 @@ class Menubar extends Component {
     // this._visibleChangeBatchTimeout = null;
   }
 
-  _handleAppRuntimeMenubarUpdate = () => {
-    const { focusedAppRuntime } = this.props;
-    if (focusedAppRuntime) {
-      // Wait until next tick to set Menubar, as the data may change before then
-      setTimeout(() => {
-        if (focusedAppRuntime) {
-          const menubar = focusedAppRuntime.getMenubar();
-
-          let menus = [];
-
-          if (menubar) {
-            menus = menubar.getMenus();
-          }
-
-          this.setState({
-            menus
-          });
-        }
-      }, 1);
-    } else {
-      // TODO: Fall back to ShellDesktop menu
-      this.setState({
-        menus: []
-      });
-    }
-  }
-
   componentDidUpdate(prevProps) {
     const { focusedAppRuntime: prevFocusedAppRuntime } = prevProps;
     const { focusedAppRuntime } = this.props;
 
-    // Don't contiune if focused appRuntime hasn't updated
     if (Object.is(prevFocusedAppRuntime, focusedAppRuntime)) {
+      // Don't contiune if focused appRuntime hasn't updated
       return;
     } else if (prevFocusedAppRuntime) {
+      // Unbine menubar update from previously focused AppRuntime
       prevFocusedAppRuntime.off(EVT_MENUBAR_UPDATE, this._handleAppRuntimeMenubarUpdate);
     }
     
@@ -74,7 +48,34 @@ class Menubar extends Component {
     }
   }
 
-  handleVisibleChange(idx, isVisible) {
+  _handleAppRuntimeMenubarUpdate = () => {
+    const { focusedAppRuntime } = this.props;
+    if (!focusedAppRuntime) {
+      // TODO: Fall back to ShellDesktop menu
+      this.setState({
+        menus: []
+      });
+    } else {
+      // Wait until next tick to set Menubar, as the data may change before then
+      setTimeout(() => {
+        if (focusedAppRuntime) {
+          const menubar = focusedAppRuntime.getMenubar();
+
+          let menus = [];
+
+          if (menubar) {
+            menus = menubar.getMenus();
+          }
+
+          this.setState({
+            menus
+          });
+        }
+      }, 1);
+    }
+  }
+
+  _handleVisibleChange(idx, isVisible) {
     this.setState({
       activeIdx: (isVisible ? idx : null)
     });
@@ -114,13 +115,14 @@ class Menubar extends Component {
                 key={idx}
                 getPopupContainer={trigger => trigger.parentNode}
                 trigger={['click']}
+                onVisibleChange={(isVisible) => this._handleVisibleChange(idx, isVisible)}
                 overlay={
                   // Override passed Menu container, using only the children of it
                   <Menu
                     className={style['dropdown-menu']}
                     mode="vertical"
                     // Close dropdown when clicking on menu item
-                    onClick={(evt) => this.handleVisibleChange(idx, false)}>
+                    onClick={(evt) => this._handleVisibleChange(idx, false)}>
                     {
                       menuItems &&
                       menuItems.map((menuItem, itemIdx) => {
@@ -149,7 +151,6 @@ class Menubar extends Component {
                     }
                   </Menu>
                 }
-                onVisibleChange={(isVisible) => this.handleVisibleChange(idx, isVisible)}
               >
                 <li className={classNames(style['title'], (activeIdx === idx ? style['active'] : null))}>
                   {
@@ -194,13 +195,13 @@ export default hocConnect(Menubar, AppRuntimeLinkedState, (updatedState) => {
           <Menu
             mode="vertical"
             // Close dropdown when clicking on menu item
-            onClick={(evt) => this.handleVisibleChange(idx, false)}>
+            onClick={(evt) => this._handleVisibleChange(idx, false)}>
             {
               menuComponent.props.children
             }
           </Menu>
         }
-        onVisibleChange={(isVisible) => this.handleVisibleChange(idx, isVisible)}
+        onVisibleChange={(isVisible) => this._handleVisibleChange(idx, isVisible)}
       >
         <li style={menuTitleStyle} className={`zd-menubar-title ${activeIdx === idx ? 'active' : ''}`}>
           {
