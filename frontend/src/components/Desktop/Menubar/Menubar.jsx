@@ -3,7 +3,7 @@ import { /* Icon, */ Dropdown } from 'antd';
 import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Menu';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import hocConnect from 'state/hocConnect';
-import './style.css';
+import style from './Menubar.module.scss';
 import { EVT_MENUBAR_UPDATE } from 'core/AppRuntime';
 
 class Menubar extends Component {
@@ -94,7 +94,7 @@ class Menubar extends Component {
     const { activeIdx, menus } = this.state;
 
     return (
-      <ul className="zd-menubar">
+      <ul className={style['menubar']}>
         {
           menus.map((menu, idx) => {
             const menuData = menu.getMenuData();
@@ -116,6 +116,7 @@ class Menubar extends Component {
                 overlay={
                   // Override passed Menu container, using only the children of it
                   <Menu
+                    className={style['dropdown-menu']}
                     mode="vertical"
                     // Close dropdown when clicking on menu item
                     onClick={(evt) => this.handleVisibleChange(idx, false)}>
@@ -133,6 +134,7 @@ class Menubar extends Component {
 
                         return (
                           <MenuItem
+                            className={style['item']}
                             key={itemIdx}
                             disabled={isDisabled}
                             onClick={evt => this._handleMenuItemClick(evt, onClick)} // TODO: Use proper click handler, and allow usage for click, touch, and Enter / Return
@@ -148,7 +150,7 @@ class Menubar extends Component {
                 }
                 onVisibleChange={(isVisible) => this.handleVisibleChange(idx, isVisible)}
               >
-                <li className={`zd-menubar-title ${activeIdx === idx ? 'active' : ''}`}>
+                <li className={`${style['title']} ${activeIdx === idx ? style['active'] : ''}`}>
                   {
                     menuTitle
                   }

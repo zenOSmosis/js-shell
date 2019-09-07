@@ -1,4 +1,6 @@
-ul.zd-menubar {
+@import 'core/core.styles.scss';
+
+.menubar {
   display: inline-block;
   list-style-type: none;
   margin: 1px 0px;
@@ -6,7 +8,7 @@ ul.zd-menubar {
   vertical-align: middle;
 }
 
-.zd-menubar > li.zd-menubar-title {
+.menubar > li.title {
   display: inline-block;
   padding: 0px 8px;
   white-space: nowrap;
@@ -16,11 +18,20 @@ ul.zd-menubar {
   vertical-align: middle;
 }
 
-.zd-menubar > li.zd-menubar-title.active {
-  background-color: #3482F5;
+.menubar > li.title.active {
+  background-color: $activeHighlightBgColor;
 }
 
 /* Fixes flyout icons */
-.zd-menubar i {
+.menubar i {
   color: rgba(255,255,255,.8) !important;
+}
+
+.menubar .item:hover {
+  background-color: $activeHighlightBgColor;
+}
+
+.dropdown-menu {
+  /* Closes gap between panel and dropdown */
+  margin-top: -4px;
 }
