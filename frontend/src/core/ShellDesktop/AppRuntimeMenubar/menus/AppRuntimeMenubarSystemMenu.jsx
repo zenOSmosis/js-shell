@@ -1,11 +1,11 @@
 import React from 'react';
 import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
 import { Icon } from 'antd';
-import DesktopLinkedState from 'state/DesktopLinkedState';
+// import DesktopLinkedState from 'state/DesktopLinkedState';
 
 // TODO: Move this into AppRuntimeMenubarSystemMenu lifecycle, once available (currently
 // no destructor)
-const _desktopLinkedState = new DesktopLinkedState();
+// const _desktopLinkedState = new DesktopLinkedState();
 
 export default class AppRuntimeMenubarSystemMenu extends AppRuntimeMenubarMenu {
   constructor(...args) {
@@ -38,29 +38,9 @@ export default class AppRuntimeMenubarSystemMenu extends AppRuntimeMenubarMenu {
          * @type {AppRuntimeMenubarMenuItem}
          */
         {
-          title: 'Dock Items',
-          subMenus: [
-            {
-              title: 'Dock Item 1',
-              onClick: () => {
-                console.debug('TODO: Launch Dock Item 1');
-              }
-            },
-            {
-              title: 'Dock Item 2',
-              onClick: () => {
-                console.debug('TODO: Launch Dock Item 2');
-              }
-            }
-          ]
-        },
-        /**
-         * @type {AppRuntimeMenubarMenuItem}
-         */
-        {
           title: 'Logout',
           onClick: () => {
-            _desktopLinkedState.setIsLogged(false);
+            alert('TODO: Handle logout');
           }
         }
       ]

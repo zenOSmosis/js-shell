@@ -8,7 +8,8 @@ import {
   AppRuntimeMenubarSystemMenu,
   AppRuntimeMenubarAppMenu,
   AppRuntimeMenubarAuxMenu,
-  AppRuntimeMenubarWindowMenu
+  AppRuntimeMenubarWindowMenu,
+  AppRuntimeMenubarHelpMenu
 } from './menus';
 
 export const EVT_UPDATE = 'update';
@@ -31,6 +32,7 @@ export default class AppRuntimeMenubar extends EventEmitter {
     this._systemMenu = this._initCoreMenuClass(AppRuntimeMenubarSystemMenu);
     this._appMenu = this._initCoreMenuClass(AppRuntimeMenubarAppMenu);
     this._windowMenu = this._initCoreMenuClass(AppRuntimeMenubarWindowMenu);
+    this._helpMenu = this._initCoreMenuClass(AppRuntimeMenubarHelpMenu)
     
     this._auxMenus = [];
     this._auxMenusData = auxMenusData;
@@ -56,6 +58,8 @@ export default class AppRuntimeMenubar extends EventEmitter {
 
   /**
    * Sets data for all auxiliary menus.
+   * 
+   * Auxiliary menus are dynamic menus set by the AppRuntime.
    */
   setAuxMenusData(auxMenusData) {
     this._auxMenusData = auxMenusData;
@@ -98,7 +102,8 @@ export default class AppRuntimeMenubar extends EventEmitter {
       this._systemMenu,
       this._appMenu,
       ...this._auxMenus,
-      this._windowMenu
+      this._windowMenu,
+      this._helpMenu
     ];
   }
   
