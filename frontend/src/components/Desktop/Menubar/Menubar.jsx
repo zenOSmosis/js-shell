@@ -4,6 +4,7 @@ import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Men
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import hocConnect from 'state/hocConnect';
 import style from './Menubar.module.scss';
+import classNames from 'classnames';
 import { EVT_MENUBAR_UPDATE } from 'core/AppRuntime';
 
 class Menubar extends Component {
@@ -150,7 +151,7 @@ class Menubar extends Component {
                 }
                 onVisibleChange={(isVisible) => this.handleVisibleChange(idx, isVisible)}
               >
-                <li className={`${style['title']} ${activeIdx === idx ? style['active'] : ''}`}>
+                <li className={classNames(style['title'], (activeIdx === idx ? style['active'] : null))}>
                   {
                     menuTitle
                   }
