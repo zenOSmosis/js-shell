@@ -128,6 +128,14 @@ class SocketFSFileTree extends Component {
     return (
       <Scrollable style={{ textAlign: 'left' }}>
         <Treebeard
+          // @see https://github.com/storybookjs/react-treebeard/blob/master/src/themes/default.js
+          style={{
+            tree: {
+              base: {
+                backgroundColor: 'transparent'
+              }
+            }
+          }}
           decorators={decorators}
           data={treeData}
           onToggle={fileTreeNode => this.handleTreebeardToggle(fileTreeNode)}
@@ -195,7 +203,7 @@ const decorators = {
           name={name}
           isDir={isDir}
           isToggled={isToggled}
-          onClick={ evt => console.debug(node) }
+          onClick={evt => console.debug(node)}
         />
       </div>
     );
