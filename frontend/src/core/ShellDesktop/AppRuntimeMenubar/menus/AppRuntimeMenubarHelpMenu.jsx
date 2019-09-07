@@ -1,6 +1,7 @@
 // import React from 'react';
 import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
 import { EVT_TICK } from 'process/ClientProcess';
+import { getShellDesktopProcess } from '../../ShellDesktop';
 
 export default class AppRuntimeMenubarHelpMenu extends AppRuntimeMenubarMenu {
   constructor(menubar) {
@@ -9,18 +10,33 @@ export default class AppRuntimeMenubarHelpMenu extends AppRuntimeMenubarMenu {
     const appRuntime = menubar.getAppRuntime();
 
     appRuntime.on(EVT_TICK, () => {
-      // const desktopWindow = appRuntime.getWindowIfExists();
+      const shellDesktopProcess = getShellDesktopProcess();
 
       this.setData({
         title: 'Help',
-        items: [
-          {
-            title: `About ${appRuntime.getTitle()}`,
-            onClick: (evt, appRuntime) => {
-              alert('TODO: Display about information');
+        items: (() => {
+          const items = [
+            {
+              title: `About ${appRuntime.getTitle()}`,
+              onClick: (evt, appRuntime) => {
+                alert('TODO: Display about information');
+              }
             }
+          ];
+
+          if (!Object.is(appRuntime, shellDesktopProcess)) {
+            // TODO: Add divider
+
+            items.push({
+              title: `About ${shellDesktopProcess.getTitle()}`,
+              onClick: (evt, appRuntime) => {
+                alert('TODO: Display about information');
+              }
+            });
           }
-        ]
+
+          return items;
+        })()
       });
     });
   }

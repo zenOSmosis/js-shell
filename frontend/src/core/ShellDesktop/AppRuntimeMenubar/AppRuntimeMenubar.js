@@ -95,16 +95,23 @@ export default class AppRuntimeMenubar extends EventEmitter {
   }
 
   /**
+   * Retrieves all menus with a title.
+   * 
    * @return {AppRuntimeMenubarMenu[]}
    */
   getMenus() {
-    return [
+    const menus = [
       this._systemMenu,
       this._appMenu,
       ...this._auxMenus,
       this._windowMenu,
       this._helpMenu
-    ];
+    ].filter(menu => {
+      const { title } = menu.getMenuData();
+      return (title ? true : false);
+    });
+
+    return menus;
   }
   
   /**

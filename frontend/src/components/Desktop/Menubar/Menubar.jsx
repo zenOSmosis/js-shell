@@ -109,6 +109,9 @@ class Menubar extends Component {
         }
       }
     });
+
+    // Must be run to start the Menubar before any apps have opened
+    this._handleAppRuntimeMenubarUpdate();
   }
 
   componentDidUpdate(prevProps) {
@@ -160,7 +163,6 @@ class Menubar extends Component {
   _handleAppRuntimeMenubarUpdate = () => {
     const { focusedAppRuntime } = this.props;
     if (!focusedAppRuntime) {
-      // TODO: Fall back to ShellDesktop menu
       this.setState({
         menus: []
       });

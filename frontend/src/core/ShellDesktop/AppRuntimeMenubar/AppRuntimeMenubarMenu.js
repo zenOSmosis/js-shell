@@ -15,6 +15,7 @@ export default class AppRuntimeMenubarMenu extends EventEmitter {
     super();
 
     this._menubar = menubar;
+    this._menuData = {};
   }
 
   setData(menuData) {

@@ -1,4 +1,5 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
+import { getShellDesktopProcess } from 'core/ShellDesktop';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -49,11 +50,6 @@ class AppRuntimeLinkedState extends LinkedState {
   removeAppRuntime(appRuntime) {
     let { appRuntimes, focusedAppRuntime } = this.getState();
 
-    // Remove focused app runtime if this is the last runtime
-    if (Object.is(focusedAppRuntime, appRuntime)) {
-      focusedAppRuntime = null;
-    }
-
     appRuntimes = appRuntimes.filter(testRuntime => {
       return !Object.is(testRuntime, appRuntime);
     });
@@ -62,6 +58,13 @@ class AppRuntimeLinkedState extends LinkedState {
       appRuntimes,
       focusedAppRuntime
     });
+
+    // Revert to ShellDesktopProcess if the other apps are closed
+    if (appRuntimes.length === 1) {
+      const shellDesktopProcess = getShellDesktopProcess();
+      
+      shellDesktopProcess.focus();
+    }
   }
 
   // TODO: Document
