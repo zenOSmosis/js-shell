@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import $ from 'jquery';
-import KeyboardLinkedState, { ACTION_HANDLE_KEY_DOWN } from 'state/KeyboardLinkedState';
+import KeyboardLinkedState, { ACTION_HANDLE_KEY_DOWN, ACTION_HANDLE_KEY_UP } from 'state/KeyboardLinkedState';
 import hocConnect from 'state/hocConnect';
 
 /**
@@ -16,15 +16,21 @@ class DesktopKeyboardInterruptProvider extends Component {
     const { keyboardLinkedState } = this.props;
     this._keyboardLinkedState = keyboardLinkedState;
 
-    $(window).on('keydown', this._handleKeyboardEvent);
+    $(window).on('keydown', this._handleKeyDownEvent);
+    $(window).on('keydown', this._handleKeyUpEvent);
   }
 
   componentWillUnmount() {
-    $(window).off('keydown', this._handleKeyboardEvent);
+    $(window).off('keydown', this._handleKeyDownEvent);
+    $(window).off('keydown', this._handleKeyUpEvent);
   }
 
-  _handleKeyboardEvent = (evt) => {
+  _handleKeyDownEvent = (evt) => {
     this._keyboardLinkedState.dispatchAction(ACTION_HANDLE_KEY_DOWN, evt);
+  };
+
+  _handleKeyUpEvent = (evt) => {
+    this._keyboardLinkedState.dispatchAction(ACTION_HANDLE_KEY_UP, evt);
   };
 
   render() {

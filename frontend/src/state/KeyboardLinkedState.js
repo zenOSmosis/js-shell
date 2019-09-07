@@ -1,16 +1,28 @@
 import LinkedState from './LinkedState';
 
 export const ACTION_HANDLE_KEY_DOWN = 'handleKeyDown';
+export const ACTION_HANDLE_KEY_UP = 'handleKeyUp';
 
 class KeyboardLinkedState extends LinkedState {
   constructor() {
     super('keyboard-linked-state', {
-      pressedModifiers: {},
+      pressedModifiers: null,
       pressedNormalizedKey: null,
       pressedKeyCode: null,
-      pressedEvt: {}
+      pressedEvt: null
     }, {
       actions: {
+        [ACTION_HANDLE_KEY_UP]: (linkedState, evt) => {
+          const keys = this._initialDefaultKeys;
+
+          const updatedState = {};
+          for (let i = 0; i < keys.length; i++) {
+            updatedState[keys[i]] = null;
+          }
+
+          this.setState(updatedState);
+        },
+
         [ACTION_HANDLE_KEY_DOWN]: (linkedState, evt) => {
           const pressedModifiers = {
             isAlt: evt.altKey,
@@ -32,9 +44,11 @@ class KeyboardLinkedState extends LinkedState {
           this.setState(updatedState);
 
           // TODO: Remove
+          /*
           console.debug({
             updatedState
           });
+          */
       
           /*
           if (normalizedKey === 'I' && 
