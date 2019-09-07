@@ -1,13 +1,14 @@
-.zd-window {
+@import 'core/core.styles.scss';
+
+.window {
   position: absolute;
   width: 0px;
   height: 0px;
 }
 
-.zd-window-painted {
+.window-painted {
   width: 100%;
   height: 100%;
-  color: rgb(255, 233, 233);
   border: 1px rgb(112, 112, 112) solid;
   border-radius: 4px;
   overflow: hidden;
@@ -26,18 +27,18 @@
 }
 
 /**
-* Active zd-window shading.
+* Active window shading.
 *
 * @see https://www.cssmatic.com/box-shadow
 */
-/* .zd-window.focus, */
-.zd-window.focus .zd-window-resizable {
+/* .window.focus, */
+.window.focus .window-resizable {
   -webkit-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 34px -8px rgba(0,0,0,0.75);
 }
 
-.zd-window .zd-window-header {
+.window .window-header {
   min-height: 30px;
   
   position: relative;
@@ -59,17 +60,17 @@
 }
 
 /*
-.zd-window .zd-window-header .column {
+.window .window-header .column {
   float: left;
 }
 */
 
-.zd-window .zd-window-header .zd-sub-toolbar {
+.window .window-header .zd-sub-toolbar {
   margin-top: 4px;
 }
 
 /* Three dots */
-.zd-window .zd-window-header .zd-dot {
+.window .window-header .dot {
   height: 12px !important;
   width: 12px !important;
   background-color: #bbb !important;
@@ -81,44 +82,42 @@
   vertical-align: middle !important;
 }  
 
-.zd-window.focus .zd-window-header {
+.window.focus .window-header {
   background-color: rgba(0,0,0,.6);
 }
 
-.zd-window.focus .zd-window-header .zd-dot.red {
+.window.focus .window-header .dot.red {
   background-color: #ED594A !important;
 }
 
-.zd-window.focus .zd-window-header .zd-dot.yellow {
+.window.focus .window-header .dot.yellow {
   background-color: #FDD800 !important;
 }
 
-.zd-window.focus .zd-window-header .zd-dot.green {
+.window.focus .window-header .dot.green {
   background-color: #5AC05A !important;
 }
 
-.zd-window.hide {
+.window.hide {
   display: none;
 }
 
-.zd-window .zd-window-body-wrapper {
+.window .window-body-wrapper {
   flex: auto;
   overflow: hidden;
   text-align: center;
   position: relative;  
 }
 
-/*
-.zd-window .zd-window-body {
-  filter: blur(4px) grayscale(100%);
+.window .window-body {
+  filter: $windowTextColor;
 }
-*/
 
-.zd-window .zd-window-body-background {
+.window .window-body-background {
   background-color: rgba(20,20,20,.85);
   filter: blur(20px) grayscale(100%);
 }
 
-.zd-window.focus .zd-window-body-background {
+.window.focus .window-body-background {
   filter: blur(4px);
 }

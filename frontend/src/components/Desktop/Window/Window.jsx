@@ -2,14 +2,14 @@
 
 import React, { Component } from 'react';
 import EventEmitter from 'events';
-import WindowHeader from './Header';
+import WindowHeader from './WindowHeader';
 import ContextMenuProvider from 'components/ContextMenuProvider';
 import Cover from 'components/Cover';
 import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
-import './style.css';
+import style from './Window.module.scss';
 // import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
@@ -383,7 +383,7 @@ class Window extends Component {
 
       this.restore();
 
-      $(this._el).addClass(CSS_CLASS_NAME_FOCUS);
+      $(this._el).addClass(style[CSS_CLASS_NAME_FOCUS]);
 
       this._isFocused = true;
 
@@ -405,7 +405,7 @@ class Window extends Component {
       
       this._isFocused = false;
   
-      $(this._el).removeClass(CSS_CLASS_NAME_FOCUS);
+      $(this._el).removeClass(style[CSS_CLASS_NAME_FOCUS]);
   
       this.doCoverIfShould();
 
@@ -829,7 +829,7 @@ class Window extends Component {
 
         // Note: The width & height of the transition layer are intentionally
         // kept at 0 width / height
-        className="zd-window"
+        className={style['window']}
       >
 
         <Moveable
@@ -848,7 +848,7 @@ class Window extends Component {
               moveableComponent={this._moveableComponent}
               minWidth={minWidth}
               minHeight={minHeight}
-              bodyClassName="zd-window-resizable"
+              bodyClassName={style['window-resizable']}
               onBodyMount={c => this._resizableBody = c}
               onResizeMove={this._handleMove}
               enable={isResizeEnabled}
@@ -860,7 +860,7 @@ class Window extends Component {
                   <div
                     {...propsRest}
                     ref={c => this._paintedComponent = c}
-                    className="zd-window-painted"
+                    className={style['window-painted']}
                   >
 
                     {
@@ -883,13 +883,13 @@ class Window extends Component {
                     }
                     <div
                       ref={c => this.windowBodyWrapper = c}
-                      className="zd-window-body-wrapper"
+                      className={style['window-body-wrapper']}
                     >
 
                       {
                         // Window background
                       }
-                      <Cover className="zd-window-body-background">
+                      <Cover className={style['window-body-background']}>
                         {
                           // This is the background of the window
                         }
@@ -900,7 +900,7 @@ class Window extends Component {
                       }
                       <Cover
                         ref={c => this._windowBodyComponent = c}
-                        className="zd-window-body"
+                        className={style['window-body']}
                         style={bodyStyle}
                       >
                         <ErrorBoundary>
