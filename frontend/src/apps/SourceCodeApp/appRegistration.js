@@ -14,7 +14,7 @@ import {
 } from 'utils/appFile';
 import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_OPEN,
-  // FILE_CHOOSER_MODE_SAVE,
+  FILE_CHOOSER_MODE_SAVE,
   FILE_CHOOSER_MODE_SAVE_AS
 } from 'utils/desktop/launchFileChooserDialog';
 

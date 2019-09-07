@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 const SocketFSFolderNode = (props) => {
   const {
     children: renderedChildren,
-    dirChild,
-    socketFSFolderComponent
+    // dirChild,
+    // socketFSFolderComponent
   } = props;
   
   return (

@@ -103,6 +103,9 @@ class Menubar extends Component {
               this._handleTopLevelMenuVisibleChange(activeTopLevelIdx, true);
             }
             break;
+
+          default:
+            break;
         }
       }
     });

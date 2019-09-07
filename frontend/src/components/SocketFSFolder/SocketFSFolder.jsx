@@ -272,7 +272,7 @@ class SocketFSFolder extends Component {
             ]}
           />
         );
-        break;
+        // break; // returned before
 
       case LAYOUT_TYPE_ICON:
       default:
@@ -298,7 +298,7 @@ class SocketFSFolder extends Component {
             }
           </Full>
         );
-        break;
+        // break; // returned before
     }
   }
 }
