@@ -100,6 +100,16 @@ The following paths make up the various utilities and views which bootstrap the 
 - "state" (frontend/src/state): A set of classes which provide multi-channeled state management for the Shell Desktop environment.
 - "utils" (frontend/src/utils): Utility methods and factory functions for controlling the Shell Desktop environment.  These utilities make simple, programmatic interfaces for controlling all facets of the Shell Desktop environment.
 
+### Naming Conventions
+
+Except where usage of 3rd party libraries is concerned, with their own naming conventions:
+
+- Variable names in camelCase.
+  - Class names begin with UpperCase character.
+  - Class instances being with lowerCase character.
+- Boolean variable / property names prefixed with "is."
+- American English spelling variations (e.g. "isSizable" instead of "isSizeable").
+
 ## Optional
 The following serve as notes for additional server monitoring, though their API implementations are not currently developed on the server.
 
