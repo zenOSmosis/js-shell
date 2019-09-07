@@ -99,7 +99,7 @@ class Window extends Component {
     
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
-    sizeable: PropTypes.bool, // TODO: Rename to isResizable
+    sizable: PropTypes.bool, // TODO: Rename to isResizable
 
     onClose: PropTypes.func,
 
@@ -564,7 +564,7 @@ class Window extends Component {
 
   async maximize() {
     try {
-      if (!this.getIsResizeEnabled()) {
+      if (!this.getIsUserResizable()) {
         console.warn('Window is not resize enabled, so it cannot be maximized');
         return;
       }
@@ -775,10 +775,10 @@ class Window extends Component {
   /**
    * @return {boolean} Whether or not the window can be resized by the user. 
    */
-  getIsResizeEnabled() {
-    const { sizeable } = this.props;
+  getIsUserResizable() {
+    const { sizable } = this.props;
 
-    const isResizeEnabled = (typeof sizeable === 'undefined' || sizeable === true);
+    const isResizeEnabled = (typeof sizable === 'undefined' || sizable === true);
 
     return isResizeEnabled;
   }
@@ -792,7 +792,7 @@ class Window extends Component {
       
       initialWidth,
       initialHeight,
-      sizeable, // TODO: Rename to isResizable
+      sizable, // TODO: Rename to isResizable
 
       toolbar,
       toolbarRight,
@@ -806,7 +806,7 @@ class Window extends Component {
       ...propsRest
     } = this.props;
 
-    const isResizeEnabled = this.getIsResizeEnabled();
+    const isResizeEnabled = this.getIsUserResizable();
 
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;

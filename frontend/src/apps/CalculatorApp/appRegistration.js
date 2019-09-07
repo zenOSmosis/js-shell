@@ -12,6 +12,6 @@ export default registerApp({
   },
   minWidth:200,
   minHeight:200,
-  sizeable: false,
+  sizable: false,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}calculator/calculator.svg`
 });

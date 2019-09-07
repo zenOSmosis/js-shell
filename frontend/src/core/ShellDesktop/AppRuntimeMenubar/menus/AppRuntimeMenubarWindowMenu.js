@@ -16,20 +16,25 @@ export default class AppRuntimeMenubarWindowMenu extends AppRuntimeMenubarMenu {
           title: 'Window',
           items: (() => {
             if (!desktopWindow.getIsMaximized() && !desktopWindow.getIsMinimized()) {
-              return [
-                {
+              const winMaxMinItems = [];
+
+              if (desktopWindow.getIsUserResizable()) {
+                winMaxMinItems.push({
                   title: 'Maximize',
                   onClick: () => {
                     desktopWindow.maximize();
                   }
-                },
-                {
-                  title: 'Minimize',
-                  onClick: () => {
-                    desktopWindow.minimize();
-                  }
+                });
+              }
+
+              winMaxMinItems.push({
+                title: 'Minimize',
+                onClick: () => {
+                  desktopWindow.minimize();
                 }
-              ];
+              })
+
+              return winMaxMinItems;
             } else {
               return [
                 {
