@@ -99,7 +99,7 @@ class Window extends Component {
     
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
-    sizable: PropTypes.bool, // TODO: Rename to isResizable
+    isResizable: PropTypes.bool,
 
     onClose: PropTypes.func,
 
@@ -776,9 +776,9 @@ class Window extends Component {
    * @return {boolean} Whether or not the window can be resized by the user. 
    */
   getIsUserResizable() {
-    const { sizable } = this.props;
+    const { isResizable } = this.props;
 
-    const isResizeEnabled = (typeof sizable === 'undefined' || sizable === true);
+    const isResizeEnabled = (typeof isResizable === 'undefined' || isResizable === true);
 
     return isResizeEnabled;
   }
@@ -792,7 +792,7 @@ class Window extends Component {
       
       initialWidth,
       initialHeight,
-      sizable, // TODO: Rename to isResizable
+      isResizable,
 
       toolbar,
       toolbarRight,

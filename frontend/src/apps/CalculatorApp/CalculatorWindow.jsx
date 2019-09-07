@@ -23,7 +23,7 @@ export default class CalculatorWindow extends Component {
         {...propsRest}
         minWidth={300}
         minHeight={281}
-        sizable={false}
+        isResizable={false}
       >
         <div className="component-app">
           <Display value={this.state.next || this.state.total || "0"} />

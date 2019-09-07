@@ -10,8 +10,8 @@ export default registerApp({
       <CalculatorWindow {...props} />
     )
   },
-  minWidth:200,
-  minHeight:200,
-  sizable: false,
+  minWidth: 200,
+  minHeight: 200,
+  isResizable: false,
   iconSrc: `${config.HOST_ICON_URL_PREFIX}calculator/calculator.svg`
 });
