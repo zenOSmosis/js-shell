@@ -65,7 +65,7 @@ class LinkedState extends EventEmitter {
     }
 
     const action = actions[actionName];
-    action(this, ...actionData);
+    action(...actionData);
   }
 
   /**

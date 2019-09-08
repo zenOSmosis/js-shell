@@ -24,7 +24,7 @@ class KeyboardLinkedState extends LinkedState {
       [STATE_PRESSED_EVT]: null
     }, {
       actions: {
-        [ACTION_HANDLE_KEY_UP]: (linkedState, evt) => {
+        [ACTION_HANDLE_KEY_UP]: () => {
           const keys = this._initialDefaultKeys;
 
           const updatedState = {};
@@ -35,7 +35,7 @@ class KeyboardLinkedState extends LinkedState {
           this.setState(updatedState);
         },
 
-        [ACTION_HANDLE_KEY_DOWN]: (linkedState, evt) => {
+        [ACTION_HANDLE_KEY_DOWN]: (evt) => {
           const pressedModifiers = {
             isAlt: evt.altKey,
             isCtrl: evt.ctrlKey,

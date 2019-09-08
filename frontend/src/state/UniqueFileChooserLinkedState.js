@@ -31,11 +31,11 @@ class UniqueFileChooserLinkedState extends UniqueLinkedState {
       [STATE_IS_REQUESTING_CREATE_DIRECTORY]: false
     }, {
       actions: {
-        [ACTION_CHDIR]: async (linkedState, path) => {
+        [ACTION_CHDIR]: async (path) => {
           try {
             const dirDetail = await socketFSDirDetail(path);
           
-            linkedState.setState({
+            this.setState({
               [STATE_CWD]: path,
               [STATE_DIR_DETAIL]: dirDetail
             });
@@ -44,14 +44,14 @@ class UniqueFileChooserLinkedState extends UniqueLinkedState {
           }
         },
 
-        [ACTION_REQUEST_CREATE_FILE_DIALOG]: (linkedState, ...args) => {
-          linkedState.setState({
+        [ACTION_REQUEST_CREATE_FILE_DIALOG]: () => {
+          this.setState({
             isRequestingCreateFile: true
           });
         },
 
-        [ACTION_REQUEST_CREATE_DIR_DIALOG]: (linkedState, ...args) => {
-          linkedState.setState({
+        [ACTION_REQUEST_CREATE_DIR_DIALOG]: () => {
+          this.setState({
             isRequestingCreateDirectory: true
           });
         }

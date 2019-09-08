@@ -67,16 +67,16 @@ class DesktopLinkedState extends LinkedState {
       [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
     }, {
       actions: {
-        [ACTION_OPEN_FILE_CHOOSER_DIALOG]: (desktopLinkedState, params) => {
+        [ACTION_OPEN_FILE_CHOOSER_DIALOG]: (params) => {
           // const { appRuntime, fileChooserMode, filePath } = params;
 
-          desktopLinkedState.setState({
+          this.setState({
             [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: params
           });
         },
 
-        [ACTION_CLOSE_FILE_CHOOSER_DIALOG]: (desktopLinkedState) => {
-          desktopLinkedState.setState({
+        [ACTION_CLOSE_FILE_CHOOSER_DIALOG]: () => {
+          this.setState({
             [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
           });
         }
