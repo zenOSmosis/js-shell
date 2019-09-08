@@ -9,7 +9,7 @@ const LINKED_SCOPE_NAME = 'zd-client-processes';
 
 export const STATE_PROCESSES = 'processes';
 export const STATE_GUI_PROCESSES = 'guiProcesses';
-export const STATE_LAST_UPDATED_PROCESS = 'updatedProcess'; // TODO: Rename to lastUpdatedProcess
+export const STATE_LAST_UPDATED_PROCESS = 'lastUpdatedProcess';
 
 /**
  * A registry of all registered running processes in the Desktop.
@@ -63,11 +63,11 @@ class ClientProcessLinkedState extends LinkedState {
   /**
    * This is called internally on each process tick.
    * 
-   * @param {ClientProcess} updatedProcess The process which was updated.
+   * @param {ClientProcess} lastUpdatedProcess The process which was updated.
    */
-  _handleProcessUpdate = (updatedProcess) => {
+  _handleProcessUpdate = (lastUpdatedProcess) => {
     this.setState({
-      [STATE_LAST_UPDATED_PROCESS]: updatedProcess
+      [STATE_LAST_UPDATED_PROCESS]: lastUpdatedProcess
     });
   }
 
