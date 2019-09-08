@@ -14,32 +14,20 @@ import equals from 'equals';
  */
 class GUIProcessRenderer extends Component {
   render() {
-    let { guiProcesses } = this.props;
-    guiProcesses = guiProcesses || [];
-
+    let { childGUIProcesses, childGUIProcessPIDs } = this.props;
     return (
         <StackingContext>
           {
-            // TODO: Consider rendering the component directly w/ ReactDOM to
-            // the container
-            guiProcesses.map((proc) => {
+            childGUIProcesses.map((proc, idx) => {
               const GUIProcessView = proc.getReactComponent();
               if (!GUIProcessView) {
                 console.warn('No GUIProcessView on:', proc);
                 return false;
-              } /* else {
-                console.debug('GUIProcessView', {
-                  GUIProcessView,
-                  proc
-                });
               }
-              */
-
-              const pid = proc.getPID();
 
               return (
                 <GUIProcessView
-                  key={pid}
+                  key={childGUIProcessPIDs[idx]}
                 />
               )
             })
@@ -50,36 +38,53 @@ class GUIProcessRenderer extends Component {
 }
 
 const ConnectedGUIProcessRenderer = (() => {
-  // A cache of AppRuntime process IDs
-  let _prevPIDs = [];
-  let _shellGUIProcessID = null;
+  // A cache of previously rendered GUI process IDs
+  let _prevChildGUIProcessPIDs = [];
+
+  let _shellDesktopPID = null;
+
+  let _renderIdx = -1;
 
   return hocConnect(GUIProcessRenderer, ClientProcessLinkedState, (updatedState) => {
-    if (!_shellGUIProcessID) {
+    ++_renderIdx;
+    
+    if (!_shellDesktopPID) {
       const shellGUIProcess = getShellDesktopProcess();
-      _shellGUIProcessID = shellGUIProcess.getPID();
+      _shellDesktopPID = shellGUIProcess.getPID();
     }
 
     const { guiProcesses } = updatedState;
 
     if (typeof guiProcesses !== 'undefined') {
+      // A collection of PIDs which does not include the main Shell Desktop GUI
+      // process
+      const childGUIProcessPIDs = [];
 
-      const appRuntimePIDs = guiProcesses.map(testProc => {
-        return testProc.getPID();
-      }).filter(testPID => {
-        return testPID !== _shellGUIProcessID
+      // A filtered list of GUI processes which does not include the main Shell
+      // Desktop GUI process
+      const childGUIProcesses = guiProcesses.filter(guiProcess => {
+        const _pid = guiProcess.getPID();
+        
+        if (_pid !== _shellDesktopPID) {
+          childGUIProcessPIDs.push(_pid);
+
+          return true;
+        } else {
+          // This guiProcess is the Shell Desktop; filter it from the list
+
+          return false;
+        }
       });
-
-      // TODO: Filter out PID of Shell Desktop
 
       // Determine if the previous AppRuntime IDs are the same as the current
       // in order to prevent unnecessary render cycles
       // @see https://www.npmjs.com/package/equals
-      if (!equals(_prevPIDs, appRuntimePIDs)) {
-        _prevPIDs = appRuntimePIDs;
+      if (_renderIdx === 0 || !equals(_prevChildGUIProcessPIDs, childGUIProcessPIDs)) {
+        _prevChildGUIProcessPIDs = childGUIProcessPIDs;
 
         return {
-          guiProcesses
+          childGUIProcesses,
+          childGUIProcessPIDs
         };
       }
     }
