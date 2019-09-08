@@ -69,19 +69,26 @@ class Menubar extends Component {
             break;
 
           case NORMALIZED_KEY_ARROW_UP:
-            if (activeMenuItemIdx - 1 >= 0) {
+            if (activeMenuItemIdx !== null && activeMenuItemIdx - 1 >= 0) {
               activeMenuItemIdx--;
 
               this._activateMenuItemWithIdx(activeMenuItemIdx);
+            } else {
+              // Unselect all menu items, entirely
+              this._activateMenuItemWithIdx(null);
             }
             break;
 
           case NORMALIZED_KEY_ARROW_DOWN:
             (() => {
-              const menu = menus[activeTopLevelIdx];
-              const { items } = menu.getMenuData();
-              if (activeMenuItemIdx + 1 < items.length) {
-                activeMenuItemIdx++;
+              if (activeMenuItemIdx === null) {
+                activeMenuItemIdx = 0;
+              } else {
+                const menu = menus[activeTopLevelIdx];
+                const { items } = menu.getMenuData();
+                if (activeMenuItemIdx + 1 < items.length) {
+                  activeMenuItemIdx++;
+                }
               }
 
               this._activateMenuItemWithIdx(activeMenuItemIdx);
@@ -154,7 +161,24 @@ class Menubar extends Component {
     return activeTopLevelIdx !== null;
   }
 
+  /**
+   * Activates menu item in current top-level menu.
+   * 
+   * If the value is set to null, it deactivates all menu items.
+   * 
+   * @param {number | null} idx 
+   */
   _activateMenuItemWithIdx(idx) {
+    const { activeTopLevelIdx } = this.state;
+    if (!activeTopLevelIdx) {
+      return;
+    }
+
+    // Force null value if not numeric
+    if (isNaN(idx)) {
+      idx = null;
+    }
+
     this.setState({
       activeMenuItemIdx: idx
     });
@@ -182,7 +206,7 @@ class Menubar extends Component {
             menus
           });
         }
-      }, 1);
+      }, 0);
     }
   }
 
@@ -195,7 +219,7 @@ class Menubar extends Component {
   _handleTopLevelMenuVisibleChange(idx, isVisible) {
     this.setState({
       activeTopLevelIdx: (isVisible ? idx : null),
-      activeMenuItemIdx: (isVisible ? 0 : null)
+      activeMenuItemIdx: null
     });
   }
 
@@ -266,6 +290,7 @@ class Menubar extends Component {
                             key={itemIdx}
                             disabled={isDisabled}
                             onMouseOver={evt => this._activateMenuItemWithIdx(itemIdx)}
+                            onMouseOut={evt => this._activateMenuItemWithIdx(null)}
                             onClick={evt => this._handleMenuItemClick(evt, onClick)} // TODO: Use proper click handler, and allow usage for click, touch, and Enter / Return
                           >
                             {
