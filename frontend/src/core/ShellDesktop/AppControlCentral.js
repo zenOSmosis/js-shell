@@ -157,7 +157,6 @@ const getAppControlCentral = () => {
     return;
   } else if (!_appControlCentral) {
     throw new Error('AppControlCentral has not launched');
-    return;
   }
 
   return _appControlCentral;

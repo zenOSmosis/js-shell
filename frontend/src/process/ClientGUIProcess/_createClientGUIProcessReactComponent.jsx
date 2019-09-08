@@ -18,8 +18,6 @@ const createClientGUIProcessReactComponent = (procParams) => {
     throw new Error('guiProc must be a ClientGUIProcess instance');
   }
 
-  const pid = guiProc.getPID();
-
   /**
    * React rendering component for ClientGUIProcess instances.
    */
