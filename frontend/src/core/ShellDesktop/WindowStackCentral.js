@@ -1,9 +1,10 @@
 // TODO: Prevent Windows from being positioned outside of viewable area
 // (or snap back after positioning)
 
-import ClientProcess, { /* EVT_BEFORE_EXIT */ } from 'process/ClientProcess';
+import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import { getShellDesktopProcess } from '../ShellDesktop';
 import AppRegistration from '../AppRegistration';
-import AppRuntime from '../AppRuntime';
+import AppRuntime, { EVT_FOCUS as EVT_APP_RUNTIME_FOCUS } from '../AppRuntime';
 import Window, {
   EVT_MOUNT,
   EVT_BEFORE_CLOSE,
@@ -33,8 +34,11 @@ class WindowStackCentral extends ClientProcess {
 
     super(...args);
 
-    this.setTitle('Window Stack Central');
+    // Register process flag
+    _windowStackCentral = this;
 
+    this.setTitle('Window Stack Central');
+  
     /**
      * An array of Window components.
      * 
@@ -42,12 +46,24 @@ class WindowStackCentral extends ClientProcess {
      * 
      * @type {Window[]}
      */
-    this._stack = [];
+    this._windowStack = [];
+
+    this._shellDesktopProcess = getShellDesktopProcess();
+
+    // Blur all windows when Shell Desktop aquires focus
+    (() => {
+      const _handleShellDesktopFocus = () => {
+        this.blurAllWindows();
+      };
+
+      this._shellDesktopProcess.on(EVT_APP_RUNTIME_FOCUS, _handleShellDesktopFocus);
+      this.on(EVT_BEFORE_EXIT, () => {
+        this._shellDesktopProcess.off(EVT_APP_RUNTIME_FOCUS, _handleShellDesktopFocus);
+        this._shellDesktopProcess = null;
+      });
+    })();
 
     this._desktopWindowLinkedState = new DesktopWindowLinkedState();
-
-    // Register process flag
-    _windowStackCentral = this;
 
     /**
      * If no position information is stored for the Window, this value will be
@@ -79,7 +95,7 @@ class WindowStackCentral extends ClientProcess {
    * @return {Window[]}
    */
   getWindowStack() {
-    return this._stack;
+    return this._windowStack;
   }
 
   /**
@@ -87,8 +103,8 @@ class WindowStackCentral extends ClientProcess {
    * @param {number} desktopWindow 
    */
   getWindowStackIndex(desktopWindow) {
-    for (let i = 0; i < this._stack.length; i++) {
-      const testWindow = this._stack[i];
+    for (let i = 0; i < this._windowStack.length; i++) {
+      const testWindow = this._windowStack[i];
 
       if (Object.is(testWindow, desktopWindow)) {
         return i;
@@ -111,10 +127,10 @@ class WindowStackCentral extends ClientProcess {
       }
       
       // Temporarily remove from stack
-      this._stack.splice(currIdx, 1);
+      this._windowStack.splice(currIdx, 1);
       
       // Push to the end of the stack
-      this._stack.push(currWindow);
+      this._windowStack.push(currWindow);
     }
 
     this.renderStack();
@@ -199,15 +215,15 @@ class WindowStackCentral extends ClientProcess {
    * focused Window, while all others are blurred.
    */
   renderStack() {
-    const lenStack = this._stack.length;
+    const lenStack = this._windowStack.length;
 
     for (let i = 0; i < lenStack; i++) {
-      const testWindow = this._stack[i];
+      const testWindow = this._windowStack[i];
 
       if (!testWindow) {
         console.error('Skipping non-Window @', {
           i,
-          stack: this._stack
+          stack: this._windowStack
         });
 
         continue;
@@ -223,6 +239,14 @@ class WindowStackCentral extends ClientProcess {
         // Focus highest zIndex window
         testWindow.focus();
       }
+    }
+  }
+
+  blurAllWindows() {
+    const lenDesktopWindows = this._windowStack.length;
+
+    for (let i = 0; i < lenDesktopWindows; i++) {
+      this._windowStack[i].blur();
     }
   }
 
@@ -261,7 +285,7 @@ class WindowStackCentral extends ClientProcess {
       throw new Error('desktopWindow is not a Window instance');
     }
 
-    this._stack.push(desktopWindow);
+    this._windowStack.push(desktopWindow);
 
     // Set on next tick, so that the Window can fully set for any initial listeners
     this.setImmediate(() => {
@@ -298,7 +322,7 @@ class WindowStackCentral extends ClientProcess {
       throw new Error('desktopWindow is not a Window instance');
     }
 
-    this._stack = this._stack.filter(testWindow => {
+    this._windowStack = this._windowStack.filter(testWindow => {
       return !Object.is(testWindow, desktopWindow);
     });
 
