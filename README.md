@@ -12,6 +12,12 @@ It is like a virtual desktop into a Docker / Linux server, though the desktop is
 
 The Shell GUI frontend will have full local user privileges (and can be elevated) into the Docker / Linux server it is bound to.
 
+## Multi-Device Testing
+
+We use [BrowserStack](https://www.browserstack.com) to test on a variety of devices and operating systems.
+
+<a href="https://www.browserstack.com" target="_blank"><img src="assets/BrowserStack-logo.svg" alt="BrowserStack" width="320"></a>
+
 ## Current Development State
 
 Pre-initial prototype.
