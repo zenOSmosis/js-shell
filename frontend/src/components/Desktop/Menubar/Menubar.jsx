@@ -37,6 +37,9 @@ class Menubar extends Component {
     // this._visibleChangeBatchTimeout = null;
 
     this._keyboardLinkedState = new KeyboardLinkedState();
+
+    // Prevent rapid-fire from deselect previous / new select
+    this._activeMenuItemSelectTimeout = null;
   }
 
   componentDidMount() {
@@ -169,6 +172,8 @@ class Menubar extends Component {
    * @param {number | null} idx 
    */
   _activateMenuItemWithIdx(idx) {
+    clearTimeout(this._activeMenuItemSelectTimeout);
+    
     const { activeTopLevelIdx } = this.state;
     if (!activeTopLevelIdx) {
       return;
@@ -179,9 +184,12 @@ class Menubar extends Component {
       idx = null;
     }
 
-    this.setState({
-      activeMenuItemIdx: idx
-    });
+    // Prevent rapid-fire from deselect previous / new select
+    this._activeMenuItemSelectTimeout = setTimeout(() => {
+      this.setState({
+        activeMenuItemIdx: idx
+      });
+    }, 0);
   }
 
   _handleAppRuntimeMenubarUpdate = () => {
