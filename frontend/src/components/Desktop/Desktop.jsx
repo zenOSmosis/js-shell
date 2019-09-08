@@ -30,8 +30,6 @@ import GUIProcessRenderer from './GUIProcessRenderer';
 // location in apps/defaultApps.js comments
 import 'apps/defaultApps';
 
-// const CSS_CLASS_NAME_BLUR = 'blur';
-
 class Desktop extends Component {
   render() {
     const { isFullScreenRequested } = this.props;
