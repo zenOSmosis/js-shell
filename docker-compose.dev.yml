@@ -68,6 +68,7 @@ services:
       - ./:/shell # Only during development
     environment:
       - NODE_ENV=development
+      - REACT_APP_PROJECT_NAME=Shell Desktop
       # - HTTPS=true
     networks:
       - shell-core-service-network
