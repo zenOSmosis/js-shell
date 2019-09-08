@@ -6,6 +6,8 @@ export {
 
 export const CPU_TIME_LINKED_STATE_SCOPE_NAME = 'CPUTimeLinkedState';
 
+export const STATE_CPU_THREADS = 'cpuThreads';
+
 /**
  * Maintains state regarding CPU usage.
  * 
@@ -14,19 +16,19 @@ export const CPU_TIME_LINKED_STATE_SCOPE_NAME = 'CPUTimeLinkedState';
 class CPUTimeLinkedState extends LinkedState {
   constructor() {
     super(CPU_TIME_LINKED_STATE_SCOPE_NAME, {
-      cpuThreads: []
+      [STATE_CPU_THREADS]: []
     });
   }
 
   getCPUThreadDataWithRootProcess(rootProcess) {
-    const { cpuThreads } = this.getState();
+    const { [STATE_CPU_THREADS]: cpuThreads } = this.getState();
     const lenCPUThreads = cpuThreads.length;
 
     for (let i = 0; i < lenCPUThreads; ++i) {
       if (Object.is(rootProcess, cpuThreads[i].rootProcess)) {
         return {
           rootIdx: i,
-          cpuThreads
+          [STATE_CPU_THREADS]: cpuThreads
         }
       }
     }
@@ -36,24 +38,28 @@ class CPUTimeLinkedState extends LinkedState {
     const cpuThreadData = this.getCPUThreadDataWithRootProcess(rootProcess);
     
     if (cpuThreadData) {
-      let { rootIdx, cpuThreads } = cpuThreadData;
+      let { rootIdx, [STATE_CPU_THREADS]: cpuThreads } = cpuThreadData;
 
       cpuThreads[rootIdx] = Object.assign(cpuThreads[rootIdx], {
         usagePercent
       });
 
       this.setState({
-        cpuThreads
+        [STATE_CPU_THREADS]: cpuThreads
       });
     }
   }
 
   addThreadRootProcess(rootProcess) {
-    let { cpuThreads } = this.getState();
+    let { [STATE_CPU_THREADS]: cpuThreads } = this.getState();
 
     cpuThreads.push({
       rootProcess,
       usagePercent: 0
+    });
+
+    this.setState({
+      [STATE_CPU_THREADS]: cpuThreads
     });
   }
 
@@ -61,7 +67,7 @@ class CPUTimeLinkedState extends LinkedState {
     const cpuThreadData = this.getCPUThreadDataWithRootProcess(rootProcess);
 
     if (cpuThreadData) {
-      let { rootIdx, cpuThreads } = cpuThreadData;
+      let { rootIdx, [STATE_CPU_THREADS]: cpuThreads } = cpuThreadData;
 
       const aLenCPUThreads = cpuThreads.length;
 
@@ -75,7 +81,7 @@ class CPUTimeLinkedState extends LinkedState {
       }
 
       this.setState({
-        cpuThreads
+        [STATE_CPU_THREADS]: cpuThreads
       });
     }
   }

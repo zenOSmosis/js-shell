@@ -2,13 +2,15 @@ import LinkedState from './LinkedState';
 
 const DESKTOP_WINDOW_LINKED_SCOPE_NAME = `desktopWindowLinkedState`;
 
+export const STATE_DESKTOP_WINDOWS = 'desktopWindows';
+
 /**
  * @extends LinkedState
  */
 class DesktopWindowLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_WINDOW_LINKED_SCOPE_NAME, {
-      desktopWindows: []
+      [STATE_DESKTOP_WINDOWS]: []
     });
   }
 
@@ -18,12 +20,12 @@ class DesktopWindowLinkedState extends LinkedState {
    * @param {Desktop.Window} desktopWindow 
    */
   addWindow(desktopWindow) {
-    const { desktopWindows } = this.getState();
+    const { [STATE_DESKTOP_WINDOWS]: desktopWindows } = this.getState();
 
     desktopWindows.push(desktopWindow);
 
     this.setState({
-      desktopWindows
+      [STATE_DESKTOP_WINDOWS]: desktopWindows
     });
   }
 
@@ -33,14 +35,14 @@ class DesktopWindowLinkedState extends LinkedState {
    * @param {Desktop.Window} desktopWindow 
    */
   removeWindow(desktopWindow) {
-    let { desktopWindows } = this.getState();
+    let { [STATE_DESKTOP_WINDOWS]: desktopWindows } = this.getState();
 
     desktopWindows = desktopWindows.filter(testDesktopWindow => {
       return !Object.is(testDesktopWindow, desktopWindow);
     });
 
     this.setState({
-      desktopWindows
+      [STATE_DESKTOP_WINDOWS]: desktopWindows
     });
   }
 }

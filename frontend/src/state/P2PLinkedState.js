@@ -6,6 +6,9 @@ export {
 
 export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
+export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
+export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
+
 /**
  * Manages peer-to-peer (P2P) connectivity.
  * 
@@ -15,10 +18,10 @@ export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
       // Peers which are connected over Socket.io (proxied through server)
-      socketPeerIDs: [],
+      [STATE_SOCKET_PEER_IDS]: [],
 
       // Peers which are directly connected via WebRTC
-      webRTCConnections: []
+      [STATE_WEBRTC_CONNECTIONS]: []
     });
   }
 
@@ -31,7 +34,7 @@ export default class P2PLinkedState extends LinkedState {
     }
 
     this.setState({
-      socketPeerIDs
+      [STATE_SOCKET_PEER_IDS]: socketPeerIDs
     });
   }
 
@@ -41,12 +44,12 @@ export default class P2PLinkedState extends LinkedState {
    * @param {number} socketPeerID 
    */
   addSocketPeerID(socketPeerID) {
-    const { socketPeerIDs } = this.getState();
+    const { [STATE_SOCKET_PEER_IDS]: socketPeerIDs } = this.getState();
 
     socketPeerIDs.push(socketPeerID);
 
     this.setState({
-      socketPeerIDs
+      [STATE_SOCKET_PEER_IDS]: socketPeerIDs
     });
   }
 
@@ -56,7 +59,7 @@ export default class P2PLinkedState extends LinkedState {
    * @param {number} socketPeerID 
    */
   removeSocketPeerID(socketPeerID) {
-    const { socketPeerIDs } = this.getState();
+    const { [STATE_SOCKET_PEER_IDS]: socketPeerIDs } = this.getState();
 
     const rmIdx = socketPeerIDs.indexOf(socketPeerID);
 
@@ -64,7 +67,7 @@ export default class P2PLinkedState extends LinkedState {
       socketPeerIDs.splice(rmIdx, 1);
 
       this.setState({
-        socketPeerIDs
+        [STATE_SOCKET_PEER_IDS]: socketPeerIDs
       });
     }
   }
@@ -73,26 +76,26 @@ export default class P2PLinkedState extends LinkedState {
 
   /*
   addWebRTCConnection(webRTCConnection) {
-    const { webRTCConnections } = this.getState();
+    const { [STATE_WEBRTC_CONNECTIONS]: webRTCConnections } = this.getState();
 
     webRTCConnections.push(webRTCConnection);
 
     this.setState({
-      webRTCConnections
+      [STATE_WEBRTC_CONNECTIONS]: webRTCConnections
     });
   }
   */
 
   /*
   removeWebRTCConnection(webRTCConnection) {
-    let { webRTCConnections } = this.getState();
+    let { [STATE_WEBRTC_CONNECTIONS]: webRTCConnections } = this.getState();
 
     webRTCConnections = webRTCConnections.filter(testWebRTCConnection => {
 
     });
 
     this.setState({
-      webRTCConnections
+      [STATE_WEBRTC_CONNECTIONS]: webRTCConnections
     });
   }
   */

@@ -8,6 +8,9 @@ export const APP_REGISTRATIONS_LINKED_SCOPE_NAME = 'appRegistrations';
 
 console.warn('TODO: Implement persistent local storage of relevant window sizes and positions for AppRegistryLinkedState');
 
+export const STATE_APP_REGISTRATIONS = 'appRegistrations';
+export const STATE_IDX_TICK = '_idxTick';
+
 let _idxTick = -1;
 
 /**
@@ -19,10 +22,10 @@ class AppRegistryLinkedState extends PersistentStorageLinkedState {
   constructor() {
     super(APP_REGISTRATIONS_LINKED_SCOPE_NAME, {
       // All registered AppRegistration instances
-      appRegistrations: [],
+      [STATE_APP_REGISTRATIONS]: [],
 
       // 
-      _idxTick
+      [STATE_IDX_TICK]: _idxTick
     });
   }
 
@@ -39,25 +42,25 @@ class AppRegistryLinkedState extends PersistentStorageLinkedState {
     }
     */
 
-    let { appRegistrations } = this.getState();
+    let { [STATE_APP_REGISTRATIONS]: appRegistrations } = this.getState();
 
     appRegistrations.push(appRegistration);
 
     this.setState({
-      appRegistrations
+      [STATE_APP_REGISTRATIONS]: appRegistrations
     });
   }
 
   // TODO: Document
   removeAppRegistration(appRegistration) {
-    let { appRegistrations } = this.getState();
+    let { [STATE_APP_REGISTRATIONS]: appRegistrations } = this.getState();
 
     appRegistrations = appRegistrations.filter(testRegistration => {
       return !Object.is(testRegistration, appRegistration);
     });
 
     this.setState({
-      appRegistrations
+      [STATE_APP_REGISTRATIONS]: appRegistrations
     });
   }
 
@@ -70,13 +73,13 @@ class AppRegistryLinkedState extends PersistentStorageLinkedState {
     ++_idxTick
 
     this.setState({
-      _idxTick
+      [STATE_IDX_TICK]: _idxTick
     });
   }
 
   // TODO: Document
   getAppRegistrations() {
-    const { appRegistrations } = this.getState();
+    const { [STATE_APP_REGISTRATIONS]: appRegistrations } = this.getState();
 
     return appRegistrations;
   }
