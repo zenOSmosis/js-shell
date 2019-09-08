@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ClientGUIProcess from './ClientGUIProcess';
 import './GUIProcessReactComponentParams.typedef';
 
@@ -104,18 +104,14 @@ const createClientGUIProcessReactComponent = (procParams) => {
       const wrappedViewProps = {...this.props, ...stateViewProps};
 
       return (
-        <div
-          // ref={c => this._el = c}
-          style={{ display: 'inline-block' }}
-          data-proc-pid={pid} // For debugging
-        >
+        <Fragment>
           {
             Content &&
             <Content
               {...wrappedViewProps} // Pass all props from hoc
             />
           }
-        </div>
+        </Fragment>
       );
     }
   }
