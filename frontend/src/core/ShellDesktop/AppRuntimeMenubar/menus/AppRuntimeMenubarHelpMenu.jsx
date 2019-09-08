@@ -1,7 +1,7 @@
 // import React from 'react';
 import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
 import { EVT_TICK } from 'process/ClientProcess';
-import { getShellDesktopProcess } from '../../ShellDesktop';
+import { getShellDesktopProcess } from '../../ShellDesktopAppRuntime';
 
 export default class AppRuntimeMenubarHelpMenu extends AppRuntimeMenubarMenu {
   constructor(menubar) {

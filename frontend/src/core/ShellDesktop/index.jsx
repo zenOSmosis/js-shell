@@ -1,11 +1,11 @@
-import ShellDesktop, { getShellDesktopProcess } from './ShellDesktop';
+import ShellDesktopAppRuntime, { getShellDesktopProcess } from './ShellDesktopAppRuntime';
 import P2PMonitor from './P2PMonitor';
 import ViewportFocusMonitor from './ViewportFocusMonitor';
 import ViewportSizeMonitor from './ViewportSizeMonitor';
 import AppControlCentral from './AppControlCentral';
 import WindowStackCentral, { getWindowStackCentral } from './WindowStackCentral';
 
-export default ShellDesktop;
+export default ShellDesktopAppRuntime;
 export {
   getShellDesktopProcess,
   
