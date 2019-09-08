@@ -16,7 +16,11 @@ const setDefaultNativeWindowTitle = (title) => {
  */
 const setNativeWindowTitle = (title = null) => {
   if (title) {
-    document.title = `${title} | ${defaultTitle}`;
+    if (title === defaultTitle) {
+      document.title = title;
+    } else {
+      document.title = `${title} | ${defaultTitle}`;
+    }
   } else {
     document.title = defaultTitle;
   }
