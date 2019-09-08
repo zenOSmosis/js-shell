@@ -107,7 +107,7 @@ Except where usage of 3rd party libraries is concerned, with their own naming co
 - Variable names in camelCase.
   - Class names begin with UpperCase character.
   - Class instances being with lowerCase character.
-- Boolean variable / property names prefixed with "is."
+- Boolean variable / property names prefixed with "is," unless the words "has" or "have" are utilized elsewhere in the name.
 - American English spelling variations (e.g. "isSizable" instead of "isSizeable").
 
 ## Optional
