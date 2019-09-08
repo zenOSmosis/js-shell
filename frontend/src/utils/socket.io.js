@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
-import config from './../config';
-import SocketLinkedState from '../state/SocketLinkedState';
+import { SOCKET_IO_URL } from 'config';
+import SocketLinkedState from 'state/SocketLinkedState';
 import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
 
 const socketLinkedState = new SocketLinkedState();
@@ -14,7 +14,7 @@ export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 // TODO: Wrap w/ LinkedState
 // TODO: Enable multiple connections
 
-const socket = io.connect(config.SOCKET_IO_URL);
+const socket = io.connect(SOCKET_IO_URL);
 
 /**
  * Overrides socket.disconnect() with request disconnect event, as there does

@@ -11,7 +11,7 @@ import Switch from 'components/Switch';
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
 import IconLayout from './subComponents/IconLayout';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
-// import config from 'config';
+// import { HOST_ICON_URL_PREFIX } from 'config';
 import { chdir } from 'utils/old.fs';
 import './style.css';
 // import { relativeTimeRounding } from 'moment';

@@ -3,7 +3,7 @@ import registerApp from 'utils/desktop/registerApp';
 // import FileManager from './FilesWindow';
 import SocketFSFileChooserWindow from 'components/SocketFSFileChooserWindow';
 import { ACTION_REQUEST_CREATE_FILE_DIALOG, ACTION_REQUEST_CREATE_DIR_DIALOG } from 'state/UniqueFileChooserLinkedState';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 
 export default registerApp({
   allowMultipleWindows: true,
@@ -26,7 +26,7 @@ export default registerApp({
       />
     );
   },
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}folder/folder.svg`,
+  iconSrc: `${HOST_ICON_URL_PREFIX}folder/folder.svg`,
   menus: [
     {
       title: 'File',

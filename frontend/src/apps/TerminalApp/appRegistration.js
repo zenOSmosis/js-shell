@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import TerminalWindow from './TerminalWindow';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 
 export default registerApp({
   allowMultipleWindows: true,
@@ -11,5 +11,5 @@ export default registerApp({
       <TerminalWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}terminal/terminal.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}terminal/terminal.svg`
 });

@@ -1,4 +1,5 @@
-import config from '../config';
+import { DESKTOP_CONTEXT_MENU_IS_TRAPPING, DESKTOP_DEFAULT_BACKGROUND_URL } from 'config';
+
 // import Window from 'components/Desktop/Window';
 // import App from '../utils/desktop/registerApp';
 import hocConnect from './hocConnect';
@@ -25,7 +26,7 @@ class DesktopLinkedState extends LinkedState {
   constructor() {
     super(DESKTOP_LINKED_SCOPE_NAME, {
       // Whether, or not, the Desktop should capture right-click context menu
-      contextMenuIsTrapping: config.DESKTOP_CONTEXT_MENU_IS_TRAPPING,
+      contextMenuIsTrapping: DESKTOP_CONTEXT_MENU_IS_TRAPPING,
 
       // Setting this will generate a new Desktop Notification
       // TODO: Typedef notification object
@@ -40,7 +41,7 @@ class DesktopLinkedState extends LinkedState {
       redirectLocation: '/',
 
       // The background image location of the Desktop
-      backgroundURL: config.DESKTOP_DEFAULT_BACKGROUND_URL,
+      backgroundURL: DESKTOP_DEFAULT_BACKGROUND_URL,
 
       // Whether the browser window is focused or not
       // TODO: Rename [back] to viewportIsFocused

@@ -19,10 +19,13 @@ import DesktopLinkedState from 'state/DesktopLinkedState';
 import PropTypes from 'prop-types';
 import { getWindowStackCentral } from 'core/ShellDesktop/'; // TODO: Import from ShellDesktop
 
-import config from 'config';
+import {
+  DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE,
+  DESKTOP_WINDOW_MIN_WIDTH,
+  DESKTOP_WINDOW_MIN_HEIGHT
+}  from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-const { DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE, DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 // const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 // const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;

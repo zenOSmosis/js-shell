@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import TextEditorWindow from './TextEditorWindow';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 
 export default registerApp({
   title: 'Text Editor',
@@ -10,5 +10,5 @@ export default registerApp({
       <TextEditorWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}text/text.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}text/text.svg`
 });

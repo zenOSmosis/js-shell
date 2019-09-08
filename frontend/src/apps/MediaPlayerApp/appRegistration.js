@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import MediaPlayerWindow from './MediaPlayerWindow';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 
 export default registerApp({
   title: 'Media Player',
@@ -12,7 +12,7 @@ export default registerApp({
   },
   // allowMultipleWindows: true,
   // mimeTypes: ['audio/mpeg', 'video/mp4'],
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}media/media.svg`,
+  iconSrc: `${HOST_ICON_URL_PREFIX}media/media.svg`,
   
   // menuItems: [{title: 'play', onClick:()=>{alert('play clicked')}}]
 });

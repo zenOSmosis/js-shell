@@ -13,9 +13,7 @@ import ShellDesktop, {
   AppControlCentral,
   WindowStackCentral
 } from './ShellDesktop';
-import config from 'config';
-
-const { DOM_ROOT_ID } = config;
+import { DOM_ROOT_ID } from 'config';
 
 let _hasStarted = false;
 

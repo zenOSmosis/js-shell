@@ -1,44 +1,40 @@
 // Default dynamic app configuration
 
-// TODO: Clean this up
-
-// Note: Some of these values may be overridden by other parts of the program
-
-// import getRequestURL from './utils/fileSystem/getRequestURL';
-
 import parseURL from './utils/parseURL';
 
-let config = {
-  DOM_ROOT_ID: 'root'
-};
+export const PROJECT_NAME = 'Shell Desktop';
 
-// TODO: Enable this to work w/o global window object
-if (typeof window !== 'undefined') {
-  const parsedWinURL = parseURL(window.location.href);
+export const DOM_ROOT_ID = 'root';
 
-  config = Object.assign(config, {
-    HOST_REST_URL: `${parsedWinURL.protocol}//${parsedWinURL.hostname}`,
-  }); 
-}
+export const HOST_REST_URL = (() => {
+  // TODO: Enable this to work w/o global window object
+  if (typeof window !== 'undefined') {
+    const parsedWinURL = parseURL(window.location.href);
 
-config = Object.assign(config, {
-  SOCKET_IO_URL: config.HOST_REST_URL,
+    return `${parsedWinURL.protocol}//${parsedWinURL.hostname}`
+  }
+})();
 
-  HOST_ICON_URL_PREFIX: config.HOST_REST_URL + `/icons/`,
-  HOST_FILES_URL_PREFIX: config.HOST_REST_URL + `/files/?filePath=`,
+export const SOCKET_IO_URL = HOST_REST_URL;
+export const HOST_ICON_URL_PREFIX = `${HOST_REST_URL}/icons/`;
+export const HOST_FILES_URL_PREFIX = `${HOST_REST_URL}/files/?filePath=`;
 
-  // TODO: Replace hardcded path here
-  DESKTOP_DEFAULT_BACKGROUND_URL: 'https://source.unsplash.com/1600x900/?nature,water', // TODO: Debug issue where Chrome displays border around page if this is set to null
-  
-  // If the Desktop should intercept the context menu by default
-  DESKTOP_CONTEXT_MENU_IS_TRAPPING: false,
+export const DESKTOP_DEFAULT_BACKGROUND_URL = 'https://source.unsplash.com/1600x900/?nature,water';
 
-  DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE: '[ Untitled Window ]',
+export const DESKTOP_CONTEXT_MENU_IS_TRAPPING = false;
 
-  // TODO: Make distinction between if running in windowed, full-screen (touch) mode, (or others?)
-  DESKTOP_WINDOW_MIN_WIDTH: 500,
-  DESKTOP_WINDOW_MIN_HEIGHT: 460
-});
+export const DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE = '[ Untitled Window ]';
 
-// TODO: Implement named exports for config properties
-export default config;
+export const DESKTOP_WINDOW_MIN_WIDTH = 500;
+export const DESKTOP_WINDOW_MIN_HEIGHT = 460;
+
+export const DONATION_LINKS = [
+  {
+    title: 'PayPal',
+    url: 'https://paypal.me/zenOSmosis'
+  },
+  {
+    title: 'Buy me a coffee',
+    url: 'https://www.buymeacoffee.com/Kg8VCULYI'
+  }
+];

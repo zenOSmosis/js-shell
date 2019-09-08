@@ -2,7 +2,7 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 import {
   openAppFile,
@@ -26,7 +26,7 @@ export default registerApp({
     );
   },
   allowMultipleWindows: true,
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  iconSrc: `${HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
   
   // TODO: Filter list specific to this app (don't use wildcard)
   mimeTypes: ['*'],

@@ -4,7 +4,7 @@ import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 
 import VoiceInputWindow from './VoiceInputWindow';
-import config from 'config';
+import { HOST_ICON_URL_PREFIX } from 'config';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import createAudioWorker from './createAudioWorker';
 
@@ -195,5 +195,5 @@ export default registerApp({
       })();
     });
   },
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}transcribe/transcribe.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}transcribe/transcribe.svg`
 });

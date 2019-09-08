@@ -1,5 +1,4 @@
-import config from '../config';
-const { HOST_REST_URL } = config;
+import { HOST_REST_URL } from 'config';
 
 /**
  * Fetches the IP address of the client, relative to the server.

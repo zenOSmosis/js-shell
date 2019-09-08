@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'App';
+import { DOM_ROOT_ID, PROJECT_NAME } from 'config';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
@@ -10,10 +11,7 @@ import { EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import SocketLinkedState from 'state/SocketLinkedState';
 
-import config from 'config';
 import AppRegistration from '../AppRegistration';
-
-const { DOM_ROOT_ID } = config;
 
 /**
  * @type {ShellDesktop}
@@ -34,7 +32,7 @@ class ShellDesktop extends AppRuntime {
 
     const shellRegistration = (() => {
       const shellRegistration = new AppRegistration({
-        title: 'Shell Desktop',
+        title: PROJECT_NAME,
         // menus: [],
         view: () => {
           return (
