@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import DesktopLinkedState, { EVT_LINKED_STATE_UPDATE } from 'state/DesktopLinkedState';
 import { withRouter } from 'react-router';
 import redirectTo from 'utils/desktop/redirectTo';
-import setBrowserTitle from 'utils/desktop/setBrowserTitle';
+import setNativeWindowTitle from 'utils/desktop/setNativeWindowTitle';
 import titleToURL from 'utils/desktop/titleToURL';
 
 /**
@@ -111,7 +111,7 @@ class AppRouteController extends Component {
         // Set browser URL bar
         redirectTo(`/app/${titleToURL(title)}`);
         
-        setBrowserTitle(title);
+        setNativeWindowTitle(title);
       }, 0);
     }
   }

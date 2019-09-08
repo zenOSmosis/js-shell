@@ -5,7 +5,7 @@ let defaultTitle = document.title;
  * 
  * @param {string} title 
  */
-const setDefaultTitle = (title) => {
+const setDefaultNativeWindowTitle = (title) => {
   defaultTitle = title;
 };
 
@@ -14,7 +14,7 @@ const setDefaultTitle = (title) => {
  * 
  * @param {string} title 
  */
-const setBrowserTitle = (title = null) => {
+const setNativeWindowTitle = (title = null) => {
   if (title) {
     document.title = `${title} | ${defaultTitle}`;
   } else {
@@ -25,12 +25,12 @@ const setBrowserTitle = (title = null) => {
 /**
  * Resets browser title back to the default.
  */
-const resetBrowserTitle = () => {
-  this.setBrowserTitle(defaultTitle);
+const resetNativeWindowTitle = () => {
+  this.setNativeWindowTitle(defaultTitle);
 }
 
-export default setBrowserTitle;
+export default setNativeWindowTitle;
 export {
-  setDefaultTitle,
-  resetBrowserTitle
+  setDefaultNativeWindowTitle,
+  resetNativeWindowTitle
 };

@@ -5,6 +5,7 @@ import './style.scss';
 import './style-scrollbar.scss';
 
 import React, { Component } from 'react';
+import NativeWindowTitleController from './NativeWindowTitleController';
 import FullscreenProvider from 'react-full-screen';
 import Panel from './Panel';
 import Dock from './Dock';
@@ -37,6 +38,7 @@ class Desktop extends Component {
 
     return (
       <div ref={c => this._el = c}>
+        <NativeWindowTitleController />
         <DesktopKeyboardInterruptProvider>
           <FullscreenProvider
             enabled={isFullScreenRequested}
