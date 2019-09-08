@@ -198,6 +198,10 @@ class AppRegistration extends EventEmitter {
   getJoinedAppRuntimes() {
     const appControlCentral = getAppControlCentral();
 
+    if (!appControlCentral) {
+      return [];
+    }
+
     return appControlCentral.getJoinedAppRuntimesByRegistration(this);
   }
 
