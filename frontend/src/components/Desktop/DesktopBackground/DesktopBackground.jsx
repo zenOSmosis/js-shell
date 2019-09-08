@@ -15,31 +15,15 @@ class DesktopBackground extends Component {
 
   componentDidMount() {
     this._fullEl = ReactDOM.findDOMNode(this._full);
-
-    // this._fullEl.addEventListener('mousedown', this._handleMouseOrTouchStart);
-    // this._fullEl.addEventListener('touchstart', this._handleMouseOrTouchStart);
   }
 
-  componentWillUnmount() {
-    // this._fullEl.removeEventListener('mousedown', this._handleMouseOrTouchStart);
-    // this._fullEl.removeEventListener('touchstart', this._handleMouseOrTouchStart);
-  }
-
+  /**
+   * Internally called when the mousedown or touchstart events are called.
+   */
   _handleMouseOrTouchStart = (evt) => {
     const { shellDesktopProcess } = this.props;
 
-    console.debug({
-      target: evt.target,
-      fullEl: this._fullEl
-    });
-
     if (evt.target.parentNode === this._fullEl) {
-      /*
-      console.debug({
-        _handleMouseOrTouchStart: evt
-      });
-      */
-
       shellDesktopProcess.focus();
     }
   };
@@ -49,10 +33,17 @@ class DesktopBackground extends Component {
 
     return (
       <Background
-        { ...propsRest }
+        {...propsRest}
       >
+        {
+          /**
+           * Since <Background /> uses a couple of <Cover /> views, it's easier
+           * to overlay it with a <Full /> view in order to capture mouse /
+           * touch events.
+           */
+        }
         <Full
-          ref={ c => this._full = c }
+          ref={c => this._full = c}
           onMouseDown={this._handleMouseOrTouchStart}
           onTouchStart={this._handleMouseOrTouchStart}
         >
@@ -66,7 +57,7 @@ class DesktopBackground extends Component {
 }
 
 export default hocConnect(DesktopBackground, DesktopLinkedState, (updatedState) => {
-  const {backgroundURL, shellDesktopProcess} = updatedState;
+  const { backgroundURL, shellDesktopProcess } = updatedState;
 
   const filteredState = {};
 
