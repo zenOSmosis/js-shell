@@ -12,16 +12,18 @@ body {
   background-color: $bodyBgColor;
   color: $bodyTextColor;
 
-  overflow: none;
+  overflow: hidden;
+  position: fixed;
 }
 
 .root {
   width: 100%;
   height: 100%;
-  overflow: none;
+  overflow: hidden;
+  position: fixed;
 }
 
-h1 {
+h1 { 
   font-size: 1.2rem;
   color: $bodyTextColor;
   border-bottom: 1px $bodyTextColor solid;

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'App';
 import { DOM_ROOT_ID, PROJECT_NAME } from 'config';
+import preventPullToRefresh from 'utils/preventPullToRefresh';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
@@ -81,6 +82,8 @@ class ShellDesktop extends AppRuntime {
       
       // Mounts the base ReactComponent to the DOM
       ReactDOM.render(<ReactComponent />, rootEl);
+
+      preventPullToRefresh(rootEl);
 
       // If you want your app to work offline and load faster, you can change
       // unregister() to register() below. Note this comes with some pitfalls.
