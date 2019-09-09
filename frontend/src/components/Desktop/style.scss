@@ -11,24 +11,37 @@ body {
 
   background-color: $bodyBgColor;
   color: $bodyTextColor;
-
-  overflow: hidden;
-  position: fixed;
 }
 
-.root {
+body, html, .root {
   width: 100%;
   height: 100%;
   overflow: hidden;
   position: fixed;
 }
 
+html {
+  scroll-behavior: smooth;
+
+  /*
+    .noselect 
+    @see https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting
+  */
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+
 h1 { 
   font-size: 1.2rem;
   color: $bodyTextColor;
   border-bottom: 1px $bodyTextColor solid;
   text-align: left;
-  
 }
 
 h2 {
@@ -46,22 +59,6 @@ h1,h2,h3,h4,h5,h6 {
 p {
   display: block;
   margin: 1rem 0rem;
-}
-
-html {
-  scroll-behavior: smooth;
-
-  /*
-    .noselect 
-    @see https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting
-  */
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-      -khtml-user-select: none; /* Konqueror HTML */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
 }
 
 *:not(input[type="radio"]) {
