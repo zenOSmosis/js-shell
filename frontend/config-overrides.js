@@ -49,8 +49,8 @@ module.exports = function override(config, env) {
     test: /\.worker\.js$/,
     loader: 'worker-loader',
     options: {
-      name: 'native-worker.[hash].js', // Set a custom name for the output script
-      inline: false // Inline the worker as a BLOB
+      // name: 'native-worker.[hash].js', // Set a custom name for the output script
+      inline: true // Inline the worker as a BLOB
     }
   });
 
