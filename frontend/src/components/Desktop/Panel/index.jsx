@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import TransparentButton from 'components/TransparentButton';
+import { Row, Column } from 'components/RowColumn';
 import Menubar from '../Menubar';
 import Time from './Time';
 import { Icon, /*Menu, Dropdown*/ } from 'antd';
@@ -32,34 +34,38 @@ class Panel extends Component {
         {...propsRest}
         className={`zd-desktop-panel horizontal ${className ? className : ''}`}
       >
-        <div className="zd-desktop-panel-column-left">
-          <Menubar />
-        </div>
+        <Row>
+          <Column className="zd-desktop-panel-column-left">
+            <Menubar />
+          </Column>
 
-        <div className="zd-desktop-panel-column-right">
-          <button>
-            {
-              // TODO: Replace w/ icon
-              ((isConnected) => {
-                return `[ ${!isConnected ? 'no ' : ''}signal ]`;
-              })(isConnected)
-            }
-          </button>
+          <Column className="zd-desktop-panel-column-right">
+            <div>
+              <TransparentButton>
+                {
+                  // TODO: Replace w/ icon
+                  ((isConnected) => {
+                    return `[ ${!isConnected ? 'no ' : ''}signal ]`;
+                  })(isConnected)
+                }
+              </TransparentButton>
 
-          <Time />
+              <Time />
 
-          <button>
-            <Icon type="search" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
-          </button>
+              <TransparentButton>
+                <Icon type="search" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
+              </TransparentButton>
 
-          <button onClick={this._onFullScreenToggle.bind(this)}>
-            <Icon type="fullscreen" style={{padding: 0, margin: 0, verticalAlign: 'middle'}} />
-          </button>
-          
-          <button>
-            <Icon type="menu-unfold" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
-          </button>
-        </div>
+              <TransparentButton onClick={this._onFullScreenToggle.bind(this)}>
+                <Icon type="fullscreen" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
+              </TransparentButton>
+
+              <TransparentButton>
+                <Icon type="menu-unfold" style={{ padding: 0, margin: 0, verticalAlign: 'middle' }} />
+              </TransparentButton>
+            </div>
+          </Column>
+        </Row>
       </div>
     );
   }
@@ -84,9 +90,11 @@ const DesktopLinkedStatePanel = hocConnect(SocketLinkedStatePanel, DesktopLinked
     filteredState.isFullScreenRequested = isFullScreenRequested;
   }
 
-  return {...filteredState, ...{
-    desktopLinkedState
-  }};
+  return {
+    ...filteredState, ...{
+      desktopLinkedState
+    }
+  };
 });
 
 export default DesktopLinkedStatePanel;

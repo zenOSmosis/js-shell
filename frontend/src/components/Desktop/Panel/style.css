@@ -14,18 +14,17 @@
 }
 
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-left {
-  position: absolute;
-  top: 0px;
-  left: 0px;
   z-index: 999;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-right {
-  position: absolute;
-  right: 0px;
   margin-left: 10px;
   margin-top: 2px;
   z-index: 999;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .zd-desktop-panel.horizontal .zd-desktop-panel-column-right button {
