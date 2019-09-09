@@ -159,6 +159,10 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
         const { DispatchWorker } = this._options;
         this._nativeWorker = new DispatchWorker();
 
+        this._nativeWorker.onerror = (error) => {
+          console.error(error);
+        };
+
         // Re-route native Web Worker postMessage() calls
         this._nativeWorker.onmessage = (message) => {
           this._routeMessage(message);
