@@ -11,6 +11,10 @@ RUN apt-get update \
 
 RUN npm install -g nodemon jest
 
+# This sets the root password!
+# TODO: Make this configurable and do not leave in Dockerfile
+RUN echo "root:Docker!" | chpasswd
+
 # TODO: Implement ability to obtain dynamic username
 RUN useradd -ms /bin/bash user
 
