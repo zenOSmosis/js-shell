@@ -1,0 +1,26 @@
+@font-face {
+    font-family: "shell-icons";
+    src: url("./shell-icons.eot?8cf3f4064d05f3de856b5ea352f05374?#iefix") format("embedded-opentype"),
+url("./shell-icons.woff2?8cf3f4064d05f3de856b5ea352f05374") format("woff2"),
+url("./shell-icons.woff?8cf3f4064d05f3de856b5ea352f05374") format("woff"),
+url("./shell-icons.ttf?8cf3f4064d05f3de856b5ea352f05374") format("truetype"),
+url("./shell-icons.svg?8cf3f4064d05f3de856b5ea352f05374#shell-icons") format("svg");
+}
+
+i[class^="shell-icons-"]:before, i[class*=" shell-icons-"]:before {
+    font-family: shell-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.shell-icons-no-wifi:before {
+    content: "\f101";
+}
+.shell-icons-wifi:before {
+    content: "\f102";
+}
