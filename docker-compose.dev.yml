@@ -52,8 +52,8 @@ services:
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
       - NET_ADMIN # Only during development or special deployments
-    ports:
-      - 3001:3001
+    # ports:
+    #  - 3001:3001
     user: ${CURRENT_UID}
 
   # Note: No direct network access to frontend; proxied through backend
@@ -81,8 +81,8 @@ services:
     build: ./docker_modules/searx
     networks:
       - shell-core-service-network
-    ports:
-      - 3020:8080 # TODO: Close off outside port unless necessary
+    # ports:
+    #  - 3020:8080 # TODO: Close off outside port unless necessary
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
