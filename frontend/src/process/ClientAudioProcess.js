@@ -1,3 +1,5 @@
+// TODO: Should this be renamed to ClientAudioInputProcess?
+
 import ClientProcess from 'process/ClientProcess';
 
 export const NUM_INPUT_CHANNELS = 1; // TODO: Read from input stream, instead
@@ -6,12 +8,12 @@ export const NUM_OUTPUT_CHANNELS = 1;
 export const OUTPUT_DATA_TYPE_AUDIOBUFFER = 'AudioBuffer';
 export const OUTPUT_DATA_TYPE_FLOAT32ARRAY = 'Float32Array';
 export const OUTPUT_DATA_TYPE_UINT16AARRAY = 'Uint16Array';
-export const OUTPUT_DATA_TYPE_UINT8AARRAY = 'Uint8Array';
+export const OUTPUT_DATA_TYPE_UINT8ARRAY = 'Uint8Array';
 export const OUTPUT_DATA_TYPES = [
   OUTPUT_DATA_TYPE_AUDIOBUFFER,
   OUTPUT_DATA_TYPE_FLOAT32ARRAY,
   OUTPUT_DATA_TYPE_UINT16AARRAY,
-  OUTPUT_DATA_TYPE_UINT8AARRAY
+  OUTPUT_DATA_TYPE_UINT8ARRAY
 ];
 
 export const EVT_AUDIO_BUFFER_OUTPUT = 'audioBuffer';
@@ -30,10 +32,11 @@ class ClientAudioProcess extends ClientProcess {
       outputAudioBufferSize: 256 * 4 * 8
     };
 
-    options = {...defOptions, ...options};
-    
+    options = { ...defOptions, ...options };
+
     super(parentProcess, cmd, options);
 
+    // TODO: Rename to inputStream
     this._outputStream = null;
   }
 
@@ -47,6 +50,7 @@ class ClientAudioProcess extends ClientProcess {
     }
   }
 
+  // TODO: Rename to getInputStream()
   getOutputStream() {
     return this._outputStream;
   }
@@ -58,11 +62,11 @@ class ClientAudioProcess extends ClientProcess {
     }
 
     this._audioContext = new AudioContext();
-      
+
     this._source = this._audioContext.createMediaStreamSource(this._outputStream);
 
     const { outputAudioBufferSize } = this._options;
-    
+
     // TODO: Read input stream to determine number of input channels
     // The createScriptProcessor() method of the BaseAudioContext interface creates a ScriptProcessorNode used for direct audio processing.
     // @see https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createScriptProcessor
@@ -112,7 +116,7 @@ class ClientAudioProcess extends ClientProcess {
 
       this.stdout.write(i16);
 
-    } else if (outputDataType === OUTPUT_DATA_TYPE_UINT8AARRAY) {
+    } else if (outputDataType === OUTPUT_DATA_TYPE_UINT8ARRAY) {
       // Assuming a mono-channel
       const f32 = audioBuffer.getChannelData(0); // Float32Audio
 
@@ -121,7 +125,7 @@ class ClientAudioProcess extends ClientProcess {
       const i8 = new Uint8Array(f32.buffer);
 
       this.stdout.write(i8);
-    
+
     } else {
       throw new Error(`Unhandled output data type: ${outputDataType}`);
     }
@@ -144,7 +148,7 @@ class ClientAudioProcess extends ClientProcess {
    * @return {Promise<{}>}
    */
   async fetchOutputAudioFormat() {
-    try  {
+    try {
       const outputAudioBuffer = await this.fetchOutputAudioBuffer();
 
       const {
@@ -178,6 +182,41 @@ class ClientAudioProcess extends ClientProcess {
         resolve(audioBuffer.sampleRate);
       });
     });
+  }
+
+  /**
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/stop
+ */
+  async _stopAudio() {
+    try {
+      await this._audioContext.close();
+
+      if (!this._outputStream) {
+        console.warn('_outputStream is not available');
+      } else {
+        // Stop each track
+        const tracks = this._outputStream.getTracks();
+
+        tracks.forEach((track) => {
+          track.stop();
+        });
+      }
+
+      this._scriptNode.disconnect(this._audioContext.destination);
+      this._source.disconnect(this._scriptNode);
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  async exit(exitSignal = 0) {
+    try {
+      await this._stopAudio();
+
+      await super.exit(exitSignal);
+    } catch (exc) {
+      throw exc;
+    }
   }
 }
 

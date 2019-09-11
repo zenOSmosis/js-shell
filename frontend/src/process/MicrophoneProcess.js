@@ -12,9 +12,9 @@ class MicrophoneProcess extends ClientAudioProcess {
   constructor(parentProcess, cmd = null, options = {}) {
     super(parentProcess, cmd, options);
 
-    this._audioContext = null;
-    this._scriptNode = null;
-    this._source = null;
+    // this._audioContext = null;
+    // this._scriptNode = null;
+    // this._source = null;
   }
 
   async _init() {
@@ -51,42 +51,8 @@ class MicrophoneProcess extends ClientAudioProcess {
        audio: true
       };
 
+      // TODO: Rename to _inputStream
       this._outputStream = await navigator.mediaDevices.getUserMedia(mediaOptions);
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/stop
-   */
-  async _stopMic() {
-    try {
-      await this._audioContext.close();
-
-      if (!this._outputStream) {
-        console.warn('_outputStream is not available');
-      } else {
-        // Stop each track
-        const tracks = this._outputStream.getTracks();
-
-        tracks.forEach((track) => {
-          track.stop();
-        });
-      }
-
-      this._scriptNode.disconnect(this._audioContext.destination);
-      this._source.disconnect(this._scriptNode);
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
-  async exit(exitSignal = 0) {
-    try {
-      await this._stopMic();
-  
-      await super.exit(exitSignal);
     } catch (exc) {
       throw exc;
     }
