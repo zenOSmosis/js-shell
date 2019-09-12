@@ -3,9 +3,14 @@ import TransparentButton from 'components/TransparentButton';
 import { Row, Column } from 'components/RowColumn';
 import Menubar from '../Menubar';
 import Time from './Time';
-import { Icon as AntdIcon, /*Menu, Dropdown*/ } from 'antd';
 import SocketLinkedState from 'state/SocketLinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
+
+import FullScreenIcon from 'components/componentIcons/FullScreenIcon';
+import SearchIcon from 'components/componentIcons/SearchIcon';
+import SidebarIcon from 'components/componentIcons/SidebarIcon';
+import WifiIcon from 'components/componentIcons/WifiIcon';
+import NoWifiIcon from 'components/componentIcons/NoWifiIcon';
 
 import hocConnect from 'state/hocConnect';
 import classNames from 'classnames';
@@ -45,24 +50,21 @@ class Panel extends Component {
               <TransparentButton>
                 <Time />
               </TransparentButton>
-              
+
               <TransparentButton>
-                <i
-                  className={classNames((isConnected ? 'shell-icons-wifi' : 'shell-icons-no-wifi'), style['shell-custom'])}
-                  title={(isConnected ? 'Socket.io Connected' : 'Socket.io Disconnected')}
-                />
+                {isConnected ? <WifiIcon /> : <NoWifiIcon />}
               </TransparentButton>
 
               <TransparentButton>
-                <AntdIcon type="search" />
+                <SearchIcon />
               </TransparentButton>
 
               <TransparentButton onClick={this._onFullScreenToggle.bind(this)}>
-                <AntdIcon type="fullscreen" />
+                <FullScreenIcon />
               </TransparentButton>
 
               <TransparentButton>
-                <AntdIcon type="menu-unfold" />
+                <SidebarIcon />
               </TransparentButton>
             </div>
           </Column>
