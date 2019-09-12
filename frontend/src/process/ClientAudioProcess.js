@@ -61,6 +61,8 @@ class ClientAudioProcess extends ClientProcess {
       return;
     }
 
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+
     this._audioContext = new AudioContext();
 
     this._source = this._audioContext.createMediaStreamSource(this._outputStream);
