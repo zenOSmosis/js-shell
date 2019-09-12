@@ -14,13 +14,19 @@ const Transcript = (props) => {
         </div>
       }
       {
-        isSTTConnected &&
+        (isSTTConnected && transcript) &&
         <div>
           Transcript:<br />
-          <div style={{ width: '100%', backgroundColor: '#fff', color: '#000', fontWeight: 'bold', textAlign: 'left' }}>
+          <div style={{
+            width: '100%',
+            backgroundColor: '#fff',
+            color: '#000',
+            fontWeight: 'bold',
+            textAlign: 'left'
+          }}>
             &nbsp;
             {
-              transcript
+              transcript.text
             }
           </div>
         </div>

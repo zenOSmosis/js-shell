@@ -17,15 +17,15 @@ export default registerApp({
       <VoiceInputWindow {...props} />
     );
   },
-  cmd: (appProcess) => {
+  cmd: (appRuntime) => {
     let _voiceInputLinkedState = new VoiceInputLinkedState();
-    appProcess.on('beforeExit', () => {
+    appRuntime.on('beforeExit', () => {
       _voiceInputLinkedState.destroy();
     });
 
     // Keeps view synced to runtime state
     // TODO: Use EVT_STATE_UPDATE
-    appProcess.on('stateUpdate', (updatedState) => {
+    appRuntime.on('stateUpdate', (updatedState) => {
       _voiceInputLinkedState.setState(updatedState);
     });
 
@@ -33,7 +33,7 @@ export default registerApp({
     let audioWorker = null;
 
     // TODO: Use EVT_STATE_UPDATE
-    appProcess.on('stateUpdate', (updatedState) => {
+    appRuntime.on('stateUpdate', (updatedState) => {
       // Handle mic on / off requests
       (async () => {
         try {
@@ -46,18 +46,18 @@ export default registerApp({
                 return;
               }
 
-              micProcess = new MicrophoneProcess(appProcess,
+              micProcess = new MicrophoneProcess(appRuntime,
                 async (mic) => {
                   try {
                     // Mic to app state sync
                     (() => {
-                      appProcess.setState({
+                      appRuntime.setState({
                         isMicOn: true
                       });
 
                       // TODO: Use EVT_BEFORE_EXIT
                       mic.on('beforeExit', () => {
-                        appProcess.setState({
+                        appRuntime.setState({
                           isMicRequested: false,
                           isMicOn: false
                         });
@@ -72,7 +72,7 @@ export default registerApp({
                       sampleRate: micSampleRate
                     } = micOutputAudioFormat;
 
-                    appProcess.setState({
+                    appRuntime.setState({
                       micSampleDuration: duration ? duration.toFixed(4) : 0,
                       micSampleLength: length,
                       micNumberOfChannels: numberOfChannels,
@@ -82,7 +82,7 @@ export default registerApp({
                     console.debug('mic output audio format', micOutputAudioFormat);
 
                     if (!audioWorker) {
-                      audioWorker = createAudioWorker(appProcess);
+                      audioWorker = createAudioWorker(appRuntime);
 
                       // TODO: Use EVT_BEFORE_EXIT
                       mic.on('beforeExit', async () => {
@@ -96,27 +96,33 @@ export default registerApp({
                       });
 
                       audioWorker.stdout.on('data', (data) => {
-                        const { audioLevels, downsampleRate, transcript } = data;
+                        const {
+                          audioLevels,
+                          downsampleRate: audioWorkerDownsampleRate,
+                          transcript
+                        } = data;
 
-                        if (typeof audioLevels !== 'undefined') {
+                        const filteredState = {};
+
+                        if (audioLevels !== undefined) {
                           const { rms, db } = audioLevels;
-                          appProcess.setState({
-                            micAudioLevelRMS: rms,
-                            micAudioLevelDB: db
+                          
+                          filteredState.micAudioLevelRMS = rms;
+                          filteredState.micAudioLevelDB  = db;
+                        }
+
+                        if (audioWorkerDownsampleRate !== undefined) {
+                          filteredState.audioWorkerDownsampleRate = audioWorkerDownsampleRate;
+                          appRuntime.setState({
+                            audioWorkerDownsampleRate
                           });
                         }
 
-                        if (typeof downsampleRate !== 'undefined') {
-                          appProcess.setState({
-                            audioWorkerDownsampleRate: downsampleRate
-                          });
+                        if (transcript !== undefined) {
+                          filteredState.transcript = transcript;
                         }
 
-                        if (typeof transcript !== 'undefined') {
-                          appProcess.setState({
-                            transcript
-                          });
-                        }
+                        appRuntime.setState(filteredState);
                       });
 
                       // TODO: Properly handle stdctrl messages
@@ -145,7 +151,7 @@ export default registerApp({
                           }
 
                           if (wsBackendStatus) {
-                            appProcess.setState({
+                            appRuntime.setState({
                               wsBackendStatus,
                               isSTTConnected
                             });
