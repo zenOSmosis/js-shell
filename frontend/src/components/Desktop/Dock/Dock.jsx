@@ -9,7 +9,8 @@ import hocConnect from 'state/hocConnect';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 // import DesktopLinkedState from 'state/DesktopLinkedState';
 import DockItem from './DockItem';
-import './style.css';
+import classNames from 'classnames';
+import style from './Dock.module.scss';
 
 /**
  * The items in the Dock represent a filtered subset of AppRegistration
@@ -26,19 +27,19 @@ class Dock extends Component {
       appRegistrations: propsAppRegistrations,
       ...propsRest
     } = this.props;
-    
+
     const appRegistrations = propsAppRegistrations || [];
 
     return (
       <div
         {...propsRest}
-        className={`zd-desktop-dock ${className ? className : ''}`}
+        className={classNames(style['dock'], className)}
       >
         {
           // TODO: Convert items to a UL
         }
 
-        <div className="zd-desktop-dock-items">
+        <div className={style['dock-items']}>
           {
             appRegistrations.map((appRegistration, idx) => {
               const iconView = appRegistration.getIconView();

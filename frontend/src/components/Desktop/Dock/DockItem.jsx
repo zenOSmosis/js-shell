@@ -3,7 +3,8 @@ import { Menu, MenuDivider, MenuItem, /* SubMenu */ } from 'components/Menu';
 import TransparentButton from 'components/TransparentButton';
 import { getWindowStackCentral } from 'core/ShellDesktop';
 import { Tooltip } from 'antd';
-import './style.css';
+import classNames from 'classnames';
+import style from './Dock.module.scss';
 
 const EVT_CONTEXT_MENU = 'contextmenu';
 const EVT_MOUSEDOWN = 'mousedown';
@@ -88,7 +89,7 @@ export default class DockItem extends Component {
       <div
         ref={c => this._root = c}
         // effect="wobble" // TODO: Use variable
-        className={`zd-desktop-dock-item ${isLaunched ? 'open' : ''}`}
+        className={classNames(style['dock-item'], (isLaunched ? 'open' : null))}
       >
         <Tooltip
           title={title}
@@ -98,17 +99,17 @@ export default class DockItem extends Component {
             onMouseOver={evt => this.setState({ isDockItemHovered: true })}
             onMouseLeave={evt => this.setState({ isDockItemHovered: false })}
             onClick={evt => this._handleDockItemClick(appRegistration)}
-            className="zd-desktop-dock-item-button"
+            className={style['dock-item-button']}
           >
             <IconView />
           </TransparentButton>
         </Tooltip>
         {
           isMenuVisible &&
-          <div style={{ position: 'absolute' }}>
+          <div className={style['dock-item-context-menu-wrapper']}>
             <div
               ref={ref => { this._overlay = ref }}
-              className="zd-context-menu-overlay "
+              className={style['overlay']}
             >
               <Menu
                 onClick={evt => { this.setState({ isMenuVisible: false }) }}
@@ -181,32 +182,4 @@ export default class DockItem extends Component {
       </div>
     );
   }
-
-  /*
-  _handleMenuClick = (evt, appRegistration) => {
-    console.debug('click', evt.key, appRegistration);
-    const { key } = evt;
-
-    switch (key) {
-      // case 'launch':
-      //   appRegistration.launchApp();
-      // break;
-
-      // case 'focus':
-      //  appRegistration.focus();
-      // break;
-
-      default:
-        let [key, idx] = evt.key.split('-');
-    
-        // Absorb key so it doesn't trigger a warning
-        isUndefined(key);
-
-        console.debug(idx);
-        
-        // appRegistration.getJoinedAppRuntimes()[idx].focus();
-      break;
-    }
-  };
-  */
 }
