@@ -201,5 +201,5 @@ export default registerApp({
       })();
     });
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}transcribe/transcribe.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}microphone/microphone.svg`
 });
