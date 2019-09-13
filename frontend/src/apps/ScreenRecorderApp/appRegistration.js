@@ -57,6 +57,7 @@ export default registerApp({
         // Prototype video recording on remote
         (async () => {
           try {
+            // TODO: Fix hard-coded path
             const TEMP_PATH = '/tmp/screen_record.webm';
 
             await socketFS.rm(TEMP_PATH);
@@ -143,5 +144,5 @@ export default registerApp({
       // videoElem = null;
     });
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}record/record.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}record-screen/record-screen.svg`
 });
