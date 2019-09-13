@@ -1,6 +1,6 @@
 import React from 'react';
 import AppRuntimeMenubarMenu from '../AppRuntimeMenubarMenu';
-import { Icon } from 'antd';
+import DeploymentUnitIcon from 'components/componentIcons/DeploymentUnitIcon';
 // import DesktopLinkedState from 'state/DesktopLinkedState';
 
 // TODO: Move this into AppRuntimeMenubarSystemMenu lifecycle, once available (currently
@@ -12,7 +12,7 @@ export default class AppRuntimeMenubarSystemMenu extends AppRuntimeMenubarMenu {
     super(...args);
 
     this.setData({
-      title: <Icon type="deployment-unit" />,
+      title: <DeploymentUnitIcon />,
       items: [
         /**
          * @type {AppRuntimeMenubarMenuItem}
