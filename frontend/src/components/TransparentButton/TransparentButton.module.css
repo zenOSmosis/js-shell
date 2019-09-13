@@ -1,4 +1,8 @@
-.transparent-button {
+.transparent-button,
+.transparent-button:hover,
+.transparent-button:active,
+.transparent-button:focus {
   background-color: transparent !important;
   border: transparent !important;
+  outline: none;
 }
