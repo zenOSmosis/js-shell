@@ -3,7 +3,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import ScreenRecorderWindow from './ScreenRecorderWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
+import RecordScreenIcon from 'components/componentIcons/RecordScreenIcon';
 
 import * as socketFS from 'utils/socketFS';
 
@@ -144,5 +144,5 @@ export default registerApp({
       // videoElem = null;
     });
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}record-screen/record-screen.svg`
+  iconView: () => <RecordScreenIcon />
 });

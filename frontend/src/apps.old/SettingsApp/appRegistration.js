@@ -10,5 +10,5 @@ export default registerApp({
       <SettingsWindow {...props} />
     )
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}settings/settings.svg`
+  iconView: `${HOST_ICON_URL_PREFIX}settings/settings.svg`
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import HelloWorldWindow from './UserProfileWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
+import AvatarIcon from 'components/componentIcons/AvatarIcon';
 
 export default registerApp({
   title: 'User Profile',
@@ -10,5 +10,5 @@ export default registerApp({
       <HelloWorldWindow {...props} />
     );
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}avatar/avatar.svg`
+  iconView: () => <AvatarIcon />
 });

@@ -8,7 +8,7 @@
  */
 
 import './FilesApp';
-// import './HelloWorldApp';
+import './HelloWorldApp';
 import './UserProfileApp';
 import './P2PConnectionsApp';
 import './VoiceInputApp';

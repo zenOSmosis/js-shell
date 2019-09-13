@@ -41,10 +41,10 @@ class Dock extends Component {
         <div className="zd-desktop-dock-items">
           {
             appRegistrations.map((appRegistration, idx) => {
-              const iconSrc = appRegistration.getIconSrc();
+              const iconView = appRegistration.getIconView();
 
               // TODO: Also check if the appRegistration should ride in the Dock
-              if (!iconSrc) {
+              if (!iconView) {
                 return null;
               }
 

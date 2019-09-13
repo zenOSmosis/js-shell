@@ -1,7 +1,7 @@
 .zd-desktop-dock {
   position: absolute;
   bottom: 0px;
-  height: 52px;
+  height: 60px;
   text-align: center;
   margin: 0px auto;
 
@@ -18,15 +18,16 @@
 .zd-desktop-dock .zd-desktop-dock-items {
   padding: 4px;
   display: inline-block;
-  background-color: rgba(255,255,255,.4);
-  border: 1px rgba(255,255,255,.42) solid;
+  background-color: rgba(0,0,0,.4);
+  border: 1px rgba(255,255,255,.2) solid;
+  border-bottom: 0px transparent;
   border-top-left-radius: .4rem;
   border-top-right-radius: .4rem;
   min-width: 25px;
   max-width: 90%;
   height: 100%;
   max-width: 100%;
-/*position: relative;*/
+  /*position: relative;*/
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -42,13 +43,14 @@
 }
 
 .zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item.open {
-  background-color: #fff;
+  background-color: rgba(255,255,255,.8);
 }
 
-.zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item-icon {
-  width: 40px;
-  height: 40px;
+.zd-desktop-dock .zd-desktop-dock-items button.zd-desktop-dock-item-button {
+  font-size: 32px;
+  width: 48px;
   padding: 0px 2px;
+  color: #fff;
 }
 
 .zd-desktop-dock .zd-desktop-dock-items .zd-desktop-dock-item:hover {

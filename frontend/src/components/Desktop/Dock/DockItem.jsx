@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Menu, MenuDivider, MenuItem, /* SubMenu */ } from 'components/Menu';
-import Image from 'components/Image';
+import TransparentButton from 'components/TransparentButton';
 import { getWindowStackCentral } from 'core/ShellDesktop';
 import { Tooltip } from 'antd';
 import './style.css';
@@ -80,7 +80,7 @@ export default class DockItem extends Component {
     const { appRegistration } = this.props;
     const isLaunched = appRegistration.getIsLaunched();
     const allowLaunch = !isLaunched || appRegistration.getAllowMultipleWindows();
-    const iconSrc = appRegistration.getIconSrc();
+    const IconView = appRegistration.getIconView();
     const title = appRegistration.getTitle();
     const appRuntimes = appRegistration.getJoinedAppRuntimes();
 
@@ -94,13 +94,14 @@ export default class DockItem extends Component {
           title={title}
           visible={!isMenuVisible && isDockItemHovered}
         >
-          <button
+          <TransparentButton
             onMouseOver={evt => this.setState({ isDockItemHovered: true })}
             onMouseLeave={evt => this.setState({ isDockItemHovered: false })}
             onClick={evt => this._handleDockItemClick(appRegistration)}
+            className="zd-desktop-dock-item-button"
           >
-            <Image className="zd-desktop-dock-item-icon" src={iconSrc} />
-          </button>
+            <IconView />
+          </TransparentButton>
         </Tooltip>
         {
           isMenuVisible &&

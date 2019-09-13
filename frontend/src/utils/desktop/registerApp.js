@@ -120,9 +120,9 @@ const getMatchedAppRegistrations = (appRegistration) => {
 
     // Check if icon src is the same
     // TODO: Implement more versatile checking
-    const testIconSrc = testAppRegistration.getIconSrc();
-    const iconSrc = appRegistration.getIconSrc();
-    if (testIconSrc === iconSrc) {
+    const testIconView = testAppRegistration.getIconView();
+    const iconView = appRegistration.getIconView();
+    if (testIconView === iconView) {
       hmrMatchedRegistrations.push(testAppRegistration);
     }
   }

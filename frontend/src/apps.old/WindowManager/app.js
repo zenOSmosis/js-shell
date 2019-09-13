@@ -6,5 +6,5 @@ import config from 'config';
 export default registerApp({
   title: 'Window Manager',
   view: <WindowManagerWindow />,
-  iconSrc: `${config.HOST_ICON_URL_PREFIX}windows/windows.svg`
+  iconView: `${config.HOST_ICON_URL_PREFIX}windows/windows.svg`
 });

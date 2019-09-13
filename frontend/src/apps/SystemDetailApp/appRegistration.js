@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import SystemDetailWindow from './SystemDetailWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
+import SystemIcon from 'components/componentIcons/SystemIcon';
 
 export default registerApp({
   title: 'System Detail',
@@ -10,5 +10,5 @@ export default registerApp({
       <SystemDetailWindow {...props} />
     );
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}system/system.svg`
+  iconView: () => <SystemIcon />
 });

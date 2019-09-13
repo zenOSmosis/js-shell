@@ -26,7 +26,7 @@ class AppRegistration extends EventEmitter {
 
     const {
       title,
-      iconSrc,
+      iconView,
       view,
       cmd: runCmd,
       mimeTypes,
@@ -41,7 +41,7 @@ class AppRegistration extends EventEmitter {
 
     // TODO: Map all appRegistrationProps as properties
     this._title = title;
-    this._iconSrc = iconSrc;
+    this._iconView = iconView;
     this._view = view;
     this._runCmd = runCmd;
 
@@ -220,8 +220,8 @@ class AppRegistration extends EventEmitter {
     return this._title;
   }
 
-  getIconSrc() {
-    return this._iconSrc;
+  getIconView() {
+    return this._iconView;
   }
 
   /**

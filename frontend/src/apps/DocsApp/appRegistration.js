@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import DocsWindow from './DocsWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
+import DocumentationIcon from 'components/componentIcons/DocumentationIcon';
 
 export default registerApp({
   title: 'Docs',
@@ -10,5 +10,5 @@ export default registerApp({
       <DocsWindow {...props} />
     );
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}documentation/documentation.svg`
+  iconView: () => <DocumentationIcon />
 });

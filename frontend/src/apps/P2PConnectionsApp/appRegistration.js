@@ -1,7 +1,7 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import P2PConnectionsWindow from './P2PConnectionsWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
+import ChatIcon from 'components/componentIcons/ChatIcon';
 
 export default registerApp({
   title: 'P2P Connections',
@@ -10,5 +10,5 @@ export default registerApp({
       <P2PConnectionsWindow {...props} />
     );
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}chat/chat.svg`
+  iconView: () => <ChatIcon />
 });

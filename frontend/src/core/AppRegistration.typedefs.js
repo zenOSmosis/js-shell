@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} AppRegistrationProps
  * @property {string} title
- * @property {string} iconSrc
+ * @property {React.Component} iconView
  * @property {React.Component} view
  * @property {function} cmd Command to run inside of AppRuntime's
  * ClientGUIProcess.

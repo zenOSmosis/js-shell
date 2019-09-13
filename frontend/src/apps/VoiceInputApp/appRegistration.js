@@ -2,13 +2,11 @@ import React from 'react';
 
 // TODO: Import EVT_STATE_UPDATE
 import registerApp from 'utils/desktop/registerApp';
-
 import VoiceInputWindow from './VoiceInputWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
 import MicrophoneProcess from 'process/MicrophoneProcess';
 import createAudioWorker from './createAudioWorker';
-
 import VoiceInputLinkedState from './VoiceInputLinkedState';
+import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
 
 export default registerApp({
   title: 'Voice Input',
@@ -201,5 +199,5 @@ export default registerApp({
       })();
     });
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}microphone/microphone.svg`
+  iconView: () => <MicrophoneIcon />
 });

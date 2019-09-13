@@ -2,7 +2,6 @@ import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import SourceCodeAppWindow from './SourceCodeAppWindow';
-import { HOST_ICON_URL_PREFIX } from 'config';
 import UniqueSourceCodeAppLinkedState from './state/UniqueSourceCodeAppLinkedState';
 import {
   openAppFile,
@@ -17,6 +16,7 @@ import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_SAVE,
   FILE_CHOOSER_MODE_SAVE_AS
 } from 'utils/desktop/launchFileChooserDialog';
+import BlueprintIcon from 'components/componentIcons/BlueprintIcon';
 
 export default registerApp({
   title: 'Source Code',
@@ -26,7 +26,7 @@ export default registerApp({
     );
   },
   allowMultipleWindows: true,
-  iconSrc: `${HOST_ICON_URL_PREFIX}blueprint/blueprint.svg`,
+  iconView: () =>  <BlueprintIcon />,
   
   // TODO: Filter list specific to this app (don't use wildcard)
   mimeTypes: ['*'],
