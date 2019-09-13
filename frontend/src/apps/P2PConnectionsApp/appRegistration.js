@@ -10,5 +10,5 @@ export default registerApp({
       <P2PConnectionsWindow {...props} />
     );
   },
-  iconSrc: `${HOST_ICON_URL_PREFIX}people-connection/people-connection.svg`
+  iconSrc: `${HOST_ICON_URL_PREFIX}chat/chat.svg`
 });
