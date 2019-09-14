@@ -7,6 +7,3 @@
 [submodule "docker_modules/searx"]
 	path = docker_modules/searx
 	url = https://github.com/asciimoo/searx.git
-[submodule "docker_modules/docker-stt-socket"]
-	path = docker_modules/docker-stt-socket
-	url = https://zenOSmosis@bitbucket.org/zenOSmosis/stt-socket.git

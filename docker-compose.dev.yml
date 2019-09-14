@@ -96,12 +96,10 @@ services:
   #    - 65435-65535:65435-65535/udp
 
   # Prototype STT socket w/ Socket.io interface
-  stt-socket:
-    build: ./docker_modules/docker-stt-socket
-    networks:
-      - shell-core-service-network
-    volumes:
-      - ./docker_modules/docker-stt-socket:/app # Only during development
-      - /tmp/stt-socket:/tmp # Only during development
-  #   ports:
-  #    - 8888:8888
+  # stt-socket:
+  #  build: ./docker_modules/docker-stt-socket
+  #  networks:
+  #    - shell-core-service-network
+  #  volumes:
+  #    - ./docker_modules/docker-stt-socket:/app # Only during development
+  #    - /tmp/stt-socket:/tmp # Only during development
