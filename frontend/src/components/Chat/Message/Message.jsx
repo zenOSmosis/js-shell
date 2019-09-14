@@ -1,14 +1,15 @@
 import React from 'react';
 import { Avatar } from 'antd';
 // import { Row, Column } from 'components/Layout';
-import './Message.css';
+import classNames from 'classnames';
+import style from './Message.module.scss';
 
 const MessageAvatar = () => {
   return (
     <Avatar
       size={48}
       icon="user"
-      className="zd-chat-message-avatar"
+      className={style['avatar']}
     />
   )
 };
@@ -17,10 +18,12 @@ const Message = (props = {}) => {
   const { children, fromLocal } = props;
 
   return (
-    <div className={`zd-chat-message ${fromLocal ? 'local' : 'remote'}`}>
+    <div
+      className={classNames(style['chat-message'], (fromLocal ? style['local'] : style['remote']))}
+    >
       <MessageAvatar />
 
-      <div className="zd-chat-message-bubble">
+      <div className={style['chat-bubble']}>
         {
           children
         }
