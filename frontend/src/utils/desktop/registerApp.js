@@ -94,7 +94,7 @@ const unregister = async (hmrMatchedRegistration) => {
 /**
  * Retrieves matched app registrations based on the given app registration.
  * 
- * (e.g. ~ if the icons are the same, assume the app is the same)
+ * (Performs comparative title matching)
  * 
  * @param {AppRegistration} appRegistration
  * @return {AppRegistration[]}
@@ -103,6 +103,8 @@ const getMatchedAppRegistrations = (appRegistration) => {
   if (!module.hot) {
     return;
   }
+
+  const appRegistrationTitle = appRegistration.getTitle();
 
   const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   const lenAppRegistrations = appRegistrations.length;
@@ -118,11 +120,8 @@ const getMatchedAppRegistrations = (appRegistration) => {
       continue;
     }
 
-    // Check if icon src is the same
-    // TODO: Implement more versatile checking
-    const testIconView = testAppRegistration.getIconView();
-    const iconView = appRegistration.getIconView();
-    if (testIconView === iconView) {
+    // Validate titles match
+    if (testAppRegistration.getTitle() === appRegistrationTitle) {
       hmrMatchedRegistrations.push(testAppRegistration);
     }
   }
