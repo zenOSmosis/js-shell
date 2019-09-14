@@ -102,6 +102,22 @@ export default class DockItem extends Component {
             className={style['dock-item-button']}
           >
             <IconView />
+
+            <div className={style['app-indicator-wrapper']}>
+              {
+                appRuntimes.map((appRuntime, idx) => {
+                  // Prevent more than 5 indicators
+                  // TODO: Make this configurable
+                  if (idx > 4) {
+                    return false;
+                  }
+
+                  return (
+                    <div key={idx} className={style['app-indicator']}></div>
+                  );
+                })
+              }
+            </div>
           </TransparentButton>
         </Tooltip>
         {

@@ -36,6 +36,9 @@ html {
                                   supported by Chrome and Opera */
 }
 
+* {
+  box-sizing: border-box !important;
+}
 
 h1 { 
   font-size: 1.2rem;
@@ -67,10 +70,6 @@ p {
   appearance: none !important;
 }
 
-* {
-  box-sizing: border-box !important;
-}
-
 button,
 input,
 textarea,
@@ -79,6 +78,7 @@ select option {
   background-color: $inputBgColor;
   color: $inputTextColor;
   border: 1px $inputBorderColor solid;
+  position: relative;
 }
 
 select option:checked,
