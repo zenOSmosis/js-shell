@@ -101,7 +101,7 @@ const unregister = async (hmrMatchedRegistration) => {
  */
 const getMatchedAppRegistrations = (appRegistration) => {
   if (!module.hot) {
-    return;
+    return [];
   }
 
   const appRegistrationTitle = appRegistration.getTitle();
