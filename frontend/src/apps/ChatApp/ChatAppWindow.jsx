@@ -10,7 +10,7 @@ import SplitterLayout from 'components/SplitterLayout';
 // import { Avatar, Input } from 'antd';
 // const { Search } = Input;
 
-class P2PConnectionsWindow extends Component {
+class ChatAppWindow extends Component {
   constructor(...args) {
     super(...args);
 
@@ -115,4 +115,4 @@ class P2PConnectionsWindow extends Component {
   }
 }
 
-export default P2PConnectionsWindow;
+export default ChatAppWindow;

@@ -1,13 +1,13 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
-import P2PConnectionsWindow from './P2PConnectionsWindow';
+import ChatAppWindow from './ChatAppWindow';
 import ChatIcon from 'components/componentIcons/ChatIcon';
 
 export default registerApp({
-  title: 'P2P Connections',
+  title: 'Chat',
   view: (props) => {
     return (
-      <P2PConnectionsWindow {...props} />
+      <ChatAppWindow {...props} />
     );
   },
   iconView: () => <ChatIcon />

@@ -10,7 +10,7 @@
 import './FilesApp';
 import './HelloWorldApp';
 import './UserProfileApp';
-import './P2PConnectionsApp';
+import './ChatApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './MediaPlayerApp';
