@@ -38,12 +38,29 @@
       display: inline-block;
       border: 1px transparent solid;
       border-radius: 32px;
+      color: #cccccc;
+      text-shadow: 6px 1px 6px #000000;
+
+      &:hover {
+        border-color: #ffffff;
+        background-color: rgba(255,255,255,.4);
+  
+        /*
+         * Firefox & Edge specifically only support the -webkit-text-stroke property (not using -moz- or -ms- prefix)
+         * @see https://caniuse.com/#feat=text-stroke
+         */
+        /*-webkit-text-stroke: 1px rgba(0,0,0,.4);*/
+      }
+
+      &.open {
+        border-top-color: #ffff00;
+        color: #61dafB;
+      }
 
       button.dock-item-button {
         font-size: 32px;
         width: 48px;
         padding: 0px 1px;
-        color: #fff;
 
         .app-indicator-wrapper {
           text-align: center;
@@ -56,20 +73,12 @@
             width: 6px;
             height: 6px;
             border-radius: 6px;
-            background-color: orange;
+            background-color: #ffa500;
             display: inline-block;
             margin: 0px 1px;
           }
         }
       }
-    }
-
-    .dock-item:hover {
-      border: 1px #ccc dashed;
-    }
-
-    .dock-item.open {
-      background-color: rgba(255,255,255,.8);
     }
   }
 }

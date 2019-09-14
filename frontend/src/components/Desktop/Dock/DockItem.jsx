@@ -89,7 +89,7 @@ export default class DockItem extends Component {
       <div
         ref={c => this._root = c}
         // effect="wobble" // TODO: Use variable
-        className={classNames(style['dock-item'], (isLaunched ? 'open' : null))}
+        className={classNames(style['dock-item'], (isLaunched ? style['open'] : null))}
       >
         <Tooltip
           title={title}

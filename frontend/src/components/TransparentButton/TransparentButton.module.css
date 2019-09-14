@@ -2,7 +2,9 @@
 .transparent-button:hover,
 .transparent-button:active,
 .transparent-button:focus {
+  color: inherit;
   background-color: transparent !important;
   border: transparent !important;
   outline: none;
+  text-shadow: inherit !important;
 }
