@@ -428,22 +428,6 @@ class ClientProcess extends EventEmitter {
     return this._cmdArguments;
   }
 
-  setInitPosition(position) {
-    this._initPosition = position;
-  }
-
-  getInitPosition() {
-    return this._initPosition;
-  }
-
-  setInitSize(size) {
-    this._initSize = size;
-  }
-
-  getInitSize() {
-    return this._initSize;
-  }
-
   /**
    * Retrieves the direct descendant processes forked from this current
    * process.
@@ -481,7 +465,7 @@ class ClientProcess extends EventEmitter {
    */
   async _launch() {
     try {
-      // Prevent possiblity of double-launch
+      // Prevent possibility of double-launch
       if (this._isLaunchStarted) {
         // console.warn('Process has already launched');
         return;
