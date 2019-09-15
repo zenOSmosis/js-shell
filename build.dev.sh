@@ -24,4 +24,6 @@ cd $ROOT_PATH
 DOCKER_COMPOSE_FILE='docker-compose.dev.yml';
 echo "Preparing to build Docker Compose configuration from file ${DOCKER_COMPOSE_FILE}"
 
-CURRENT_UID=$(id -u):$(id -g) docker-compose -f $DOCKER_COMPOSE_FILE build
+USERGROUPID=$(id -u):$(id -g)
+
+CURRENT_UID=${USERGROUPID} docker-compose -f $DOCKER_COMPOSE_FILE build
