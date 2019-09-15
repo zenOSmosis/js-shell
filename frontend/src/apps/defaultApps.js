@@ -8,17 +8,17 @@
  */
 
 import './FilesApp';
-// import './HelloWorldApp';
-// import './UserProfileApp';
-// import './ChatApp';
+import './HelloWorldApp';
+import './UserProfileApp';
+import './ChatApp';
 import './VoiceInputApp';
-// import './ScreenRecorderApp';
-// import './MediaPlayerApp';
-// import './SystemDetailApp';
-// import './CalculatorApp';
+import './ScreenRecorderApp';
+import './MediaPlayerApp';
+import './SystemDetailApp';
+import './CalculatorApp';
 import './SourceCodeApp';
-// import './TextEditorApp';
-// import './A3DApp';
-// import './TerminalApp';
-// import './DocsApp';
+import './TextEditorApp';
+import './A3DApp';
+import './TerminalApp';
+import './DocsApp';
 // import './SettingsApp';
