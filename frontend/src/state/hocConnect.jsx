@@ -23,7 +23,7 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
   // Enables ref to be obtained from stateful components, ignoring ref if not.
   // (e.g. if WrappedComponent extends React.Component the ref can be referenced here)
   const RefForwardedComponent = React.forwardRef((props, ref) => {
-    if (WrappedComponent.prototype.render) {
+    if (WrappedComponent.prototype && WrappedComponent.prototype.render) {
       return (
         <WrappedComponent ref={ref} {...props} />
       );
