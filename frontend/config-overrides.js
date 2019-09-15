@@ -42,22 +42,9 @@ module.exports = function override(config, env) {
     })();
   }
 
-  // @see https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
-  // @see https://www.npmjs.com/package/worker-loader
+  // config.resolveLoader.modules = ["node_modules", "web_loaders"];
 
   /*
-  config.module.rules.push({
-    test: /\.worker\.js$/,
-    loader: 'worker-loader',
-    options: {
-      name: 'native-worker.[hash].js', // Set a custom name for the output script
-      inline: false // Inline the worker as a BLOB
-    }
-  });
-  */
-
-  config.resolveLoader.modules = ["node_modules", "web_loaders"];
-
   config.module.rules.push({
     test: /\.worker\.js$/,
     loader: 'worker-plugin-loader',
@@ -66,8 +53,11 @@ module.exports = function override(config, env) {
       // inline: false // Inline the worker as a BLOB
     }
   });
+  */
 
   /*
+  // @see https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
+  // @see https://www.npmjs.com/package/worker-loader
   config.module.rules.push({
     test: /\.worker\.js$/,
     loader: 'worker-loader',
@@ -80,16 +70,14 @@ module.exports = function override(config, env) {
 
   // Fix window not defined error in Web Worker
   // @see https://medium.com/@vincentdnl/just-did-all-the-steps-in-the-article-on-a-fresh-cra-install-and-i-get-a-referenceerror-window-is-e200541533d0
-  config.output['globalObject'] = 'this';
+  // config.output['globalObject'] = 'this';
 
-  /*
   config.plugins.push(
     new WorkerPlugin({
       // use "self" as the global object when receiving hot updates.
       globalObject: 'self' // <-- this is the default value
     })
   );
-  */
 
   // @see https://github.com/Microsoft/monaco-editor/issues/82
   config.plugins.push(
