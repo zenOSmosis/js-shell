@@ -22,7 +22,7 @@ const exec = async (appRuntime, runTarget, sourceCode) => {
   
           new ClientWorkerProcess(process, (process) => {
             ${sourceCode}
-          })
+          });
         `;
   
         jitRuntime.exec(cmd);
