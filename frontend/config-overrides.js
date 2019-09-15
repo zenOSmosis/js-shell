@@ -75,7 +75,8 @@ module.exports = function override(config, env) {
   config.plugins.push(
     new WorkerPlugin({
       // use "self" as the global object when receiving hot updates.
-      globalObject: 'self' // <-- this is the default value
+      globalObject: 'self', // <-- this is the default value
+      filename: '[name].worker.js'
     })
   );
 

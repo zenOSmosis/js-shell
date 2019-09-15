@@ -9,7 +9,6 @@
 // TODO: Implement terminate detection
 
 import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
-import ClientWorkerProcess from './dispatch.worker';
 
 /**
  * @extends ClientWorkerProcessCommonCore
@@ -32,7 +31,7 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
     const defOptions = {
       // The native Web Worker implementation
       // worker-loader callable *.worker.js extension
-      DispatchWorker: ClientWorkerProcess
+      DispatchWorker: new Worker('./dispatch.worker.js', { type: 'module' })
     };
 
     options = {...defOptions, ...options};
@@ -157,7 +156,8 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
 
         // Launch the native Web Worker
         const { DispatchWorker } = this._options;
-        this._nativeWorker = new DispatchWorker();
+
+        this._nativeWorker = DispatchWorker;
 
         this._nativeWorker.onerror = (error) => {
           console.error(error);

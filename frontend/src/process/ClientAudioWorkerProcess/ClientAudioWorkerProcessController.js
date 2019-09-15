@@ -1,5 +1,4 @@
 import ClientWorkerProcessController from '../ClientWorkerProcess';
-import ClientAudioWorkerProcess from './dispatch.worker';
 
 /**
  * Processes Float32Array audio in a native Web Worker.
@@ -24,7 +23,7 @@ class ClientAudioWorkerProcessController extends ClientWorkerProcessController {
     // Default options
     const defOptions = {
       // The non-instantiated class of the Worker implementation
-      DispatchWorker: ClientAudioWorkerProcess,
+      DispatchWorker: new Worker('./dispatch.worker.js', { type: 'module' }),
 
       outputSampleRate: 16000,
       // inputSampleRate: 48000 // Should be overridden by passed options

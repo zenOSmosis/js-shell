@@ -1,8 +1,8 @@
 import ClientWorkerProcess from '../ClientWorkerProcess/ClientWorkerProcess';
-const Babel = require('@babel/standalone'); // @babel/standalone is not an ES6 module
-// const babelPluginSyntaxDynamicImport = require('@babel/plugin-syntax-dynamic-import');
 import React from 'react';
 import ReactDOM from 'react-dom';
+const Babel = require('@babel/standalone'); // @babel/standalone is not an ES6 module
+// const babelPluginSyntaxDynamicImport = require('@babel/plugin-syntax-dynamic-import');
 
 // TODO: Enable optional passing of presets from controller
 export const BABEL_REACT_PRESETS = [

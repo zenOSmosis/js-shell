@@ -1,3 +1,5 @@
+/* eslint no-restricted-globals: 1 */
+
 /**
  * Important! This module is only intended to be run in a native Web Worker thread.
  */
