@@ -31,7 +31,7 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
     const defOptions = {
       // The native Web Worker implementation
       // worker-loader callable *.worker.js extension
-      DispatchWorker: new Worker('./dispatch.worker.js', { type: 'module' })
+      nativeWorker: new Worker('./dispatch.worker.js', { type: 'module' })
     };
 
     options = {...defOptions, ...options};
@@ -155,9 +155,9 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
         }
 
         // Launch the native Web Worker
-        const { DispatchWorker } = this._options;
+        const { nativeWorker } = this._options;
 
-        this._nativeWorker = DispatchWorker;
+        this._nativeWorker = nativeWorker;
 
         this._nativeWorker.onerror = (error) => {
           console.error(error);

@@ -23,7 +23,7 @@ class ClientAudioWorkerProcessController extends ClientWorkerProcessController {
     // Default options
     const defOptions = {
       // The non-instantiated class of the Worker implementation
-      DispatchWorker: new Worker('./dispatch.worker.js', { type: 'module' }),
+      nativeWorker: new Worker('./dispatch.worker.js', { type: 'module' }),
 
       outputSampleRate: 16000,
       // inputSampleRate: 48000 // Should be overridden by passed options
