@@ -33,15 +33,17 @@ module.exports = function override(config, env) {
   );
 
   // Utilize HMR hot loading
-  (() => {
-    // Overwrite react-dom w/ hot loader
-    config.resolve.alias = Object.assign({}, config.resolve.alias, {
-      'react-dom': '@hot-loader/react-dom'
-    });
-
-    // Overwrite the exiting config w/ the hot loader configuration
-    config = rewireReactHotLoader(config, env);
-  })();
+  if (process.env.NODE_ENV === 'development') {
+    (() => {
+      // Overwrite react-dom w/ hot loader
+      config.resolve.alias = Object.assign({}, config.resolve.alias, {
+        'react-dom': '@hot-loader/react-dom'
+      });
+  
+      // Overwrite the exiting config w/ the hot loader configuration
+      config = rewireReactHotLoader(config, env);
+    })();
+  }
 
   // @see https://medium.com/@danilog1905/how-to-use-web-workers-with-react-create-app-and-not-ejecting-in-the-attempt-3718d2a1166b
   // @see https://www.npmjs.com/package/worker-loader
