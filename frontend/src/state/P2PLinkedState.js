@@ -10,8 +10,11 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_LAST_RECEIVED_SOCKET_PEER_DATA = 'lastReceivedPeerData';
+export const STATE_CHAT_MESSAGES = 'chatMessages';
 
 export const ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA = 'handleReceivedSocketPeerData';
+export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
+export const ACTION_GET_CHAT_MESSAGES = 'getChatMessages';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -27,13 +30,38 @@ export default class P2PLinkedState extends LinkedState {
       // Peers which are directly connected via WebRTC
       [STATE_WEBRTC_CONNECTIONS]: [],
 
-      [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: null
+      [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: {},
+
+      [STATE_CHAT_MESSAGES]: []
     }, {
       actions: {
+        // Called via P2PMonitor when there is received SocketPeer data
         [ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA]: (receivedData) => {
           this.setState({
             [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: receivedData
           });
+        },
+
+        // Adds a chat message to the log
+        [ACTION_ADD_CHAT_MESSAGE]: (chatMessage) => {
+          if (!chatMessage) {
+            console.warn('chatMessage does not exist');
+            return;
+          }
+
+          const currentChatMessages = this.getState(STATE_CHAT_MESSAGES);
+
+          currentChatMessages.push(chatMessage);
+
+          this.setState({
+            [STATE_CHAT_MESSAGES]: currentChatMessages
+          });
+        },
+
+        [ACTION_GET_CHAT_MESSAGES]: () => {
+          const chatMessages = this.getState(STATE_CHAT_MESSAGES);
+
+          return chatMessages;
         }
       }
     });

@@ -58,6 +58,10 @@ class LinkedState extends EventEmitter {
     mlscs.addLinkedState(this, initialDefaultState);
   }
 
+  /**
+   * @param {string} actionName 
+   * @param  {Array} actionData 
+   */
   dispatchAction(actionName, ...actionData) {
     const { actions } = this._options;
     if (!actions || typeof actions[actionName] !== 'function') {
@@ -65,7 +69,9 @@ class LinkedState extends EventEmitter {
     }
 
     const action = actions[actionName];
-    action(...actionData);
+    const result = action(...actionData);
+
+    return result;
   }
 
   /**
@@ -171,11 +177,17 @@ class LinkedState extends EventEmitter {
   /**
    * Retrieves a common state across all shared link state instances.
    * 
+   * @param {string} withKey?
    * @return {Object}
    */
-  getState() {
-    // return sharedStates[this._linkedScopeName];
-    return mlscs.getSharedState(this);
+  getState(withKey = null) {
+    const sharedState = mlscs.getSharedState(this);
+
+    if (!withKey) {
+      return sharedState;
+    } else {
+      return sharedState[withKey];
+    }
   }
 
   /**

@@ -1,7 +1,12 @@
 // TODO: Rename to P2PDelegate, or something along those lines
 
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
-import P2PLinkedState, { STATE_LAST_RECEIVED_SOCKET_PEER_DATA } from 'state/P2PLinkedState';
+import P2PLinkedState, {
+  STATE_LAST_RECEIVED_SOCKET_PEER_DATA,
+
+  ACTION_ADD_CHAT_MESSAGE,
+  ACTION_GET_CHAT_MESSAGES
+} from 'state/P2PLinkedState';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -22,12 +27,21 @@ class ChatManager extends ClientProcess {
       this._p2pLinkedState = new P2PLinkedState();
 
       this._p2pLinkedState.on('update', (updatedState) => {
-        const { [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: receivedSocketPeerData } = updatedState;
+        try {
+          const { [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: receivedSocketPeerData } = updatedState;
 
-        if (typeof receivedSocketPeerData !== undefined) {
-          console.debug({
-            receivedSocketPeerData
-          });
+          if (receivedSocketPeerData !== undefined) {
+            this._p2pLinkedState.dispatchAction(ACTION_ADD_CHAT_MESSAGE, receivedSocketPeerData);
+
+            const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES);
+
+            console.debug({
+              chatMessages
+            });
+          }
+
+        } catch (exc) {
+          throw exc;
         }
       });
 

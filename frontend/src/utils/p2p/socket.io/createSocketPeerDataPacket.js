@@ -11,7 +11,7 @@ import { getSocketID } from 'utils/socket.io';
  * 
  * @return {SocketPeerDataPacket} 
  */
-const createSocketPeerDataPacket = (toSocketPeerID, messageData, isReceivedReceiptRequested = false) => {
+const createSocketPeerDataPacket = (toSocketPeerID, data, isReceivedReceiptRequested = false) => {
   const fromSocketID = getSocketID();
 
   if (!fromSocketID) {
@@ -26,7 +26,7 @@ const createSocketPeerDataPacket = (toSocketPeerID, messageData, isReceivedRecei
       fromSocketID,
       packetUUID
     },
-    messageData,
+    data,
     isReceivedReceiptRequested
   };
 };
