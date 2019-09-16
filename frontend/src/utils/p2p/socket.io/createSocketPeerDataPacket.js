@@ -21,11 +21,9 @@ const createSocketPeerDataPacket = (toSocketPeerID, packetType, data, isReceived
   const packetUUID = uuidv4();
 
   return {
-    headers: {
-      toSocketPeerID,
-      fromSocketPeerID,
-      packetUUID
-    },
+    toSocketPeerID,
+    fromSocketPeerID,
+    packetUUID,
     packetType,
     data,
     isReceivedReceiptRequested

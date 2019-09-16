@@ -137,11 +137,10 @@ class P2PMonitor extends ClientProcess {
     this._p2pLinkedState.dispatchAction(ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA, receivedData);
 
     if (isReceivedReceiptRequested) {
-      const { headers } = receivedData;
       const {
         fromSocketPeerID: toSocketPeerID,
         packetUUID: originPacketUUID
-      } = headers;
+      } = receivedData;
 
       // TODO: Create received receipt and return it
       const receivedReceiptDataPacket = createSocketPeerReceivedReceiptDataPacket(toSocketPeerID, originPacketUUID);

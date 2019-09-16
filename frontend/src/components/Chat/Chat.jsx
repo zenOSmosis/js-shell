@@ -53,8 +53,7 @@ class Chat extends Component {
           if (stateChatMessages !== undefined) {
             const ret = {
               messages: this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES, (chatMessage) => {
-                const { headers } = chatMessage;
-                const { fromSocketPeerID: testFromSocketPeerID } = headers;
+                const { fromSocketPeerID: testFromSocketPeerID } = chatMessage;
 
                 return testFromSocketPeerID === remoteSocketPeerID;
               })

@@ -16,12 +16,7 @@ const routeSocketPeerData = async (dataBundle, ack) => {
   return await handleSocketAPIRoute(() => {
     const { socket, socketPeerDataPacket } = dataBundle;
 
-    const { headers } = socketPeerDataPacket;
-    if (!headers) {
-      throw new Error('No headers set');
-    }
-
-    const { toSocketPeerID } = headers;
+    const { toSocketPeerID } = socketPeerDataPacket;
 
     if (!toSocketPeerID) {
       throw new Error('No toSocketPeerID set');
