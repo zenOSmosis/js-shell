@@ -6,6 +6,8 @@ import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
 import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
 import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
+import P2PLinkedState, { STATE_CHAT_MESSAGES, ACTION_GET_CHAT_MESSAGES } from 'state/P2PLinkedState';
+import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 /**
  * @typedef {Object} ChatMessage
@@ -16,9 +18,16 @@ import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPack
  */
 
 class Chat extends Component {
-  state = {
-    messages: []
-  };
+  constructor(props) {
+    super(props);
+
+    this._p2pLinkedState = new P2PLinkedState();
+  }
+
+  componentWillUnmount() {
+    this._p2pLinkedState.destroy();
+    this._p2pLinkedState = null;
+  }
 
   async _handleMessageSend(messageBody) {
     try {
@@ -34,28 +43,56 @@ class Chat extends Component {
 
   render() {
     const { remoteSocketPeerID } = this.props;
-    const { messages } = this.state;
 
     return (
-      <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
-        <Layout>
-          <Header>
-             <ChatHeader
-              remoteSocketPeerID={remoteSocketPeerID}
-            />
-          </Header>
+      <LinkedStateRenderer
+        linkedState={this._p2pLinkedState}
+        onUpdate={(updatedState) => {
+          const { [STATE_CHAT_MESSAGES]: stateChatMessages } = updatedState;
 
-          <Content>
-             <MessageList messages={messages} />
-          </Content>
+          if (stateChatMessages !== undefined) {
+            const ret = {
+              messages: this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES, (chatMessage) => {
+                const { headers } = chatMessage;
+                const { fromSocketPeerID: testFromSocketPeerID } = headers;
 
-          <Footer>
-            <MessageComposer
-              onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
-            />
-          </Footer>
-        </Layout>
-      </Full>
+                return testFromSocketPeerID === remoteSocketPeerID;
+              })
+            };
+
+            console.debug({
+              ret
+            });
+
+            return ret;
+          }
+        }}
+        render={(renderProps) => {
+          const { messages } = renderProps;
+
+          return (
+            <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
+              <Layout>
+                <Header>
+                  <ChatHeader
+                    remoteSocketPeerID={remoteSocketPeerID}
+                  />
+                </Header>
+
+                <Content>
+                  <MessageList messages={messages} />
+                </Content>
+
+                <Footer>
+                  <MessageComposer
+                    onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
+                  />
+                </Footer>
+              </Layout>
+            </Full>
+          )
+        }}
+      />
     );
   }
 }

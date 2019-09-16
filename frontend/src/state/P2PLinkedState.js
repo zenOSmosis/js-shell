@@ -60,8 +60,12 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        [ACTION_GET_CHAT_MESSAGES]: () => {
-          const chatMessages = this.getState(STATE_CHAT_MESSAGES);
+        [ACTION_GET_CHAT_MESSAGES]: (withFilter = null) => {
+          let chatMessages = this.getState(STATE_CHAT_MESSAGES);
+
+          if (typeof withFilter === 'function') {
+            chatMessages = chatMessages.filter(withFilter);
+          }
 
           return chatMessages;
         },
