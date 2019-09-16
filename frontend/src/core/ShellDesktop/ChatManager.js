@@ -31,13 +31,19 @@ class ChatManager extends ClientProcess {
           const { [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: receivedSocketPeerData } = updatedState;
 
           if (receivedSocketPeerData !== undefined) {
-            this._p2pLinkedState.dispatchAction(ACTION_ADD_CHAT_MESSAGE, receivedSocketPeerData);
+            if (receivedSocketPeerData.packetType &&
+                receivedSocketPeerData.packetType === 'chatMessage') {
+              
+              // Add the chat message to the log
+              this._p2pLinkedState.dispatchAction(ACTION_ADD_CHAT_MESSAGE, receivedSocketPeerData);
 
-            const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES);
-
-            console.debug({
-              chatMessages
-            });
+              const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES);
+  
+              // TODO: Remove
+              console.debug({
+                chatMessages
+              });
+            }
           }
 
         } catch (exc) {

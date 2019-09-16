@@ -4,7 +4,7 @@ import ChatHeader from './Header';
 import { Layout, Header, Content, Footer } from '../Layout';
 import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-import createSocketPeerDataPacket from 'utils/p2p/socket.io/createSocketPeerDataPacket';
+import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
 import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
 
 /**
@@ -24,7 +24,7 @@ class Chat extends Component {
     try {
       const { remoteSocketPeerID: toSocketPeerID } = this.props;
 
-      const socketPeerDataPacket = createSocketPeerDataPacket(toSocketPeerID, messageBody, true);
+      const socketPeerDataPacket = createSocketPeerChatMessageDataPacket(toSocketPeerID, messageBody);
 
       await sendSocketPeerDataPacket(socketPeerDataPacket);
     } catch (exc) {

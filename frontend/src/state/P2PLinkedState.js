@@ -43,6 +43,7 @@ export default class P2PLinkedState extends LinkedState {
         },
 
         // Adds a chat message to the log
+        // This should only be called by the ChatManager app
         [ACTION_ADD_CHAT_MESSAGE]: (chatMessage) => {
           if (!chatMessage) {
             console.warn('chatMessage does not exist');
