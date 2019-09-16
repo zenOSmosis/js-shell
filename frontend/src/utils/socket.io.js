@@ -62,7 +62,17 @@ socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
   });
 });
 
+/**
+ * @return {string | null} Returns null if the local user is not online.
+ */
+const getSocketID = () => {
+  const { socketId } = socketLinkedState.getState();
+
+  return socketId;
+};
+
 export default socket;
 export {
-  SocketLinkedState
+  SocketLinkedState,
+  getSocketID
 };
