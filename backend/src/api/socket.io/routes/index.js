@@ -53,8 +53,8 @@ const echo = require('./echo');
 const { createXTermSocketChannel } = require('./socketChannel');
 
 import {
-  fetchSocketIDs,
-  routeSocketPeerData
+  fetchSocketIDs as p2pFetchSocketIDs,
+  routeSocketPeerData as p2pRouteSocketPeerData
 } from './p2p';
 
 import socketFS from './socketFS';
@@ -108,11 +108,19 @@ const initSocket = (socket) => {
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
 
   // P2P
-  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, fetchSocketIDs);
-  socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, routeSocketPeerData);
+  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2pFetchSocketIDs);
+  socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
+    // Add socket to existing options
+    // options = {...(options || {}), ...{socket}};
+
+    p2pRouteSocketPeerData({
+      socket,
+      socketPeerDataPacket
+    }, ack);
+  });
 
   // Socket channel
-  socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options, ack) => {
+  socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options = {}, ack) => {
     // Add socket to existing options
     options = {...(options || {}), ...{socket}};
 

@@ -1,23 +1,27 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
-require('utils/p2p/SocketPeerDataPacket.typedef');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
+import 'utils/p2p/SocketPeerDataPacket.typedef';
+import { SOCKET_API_EVT_PEER_DATA } from '../../events';
 
 /**
- * 
- * @param {SocketPeerDataPacket} socketPeerDataPacket 
+ * @typedef {Object} RouteSocketPeerDataBundle
+ * @property {Object} socket
+ * @property {SocketPeerDataPacket} socketPeerDataPacket
+ */
+
+/**
+ * @param {RouteSocketPeerDataBundle} dataBundle 
  * @param {function} ack 
  */
-const routeSocketPeerData = async (socketPeerDataPacket, ack) => {
+const routeSocketPeerData = async (dataBundle, ack) => {
   return await handleSocketAPIRoute(() => {
-    console.log({
-      socketPeerDataPacket
-    });
+    const { socket, socketPeerDataPacket } = dataBundle;
 
-    // Validate other user is online
+    const { headers } = socketPeerDataPacket;
+    const { toSocketPeerID } = headers;
 
-    // Emit data / body
-
-    // Handle read receipt
+    // TODO: Handle emit ack
+    socket.to(toSocketPeerID).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);
   }, ack);
 };
 
-module.exports = routeSocketPeerData;
+export default routeSocketPeerData;

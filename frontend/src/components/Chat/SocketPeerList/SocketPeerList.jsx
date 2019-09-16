@@ -55,8 +55,7 @@ class SocketPeerList extends Component {
   }
 
   render() {
-    let { socketPeerIDs } = this.props;
-    socketPeerIDs = socketPeerIDs || [];
+    const { socketPeerIDs } = this.props;
 
     return (
       <TileList>

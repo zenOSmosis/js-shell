@@ -3,10 +3,11 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
 import fetchSocketPeerIDs from 'utils/p2p/socket.io/fetchSocketPeerIDs';
-import P2PLinkedState from 'state/P2PLinkedState';
+import P2PLinkedState, { ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA } from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_CONNECT,
-  SOCKET_API_EVT_PEER_DISCONNECT
+  SOCKET_API_EVT_PEER_DISCONNECT,
+  SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
 
 /**
@@ -54,10 +55,12 @@ class P2PMonitor extends ClientProcess {
 
       socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
       socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+      socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerData);
 
       this.on(EVT_BEFORE_EXIT, () => {
         socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
         socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+        socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerData);
 
         // Reset so that any UI views / etc. don't show connected peers
         this._p2pLinkedState.reset();
@@ -121,6 +124,10 @@ class P2PMonitor extends ClientProcess {
       this._p2pLinkedState.removeSocketPeerID(socketPeerID);
     }
   }
+
+  _handleReceivedSocketPeerData = (receivedData) => {
+    this._p2pLinkedState.dispatchAction(ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA, receivedData);
+  };
 
   async _initWebRTCServices() {
     try {
