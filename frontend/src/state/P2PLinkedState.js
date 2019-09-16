@@ -13,6 +13,7 @@ export const STATE_LAST_RECEIVED_SOCKET_PEER_DATA = 'lastReceivedPeerData';
 export const STATE_CHAT_MESSAGES = 'chatMessages';
 
 export const ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA = 'handleReceivedSocketPeerData';
+export const ACTION_UPDATE_CHAT_MESSAGE_WITH_PACKET_UUID = 'updateChatMessageWithPacketUUID';
 export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
 export const ACTION_GET_CHAT_MESSAGES = 'getChatMessages';
 
@@ -63,6 +64,30 @@ export default class P2PLinkedState extends LinkedState {
           const chatMessages = this.getState(STATE_CHAT_MESSAGES);
 
           return chatMessages;
+        },
+
+        /**
+         * Updates an existing chat message with updated data.
+         */
+        [ACTION_UPDATE_CHAT_MESSAGE_WITH_PACKET_UUID]: (packetUUID, updatedData) => {
+          let chatMessages = this.getState(STATE_CHAT_MESSAGES);
+
+          chatMessages = chatMessages.map(chatMessage => {
+            const { headers } = chatMessage;
+            const { packetUUID: testPacketUUID } = headers;
+
+            if (testPacketUUID !== packetUUID) {
+              return chatMessage;
+            } else {
+              chatMessage = {...chatMessage, ...{updatedData}};
+
+              return chatMessage;
+            }
+          });
+
+          this.setState({
+            [STATE_CHAT_MESSAGES]: chatMessages
+          });
         }
       }
     });
