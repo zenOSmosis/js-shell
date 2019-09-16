@@ -105,7 +105,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
   setSharedState(linkedState, updatedStateWithMetadata) {
     const linkedScopeName = linkedState.getLinkedScopeName();
 
-    const {updatedState} = updatedStateWithMetadata;
+    const { updatedState } = updatedStateWithMetadata;
 
     this._sharedStates[linkedScopeName] = Object.assign(this._sharedStates[linkedScopeName], updatedState);
 
@@ -140,14 +140,14 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
   getLinkedStateInstances() {
     return this._linkedStateInstances;
   }
-  
+
   getLinkedStateInstancesByScopeName(linkedScopeName) {
     return this._linkedStateInstances.filter((testInstance) => {
       const testLinkedScopeName = testInstance.getLinkedScopeName();
       if (testLinkedScopeName !== linkedScopeName) {
         return false;
       }
-  
+
       return true;
     });
   }
