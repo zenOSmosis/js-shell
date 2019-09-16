@@ -109,9 +109,8 @@ const initSocket = (socket) => {
 
   // Socket channel
   socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options, ack) => {
-    options = Object.assign(options || {}, {
-      socket
-    });
+    // Add socket to existing options
+    options = {...(options || {}), ...{socket}};
 
     // Subsequent communications over this socket route handled internally via
     // SocketChannel
