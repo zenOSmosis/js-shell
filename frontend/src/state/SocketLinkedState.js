@@ -12,7 +12,7 @@ export const CONNECTION_STATUS_RECONNECTING = 'reconnecting';
 export const CONNECTION_STATUS_ERROR = 'error';
 
 export const STATE_HOST_URL = 'hostURL';
-export const STATE_SOCKET_ID = 'socketId';
+export const STATE_SOCKET_ID = 'socketID';
 export const STATE_IS_CONNECTED = 'isConnected';
 export const STATE_IS_RECONNECTING = 'isReconnecting';
 export const STATE_RECONNECT_ATTEMPT_NUMBER = 'reconnectAttemptNumber';
