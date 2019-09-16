@@ -12,9 +12,9 @@ import { getSocketID } from 'utils/socket.io';
  * @return {SocketPeerDataPacket} 
  */
 const createSocketPeerDataPacket = (toSocketPeerID, packetType, data, isReceivedReceiptRequested = false) => {
-  const fromSocketID = getSocketID();
+  const fromSocketPeerID = getSocketID();
 
-  if (!fromSocketID) {
+  if (!fromSocketPeerID) {
     throw new Error('Socket is not connected. Cannot create a new Socket Peer data packet.');
   }
   
@@ -23,7 +23,7 @@ const createSocketPeerDataPacket = (toSocketPeerID, packetType, data, isReceived
   return {
     headers: {
       toSocketPeerID,
-      fromSocketID,
+      fromSocketPeerID,
       packetUUID
     },
     packetType,
