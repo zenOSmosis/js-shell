@@ -17,7 +17,15 @@ const routeSocketPeerData = async (dataBundle, ack) => {
     const { socket, socketPeerDataPacket } = dataBundle;
 
     const { headers } = socketPeerDataPacket;
+    if (!headers) {
+      throw new Error('No headers set');
+    }
+
     const { toSocketPeerID } = headers;
+
+    if (!toSocketPeerID) {
+      throw new Error('No toSocketPeerID set');
+    }
 
     // TODO: Handle emit ack
     socket.to(toSocketPeerID).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);

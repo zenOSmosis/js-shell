@@ -9,10 +9,7 @@ const sendSocketPeerData = async (socketPeerDataPacket) => {
   try {
     const sendAck = await socketAPIQuery(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, socketPeerDataPacket);
 
-    // TODO: Remove
-    console.debug({
-      sendAck
-    });
+    return sendAck;
   } catch (exc) {
     throw exc;
   }
