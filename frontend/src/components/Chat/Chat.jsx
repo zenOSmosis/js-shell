@@ -1,19 +1,32 @@
 import React, { Component } from 'react';
 import Full from '../Full';
-import Scrollable from '../Scrollable';
 import ChatHeader from './Header';
-import {/* Layout, Content, Footer,*/ Row, Column } from '../Layout';
-import TextComposer from './TextComposer';
+import { Layout, Header, Content, Footer } from '../Layout';
+import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-import sendSocketPeerData from 'utils/p2p/socket.io/sendSocketPeerData';
+import createSocketPeerDataPacket from 'utils/p2p/socket.io/createSocketPeerDataPacket';
+import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
+
+/**
+ * @typedef {Object} ChatMessage
+ * @property {boolean} isFromLocalUser
+ * @property {string} body
+ * @property {number} sendTime Unix time of message sent
+ * @property {boolean} isReceived
+ */
 
 class Chat extends Component {
-  // TODO: Convert messageBody to socketPeerDataPacket
+  state = {
+    messages: []
+  };
+
   async _handleMessageSend(messageBody) {
     try {
-      const { remoteSocketPeerID } = this.props;
+      const { remoteSocketPeerID: toSocketPeerID } = this.props;
 
-      await sendSocketPeerData(remoteSocketPeerID, messageBody);
+      const socketPeerDataPacket = createSocketPeerDataPacket(toSocketPeerID, messageBody, true);
+
+      await sendSocketPeerDataPacket(socketPeerDataPacket);
     } catch (exc) {
       throw exc;
     }
@@ -21,34 +34,27 @@ class Chat extends Component {
 
   render() {
     const { remoteSocketPeerID } = this.props;
+    const { messages } = this.state;
 
     return (
       <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
-        <Row style={{ height: '100%' }}>
-          <Column>
-            <Row>
-              <Column>
-                <ChatHeader
-                  remoteSocketPeerID={remoteSocketPeerID}
-                />
-              </Column>
-            </Row>
-            <Row style={{ height: '100%' }}>
-              <Column>
-                <Scrollable>
-                  <MessageList />
-                </Scrollable>
-              </Column>
-            </Row>
-            <Row>
-              <Column>
-                <TextComposer
-                  onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
-                />
-              </Column>
-            </Row>
-          </Column>
-        </Row>
+        <Layout>
+          <Header>
+             <ChatHeader
+              remoteSocketPeerID={remoteSocketPeerID}
+            />
+          </Header>
+
+          <Content>
+             <MessageList messages={messages} />
+          </Content>
+
+          <Footer>
+            <MessageComposer
+              onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
+            />
+          </Footer>
+        </Layout>
       </Full>
     );
   }

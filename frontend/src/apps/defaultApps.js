@@ -8,7 +8,7 @@
  */
 
 import './FilesApp';
-import './HelloWorldApp';
+// import './HelloWorldApp';
 import './UserProfileApp';
 import './ChatApp';
 import './VoiceInputApp';
@@ -17,8 +17,8 @@ import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
 import './SourceCodeApp';
-import './TextEditorApp';
-import './A3DApp';
+// import './TextEditorApp';
+// import './A3DApp';
 import './TerminalApp';
-import './DocsApp';
+// import './DocsApp';
 // import './SettingsApp';

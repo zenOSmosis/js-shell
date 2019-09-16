@@ -58,14 +58,13 @@ class ChatAppWindow extends Component {
             />
           </LabeledComponent>
         }
-
-        subToolbar={
-          <div>TODO: Remove local peer from list</div>
-        }
       >
 
         <Full>
-          <SplitterLayout secondaryInitialSize={320}>
+          <SplitterLayout
+            primaryIndex={1}
+            secondaryInitialSize={220}
+          >
             <Full>
               <SocketPeerList
                 onSocketPeerClick={ socketPeerID => { this._handleSocketPeerClick(socketPeerID) } }

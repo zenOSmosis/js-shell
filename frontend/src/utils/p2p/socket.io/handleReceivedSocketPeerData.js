@@ -1,7 +1,7 @@
 
 // TODO: Call this from core/p2p/P2PMonitor
 
-import sendSocketPeerData from './sendSocketPeerData';
+import sendSocketPeerData from './sendSocketPeerDataPacket';
 
 const handleReceivedSocketPeerData = async (receivedSocketPeerDataPacket) => {
   try {

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import './TextComposer.css';
+import './MessageComposer.css';
 
-class TextComposer extends Component {
+class MessageComposer extends Component {
   constructor(...args) {
     super(...args);
 
@@ -10,14 +9,9 @@ class TextComposer extends Component {
     this._isSendingMessage = false;
   }
 
-  componentDidMount() {
-    $(this._elInput).on('keydown', this._handleKeyInput);
-  }
-
-  componentWillUnmount() {
-    $(this._elInput).off('keydown', this._handleKeyInput);
-  }
-
+  /**
+   * @return {string}
+   */
   getInputValue() {
     return this._elInput.value;
   }
@@ -26,15 +20,16 @@ class TextComposer extends Component {
     this._elInput.value = '';
   }
 
-  _handleKeyInput = (evt) => {
-    const { code: keyCode } = evt;
+  _handleKeyDown(evt) {
+    const { keyCode } = evt;
 
-    if (keyCode === 'Enter') {
+    // Enter key
+    if (keyCode === 13) {
       this._handleMessageSend();
     }
   }
 
-  _handleMessageSend = async () => {
+  async _handleMessageSend() {
     try {
       const { onMessageSend } = this.props;
       if (typeof onMessageSend !== 'function') {
@@ -42,6 +37,10 @@ class TextComposer extends Component {
       }
 
       if (this._isSendingMessage) {
+        // TODO: Dispatch action to UI indicating a message is currently being sent
+
+        console.warn('Sending of message ignored because the MessageComposer is currently in a sendingMessage state.');
+
         return;
       } else {
         this._isSendingMessage = true;
@@ -68,10 +67,11 @@ class TextComposer extends Component {
             <input
               ref={ c => this._elInput = c }
               placeholder="Enter a message"
+              onKeyDown={evt => this._handleKeyDown(evt)}
             />
           </div>
           <div className="cell">
-            <button onClick={this._handleMessageSend}>Send</button>
+            <button onClick={evt => this._handleMessageSend()}>Send</button>
           </div>
         </div>
       </div>
@@ -79,4 +79,4 @@ class TextComposer extends Component {
   }
 }
 
-export default TextComposer;
+export default MessageComposer;

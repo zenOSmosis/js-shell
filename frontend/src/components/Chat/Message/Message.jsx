@@ -15,11 +15,11 @@ const MessageAvatar = () => {
 };
 
 const Message = (props = {}) => {
-  const { children, fromLocal } = props;
+  const { children, isFromLocal } = props;
 
   return (
     <div
-      className={classNames(style['chat-message'], (fromLocal ? style['local'] : style['remote']))}
+      className={classNames(style['chat-message'], (isFromLocal ? style['local'] : style['remote']))}
     >
       <MessageAvatar />
 

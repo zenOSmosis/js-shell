@@ -4,19 +4,24 @@ import Message from '../Message';
 
 class MessageList extends Component {
   render() {
+    const { messages } = this.props;
+
     return (
       <Scrollable>
-        <Message
-          fromLocal={false}
-        >
-          Hi from remote user!
-        </Message>
+        {
+          messages.map((message, idx) => {
+            const { isFromLocal, body } = message;
 
-        <Message
-          fromLocal={true}
-        >
-          Hi from local user!
-        </Message>
+            return (
+              <Message
+                key={idx}
+                fromLocal={isFromLocal}
+              >
+                {body}
+              </Message>
+            );
+          })
+        }
       </Scrollable>
     );
   }
