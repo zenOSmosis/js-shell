@@ -2,7 +2,7 @@
  * @typedef {Object} SocketPeerDataPacket
  * @property {SocketPeerDataPacketHeaders} headers
  * @property {any} messageData
- * @property {boolean} isReadReceiptRequested
+ * @property {boolean} isReceivedReceiptRequested
  */
 
  /**
