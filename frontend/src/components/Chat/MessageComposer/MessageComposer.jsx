@@ -31,6 +31,13 @@ class MessageComposer extends Component {
 
   async _handleMessageSend() {
     try {
+      const messageBody = this.getInputValue().trim();
+
+      // Prevent empty messages
+      if (!messageBody.length) {
+        return;
+      }
+
       const { onMessageSend } = this.props;
       if (typeof onMessageSend !== 'function') {
         throw new Error('No handleMessageSend handler');
@@ -45,8 +52,6 @@ class MessageComposer extends Component {
       } else {
         this._isSendingMessage = true;
       }
-
-      const messageBody = this.getInputValue();
 
       await onMessageSend(messageBody);
 
