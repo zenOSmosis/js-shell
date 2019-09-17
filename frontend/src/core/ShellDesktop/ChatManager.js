@@ -2,10 +2,10 @@
 
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import P2PLinkedState, {
-  STATE_LAST_RECEIVED_SOCKET_PEER_DATA,
+  STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET,
 
-  ACTION_ADD_CHAT_MESSAGE,
-  ACTION_GET_CHAT_MESSAGES
+  ACTION_CACHE_DATA_PACKET,
+  ACTION_GET_CACHED_DATA_PACKETS
 } from 'state/P2PLinkedState';
 
 /**
@@ -28,16 +28,16 @@ class ChatManager extends ClientProcess {
 
       this._p2pLinkedState.on('update', (updatedState) => {
         try {
-          const { [STATE_LAST_RECEIVED_SOCKET_PEER_DATA]: receivedSocketPeerData } = updatedState;
+          const { [STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: receivedSocketPeerData } = updatedState;
 
           if (receivedSocketPeerData !== undefined) {
             if (receivedSocketPeerData.packetType &&
                 receivedSocketPeerData.packetType === 'chatMessage') {
               
               // Add the chat message to the log
-              this._p2pLinkedState.dispatchAction(ACTION_ADD_CHAT_MESSAGE, receivedSocketPeerData);
+              this._p2pLinkedState.dispatchAction(ACTION_CACHE_DATA_PACKET, receivedSocketPeerData);
 
-              const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES);
+              const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_DATA_PACKETS);
   
               // TODO: Remove
               console.debug({

@@ -18,6 +18,7 @@ const createSocketPeerDataPacket = (toSocketPeerID, packetType, data, isReceived
     throw new Error('Socket is not connected. Cannot create a new Socket Peer data packet.');
   }
   
+  // A unique identifier for this data packet
   const packetUUID = uuidv4();
 
   return {

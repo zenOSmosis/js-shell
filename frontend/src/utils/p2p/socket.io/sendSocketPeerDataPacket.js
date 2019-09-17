@@ -5,7 +5,7 @@ import { SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA } from 'shared/socketAPI/socketA
 /**
  * @param {SocketPeerDataPacket} socketPeerDataPacket
  */
-const sendSocketPeerData = async (socketPeerDataPacket) => {
+const sendSocketPeerDataPacket = async (socketPeerDataPacket) => {
   try {
     const sendAck = await socketAPIQuery(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, socketPeerDataPacket);
 
@@ -15,4 +15,4 @@ const sendSocketPeerData = async (socketPeerDataPacket) => {
   }
 };
 
-export default sendSocketPeerData;
+export default sendSocketPeerDataPacket;

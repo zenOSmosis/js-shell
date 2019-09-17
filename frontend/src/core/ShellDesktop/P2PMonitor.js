@@ -3,7 +3,7 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
 import fetchSocketPeerIDs from 'utils/p2p/socket.io/fetchSocketPeerIDs';
-import P2PLinkedState, { ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA } from 'state/P2PLinkedState';
+import P2PLinkedState, { ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA_PACKET } from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_CONNECT,
   SOCKET_API_EVT_PEER_DISCONNECT,
@@ -134,7 +134,7 @@ class P2PMonitor extends ClientProcess {
 
     const { isReceivedReceiptRequested } = receivedData;
 
-    this._p2pLinkedState.dispatchAction(ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA, receivedData);
+    this._p2pLinkedState.dispatchAction(ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA_PACKET, receivedData);
 
     if (isReceivedReceiptRequested) {
       const {

@@ -6,7 +6,7 @@ import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
 import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
 import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
-import P2PLinkedState, { STATE_CHAT_MESSAGES, ACTION_GET_CHAT_MESSAGES } from 'state/P2PLinkedState';
+import P2PLinkedState, { STATE_CACHED_DATA_PACKETS, ACTION_GET_CACHED_DATA_PACKETS } from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 /**
@@ -48,11 +48,11 @@ class Chat extends Component {
       <LinkedStateRenderer
         linkedState={this._p2pLinkedState}
         onUpdate={(updatedState) => {
-          const { [STATE_CHAT_MESSAGES]: stateChatMessages } = updatedState;
+          const { [STATE_CACHED_DATA_PACKETS]: stateChatMessages } = updatedState;
 
           if (stateChatMessages !== undefined) {
             const ret = {
-              messages: this._p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGES, (chatMessage) => {
+              messages: this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_DATA_PACKETS, (chatMessage) => {
                 const { fromSocketPeerID: testFromSocketPeerID } = chatMessage;
 
                 return testFromSocketPeerID === remoteSocketPeerID;
