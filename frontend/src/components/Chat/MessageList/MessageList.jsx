@@ -15,7 +15,7 @@ class MessageList extends Component {
             return (
               <Message
                 key={idx}
-                fromLocal={isFromLocal}
+                isFromLocal={isFromLocal}
               >
                 {body}
               </Message>

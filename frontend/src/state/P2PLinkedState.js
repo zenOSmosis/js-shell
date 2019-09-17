@@ -12,7 +12,7 @@ export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'lastReceivedPeerDataPacket';
 export const STATE_CACHED_DATA_PACKETS = 'cachedDataPackets';
 
-export const ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA_PACKET = 'handleReceivedSocketPeerDataPacket';
+export const ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'handleReceivedSocketPeerDataPacket';
 export const ACTION_UPDATE_CACHED_DATA_PACKET_WITH_UUID = 'updateCachedDataPacketWithUUID';
 export const ACTION_CACHE_DATA_PACKET = 'cacheDataPacket';
 export const ACTION_GET_CACHED_DATA_PACKETS = 'getCachedDataPackets';
@@ -37,7 +37,7 @@ export default class P2PLinkedState extends LinkedState {
     }, {
       actions: {
         // Called via P2PMonitor when there is received SocketPeer data
-        [ACTION_HANDLE_RECEIVED_SOCKET_PEER_DATA_PACKET]: (receivedData) => {
+        [ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: (receivedData) => {
           this.setState({
             [STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: receivedData
           });

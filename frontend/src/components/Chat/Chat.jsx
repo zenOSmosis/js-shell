@@ -8,6 +8,7 @@ import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSoc
 import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
 import P2PLinkedState, { STATE_CACHED_DATA_PACKETS, ACTION_GET_CACHED_DATA_PACKETS } from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
+import { getSocketID } from 'utils/socket.io';
 
 /**
  * @typedef {Object} ChatMessage
@@ -51,17 +52,34 @@ class Chat extends Component {
           const { [STATE_CACHED_DATA_PACKETS]: stateChatMessages } = updatedState;
 
           if (stateChatMessages !== undefined) {
-            const ret = {
-              messages: this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_DATA_PACKETS, (chatMessage) => {
-                const { fromSocketPeerID: testFromSocketPeerID } = chatMessage;
+            const localSocketID = getSocketID();
 
-                return testFromSocketPeerID === remoteSocketPeerID;
-              })
-            };
+            const messages = this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_DATA_PACKETS, (dataPacket) => {
+              if (dataPacket.packetType !== 'chatMessage') {
+                return false;
+              }
+              
+              const {
+                fromSocketPeerID: testFromSocketPeerID,
+                toSocketPeerID: testToSocketPeerID
+              } = dataPacket;
+
+              return testFromSocketPeerID === remoteSocketPeerID || testToSocketPeerID === remoteSocketPeerID;
+            }).map(dataPacket => {
+              return {
+                isFromLocal: (dataPacket.fromSocketPeerID === localSocketID), // naive implementation
+                body: dataPacket.data.messageBody
+              };
+            });
 
             console.debug({
-              ret
+              messages,
+              localSocketID
             });
+
+            const ret = {
+              messages
+            };
 
             return ret;
           }
