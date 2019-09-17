@@ -127,7 +127,7 @@ class P2PMonitor extends ClientProcess {
   }
 
   _handleReceivedSocketPeerDataPacket = (dataPacket) => {
-    handleReceivedSocketPeerDataPacket(this._p2pLinkedState, dataPacket);
+    handleReceivedSocketPeerDataPacket(dataPacket);
   };
 
   async _initWebRTCServices() {

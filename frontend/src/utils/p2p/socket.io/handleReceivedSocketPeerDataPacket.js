@@ -1,35 +1,19 @@
 // import createSocketPeerReceivedReceiptDataPacket from 'utils/p2p/socket.io/createSocketPeerReceivedReceiptDataPacket';
 // import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
-import {
-  ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID,
-  ACTION_CACHE_CHAT_MESSAGE,
-  ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID
-} from 'state/P2PLinkedState';
+
 import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage';
 
-const handleReceivedSocketPeerDataPacket = (p2pLinkedState, dataPacket) => {
-  if (dataPacket.packetType === SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE) {
+const handleReceivedSocketPeerDataPacket = (dataPacket) => {
+  const { packetType } = dataPacket;
 
-    const messageUUID = dataPacket.data.messageUUID;
+  switch (packetType) {
+    case SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE:
+      ChatMessage.handleReceivedSocketPeerDataPacket(dataPacket);
+      break;
 
-    let chatMessage = p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID);
-
-    if (!chatMessage) {
-      chatMessage = new ChatMessage(false, dataPacket.data.fromSocketPeerID, dataPacket.data.toSocketPeerID, dataPacket.data);
-
-      // Add the chat message to the cache
-      p2pLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, chatMessage);
-    } else {
-      // Manipulate existing
-
-      p2pLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID, (updatableChatMessage) => {
-        updatableChatMessage.setSharedData(dataPacket.data);
-
-        const updatedChatMessage = updatableChatMessage;
-
-        return updatedChatMessage;
-      });
-    }
+    default:
+      console.warn(`Unhandled SocketPeer packet type: ${packetType}`);
+      break;
   }
 
   /*

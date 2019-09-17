@@ -2,7 +2,12 @@ import EventEmitter from 'events';
 import uuidv4 from 'uuidv4';
 import createSocketPeerDataPacket from './socket.io/createSocketPeerDataPacket';
 import sendSocketPeerDataPacket from './socket.io/sendSocketPeerDataPacket';
-import P2PLinkedState, { ACTION_CACHE_CHAT_MESSAGE, ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID } from 'state/P2PLinkedState';
+import P2PLinkedState, {
+  ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID,
+  ACTION_CACHE_CHAT_MESSAGE,
+  ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID
+} from 'state/P2PLinkedState';
+import 'shared/p2p/SocketPeerDataPacket.typedef';
 
 export const EVT_SHARED_UPDATE = 'update';
 
@@ -11,6 +16,51 @@ export const SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE = 'ChatMessage';
 const commonP2PLinkedState = new P2PLinkedState();
 
 class ChatMessage extends EventEmitter {
+  /**
+   * Handler for received SocketPeerDataPackets over the wire.
+   * 
+   * @param {SocketPeerDataPacket} dataPacket
+   */
+  static handleReceivedSocketPeerDataPacket(dataPacket) {
+    const { data: sharedData } = dataPacket;
+    const { messageUUID } = sharedData;
+
+    let chatMessage = commonP2PLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID);
+
+    if (!chatMessage) {
+      chatMessage = ChatMessage.createFromSharedData(false, sharedData);
+    } else {
+      // Manipulate existing
+
+      commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID, (updatableChatMessage) => {
+        updatableChatMessage.setSharedData(sharedData);
+
+        const updatedChatMessage = updatableChatMessage;
+
+        return updatedChatMessage;
+      });
+    }
+  };
+
+  /**
+   * Creates a new ChatMessage instance from the given sharedData and registers
+   * it w/ P2PLinkedState.
+   * 
+   * @param {boolean} isFromLocal Whether the local peer originated the ChatMessage.
+   * @param {Object} sharedData
+   * @return {ChatMessage}
+   */
+  static createFromSharedData(isFromLocal, sharedData) {
+    const { fromSocketPeerID, toSocketPeerID } = sharedData;
+
+    const chatMessage = new ChatMessage(isFromLocal, fromSocketPeerID, toSocketPeerID, sharedData);
+
+    // Add the chat message to the cache
+    commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, chatMessage);
+
+    return chatMessage;
+  };
+
   constructor(isFromLocal, fromSocketPeerID, toSocketPeerID, existingSharedData = null) {
     super();
 
@@ -40,10 +90,8 @@ class ChatMessage extends EventEmitter {
     // Non-serializable; direct class property
     this._isTypingTimeout = null;
 
-    // TODO: Remove
-    console.debug('new chat message', this);
-
     if (isFromLocal) {
+      // Send sharedData across the wire when EVT_SHARED_UPDATE is emitted
       (() => {
         let _emitPacketTimeout = null;
 
@@ -51,16 +99,13 @@ class ChatMessage extends EventEmitter {
           clearTimeout(_emitPacketTimeout);
 
           _emitPacketTimeout = setTimeout(() => {
-            console.debug({
-              sharedData: this.getSharedData()
-            });
-
             this._createAndSendSharedDataPacket();
           }, 1);
         });
       })();
 
-      if (isFromLocal && !existingSharedData) {
+      // Create new cached chat message and update it when EVT_SHARE_UPDATE is emitted
+      if (!existingSharedData) {
         commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
 
         const messageUUID = this.getUUID();
@@ -72,8 +117,8 @@ class ChatMessage extends EventEmitter {
         });
       }
 
+      // Send initial data packet indicating new message if not already finalized
       if (!this.getIsFinalized()) {
-        // Send initial data packet, indicating new message
         this.emit(EVT_SHARED_UPDATE);
       }
     }
