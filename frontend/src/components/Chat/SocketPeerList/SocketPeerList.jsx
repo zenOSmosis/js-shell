@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-// import Center from 'components/Center';
-// import Full from 'components/Full';
-import TileList, { Tile } from 'components/TileList';
-// import { Avatar } from 'antd';
+import { Grid, GridItem } from 'components/Grid';
+import TransparentButton from 'components/TransparentButton';
+import { Avatar } from 'antd';
 import P2PLinkedState from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 
@@ -46,7 +45,7 @@ class SocketPeerList extends Component {
   }
   */
 
- _handleSocketPeerClick(socketPeerID, evt) {
+  _handleSocketPeerClick(socketPeerID, evt) {
     const { onSocketPeerClick } = this.props;
 
     if (typeof onSocketPeerClick === 'function') {
@@ -58,24 +57,34 @@ class SocketPeerList extends Component {
     const { socketPeerIDs } = this.props;
 
     return (
-      <TileList>
+      <Grid>
         {
           socketPeerIDs.map((socketPeerID, idx) => {
             return (
-              <Tile
+              <GridItem
                 key={idx}
                 // title={user.nickname}
-                onClick={ evt => this._handleSocketPeerClick(socketPeerID, evt) }
+                // 
               >
-                {socketPeerID}
-                {
-                  // <img src={user.imageSrc} style={{width: '100%'}} />
-                }
-              </Tile>
+                <TransparentButton
+                  onClick={evt => this._handleSocketPeerClick(socketPeerID, evt)}
+                >
+                  <div>
+                    <Avatar
+                      size={36}
+                      icon="user"
+                    />
+                  </div>
+                  
+                  <div>
+                    {socketPeerID}
+                  </div>
+                </TransparentButton>
+              </GridItem>
             );
           })
         }
-      </TileList>
+      </Grid>
     );
 
     /*

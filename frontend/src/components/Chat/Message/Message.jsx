@@ -7,7 +7,7 @@ import style from './Message.module.scss';
 const MessageAvatar = () => {
   return (
     <Avatar
-      size={48}
+      size={36}
       icon="user"
       className={style['avatar']}
     />
