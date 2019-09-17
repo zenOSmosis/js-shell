@@ -4,60 +4,26 @@ import ChatHeader from './Header';
 import { Layout, Header, Content, Footer } from '../Layout';
 import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-// import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
-// import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
 import P2PLinkedState, { STATE_CACHED_CHAT_MESSAGES, ACTION_GET_CACHED_CHAT_MESSAGES } from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import { getSocketID } from 'utils/socket.io';
-
-/**
- * @typedef {Object} ChatMessage
- * @property {boolean} isFromLocalUser
- * @property {string} body
- * @property {number} sendTime Unix time of message sent
- * @property {boolean} isReceived
- */
+import ChatMessage from 'utils/p2p/ChatMessage';
 
 class Chat extends Component {
-  constructor(props) {
-    super(props);
-
-    this._p2pLinkedState = new P2PLinkedState();
-  }
-
-  componentWillUnmount() {
-    this._p2pLinkedState.destroy();
-    this._p2pLinkedState = null;
-  }
-
-  /*
-  async _handleMessageSend(messageBody) {
-    try {
-      const { remoteSocketPeerID: toSocketPeerID } = this.props;
-
-      const socketPeerDataPacket = createSocketPeerChatMessageDataPacket(toSocketPeerID, messageBody);
-
-      await sendSocketPeerDataPacket(socketPeerDataPacket);
-    } catch (exc) {
-      throw exc;
-    }
-  }
-  */
-
   render() {
     const { remoteSocketPeerID } = this.props;
 
     return (
       <LinkedStateRenderer
         key={remoteSocketPeerID}
-        linkedState={this._p2pLinkedState}
-        onUpdate={(updatedState) => {
+        linkedState={P2PLinkedState}
+        onUpdate={(updatedState, p2pLinkedState) => {
           const { [STATE_CACHED_CHAT_MESSAGES]: stateChatMessages } = updatedState;
 
           if (stateChatMessages !== undefined) {
-            // const localSocketID = getSocketID();
-
-            const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGES, (testChatMessage) => {
+            /**
+             * @type {ChatMessage[]}
+             */
+            const chatMessages = p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGES, (testChatMessage) => {
               const testToSocketPeerID = testChatMessage.getToSocketPeerID();
               if (testToSocketPeerID === remoteSocketPeerID) {
                 return true;
@@ -81,10 +47,6 @@ class Chat extends Component {
         render={(renderProps) => {
           const { chatMessages } = renderProps;
 
-          console.debug({
-            renderChatMessages: chatMessages
-          });
-
           return (
             <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
               <Layout>
@@ -102,7 +64,6 @@ class Chat extends Component {
                 <Footer>
                   <MessageComposer
                     toSocketPeerID={remoteSocketPeerID}
-                    // onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
                   />
                 </Footer>
               </Layout>
