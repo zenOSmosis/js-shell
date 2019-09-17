@@ -116,9 +116,7 @@ export default class P2PLinkedState extends LinkedState {
     });
   }
 
-  /**
-   * TODO: Rename to addSocketPeerID
-   * 
+  /** 
    * @param {number} socketPeerID 
    */
   addSocketPeerID(socketPeerID) {
@@ -132,8 +130,6 @@ export default class P2PLinkedState extends LinkedState {
   }
 
   /**
-   * TODO: Rename to removeSocketPeerIDId
-   * 
    * @param {number} socketPeerID 
    */
   removeSocketPeerID(socketPeerID) {
