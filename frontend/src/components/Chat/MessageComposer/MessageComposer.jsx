@@ -6,7 +6,7 @@ class MessageComposer extends Component {
     super(...args);
 
     this._elInput = null;
-    this._isSendingMessage = false;
+    this._isSendInProgress = false;
   }
 
   /**
@@ -43,22 +43,22 @@ class MessageComposer extends Component {
         throw new Error('No handleMessageSend handler');
       }
 
-      if (this._isSendingMessage) {
+      if (this._isSendInProgress) {
         // TODO: Dispatch action to UI indicating a message is currently being sent
 
         console.warn('Sending of message ignored because the MessageComposer is currently in a sendingMessage state.');
 
         return;
-      } else {
-        this._isSendingMessage = true;
       }
+      
+      this._isSendInProgress = true;
 
       await onMessageSend(messageBody);
 
       // If message sends, reset the input
       this.clearInput();
 
-      this._isSendingMessage = false;
+      this._isSendInProgress = false;
     } catch (exc) {
       throw exc;
     }
