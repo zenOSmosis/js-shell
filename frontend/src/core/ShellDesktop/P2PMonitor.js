@@ -9,7 +9,11 @@ import {
   SOCKET_API_EVT_PEER_DISCONNECT,
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
-import handleReceivedSocketPeerDataPacket from 'utils/p2p/socket.io/handleReceivedSocketPeerDataPacket';
+import {
+  _handleSocketPeerConnect,
+  _handleSocketPeerDisconnect,
+  _handleReceivedSocketPeerDataPacket
+ } from 'utils/p2p/socket.io';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -115,6 +119,8 @@ class P2PMonitor extends ClientProcess {
     if (this._p2pLinkedState) {
       this._p2pLinkedState.addSocketPeerID(socketPeerID);
     }
+
+    _handleSocketPeerConnect(socketPeerID);
   }
 
   /**
@@ -124,10 +130,12 @@ class P2PMonitor extends ClientProcess {
     if (this._p2pLinkedState) {
       this._p2pLinkedState.removeSocketPeerID(socketPeerID);
     }
+
+    _handleSocketPeerDisconnect(socketPeerID);
   }
 
   _handleReceivedSocketPeerDataPacket = (dataPacket) => {
-    handleReceivedSocketPeerDataPacket(dataPacket);
+    _handleReceivedSocketPeerDataPacket(dataPacket);
   };
 
   async _initWebRTCServices() {
