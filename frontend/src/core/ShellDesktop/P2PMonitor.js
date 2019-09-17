@@ -2,7 +2,7 @@
 
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
-import fetchSocketPeerIDs from 'utils/p2p/socket.io/fetchSocketPeerIDs';
+import fetchSocketPeerIDs from 'utils/p2p/socketPeer/fetchSocketPeerIDs';
 import P2PLinkedState from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_CONNECT,
@@ -13,7 +13,7 @@ import {
   _handleSocketPeerConnect,
   _handleSocketPeerDisconnect,
   _handleReceivedSocketPeerDataPacket
- } from 'utils/p2p/socket.io';
+ } from 'utils/p2p/socketPeer';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.

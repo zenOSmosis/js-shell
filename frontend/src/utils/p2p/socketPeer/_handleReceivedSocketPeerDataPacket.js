@@ -3,7 +3,7 @@
 
 import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage';
 
-const handleReceivedSocketPeerDataPacket = (dataPacket) => {
+const _handleReceivedSocketPeerDataPacket = (dataPacket) => {
   const { packetType } = dataPacket;
 
   switch (packetType) {
@@ -38,4 +38,4 @@ const handleReceivedSocketPeerDataPacket = (dataPacket) => {
   */
 };
 
-export default handleReceivedSocketPeerDataPacket;
+export default _handleReceivedSocketPeerDataPacket;

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import uuidv4 from 'uuidv4';
-import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socket.io';
+import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socketPeer';
 import P2PLinkedState, {
   ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID,
   ACTION_CACHE_CHAT_MESSAGE,

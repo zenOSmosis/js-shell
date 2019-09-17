@@ -1,7 +1,7 @@
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 
-const handleSocketPeerConnect = (socketPeerID) => {
+const _handleSocketPeerConnect = (socketPeerID) => {
   createDesktopNotification(`SocketPeer with ID "${socketPeerID}" connected`);
 };
 
-export default handleSocketPeerConnect;
+export default _handleSocketPeerConnect;
