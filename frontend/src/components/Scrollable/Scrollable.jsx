@@ -9,7 +9,8 @@ const DEFAULT_SCROLL_Y_IS_ENABLED = true;
 class Scrollable extends Component {
   static propTypes = {
     allowScrollX: PropTypes.bool,
-    allowScrollY: PropTypes.bool
+    allowScrollY: PropTypes.bool,
+    isScrollToBottom: PropTypes.bool
   };
 
   constructor(...args) {
@@ -31,6 +32,24 @@ class Scrollable extends Component {
       this._scrollLeft = scrollLeft;
       this._scrollTop = scrollTop;
     };
+
+    this._autoScrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this._autoScrollToBottom();
+  }
+
+  /**
+   * Automatically scrolls to the bottom if isScrollToBottom property is set to
+   * true.
+   */
+  _autoScrollToBottom() {
+    const { isScrollToBottom } = this.props;
+
+    if (isScrollToBottom) {
+      this._root.scrollTop = this._root.scrollHeight;
+    }
   }
 
   /**
@@ -59,6 +78,7 @@ class Scrollable extends Component {
     const {
       className,
       children,
+      isScrollToBottom,
       ...propsRest
     } = this.props;
   

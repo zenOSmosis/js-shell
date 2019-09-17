@@ -7,7 +7,9 @@ class MessageList extends Component {
     const { messages } = this.props;
 
     return (
-      <Scrollable>
+      <Scrollable
+        isScrollToBottom={true}
+      >
         {
           messages.map((message, idx) => {
             const { isFromLocal, body } = message;
