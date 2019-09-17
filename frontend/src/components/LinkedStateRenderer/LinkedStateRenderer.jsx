@@ -10,7 +10,10 @@ import hocConnect from 'state/hocConnect';
  */
 class LinkedStateRenderer extends Component {
   static propTypes = {
-    linkedState: PropTypes.object.isRequired,
+    linkedState: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func
+    ]).isRequired,
     onUpdate: PropTypes.func.isRequired,
     render: PropTypes.func.isRequired
   };
@@ -20,7 +23,12 @@ class LinkedStateRenderer extends Component {
   };
 
   componentDidMount() {
-    const { linkedState, onUpdate, render: Renderer, ...propsRest } = this.props;
+    const {
+      linkedState,
+      onUpdate,
+      render: Renderer,
+      ...propsRest
+    } = this.props;
 
     const RenderableLinkedState = (props) => {
       return <Renderer {...props} {...propsRest} />
