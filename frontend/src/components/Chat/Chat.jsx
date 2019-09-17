@@ -4,9 +4,9 @@ import ChatHeader from './Header';
 import { Layout, Header, Content, Footer } from '../Layout';
 import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
-import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
-import P2PLinkedState, { STATE_CACHED_DATA_PACKETS, ACTION_GET_CACHED_DATA_PACKETS } from 'state/P2PLinkedState';
+// import createSocketPeerChatMessageDataPacket from 'utils/p2p/socket.io/createSocketPeerChatMessageDataPacket';
+// import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
+import P2PLinkedState, { STATE_CACHED_CHAT_MESSAGES, ACTION_GET_CACHED_CHAT_MESSAGES } from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import { getSocketID } from 'utils/socket.io';
 
@@ -30,6 +30,7 @@ class Chat extends Component {
     this._p2pLinkedState = null;
   }
 
+  /*
   async _handleMessageSend(messageBody) {
     try {
       const { remoteSocketPeerID: toSocketPeerID } = this.props;
@@ -41,68 +42,67 @@ class Chat extends Component {
       throw exc;
     }
   }
+  */
 
   render() {
     const { remoteSocketPeerID } = this.props;
 
     return (
       <LinkedStateRenderer
+        key={remoteSocketPeerID}
         linkedState={this._p2pLinkedState}
         onUpdate={(updatedState) => {
-          const { [STATE_CACHED_DATA_PACKETS]: stateChatMessages } = updatedState;
+          const { [STATE_CACHED_CHAT_MESSAGES]: stateChatMessages } = updatedState;
 
           if (stateChatMessages !== undefined) {
-            const localSocketID = getSocketID();
+            // const localSocketID = getSocketID();
 
-            const messages = this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_DATA_PACKETS, (dataPacket) => {
-              if (dataPacket.packetType !== 'chatMessage') {
-                return false;
+            const chatMessages = this._p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGES, (testChatMessage) => {
+              const testToSocketPeerID = testChatMessage.getToSocketPeerID();
+              if (testToSocketPeerID === remoteSocketPeerID) {
+                return true;
+              } else {
+                const testFromSocketPeerID = testChatMessage.getFromSocketPeerID();
+                if (testFromSocketPeerID === remoteSocketPeerID) {
+                  return true;
+                }
               }
               
-              const {
-                fromSocketPeerID: testFromSocketPeerID,
-                toSocketPeerID: testToSocketPeerID
-              } = dataPacket;
-
-              return testFromSocketPeerID === remoteSocketPeerID || testToSocketPeerID === remoteSocketPeerID;
-            }).map(dataPacket => {
-              return {
-                isFromLocal: (dataPacket.fromSocketPeerID === localSocketID), // naive implementation
-                body: dataPacket.data.messageBody
-              };
-            });
-
-            console.debug({
-              messages,
-              localSocketID
+              return false;
             });
 
             const ret = {
-              messages
+              chatMessages
             };
 
             return ret;
           }
         }}
         render={(renderProps) => {
-          const { messages } = renderProps;
+          const { chatMessages } = renderProps;
+
+          console.debug({
+            renderChatMessages: chatMessages
+          });
 
           return (
             <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
               <Layout>
                 <Header>
                   <ChatHeader
+                    // TODO: Rename to toSocketPeerID
                     remoteSocketPeerID={remoteSocketPeerID}
                   />
                 </Header>
 
                 <Content>
-                  <MessageList messages={messages} />
+                  <MessageList chatMessages={chatMessages} />
                 </Content>
 
                 <Footer>
                   <MessageComposer
-                    onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
+                    toSocketPeerID={remoteSocketPeerID}
+                    // onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
                   />
                 </Footer>
               </Layout>

@@ -128,14 +128,11 @@ class P2PMonitor extends ClientProcess {
   }
 
   _handleReceivedSocketPeerData = (receivedData) => {
-    console.debug('received data', {
-      receivedData
-    });
-
     const { isReceivedReceiptRequested } = receivedData;
 
     this._p2pLinkedState.dispatchAction(ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET, receivedData);
 
+    // Handle received receipt, if requested
     if (isReceivedReceiptRequested) {
       const {
         fromSocketPeerID: toSocketPeerID,

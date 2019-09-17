@@ -2,7 +2,7 @@ import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } from 'shared/socketAPI/socketAPIRoutes';
 
 /**
- * Retrieves socket IDs of remote peers, connected to the server.
+ * Retrieves Socket.io IDs of remote peers, connected to the server.
  * 
  * IMPORTANT!  This iteration is not very scalable and WILL result in low
  * performance, and/or crashing if a lot of peers are connected remotely.

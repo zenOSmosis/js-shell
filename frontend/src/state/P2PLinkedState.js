@@ -10,12 +10,13 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'lastReceivedPeerDataPacket';
-export const STATE_CACHED_DATA_PACKETS = 'cachedDataPackets';
+export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
 
 export const ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'handleReceivedSocketPeerDataPacket';
-export const ACTION_UPDATE_CACHED_DATA_PACKET_WITH_UUID = 'updateCachedDataPacketWithUUID';
-export const ACTION_CACHE_DATA_PACKET = 'cacheDataPacket';
-export const ACTION_GET_CACHED_DATA_PACKETS = 'getCachedDataPackets';
+export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
+export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
+export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUUID';
+export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUUID';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -33,7 +34,8 @@ export default class P2PLinkedState extends LinkedState {
 
       [STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: {},
 
-      [STATE_CACHED_DATA_PACKETS]: []
+      // TODO: Cache ChatMessages instead
+      [STATE_CACHED_CHAT_MESSAGES]: []
     }, {
       actions: {
         // Called via P2PMonitor when there is received SocketPeer data
@@ -45,23 +47,23 @@ export default class P2PLinkedState extends LinkedState {
 
         // Adds a chat message to the log
         // This should only be called by the ChatManager app
-        [ACTION_CACHE_DATA_PACKET]: (chatMessage) => {
+        [ACTION_CACHE_CHAT_MESSAGE]: (chatMessage) => {
           if (!chatMessage) {
             console.warn('chatMessage does not exist');
             return;
           }
 
-          const currentChatMessages = this.getState(STATE_CACHED_DATA_PACKETS);
+          const currentChatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
 
           currentChatMessages.push(chatMessage);
 
           this.setState({
-            [STATE_CACHED_DATA_PACKETS]: currentChatMessages
+            [STATE_CACHED_CHAT_MESSAGES]: currentChatMessages
           });
         },
 
-        [ACTION_GET_CACHED_DATA_PACKETS]: (withFilter = null) => {
-          let chatMessages = this.getState(STATE_CACHED_DATA_PACKETS);
+        [ACTION_GET_CACHED_CHAT_MESSAGES]: (withFilter = null) => {
+          let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
 
           if (typeof withFilter === 'function') {
             chatMessages = chatMessages.filter(withFilter);
@@ -70,27 +72,46 @@ export default class P2PLinkedState extends LinkedState {
           return chatMessages;
         },
 
+        [ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUUID) => {
+          const chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
+          const lenChatMessages = chatMessages.length;
+
+          // Walk backwards
+          for (let i = lenChatMessages - 1; i >= 0; i--) {
+            const testChatMessageUUID = chatMessages[i].getUUID();
+            if (testChatMessageUUID === chatMessageUUID) {
+              return chatMessages[i];
+            }
+          }
+        },
+
         /**
          * Updates an existing chat message with updated data.
          */
-        [ACTION_UPDATE_CACHED_DATA_PACKET_WITH_UUID]: (packetUUID, updatedData) => {
-          let chatMessages = this.getState(STATE_CACHED_DATA_PACKETS);
+        [ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUUID, updateHandler) => {
+          if (typeof updateHandler !== 'function') {
+            throw new Error('updateHandler is not a function');
+          }
+
+          let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
 
           chatMessages = chatMessages.map(chatMessage => {
-            const { headers } = chatMessage;
-            const { packetUUID: testPacketUUID } = headers;
+            const testChatMessageUUID = chatMessage.getUUID();
 
-            if (testPacketUUID !== packetUUID) {
-              return chatMessage;
-            } else {
-              chatMessage = {...chatMessage, ...{updatedData}};
-
-              return chatMessage;
+            if (testChatMessageUUID === chatMessageUUID) {
+              // updateHandler must return the chatMessage
+              chatMessage = updateHandler(chatMessage);
             }
+
+            return chatMessage;
+          });
+
+          console.debug('updatedState', {
+            chatMessages
           });
 
           this.setState({
-            [STATE_CACHED_DATA_PACKETS]: chatMessages
+            [STATE_CACHED_CHAT_MESSAGES]: chatMessages
           });
         }
       }

@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import './MessageComposer.css';
+import ChatMessage from 'utils/p2p/ChatMessage';
+import { getSocketID } from 'utils/socket.io';
+import PropTypes from 'prop-types';
 
 class MessageComposer extends Component {
+  static propTypes = {
+    toSocketPeerID: PropTypes.string.isRequired
+  };
+
   constructor(...args) {
     super(...args);
 
     this._elInput = null;
     this._isSendInProgress = false;
+
+    this._currentChatMessage = null;
   }
 
   /**
@@ -21,11 +30,21 @@ class MessageComposer extends Component {
   }
 
   _handleKeyDown(evt) {
+    const { toSocketPeerID } = this.props;
     const { keyCode } = evt;
+
+    // Start a new chat message, if one is not already present
+    if (!this._currentChatMessage) {
+      const fromSocketPeerID = getSocketID();
+
+      this._currentChatMessage = new ChatMessage(true, fromSocketPeerID, toSocketPeerID);
+    }
 
     // Enter key
     if (keyCode === 13) {
       this._handleMessageSend();
+    } else {
+      this._currentChatMessage.setIsTyping(true);
     }
   }
 
@@ -38,9 +57,9 @@ class MessageComposer extends Component {
         return;
       }
 
-      const { onMessageSend } = this.props;
-      if (typeof onMessageSend !== 'function') {
-        throw new Error('No handleMessageSend handler');
+      if (!this._currentChatMessage) {
+        console.error('No current ChatMessage present. Ignoring _handleMessageSend() request.');
+        return;
       }
 
       if (this._isSendInProgress) {
@@ -53,7 +72,9 @@ class MessageComposer extends Component {
       
       this._isSendInProgress = true;
 
-      await onMessageSend(messageBody);
+      await this._currentChatMessage.finalizeAndSendMessage(messageBody);
+
+      this._currentChatMessage = null;
 
       // If message sends, reset the input
       this.clearInput();

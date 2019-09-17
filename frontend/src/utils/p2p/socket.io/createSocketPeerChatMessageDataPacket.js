@@ -1,5 +1,5 @@
 import createSocketPeerDataPacket from './createSocketPeerDataPacket';
-import P2PLinkedState, { ACTION_CACHE_DATA_PACKET } from 'state/P2PLinkedState';
+import P2PLinkedState, { ACTION_CACHE_CHAT_MESSAGE } from 'state/P2PLinkedState';
 import { getSocketID } from 'utils/socket.io';
 
 const createSocketPeerChatMessageDataPacket = (toSocketPeerID, messageBody) => {
@@ -14,7 +14,7 @@ const createSocketPeerChatMessageDataPacket = (toSocketPeerID, messageBody) => {
   }, true);
 
   const p2pLinkedState = new P2PLinkedState();
-  p2pLinkedState.dispatchAction(ACTION_CACHE_DATA_PACKET, dataPacket);
+  p2pLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, dataPacket);
   p2pLinkedState.destroy();
 
   return dataPacket;

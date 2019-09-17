@@ -10,5 +10,6 @@ export default registerApp({
       <ChatAppWindow {...props} />
     );
   },
+  allowMultipleWindows: true,
   iconView: () => <ChatIcon />
 });

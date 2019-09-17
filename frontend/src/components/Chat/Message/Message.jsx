@@ -15,7 +15,16 @@ const MessageAvatar = () => {
 };
 
 const Message = (props = {}) => {
-  const { children, isFromLocal } = props;
+  const { chatMessage } = props;
+  const isFromLocal = chatMessage.getIsFromLocal();
+  const isFinalized = chatMessage.getIsFinalized();
+
+  if (isFromLocal && !isFinalized) {
+    return false;
+  }
+
+  const messageBody = chatMessage.getMessageBody();
+  const isTyping = chatMessage.getIsTyping();
 
   return (
     <div
@@ -25,7 +34,12 @@ const Message = (props = {}) => {
 
       <div className={style['chat-bubble']}>
         {
-          children
+          isTyping &&
+          <span style={{fontStyle: 'italic'}}>...typing</span>
+        }
+        {
+          // TODO: Implement link parsing, etc.
+          messageBody
         }
       </div>
     </div>

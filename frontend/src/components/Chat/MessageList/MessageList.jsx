@@ -4,23 +4,19 @@ import Message from '../Message';
 
 class MessageList extends Component {
   render() {
-    const { messages } = this.props;
+    const { chatMessages } = this.props;
 
     return (
       <Scrollable
         isScrollToBottom={true}
       >
         {
-          messages.map((message, idx) => {
-            const { isFromLocal, body } = message;
-
+          chatMessages.map((chatMessage, idx) => {
             return (
               <Message
                 key={idx}
-                isFromLocal={isFromLocal}
-              >
-                {body}
-              </Message>
+                chatMessage={chatMessage}
+              />
             );
           })
         }
