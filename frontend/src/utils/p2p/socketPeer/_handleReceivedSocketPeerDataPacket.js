@@ -1,8 +1,11 @@
-// import createSocketPeerReceivedReceiptDataPacket from 'utils/p2p/socket.io/createSocketPeerReceivedReceiptDataPacket';
-// import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
-
 import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage';
 
+/**
+ * Internally called when the client has received a SocketPeerDataPacket from
+ * a remote peer.
+ * 
+ * @param {SocketPeerDataPacket} dataPacket 
+ */
 const _handleReceivedSocketPeerDataPacket = (dataPacket) => {
   const { packetType } = dataPacket;
 
@@ -16,6 +19,7 @@ const _handleReceivedSocketPeerDataPacket = (dataPacket) => {
       break;
   }
 
+  // TODO: Work on old implemenation for sending received receipts
   /*
   const { isReceivedReceiptRequested } = receivedData;
 

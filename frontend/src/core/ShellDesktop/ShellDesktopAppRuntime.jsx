@@ -5,12 +5,19 @@ import { DOM_ROOT_ID, PROJECT_NAME } from 'config';
 import preventPullToRefresh from 'utils/preventPullToRefresh';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
-import createDesktopNotification from 'utils/desktop/createDesktopNotification';
+import {
+  _handleSocketConnect,
+  _handleSocketDisconnect
+} from 'utils/desktop';
 import AppRuntime from '../AppRuntime';
 import { EVT_BEFORE_EXIT } from 'process/ClientGUIProcess';
 import { EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import SocketLinkedState from 'state/SocketLinkedState';
+import SocketLinkedState, {
+  STATE_CONNECTION_STATUS,
+  CONNECTION_STATUS_CONNECTED,
+  CONNECTION_STATUS_DISCONNECTED,
+} from 'state/SocketLinkedState';
 
 import AppRegistration from '../AppRegistration';
 
@@ -114,6 +121,7 @@ class ShellDesktop extends AppRuntime {
     }
 
     // Desktop
+    /*
     this._desktopLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
       const { contextMenuIsTrapping } = updatedState;
 
@@ -129,15 +137,26 @@ class ShellDesktop extends AppRuntime {
         }
       }
     });
+    */
 
     // Socket.io
     this._socketLinkedState.on(EVT_LINKED_STATE_UPDATE, (updatedState) => {
-      const { connectionStatus: updatedConnectionStatus } = updatedState;
+      const { [STATE_CONNECTION_STATUS]: updatedConnectionStatus } = updatedState;
 
-      if (typeof updatedConnectionStatus !== 'undefined') {
-        createDesktopNotification({
-          message: `Socket.io ${updatedConnectionStatus}`
-        });
+      if (updatedConnectionStatus !== undefined) {
+        switch (updatedConnectionStatus) {
+          case CONNECTION_STATUS_CONNECTED:
+            _handleSocketConnect();
+            break;
+
+          case CONNECTION_STATUS_DISCONNECTED:
+            _handleSocketDisconnect();
+            break;
+
+          default:
+            console.warn(`Unhandled Socket.io connection status: ${updatedConnectionStatus}`);
+            break;
+        }
       }
     });
   }
