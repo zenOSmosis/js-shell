@@ -9,10 +9,8 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
 export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
-export const STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'lastReceivedPeerDataPacket';
 export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
 
-export const ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET = 'handleReceivedSocketPeerDataPacket';
 export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
 export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
 export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUUID';
@@ -32,19 +30,10 @@ export default class P2PLinkedState extends LinkedState {
       // Peers which are directly connected via WebRTC
       [STATE_WEBRTC_CONNECTIONS]: [],
 
-      [STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: {},
-
       // TODO: Cache ChatMessages instead
       [STATE_CACHED_CHAT_MESSAGES]: []
     }, {
       actions: {
-        // Called via P2PMonitor when there is received SocketPeer data
-        [ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: (receivedData) => {
-          this.setState({
-            [STATE_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET]: receivedData
-          });
-        },
-
         // Adds a chat message to the log
         // This should only be called by the ChatManager app
         [ACTION_CACHE_CHAT_MESSAGE]: (chatMessage) => {

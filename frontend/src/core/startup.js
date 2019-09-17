@@ -9,7 +9,6 @@ import Core from './Core';
 import ShellDesktop, {
   ViewportFocusMonitor,
   ViewportSizeMonitor,
-  ChatManager,
   P2PMonitor,
   AppControlCentral,
   WindowStackCentral
@@ -43,8 +42,7 @@ const startup = async () => {
       new AppControlCentral(desktop);
       new WindowStackCentral(desktop);
       
-      const p2pMonitor = new P2PMonitor(desktop);
-      new ChatManager(p2pMonitor);
+      new P2PMonitor(desktop);
 
       _hasStarted = true;
     }

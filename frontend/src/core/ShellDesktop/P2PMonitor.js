@@ -3,14 +3,13 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
 import fetchSocketPeerIDs from 'utils/p2p/socket.io/fetchSocketPeerIDs';
-import P2PLinkedState, { ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET } from 'state/P2PLinkedState';
+import P2PLinkedState from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_CONNECT,
   SOCKET_API_EVT_PEER_DISCONNECT,
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
-import createSocketPeerReceivedReceiptDataPacket from 'utils/p2p/socket.io/createSocketPeerReceivedReceiptDataPacket';
-import sendSocketPeerDataPacket from 'utils/p2p/socket.io/sendSocketPeerDataPacket';
+import handleReceivedSocketPeerDataPacket from 'utils/p2p/socket.io/handleReceivedSocketPeerDataPacket';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -57,12 +56,12 @@ class P2PMonitor extends ClientProcess {
 
       socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
       socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
-      socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerData);
+      socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
 
       this.on(EVT_BEFORE_EXIT, () => {
         socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
         socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
-        socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerData);
+        socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
 
         // Reset so that any UI views / etc. don't show connected peers
         this._p2pLinkedState.reset();
@@ -127,25 +126,8 @@ class P2PMonitor extends ClientProcess {
     }
   }
 
-  _handleReceivedSocketPeerData = (receivedData) => {
-    const { isReceivedReceiptRequested } = receivedData;
-
-    this._p2pLinkedState.dispatchAction(ACTION_SET_LAST_RECEIVED_SOCKET_PEER_DATA_PACKET, receivedData);
-
-    // Handle received receipt, if requested
-    if (isReceivedReceiptRequested) {
-      const {
-        fromSocketPeerID: toSocketPeerID,
-        packetUUID: originPacketUUID
-      } = receivedData;
-
-      // TODO: Create received receipt and return it
-      const receivedReceiptDataPacket = createSocketPeerReceivedReceiptDataPacket(toSocketPeerID, originPacketUUID);
-
-      console.debug('created received receipt data packet', receivedReceiptDataPacket);
-
-      sendSocketPeerDataPacket(receivedReceiptDataPacket);
-    }
+  _handleReceivedSocketPeerDataPacket = (dataPacket) => {
+    handleReceivedSocketPeerDataPacket(this._p2pLinkedState, dataPacket);
   };
 
   async _initWebRTCServices() {

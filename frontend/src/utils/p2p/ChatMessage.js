@@ -6,6 +6,8 @@ import P2PLinkedState, { ACTION_CACHE_CHAT_MESSAGE, ACTION_UPDATE_CACHED_CHAT_ME
 
 export const EVT_SHARED_UPDATE = 'update';
 
+export const SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE = 'ChatMessage';
+
 const commonP2PLinkedState = new P2PLinkedState();
 
 class ChatMessage extends EventEmitter {
@@ -106,7 +108,7 @@ class ChatMessage extends EventEmitter {
 
       const toSocketPeerID = this.getToSocketPeerID();
 
-      const dataPacket = createSocketPeerDataPacket(toSocketPeerID, 'ChatMessage', this.getSharedData());
+      const dataPacket = createSocketPeerDataPacket(toSocketPeerID, SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE, this.getSharedData());
       await sendSocketPeerDataPacket(dataPacket);
     } catch (exc) {
       throw exc;
