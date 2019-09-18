@@ -1,4 +1,4 @@
-import P2PSharedObject from './P2PSharedObject';
+import P2PSharedObject, { EVT_SHARED_UPDATE } from './P2PSharedObject';
 import uuidv4 from 'uuidv4';
 import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socketPeer';
 import P2PLinkedState, {
@@ -8,9 +8,22 @@ import P2PLinkedState, {
 } from 'state/P2PLinkedState';
 import 'shared/p2p/SocketPeerDataPacket.typedef';
 
-export const EVT_SHARED_UPDATE = 'sharedUpdate';
+export { EVT_SHARED_UPDATE };
 
 export const SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE = 'ChatMessage';
+
+export const PRIVATE_DATA_KEY_IS_FROM_LOCAL = 'isFromLocal';
+export const PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS = 'isSendingInProgress';
+export const PRIVATE_DATA_KEY_IS_SENT = 'isSent';
+export const PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS = 'receivedBySocketPeerIDs';
+export const PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS = 'readBySocketPeerIDs';
+
+export const SHARED_DATA_KEY_FROM_SOCKET_PEER_ID = 'fromSocketPeerID';
+export const SHARED_DATA_KEY_TO_SOCKET_PEER_ID = 'toSocketPeerID';
+export const SHARED_DATA_KEY_MESSAGE_UUID = 'messageUUID';
+export const SHARED_DATA_KEY_IS_TYPING = 'isTyping';
+export const SHARED_DATA_KEY_MESSAGE_BODY = 'messageBody';
+export const SHARED_DATA_KEY_IS_FINALIZED = 'isFinalized';
 
 const commonP2PLinkedState = new P2PLinkedState();
 
@@ -62,20 +75,20 @@ class ChatMessage extends P2PSharedObject {
 
   constructor(isFromLocal, fromSocketPeerID, toSocketPeerID, existingSharedData = null) {
     const initialPrivateData = {
-      isFromLocal,
-      isSendingInProgress: false,
-      isSent: false, // TODO: Dynamically determine when constructed
-      receivedBySocketPeerIDs: [],
-      readBySocketPeerIDs: []
+      [PRIVATE_DATA_KEY_IS_FROM_LOCAL]: isFromLocal,
+      [PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS]: false,
+      [PRIVATE_DATA_KEY_IS_SENT]: false, // TODO: Dynamically determine when constructed
+      [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: [],
+      [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: []
     };
 
     const initialSharedData = existingSharedData || {
-      fromSocketPeerID,
-      toSocketPeerID,
-      messageUUID: uuidv4(),
-      isTyping: false,
-      messageBody: null,
-      isFinalized: false
+      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerID,
+      [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerID,
+      [SHARED_DATA_KEY_MESSAGE_UUID]: uuidv4(),
+      [SHARED_DATA_KEY_IS_TYPING]: false,
+      [SHARED_DATA_KEY_MESSAGE_BODY]: null,
+      [SHARED_DATA_KEY_IS_FINALIZED]: false
     };
 
     super(initialPrivateData, initialSharedData);
@@ -97,7 +110,7 @@ class ChatMessage extends P2PSharedObject {
         });
       })();
 
-      // Create new cached chat message and update it when EVT_SHARE_UPDATE is emitted
+      // Create new cached chat message and update it when EVT_SHARED_UPDATE is emitted
       if (!existingSharedData) {
         commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
 
@@ -121,7 +134,7 @@ class ChatMessage extends P2PSharedObject {
    * @return {boolean}
    */
   getIsFromLocal() {
-    const { isFromLocal } = this._privateData;
+    const { [PRIVATE_DATA_KEY_IS_FROM_LOCAL]: isFromLocal } = this._privateData;
 
     return isFromLocal;
   }
@@ -130,11 +143,15 @@ class ChatMessage extends P2PSharedObject {
    * @return {string}
    */
   getUUID() {
-    const { messageUUID } = this._sharedData;
+    const { [SHARED_DATA_KEY_MESSAGE_UUID]: messageUUID } = this._sharedData;
 
     return messageUUID;
   }
 
+  /**
+   * 
+   * @param {boolean} isFinalizedMessage 
+   */
   async _createAndSendSharedDataPacket(isFinalizedMessage) {
     try {
       clearTimeout(this._emitPacketDebounceTimeout);
@@ -153,19 +170,29 @@ class ChatMessage extends P2PSharedObject {
     }
   }
 
+  /**
+   * @return {string}
+   */
   getToSocketPeerID() {
-    const { toSocketPeerID } = this._sharedData;
+    const { [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerID } = this._sharedData;
 
     return toSocketPeerID;
   }
 
+  /**
+   * @return {string}
+   */
   getFromSocketPeerID() {
-    const { fromSocketPeerID } = this._sharedData;
+    const { [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerID } = this._sharedData;
 
     return fromSocketPeerID;
   }
 
   // TODO: Block this if not from local
+  /**
+   * 
+   * @param {string} messageBody 
+   */
   async finalizeAndSendMessage(messageBody) {
     try {
       this.setIsTyping(false);
@@ -209,11 +236,18 @@ class ChatMessage extends P2PSharedObject {
     }
   }
 
+  /**
+   * @return {boolean}
+   */
   getIsTyping() {
-    const { isTyping } = this._sharedData;
+    const { [SHARED_DATA_KEY_IS_TYPING]: isTyping } = this._sharedData;
     return isTyping;
   }
 
+  // TODO: Block if finalized
+  /**
+   * @param {string} messageBody 
+   */
   setMessageBody(messageBody) {
     this.setSharedData({
       messageBody
@@ -224,12 +258,15 @@ class ChatMessage extends P2PSharedObject {
    * @return {string}
    */
   getMessageBody() {
-    const { messageBody } = this._sharedData;
+    const { [SHARED_DATA_KEY_MESSAGE_BODY]: messageBody } = this._sharedData;
 
     return messageBody;
   }
 
   // TODO: Block this if not from local
+  /**
+   * @param {string} isFinalized 
+   */
   _setIsFinalized(isFinalized) {
     this.setSharedData({
       isFinalized
@@ -240,12 +277,16 @@ class ChatMessage extends P2PSharedObject {
    * @return {boolean}
    */
   getIsFinalized() {
-    const { isFinalized } = this._sharedData;
+    const { [SHARED_DATA_KEY_IS_FINALIZED]: isFinalized } = this._sharedData;
 
     return isFinalized;
   }
 
   // TODO: Block this if not from local
+  /**
+   * 
+   * @param {boolean} isSendingInProgress 
+   */
   _setIsSendingInProgress(isSendingInProgress) {
     this._setPrivateData({
       isSendingInProgress
@@ -256,12 +297,16 @@ class ChatMessage extends P2PSharedObject {
    * @return {boolean}
    */
   getIsSendingInProgress() {
-    const { isSendingInProgress } = this._privateData;
+    const { [PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS]: isSendingInProgress } = this._privateData;
 
     return isSendingInProgress;
   }
 
   // TODO: Block this if not from local
+  /**
+   * 
+   * @param {boolean} isSent 
+   */
   _setIsSent(isSent) {
     this._setPrivateData({
       isSent
@@ -272,13 +317,17 @@ class ChatMessage extends P2PSharedObject {
    * @return {boolean}
    */
   getIsSent() {
-    const { isSent } = this._privateData;
+    const { [PRIVATE_DATA_KEY_IS_SENT]: isSent } = this._privateData;
 
     return isSent;
   }
 
+  /**
+   * 
+   * @param {string} socketPeerID 
+   */
   addReadBySocketPeerID(socketPeerID) {
-    const { readBySocketPeerIDs } = this._privateData;
+    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIDs } = this._privateData;
 
     readBySocketPeerIDs.push(socketPeerID);
 
@@ -287,14 +336,20 @@ class ChatMessage extends P2PSharedObject {
     });
   }
 
+  /**
+   * @return {string[]}
+   */
   getReadBySocketPeerIDs() {
-    const { readBySocketPeerIDs } = this._privateData;
+    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIDs } = this._privateData;
 
     return readBySocketPeerIDs;
   }
 
+  /**
+   * @param {string} socketPeerID 
+   */
   addReceivedBySocketPeerID(socketPeerID) {
-    const { receivedBySocketPeerIDs } = this._privateData;
+    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIDs } = this._privateData;
 
     receivedBySocketPeerIDs.push(socketPeerID);
 
@@ -303,8 +358,11 @@ class ChatMessage extends P2PSharedObject {
     });
   }
 
+  /**
+   * @return {string[]}
+   */
   getReceivedBySocketPeerIDs() {
-    const { receivedBySocketPeerIDs } = this._privateData;
+    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIDs } = this._privateData;
 
     return receivedBySocketPeerIDs;
   }
