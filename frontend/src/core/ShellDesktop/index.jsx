@@ -1,5 +1,5 @@
 import ShellDesktopAppRuntime, { getShellDesktopProcess } from './ShellDesktopAppRuntime';
-import P2PMonitor from './P2PMonitor';
+import P2PController from './P2PController';
 import ViewportFocusMonitor from './ViewportFocusMonitor';
 import ViewportSizeMonitor from './ViewportSizeMonitor';
 import AppControlCentral from './AppControlCentral';
@@ -9,7 +9,7 @@ export default ShellDesktopAppRuntime;
 export {
   getShellDesktopProcess,
   
-  P2PMonitor,
+  P2PController,
   ViewportFocusMonitor,
   ViewportSizeMonitor,
   AppControlCentral,

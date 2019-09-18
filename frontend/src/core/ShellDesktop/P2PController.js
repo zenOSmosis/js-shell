@@ -1,5 +1,3 @@
-// TODO: Rename to P2PDelegate, or something along those lines
-
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
 import fetchSocketPeerIDs from 'utils/p2p/socketPeer/fetchSocketPeerIDs';
@@ -19,7 +17,7 @@ import {
  * 
  * @extends ClientProcess
  */
-class P2PMonitor extends ClientProcess {
+class P2PController extends ClientProcess {
   constructor(...args) {
     super(...args);
 
@@ -29,7 +27,7 @@ class P2PMonitor extends ClientProcess {
 
   async _init() {
     try {
-      this.setTitle('P2P Monitor');
+      this.setTitle('P2P Controller');
 
       this._p2pLinkedState = new P2PLinkedState();
 
@@ -146,4 +144,4 @@ class P2PMonitor extends ClientProcess {
   }
 }
 
-export default P2PMonitor;
+export default P2PController;
