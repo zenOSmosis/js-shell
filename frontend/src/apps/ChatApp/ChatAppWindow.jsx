@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-// import Button from 'components/Button';
 import Window from 'components/Desktop/Window';
+import Center from 'components/Center';
 import Chat, { SocketPeerList } from 'components/Chat';
-// import { Content, Footer, Row, Column, Section } from 'components/Layout';
-import Switch from 'components/Switch';
-import LabeledComponent from 'components/LabeledComponent';
 import Full from 'components/Full';
+import LabeledComponent from 'components/LabeledComponent';
+import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
+import Switch from 'components/Switch';
+
 // import { Avatar, Input } from 'antd';
 // const { Search } = Input;
 
@@ -17,6 +18,8 @@ class ChatAppWindow extends Component {
     this.state = {
       selectedSocketPeerID: null
     };
+
+    this._p2pLinkedState = this.props.p2pLinkedState;
   }
 
   _handleSocketPeerClick = (socketPeerID) => {
@@ -46,7 +49,7 @@ class ChatAppWindow extends Component {
           </div>
         }
         */
-        
+
         toolbarRight={
           <LabeledComponent
             label="Messages"
@@ -59,56 +62,55 @@ class ChatAppWindow extends Component {
           </LabeledComponent>
         }
       >
+        <LinkedStateRenderer
+          key={selectedSocketPeerID}
+          linkedState={this._p2pLinkedState}
+          onUpdate={(updatedState) => {
+            const { socketPeerIDs } = updatedState;
 
-        <Full>
-          <SplitterLayout
-            primaryIndex={1}
-            secondaryInitialSize={220}
-          >
-            <Full>
-              <SocketPeerList
-                onSocketPeerClick={ socketPeerID => { this._handleSocketPeerClick(socketPeerID) } }
-              />
-            </Full>
-            {
-              /*
-              <Full>
-                <Row style={{ height: '100%' }}>
-                  <Column>
-                    <Content>
-                      <UserList />
-                    </Content>
+            if (socketPeerIDs !== undefined) {
+              return {
+                socketPeerIDs
+              };
+            }
+          }}
+          render={(renderProps) => {
+            const { socketPeerIDs } = renderProps;
 
-                    <Footer>
-                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                        <Avatar size={56}>..</Avatar>
-                      </div>
-
-                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                        <Avatar size={56} />
-                      </div>
-
-                      <div style={{ display: 'inline-block', margin: '.8rem .8rem' }}>
-                        <Avatar size={56} />
-                      </div>
-                    </Footer>
-                  </Column>
-                </Row>
-              </Full>
-              */
+            if (!socketPeerIDs.length) {
+              return (
+                <Center>
+                  No connected peers
+                </Center>
+              );
             }
 
-            <Full>
-              {
-                selectedSocketPeerID &&
-                <Chat
-                  remoteSocketPeerID={selectedSocketPeerID}
-                />
-              }
-            </Full>
-          </SplitterLayout>
-        </Full>
+            return (
+              <Full>
+                <SplitterLayout
+                  primaryIndex={1}
+                  secondaryInitialSize={220}
+                >
+                  <Full>
+                    <SocketPeerList
+                      socketPeerIDs={socketPeerIDs}
+                      onSocketPeerClick={socketPeerID => { this._handleSocketPeerClick(socketPeerID) }}
+                    />
+                  </Full>
 
+                  <Full>
+                    {
+                      selectedSocketPeerID &&
+                      <Chat
+                        remoteSocketPeerID={selectedSocketPeerID}
+                      />
+                    }
+                  </Full>
+                </SplitterLayout>
+              </Full>
+            );
+          }}
+        />
       </Window>
     );
   }
