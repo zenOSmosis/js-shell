@@ -6,7 +6,7 @@ RUN apt-get update \
   && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
   && apt-get install -y nodejs \
   && curl -L https://www.npmjs.com/install.sh | sh \
-  && apt-get install -y git \
+  && apt-get install -y git neofetch htop \
   && apt-get clean
 
 RUN npm install -g nodemon jest
