@@ -6,8 +6,8 @@ class P2PSharedObject extends EventEmitter {
   constructor(initialPrivateData, initialSharedData = {}) {
     super();
 
-    this._sharedData = initialSharedData;
     this._privateData = initialPrivateData;
+    this._sharedData = initialSharedData;
   }
 
   /**
@@ -27,7 +27,6 @@ class P2PSharedObject extends EventEmitter {
   }
 
   /**
-   * 
    * @param {Object} params 
    */
   _setPrivateData(params) {
