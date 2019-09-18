@@ -2,7 +2,7 @@ import {
   setItem,
   getItem,
   removeItem,
-  removeAll,
+  removeAllItems,
   clear,
   getAllKeys
 } from './encryptedLocalStorage';
@@ -11,7 +11,7 @@ export {
   setItem,
   getItem,
   removeItem,
-  removeAll,
+  removeAllItems,
   clear,
   getAllKeys,
 };

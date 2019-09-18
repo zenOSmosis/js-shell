@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
-import Layout, { Header, Content } from 'components/Layout';
+import Layout, { Header, Content, Footer } from 'components/Layout';
+import AddKeyForm from './subComponents/AddKeyForm';
 import {
   getAllKeys as getAllLocalStorageKeys,
-  removeItem
+  clear,
+  setItem,
+  getItem,
+  removeItem,
+  removeAllItems
 } from 'utils/encryptedLocalStorage';
 
 export default class ClientStorageManagerWindow extends Component {
@@ -12,14 +17,20 @@ export default class ClientStorageManagerWindow extends Component {
     super(props);
 
     this.state = {
-      isAddingKey: false,
-      localStorageKeys: []
+      isAddingItem: false,
+      localStorageKeys: [],
+      displayedItemKeys: []
     };
 
+    this._defaultState = { ...this.state };
+
     this._encryptedLocalStorageLinkedState = this.props.encryptedLocalStorageLinkedState;
+
+    this._handleLocalStorageKeysUpdate = this._handleLocalStorageKeysUpdate.bind(this);
   }
 
   componentDidMount() {
+    // TODO: Use constant for event name
     this._encryptedLocalStorageLinkedState.on('update', this._handleLocalStorageKeysUpdate);
 
     // Perform initial sync
@@ -27,10 +38,11 @@ export default class ClientStorageManagerWindow extends Component {
   }
 
   componentWillUnount() {
+    // TODO: Use constant for event name
     this._encryptedLocalStorageLinkedState.off('update', this._handleLocalStorageKeysUpdate);
   }
 
-  _handleLocalStorageKeysUpdate = () => {
+  _handleLocalStorageKeysUpdate() {
     const localStorageKeys = getAllLocalStorageKeys();
 
     this.setState({
@@ -38,9 +50,66 @@ export default class ClientStorageManagerWindow extends Component {
     });
   }
 
+  _handleAddItem(itemName, value) {
+    if (itemName.length === 0 || value.length === 0) {
+      alert('Item name and value must be set.');
+      return;
+    }
+
+    const itemExists = getItem(itemName).length > 0 ? true : false;
+
+    if (itemExists) {
+      alert('Item already exists');
+      return;
+    }
+
+    setItem(itemName, value);
+
+    this.setState({
+      isAddingItem: false
+    });
+  };
+
+  _handleRemoveAllItems() {
+    this.setState(this._defaultState);
+
+    removeAllItems();
+  }
+
+  displayItem(itemKey) {
+    const { displayedItemKeys } = this.state;
+
+    if (!displayedItemKeys.includes(itemKey)) {
+      displayedItemKeys.push(itemKey);
+
+      this.setState({
+        displayedItemKeys
+      });
+    }
+  }
+
+  hideItem(itemKey) {
+    const { displayedItemKeys } = this.state;
+    const itemIdx = displayedItemKeys.indexOf(itemKey);
+    displayedItemKeys.splice(itemIdx, 1);
+
+    this.setState({
+      displayedItemKeys
+    });
+  }
+
+  toggleDisplayItem(itemKey) {
+    const { displayedItemKeys } = this.state;
+    if (!displayedItemKeys.includes(itemKey)) {
+      this.displayItem(itemKey);
+    } else {
+      this.hideItem(itemKey);
+    }
+  }
+
   render() {
     const { appRuntime, ...propsRest } = this.props;
-    const { isAddingKey, localStorageKeys } = this.state;
+    const { isAddingItem, localStorageKeys, displayedItemKeys } = this.state;
 
     return (
       <Window
@@ -48,29 +117,24 @@ export default class ClientStorageManagerWindow extends Component {
         appRuntime={appRuntime}
         subToolbar={
           <div style={{ textAlign: 'center' }}>
-            <button disabled={isAddingKey} onClick={evt => this.setState({ isAddingKey: true })}>
+            <button disabled={isAddingItem} onClick={evt => this.setState({ isAddingItem: true })}>
               Add Key +
             </button>
 
-            <button>
-              Clear
+            <button onClick={evt => this._handleRemoveAllItems()}>
+              Remove All Keys -**
             </button>
           </div>
         }
       >
         <Layout>
           {
-            isAddingKey &&
+            isAddingItem &&
             <Header>
-              <input type="text" placeholder="Key Name" />
-              <input type="text" placeholder="Key Value" />
-              <button>
-                Add
-              </button>
-
-              <button onClick={evt => this.setState({ isAddingKey: false })}>
-                Cancel
-              </button>
+              <AddKeyForm
+                onAddRequest={([itemName, value]) => this._handleAddItem(itemName, value)}
+                onCancelRequest={evt => this.setState({ isAddingItem: false })}
+              />
             </Header>
           }
           <Content>
@@ -82,33 +146,70 @@ export default class ClientStorageManagerWindow extends Component {
             }
             {
               localStorageKeys.length > 0 &&
-              <table>
-              {
-                localStorageKeys.map((itemKey, idx) => {
-                  return (
-                    <tr key={idx}>
-                      <td>
-                        { itemKey }
-                      </td>
-                      <td>
-                        <button onClick={ evt => removeItem(itemKey) }>
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              }
-            </table>
-            }
-            {
-              /*
-              <p>
-                {appRuntime.getTitle()} manages simple key-value-pairs for local storage and session storage APIs, providing an additional layer of encryption on top of them.
-              </p>
-              */
+              <table style={{ width: '100%'}}>
+                <thead>
+                  <tr>
+                    <td>
+                      Key
+                    </td>
+                    <td>
+                      Value
+                    </td>
+                    <td>
+                      f/x
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    localStorageKeys.map((itemKey, idx) => {
+                      const isDisplayed = displayedItemKeys.includes(itemKey);
+
+                      return (
+                        <tr key={idx}>
+                          <td>
+                            {itemKey}
+                          </td>
+                          <td style={{width: '100%'}}>
+                            {
+                              !isDisplayed &&
+                              <span style={{fontStyle: 'italic'}}>Hidden</span>
+                            }
+                            {
+                              isDisplayed &&
+                              <div>
+                                {
+                                  getItem(itemKey)
+                                }
+                              </div>
+                            }
+                          </td>
+                          <td>
+                            <div style={{whiteSpace: 'nowrap'}}>
+                              <button onClick={evt => this.toggleDisplayItem(itemKey)}>
+                                {(!isDisplayed ? 'View' : 'Hide')}
+                              </button>
+                              <button>
+                                Edit
+                              </button>
+                              <button onClick={evt => removeItem(itemKey)}>
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  }
+                </tbody>
+              </table>
             }
           </Content>
+          <Footer>
+            <p>
+              {appRuntime.getTitle()} manages simple key-value-pairs for the underlying EncryptedLocalStorage engine.
+            </p>
+          </Footer>
         </Layout>
       </Window>
     );
