@@ -17,6 +17,7 @@ import launchFileChooserDialog, {
   FILE_CHOOSER_MODE_SAVE_AS
 } from 'utils/desktop/launchFileChooserDialog';
 import BlueprintIcon from 'components/componentIcons/BlueprintIcon';
+// import { setItem } from 'utils/encryptedLocalStorage';
 
 export default registerApp({
   title: 'Source Code',
@@ -116,6 +117,20 @@ export default registerApp({
         openNewAppFile(editorLinkedState);
       }
     }, 50);
+
+    /*
+    // TODO: Implement ability to cache non-saved items for later.
+    // When a new editor opens, and it's the only editor window, open "unsaved"
+    // items in new tabs. If these tabs are then closed without saving, or are
+    // saved delete the entries from here.
+    editorLinkedState.on('update', (updatedState) => {
+      const { activeAppFile } = updatedState;
+
+      if (activeAppFile !== undefined) {
+        setItem('protoFile', activeAppFile.fileContent);
+      }
+    });
+    */
 
     appRuntime.on(EVT_BEFORE_EXIT, () => {
       // Remove the untitled file timeout, if it hasn't run yet
