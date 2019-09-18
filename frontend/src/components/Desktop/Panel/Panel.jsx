@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import TransparentButton from 'components/TransparentButton';
-import { Row, Column } from 'components/RowColumn';
-import Menubar from '../Menubar';
-import Time from './Time';
-import SocketLinkedState from 'state/SocketLinkedState';
-import DesktopLinkedState from 'state/DesktopLinkedState';
-
 import FullScreenIcon from 'components/componentIcons/FullScreenIcon';
 import SearchIcon from 'components/componentIcons/SearchIcon';
 import SidebarIcon from 'components/componentIcons/SidebarIcon';
-import WifiIcon from 'components/componentIcons/WifiIcon';
-import NoWifiIcon from 'components/componentIcons/NoWifiIcon';
-
+import TransparentButton from 'components/TransparentButton';
+import { Row, Column } from 'components/RowColumn';
+import Menubar from '../Menubar';
+import SocketSignal from './SocketSignal';
+import Time from './Time';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
 import classNames from 'classnames';
 import style from './Panel.module.scss';
@@ -47,13 +43,9 @@ class Panel extends Component {
 
           <Column className={style['column-right']}>
             <div>
-              <TransparentButton>
-                <Time />
-              </TransparentButton>
+              <Time />
 
-              <TransparentButton>
-                {isConnected ? <WifiIcon /> : <NoWifiIcon />}
-              </TransparentButton>
+              <SocketSignal />
 
               <TransparentButton>
                 <SearchIcon />
@@ -74,17 +66,7 @@ class Panel extends Component {
   }
 }
 
-const SocketLinkedStatePanel = hocConnect(Panel, SocketLinkedState, (updatedState) => {
-  const { isConnected } = updatedState;
-
-  if (typeof isConnected !== 'undefined') {
-    return {
-      isConnected
-    };
-  }
-});
-
-const DesktopLinkedStatePanel = hocConnect(SocketLinkedStatePanel, DesktopLinkedState, (updatedState, desktopLinkedState) => {
+export default hocConnect(Panel, DesktopLinkedState, (updatedState, desktopLinkedState) => {
   const { isFullScreenRequested } = updatedState;
 
   const filteredState = {};
@@ -99,5 +81,3 @@ const DesktopLinkedStatePanel = hocConnect(SocketLinkedStatePanel, DesktopLinked
     }
   };
 });
-
-export default DesktopLinkedStatePanel;
