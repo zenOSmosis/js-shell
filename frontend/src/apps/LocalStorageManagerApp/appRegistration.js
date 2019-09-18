@@ -1,15 +1,15 @@
 import React from 'react';
 import { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import registerApp from 'utils/desktop/registerApp';
-import ClientStorageManagerWindow from './ClientStorageManagerWindow';
+import LocalStorageManagerWindow from './LocalStorageManagerWindow';
 import VaultIcon from 'components/componentIcons/VaultIcon';
 import EncryptedLocalStorageLinkedState from 'state/EncryptedLocalStorageLinkedState';
 
 export default registerApp({
-  title: 'Client Storage',
+  title: 'Local Storage Manager',
   view: (props) => {
     return (
-      <ClientStorageManagerWindow {...props} />
+      <LocalStorageManagerWindow {...props} />
     );
   },
   iconView: () => <VaultIcon />,

@@ -12,7 +12,7 @@ import {
   removeAllItems
 } from 'utils/encryptedLocalStorage';
 
-export default class ClientStorageManagerWindow extends Component {
+export default class LocalStorageManagerWindow extends Component {
   constructor(props) {
     super(props);
 

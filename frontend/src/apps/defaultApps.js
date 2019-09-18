@@ -8,7 +8,7 @@
  */
 
 import './FilesApp';
-import './ClientStorageManagerApp';
+import './LocalStorageManagerApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
 import './ChatApp';
