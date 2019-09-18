@@ -6,7 +6,6 @@ import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
 import P2PLinkedState, { STATE_CACHED_CHAT_MESSAGES, ACTION_GET_CACHED_CHAT_MESSAGES } from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import ChatMessage from 'utils/p2p/ChatMessage';
 
 class Chat extends Component {
   render() {

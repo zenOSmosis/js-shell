@@ -203,15 +203,6 @@ class ChatMessage extends EventEmitter {
     return this._sharedData;
   }
 
-  /**
-   * @return {boolean}
-   */
-  getIsFinalized() {
-    const { isFinalized } = this.getSharedData();
-
-    return { isFinalized };
-  }
-
   _setPrivateData(params) {
     this._privateData = { ...this._privateData, ...params };
   }
