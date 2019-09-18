@@ -55,7 +55,7 @@ class EncryptedLocalStorage {
     this._linkedState.dispatchAction(ACTION_HANDLE_STORAGE_UPDATE);
   }
 
-  removeAll() {
+  removeAllItems() {
     this._ls.removeAll();
 
     this._linkedState.dispatchAction(ACTION_HANDLE_STORAGE_UPDATE);
