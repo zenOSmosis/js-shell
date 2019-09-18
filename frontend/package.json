@@ -49,6 +49,7 @@
     "react-treebeard": "^3.2.4",
     "react-video-js-player": "^1.1.1",
     "react-with-gesture": "^4.0.8",
+    "secure-ls": "^1.2.5",
     "serialize-javascript": "^1.7.0",
     "simple-peer": "^9.5.0",
     "socket.io-client": "^2.2.0",
