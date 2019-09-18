@@ -2,6 +2,7 @@ import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
 import fetchSocketPeerIDs from 'utils/p2p/socketPeer/fetchSocketPeerIDs';
 import P2PLinkedState from 'state/P2PLinkedState';
+import Peer from 'utils/p2p/Peer';
 import {
   SOCKET_API_EVT_PEER_CONNECT,
   SOCKET_API_EVT_PEER_DISCONNECT,
@@ -23,13 +24,29 @@ class P2PController extends ClientProcess {
 
     this._p2pLinkedState = null;
     this._hasInitialSocketPeerSync = false;
+
+    this._localPeer = null;
   };
 
   async _init() {
     try {
       this.setTitle('P2P Controller');
 
+      // Note: Destructor for this is found in _initSocketIOServices
       this._p2pLinkedState = new P2PLinkedState();
+      this._localPeer = new Peer(true);
+
+      this.on(EVT_BEFORE_EXIT, () => {
+        this._localPeer.destroy();
+        this._localPeer = null;
+
+        // Reset so that any UI views / etc. don't show connected peers
+        this._p2pLinkedState.reset();
+
+        // Unlink P2PLinkedState
+        this._p2pLinkedState.destroy();
+        this._p2pLinkedState = null;
+      });
 
       console.debug('Initializing Socket.io peer connections');
       await this._initSocketIOServices();
@@ -63,13 +80,6 @@ class P2PController extends ClientProcess {
         socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
         socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
         socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
-
-        // Reset so that any UI views / etc. don't show connected peers
-        this._p2pLinkedState.reset();
-
-        // Unlink P2PLinkedState
-        this._p2pLinkedState.destroy();
-        this._p2pLinkedState = null;
       });
 
       // Perform initial sync

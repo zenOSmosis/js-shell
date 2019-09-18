@@ -11,6 +11,7 @@
     "animate.css": "^3.7.0",
     "antd": "^3.18.1",
     "bootstrap": "^4.3.1",
+    "bowser": "^2.6.1",
     "browserslist": "^4.6.3",
     "caniuse-lite": "^1.0.30000974",
     "chai": "^4.2.0",
