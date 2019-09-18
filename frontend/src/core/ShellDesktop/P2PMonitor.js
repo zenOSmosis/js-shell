@@ -10,8 +10,7 @@ import {
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
 import {
-  _handleSocketPeerConnect,
-  _handleSocketPeerDisconnect,
+  _handleSocketPeerConnectionStatusUpdate,
   _handleReceivedSocketPeerDataPacket
  } from 'utils/p2p/socketPeer';
 
@@ -120,7 +119,7 @@ class P2PMonitor extends ClientProcess {
       this._p2pLinkedState.addSocketPeerID(socketPeerID);
     }
 
-    _handleSocketPeerConnect(socketPeerID);
+    _handleSocketPeerConnectionStatusUpdate(socketPeerID, true);
   }
 
   /**
@@ -128,10 +127,10 @@ class P2PMonitor extends ClientProcess {
    */
   _handleSocketPeerDisconnect = (socketPeerID) => {
     if (this._p2pLinkedState) {
-      this._p2pLinkedState.removeSocketPeerID(socketPeerID);
+      this._p2pLinkedState.removeSocketPeerID(socketPeerID, false);
     }
 
-    _handleSocketPeerDisconnect(socketPeerID);
+    _handleSocketPeerConnectionStatusUpdate(socketPeerID, false);
   }
 
   _handleReceivedSocketPeerDataPacket = (dataPacket) => {

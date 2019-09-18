@@ -1,5 +1,4 @@
-import _handleSocketConnect from './_handleSocketConnect';
-import _handleSocketDisconnect from './_handleSocketDisconnect';
+import _handleSocketConnectionStatusUpdate from './_handleSocketConnectionStatusUpdate';
 import createDesktopNotification from './createDesktopNotification';
 import fetchWallpaperPaths from './fetchWallpaperPaths';
 import getAppRegistrationsWithMimeType from './getAppRegistrationsWithMimeType';
@@ -10,8 +9,7 @@ import setNativeWindowTitle from './setNativeWindowTitle';
 import titleToURI from './titleToURI';
 
 export {
-  _handleSocketConnect,
-  _handleSocketDisconnect,
+  _handleSocketConnectionStatusUpdate,
   createDesktopNotification,
   fetchWallpaperPaths,
   getAppRegistrationsWithMimeType,

@@ -6,8 +6,7 @@ import preventPullToRefresh from 'utils/preventPullToRefresh';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
 import {
-  _handleSocketConnect,
-  _handleSocketDisconnect
+  _handleSocketConnectionStatusUpdate,
 } from 'utils/desktop';
 import AppRuntime from '../AppRuntime';
 import { EVT_BEFORE_EXIT } from 'process/ClientGUIProcess';
@@ -15,8 +14,7 @@ import { EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import SocketLinkedState, {
   STATE_CONNECTION_STATUS,
-  CONNECTION_STATUS_CONNECTED,
-  CONNECTION_STATUS_DISCONNECTED,
+  CONNECTION_STATUS_CONNECTED
 } from 'state/SocketLinkedState';
 
 import AppRegistration from '../AppRegistration';
@@ -144,19 +142,10 @@ class ShellDesktop extends AppRuntime {
       const { [STATE_CONNECTION_STATUS]: updatedConnectionStatus } = updatedState;
 
       if (updatedConnectionStatus !== undefined) {
-        switch (updatedConnectionStatus) {
-          case CONNECTION_STATUS_CONNECTED:
-            _handleSocketConnect();
-            break;
-
-          case CONNECTION_STATUS_DISCONNECTED:
-            _handleSocketDisconnect();
-            break;
-
-          default:
-            console.warn(`Unhandled Socket.io connection status: ${updatedConnectionStatus}`);
-            break;
-        }
+        // No need to be specific; it's either connnected or not
+        // Specifics are handled directly in the state, if necessary
+        const isConnected = (updatedConnectionStatus === CONNECTION_STATUS_CONNECTED);
+        _handleSocketConnectionStatusUpdate(isConnected);
       }
     });
   }
