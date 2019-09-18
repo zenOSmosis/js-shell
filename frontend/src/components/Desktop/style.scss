@@ -81,6 +81,11 @@ select option {
   position: relative;
 }
 
+*::placeholder {
+  color: $inputPlaceholderColor;
+  font-style: $inputPlaceholderFontStyle;
+}
+
 select option:checked,
 select option:hover {
   background-color: $inputHighlightBgColor !important;

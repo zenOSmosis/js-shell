@@ -11,9 +11,12 @@ $activeHighlightTextColor: #ffffff;
 $overlayBgColor: rgba(0,0,0,.7);
 
 $inputBgColor: #515151;
-$inputTextColor: #c5c5c5;
+$inputTextColor: #eaeaea;
 $inputBorderColor:  #cccccc;
 $inputHighlightBgColor: $activeHighlightBgColor;
+
+$inputPlaceholderColor: #c5c5c5;
+$inputPlaceholderFontStyle: italic;
 
 $inputBgColorHover: #333333;
 $inputTextColorHover: $inputTextColor;
