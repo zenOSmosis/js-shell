@@ -14,7 +14,7 @@ class LinkedStateRenderer extends Component {
       PropTypes.object,
       PropTypes.func
     ]).isRequired,
-    onUpdate: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func, // Intentionally optional
     render: PropTypes.func.isRequired
   };
 
