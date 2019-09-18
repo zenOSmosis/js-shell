@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import P2PSharedObject from './P2PSharedObject';
 import uuidv4 from 'uuidv4';
 import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socketPeer';
 import P2PLinkedState, {
@@ -8,13 +8,13 @@ import P2PLinkedState, {
 } from 'state/P2PLinkedState';
 import 'shared/p2p/SocketPeerDataPacket.typedef';
 
-export const EVT_SHARED_UPDATE = 'update';
+export const EVT_SHARED_UPDATE = 'sharedUpdate';
 
 export const SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE = 'ChatMessage';
 
 const commonP2PLinkedState = new P2PLinkedState();
 
-class ChatMessage extends EventEmitter {
+class ChatMessage extends P2PSharedObject {
   /**
    * Handler for received SocketPeerDataPackets over the wire.
    * 
@@ -61,12 +61,15 @@ class ChatMessage extends EventEmitter {
   };
 
   constructor(isFromLocal, fromSocketPeerID, toSocketPeerID, existingSharedData = null) {
-    super();
+    const initialPrivateData = {
+      isFromLocal,
+      isSendingInProgress: false,
+      isSent: false, // TODO: Dynamically determine when constructed
+      receivedBySocketPeerIDs: [],
+      readBySocketPeerIDs: []
+    };
 
-    /**
-     * Serialized data which can be viewed on both sides of the wire.
-     */
-    this._sharedData = existingSharedData || {
+    const initialSharedData = existingSharedData || {
       fromSocketPeerID,
       toSocketPeerID,
       messageUUID: uuidv4(),
@@ -75,16 +78,7 @@ class ChatMessage extends EventEmitter {
       isFinalized: false
     };
 
-    /**
-     * Serialized data which can only be viewed by the local user.
-     */
-    this._privateData = {
-      isFromLocal,
-      isSendingInProgress: false,
-      isSent: false, // TODO: Dynamically determine when constructed
-      receivedBySocketPeerIDs: [],
-      readBySocketPeerIDs: []
-    };
+    super(initialPrivateData, initialSharedData);
 
     // Non-serializable; direct class property
     this._isTypingTimeout = null;
@@ -188,23 +182,6 @@ class ChatMessage extends EventEmitter {
 
       throw exc;
     }
-  }
-
-  setSharedData(params) {
-    this._sharedData = { ...this._sharedData, ...params };
-
-    this.emit(EVT_SHARED_UPDATE);
-  }
-
-  /**
-   * @return {Object}
-   */
-  getSharedData() {
-    return this._sharedData;
-  }
-
-  _setPrivateData(params) {
-    this._privateData = { ...this._privateData, ...params };
   }
 
   /**
