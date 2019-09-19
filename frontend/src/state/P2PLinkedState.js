@@ -10,11 +10,15 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
+export const STATE_LOCAL_PEER = 'localPeer';
+export const STATE_REMOTE_PEERS = 'remotePeers';
 
 export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
 export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
 export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUUID';
 export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUUID';
+export const ACTION_SET_LOCAL_PEER = 'setLocalPeer';
+export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -31,7 +35,10 @@ export default class P2PLinkedState extends LinkedState {
       [STATE_WEBRTC_CONNECTIONS]: [],
 
       // TODO: Cache ChatMessages instead
-      [STATE_CACHED_CHAT_MESSAGES]: []
+      [STATE_CACHED_CHAT_MESSAGES]: [],
+
+      [STATE_LOCAL_PEER]: null,
+      [STATE_REMOTE_PEERS]: []
     }, {
       actions: {
         // Adds a chat message to the log
@@ -101,6 +108,18 @@ export default class P2PLinkedState extends LinkedState {
 
           this.setState({
             [STATE_CACHED_CHAT_MESSAGES]: chatMessages
+          });
+        },
+
+        [ACTION_SET_LOCAL_PEER]: (localPeer) => {
+          this.setState({
+            [STATE_LOCAL_PEER]: localPeer
+          });
+        },
+
+        [ACTION_SET_REMOTE_PEERS]: (remotePeers) => {
+          this.setState({
+            [STATE_REMOTE_PEERS]: remotePeers
           });
         }
       }
