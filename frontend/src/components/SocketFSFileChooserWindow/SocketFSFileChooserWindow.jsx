@@ -125,7 +125,11 @@ class SocketFSFileChooserWindow extends Component {
   }
 
   render() {
-    const { onMount, ...propsRest } = this.props;
+    const {
+      onMount,
+      shouldCloseOnFileOpen,
+      ...propsRest
+    } = this.props;
 
     return (
       <LinkedStateRenderer
