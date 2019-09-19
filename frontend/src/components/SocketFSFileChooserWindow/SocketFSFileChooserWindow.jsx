@@ -16,7 +16,7 @@ import SocketFSFolder, {
 import PathBreadcrumb from './subComponents/PathBreadcrumb';
 import { ButtonGroup, Button } from '../ButtonGroup';
 import { /*Input,*/ Icon as AntdIcon } from 'antd';
-import HostFileDropZone from 'components/HostFileDropZone';
+import FileDropZone from 'components/FileDropZone';
 import UniqueFileChooserLinkedState, {
   ACTION_CHDIR
 } from 'state/UniqueFileChooserLinkedState';
@@ -184,7 +184,7 @@ class SocketFSFileChooserWindow extends Component {
                 </LabeledComponent>
               }
             >
-              <HostFileDropZone>
+              <FileDropZone>
                 <Layout>
                   <Content>
                     <Full>
@@ -217,7 +217,7 @@ class SocketFSFileChooserWindow extends Component {
                     </div>
                   </Footer>
                 </Layout>
-              </HostFileDropZone>
+              </FileDropZone>
 
               {
                 (isRequestingCreateFile || isRequestingCreateDirectory) &&
