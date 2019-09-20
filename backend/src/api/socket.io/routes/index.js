@@ -17,7 +17,7 @@ import {
 
   SOCKET_API_ROUTE_SOCKET_FS,
   // SOCKET_API_ROUTE_FILESYSTEM,
-  
+
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
   // SOCKET_API_ROUTE_FETCH_X_APPS,
   // SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES,
@@ -81,7 +81,7 @@ const webSearch = require('./webSearch');
  * 
  * @param {object} socket A socket.io socket.
  */
-const initSocketAPIRoutes = (socket) => {
+const initSocketAPIRoutes = (socket, io) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
   socket.on(SOCKET_API_ROUTE_FETCH_NODE_ENV, fetchNodeEnv);
@@ -108,11 +108,14 @@ const initSocketAPIRoutes = (socket) => {
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
 
   // P2P
-  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2pFetchSocketIDs);
-  socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
-    // Add socket to existing options
-    // options = {...(options || {}), ...{socket}};
+  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, (options = {}, ack) => {
+    // Add io to existing options
+    options = { ...(options || {}), ...{ io } };
 
+    p2pFetchSocketIDs(options, ack);
+  });
+
+  socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
     p2pRouteSocketPeerData({
       socket,
       socketPeerDataPacket
@@ -122,7 +125,7 @@ const initSocketAPIRoutes = (socket) => {
   // Socket channel
   socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options = {}, ack) => {
     // Add socket to existing options
-    options = {...(options || {}), ...{socket}};
+    options = { ...(options || {}), ...{ socket } };
 
     // Subsequent communications over this socket route handled internally via
     // SocketChannel

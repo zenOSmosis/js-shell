@@ -5,7 +5,6 @@ import requestIp from 'request-ip';
 import expressAPIRoutes from './api/express/routes';
 // const io = require('socket.io')(server);
 import { initSocketAPIRoutes } from './api/socket.io/routes';
-import { addSocketID, removeSocketID } from './utils/p2p/socketIDs';
 import { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } from './api/socket.io/events';
 
 // TODO: Convert to ES6 import
@@ -59,9 +58,7 @@ const initClustWorkerAPIServer = (app, io) => {
       console.log(`Socket.io Client connected with id: ${socket.id}`);
 
       // Initialize the Socket Routes with the socket
-      initSocketAPIRoutes(socket);
-
-      addSocketID(socket.id);
+      initSocketAPIRoutes(socket, io);
 
       // Emit to everyone we're connected
       // TODO: Limit this to only namespaces the socket is connected to
@@ -69,9 +66,6 @@ const initClustWorkerAPIServer = (app, io) => {
       socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
 
       socket.on('disconnect', () => {
-        // Remove socket from peerIDs
-        removeSocketID(socket.id);
-
         // Emit to everyone we're disconnected
         // TODO: Limit this to only namespaces the socket was connected to
         socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
