@@ -20,10 +20,22 @@
 .zd-tile-list
   .zd-tile-list-tiles
   button.zd-tile-list-tile
+  .header {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  overflow: visible;
+}
+
+.zd-tile-list
+  .zd-tile-list-tiles
+  button.zd-tile-list-tile
   .title {
   background-color: rgba(0,0,0,.7);
   position: absolute;
+  width: 100%;
   bottom: 0px;
   padding: .4rem;
   font-weight: bold;
+  overflow: hidden;
 }

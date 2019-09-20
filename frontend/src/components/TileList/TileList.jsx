@@ -3,6 +3,7 @@ import Full from '../Full';
 import Scrollable from '../Scrollable';
 import './TileList.css';
 
+// TODO: Utilize Grid component
 class TileList extends Component {
   render() {
     const { children, className, ...propsRest } = this.props; 
@@ -22,7 +23,7 @@ class TileList extends Component {
               tiles.map((tile, idx) => {
                 const { title } = tile;
 
-                // TODO: Conver to <Tile />
+                // TODO: Convert to <Tile />
                 return (
                   <div
                     key={idx}

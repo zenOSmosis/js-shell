@@ -5,17 +5,20 @@ const addSocketID = (socketID) => {
 };
 
 const removeSocketID = (socketID) => {
-  // TODO: Remove in place
-  _socketIDs = _socketIDs.filter(testSocketID => {
-    return socketID !== testSocketID;
-  });
+  const idxSocketID = _socketIDs.indexOf(socketID);
+
+  if (idxSocketID === -1) {
+    return;
+  }
+
+  _socketIDs.splice(idxSocketID, 1);
 };
 
 const getSocketIDs = () => {
   return _socketIDs;
 };
 
-module.exports = {
+export {
   addSocketID,
   removeSocketID,
   getSocketIDs

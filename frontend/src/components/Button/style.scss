@@ -1,0 +1,6 @@
+@import 'core/core.styles.scss';
+
+.zd-button.active {
+  background-color: $activeHighlightBgColor;
+  color: $activeHighlightTextColor;
+}

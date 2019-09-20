@@ -1,5 +1,6 @@
+// TODO: Rename to Moveable3D
+
 import React, { Component } from 'react';
-import $ from 'jquery';
 
 /**
  * Note, this component only contains functionality relating to moving of the
@@ -13,13 +14,24 @@ export default class Moveable extends Component {
 
     this._posX = 0;
     this._posY = 0;
+
+    this._root = null;
+
+    this._rotationDegX = 0;
+    this._rotationDegY = 0;
+    this._rotationTranslateZ = 0;
   }
 
   componentDidMount() {
-    this._$root = $(this._root);
-
     const { initialX, initialY } = this.props;
     this.moveTo(initialX, initialY);
+
+    // TODO: Move to CSS class
+    this._root.style.transformStyle = 'preserve-3d';
+  }
+
+  componentWillUnmount() {
+    this._root = null;
   }
 
   /**
@@ -50,12 +62,36 @@ export default class Moveable extends Component {
    * functionality should be handled directly in the caller.
    * 
    * @param {number} posX 
-   * @param {number} posY 
+   * @param {number} posY
    */
-  _handleMove(posX, posY) {
-    this._$root.css({
-      transform: `translate3d(${posX}px, ${posY}px, 0)`
-    });
+  _handleMove(posX, posY, rotation = {degX: undefined, degY: undefined, translateZ: undefined}) {
+    if (!this._root) {
+      return;
+    }
+
+    let {degX, degY, translateZ} = rotation;
+
+    if (typeof degX === 'undefined') {
+      degX = this._rotationDegX;
+    }
+
+    if (typeof degY === 'undefined') {
+      degY = this._rotationDegY;
+    }
+
+    if (typeof translateZ === 'undefined') {
+      translateZ = this._rotationTranslateZ;
+    }
+
+    const transform = `translate3d(${posX}px, ${posY}px, 0) rotateX(${degX}deg) rotateY(${degY}deg) translateZ(${translateZ}px)`;
+
+    this._rotationDegX = degX;
+    this._rotationDegY = degY;
+    this._rotationTranslateZ = translateZ;
+
+    // Set the CSS
+    this._root.style.transform = transform;
+
     const { onMove } = this.props;
     if (typeof onMove === 'function') {
       onMove({ x: posX, y: posY });
@@ -70,6 +106,12 @@ export default class Moveable extends Component {
       x,
       y
     };
+  }
+
+  setRotation(rotation = {degX: undefined, degY: undefined, translateZ: undefined}) {
+    window.requestAnimationFrame(() => {
+      this._handleMove(this._posX, this._posY, rotation);
+    });
   }
 
   render() {

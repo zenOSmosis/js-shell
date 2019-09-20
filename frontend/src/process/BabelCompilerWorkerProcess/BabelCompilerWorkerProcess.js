@@ -1,7 +1,8 @@
 import ClientWorkerProcess from '../ClientWorkerProcess/ClientWorkerProcess';
-const Babel = require('@babel/standalone'); // @babel/standalone is not an ES6 module
 import React from 'react';
 import ReactDOM from 'react-dom';
+const Babel = require('@babel/standalone'); // @babel/standalone is not an ES6 module
+// const babelPluginSyntaxDynamicImport = require('@babel/plugin-syntax-dynamic-import');
 
 // TODO: Enable optional passing of presets from controller
 export const BABEL_REACT_PRESETS = [
@@ -51,7 +52,10 @@ class BabelCompilerWorkerProcess extends ClientWorkerProcess {
     let compiledCode = Babel.transform(code, {
       // TODO: Make presets adjustable
       presets: BABEL_REACT_PRESETS,
-      sourceType: 'script'
+      sourceType: 'script',
+      plugins: [
+        // babelPluginSyntaxDynamicImport
+      ]
     }).code;
 
     console.debug('compiled code:\n--------------\n\n', compiledCode);

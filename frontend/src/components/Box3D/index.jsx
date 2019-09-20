@@ -36,6 +36,17 @@ export default class Box3D extends Component {
   _degY = 0;
   _translateZ = 100;
 
+  componentDidMount() {
+    const { faceFront, rotation } = this.props;
+    if (faceFront) {
+      this.setFaceContent(BOX3D_SIDE_FRONT, faceFront);
+    }
+
+    if (rotation) {
+      this.rotate(rotation);
+    }
+  }
+
   /*
   componentDidMount() {
     
@@ -160,7 +171,11 @@ export default class Box3D extends Component {
             {
               // TODO: Create property option to dangerously render or not
             }
-            <div className="Box__Face Box__Face--FRONT" dangerouslySetInnerHTML={{__html: this.state.sideContentFront}}></div>
+            <div className="Box__Face Box__Face--FRONT">
+              {
+                this.state.sideContentFront
+              }
+            </div>
             
             <div className="Box__Face Box__Face--BACK">Back</div>
             <div className="Box__Face Box__Face--RIGHT">Right</div>

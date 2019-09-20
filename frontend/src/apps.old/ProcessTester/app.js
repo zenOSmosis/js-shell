@@ -5,6 +5,6 @@ import config from 'config';
 
 export default registerApp({
   title: 'Process Tester',
-  mainView: <ProcessTesterWindow />,
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}testing/testing.svg`
+  view: <ProcessTesterWindow />,
+  iconView: `${config.HOST_ICON_URL_PREFIX}testing/testing.svg`
 });

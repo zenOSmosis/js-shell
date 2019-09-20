@@ -14,15 +14,16 @@ import { EVT_LINKED_STATE_UPDATE } from './LinkedState/LinkedState';
  * @see https://reactjs.org/docs/higher-order-components.html
  * 
  * @param {Component} WrappedComponent 
- * @param {LinkedState} LinkedState A passed LinkeState class, or extension of.
- * @param {Function | null} stateUpdateFilter [default = null] Applies this filtered
- * value to the component props when the state is updated.
+ * @param {LinkedState} LinkedState A passed LinkedState class, extension, or
+ * instance of.
+ * @param {Function | null} stateUpdateFilter [default = null] Applies this
+ * filtered value to the component props when the state is updated.
  */
 const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* onConstruct = null */) => {
   // Enables ref to be obtained from stateful components, ignoring ref if not.
   // (e.g. if WrappedComponent extends React.Component the ref can be referenced here)
   const RefForwardedComponent = React.forwardRef((props, ref) => {
-    if (WrappedComponent.prototype.render) {
+    if (WrappedComponent.prototype && WrappedComponent.prototype.render) {
       return (
         <WrappedComponent ref={ref} {...props} />
       );
@@ -33,6 +34,9 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
     }
   });
 
+  // Whether or not the passed LinkedState is a class, or a constructed object
+  const isLinkedStateClass = (LinkedState.prototype && LinkedState.prototype.constructor ? true : false);
+
   // ...and returns another component...
   return class extends Component {
     constructor(props) {
@@ -42,30 +46,30 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
 
       super(props);
 
-      this._linkedStateInstance = null;
-    }
-
-    componentDidMount() {
-      // Register LinkedState connection
-      (() => {
-        if (this._linkedStateInstance) {
-          console.warn('LinkedState instance is already set');
-          return;
-        }
-
+      if (isLinkedStateClass) {
         this._linkedStateInstance = new LinkedState();
+      } else {
+        this._linkedStateInstance = LinkedState;
+      }
 
-        if (!this._linkedStateInstance) {
-          throw new Error('No LinkedState present');
+      if (!this._linkedStateInstance) {
+        throw new Error('No LinkedState present');
+      }
+
+      // Set initial state
+      this.state = (() => {
+        const currState = this._linkedStateInstance.getState();
+        
+        if (!stateUpdateFilter) {
+          // Pass the current state as the initial state
+          return currState;
+        } else {
+          // Pass the filtered state as the initial state
+          return stateUpdateFilter(currState, this._linkedStateInstance);
         }
-
-        this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
-
-        const state = this._linkedStateInstance.getState();
-
-        // Set initial state
-        this._handleLinkedStateUpdate(state);
       })();
+
+      this._linkedStateInstance.on(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
     }
 
     componentWillUnmount() {
@@ -73,8 +77,10 @@ const hocConnect = (WrappedComponent, LinkedState, stateUpdateFilter = null/* on
       (() => {
         this._linkedStateInstance.off(EVT_LINKED_STATE_UPDATE, this._handleLinkedStateUpdate);
 
-        this._linkedStateInstance.destroy();
-        this._linkedStateInstance = null;
+        if (isLinkedStateClass) {
+          this._linkedStateInstance.destroy();
+          this._linkedStateInstance = null;
+        }
       })();
     }
 

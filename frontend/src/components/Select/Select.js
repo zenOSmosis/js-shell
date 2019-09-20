@@ -9,7 +9,7 @@ const Select = (props = {}) => {
   return (
     <AntdSelect
       // Make popup render on parent
-      // @see https://ant.design/docs/react/faq#Select-Dropdown-DatePicker-TimePicker-Popover-Popconfirm-scroll-with-the-page?
+      // @see https://ant.design/docs/react/faq#Select-Dropdown-DateChooser-TimeChooser-Popover-Popconfirm-scroll-with-the-page?
       getPopupContainer={trigger => trigger.parentNode}
       
       {...propsRest}

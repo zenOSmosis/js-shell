@@ -1,0 +1,15 @@
+.scrollable-panel {
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* total width */
+.scrollable-panel *::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+/* Firefox */
+.scrollable-panel * {
+  scrollbar-width: thin;
+}

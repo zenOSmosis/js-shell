@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import uuidv4 from 'uuid/v4';
 import './style.css';
 
@@ -42,20 +42,19 @@ export default class IFrame extends Component {
   */
 
   handleOnLoad(evt) {
-    const {onLoad} = this.props;
-    
+    const { onLoad } = this.props;
+
     if (typeof onLoad === 'function') {
       const component = this;
       const iFrame = this._iframe;
-      
+
       onLoad(component, iFrame, evt);
     }
   }
 
-  // TODO: Is transfer an option here?
-  sendMessage(message) {
+  sendMessage(message, targetOrigin = '*') {
     try {
-      this._iframe.contentWindow.postMessage(message);
+      this._iframe.contentWindow.postMessage(message, targetOrigin);
     } catch (exc) {
       throw exc;
     }
@@ -67,13 +66,13 @@ export default class IFrame extends Component {
   postMessage(...args) {
     return this.sendMessage(...args);
   }
-  
+
   render() {
-    const {className, onLoad, ...propsRest} = this.props;
+    const { className, onLoad, ...propsRest } = this.props;
 
     return (
       <iframe
-        ref={ c => this._iframe = c }
+        ref={c => this._iframe = c}
         {...propsRest}
         title={this._title}
         className={`zd-iframe ${className ? className : ''}`}

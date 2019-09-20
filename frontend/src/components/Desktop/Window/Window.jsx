@@ -2,15 +2,15 @@
 
 import React, { Component } from 'react';
 import EventEmitter from 'events';
-import WindowHeader from './Header';
-import ContextMenu from 'components/ContextMenu';
+import WindowHeader from './WindowHeader';
+import ContextMenuProvider from 'components/ContextMenuProvider';
 import Cover from 'components/Cover';
 import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
-import './style.css';
-import AppRuntime from 'core/AppRuntime';
+import style from './Window.module.scss';
+// import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
 // TODO: Debug why this doesn't work on Windows
@@ -19,10 +19,13 @@ import DesktopLinkedState from 'state/DesktopLinkedState';
 import PropTypes from 'prop-types';
 import { getWindowStackCentral } from 'core/ShellDesktop/'; // TODO: Import from ShellDesktop
 
-import config from 'config';
+import {
+  DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE,
+  DESKTOP_WINDOW_MIN_WIDTH,
+  DESKTOP_WINDOW_MIN_HEIGHT
+}  from 'config';
 import $ from 'jquery';
 import uuidv4 from 'uuid/v4';
-const { DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE, DESKTOP_WINDOW_MIN_WIDTH, DESKTOP_WINDOW_MIN_HEIGHT } = config;
 
 // const EFFECT_CREATE = ANIMATE_JACK_IN_THE_BOX;
 // const EFFECT_MINIMIZE = ANIMATE_ZOOM_OUT;
@@ -60,6 +63,9 @@ export const EVT_MINIMIZE = 'minimize';
 export const EVT_BEFORE_MAXIMIZE = 'willMaximize';
 export const EVT_MAXIMIZE = 'maximize';
 
+export const EVT_BEFORE_RESTORE = 'beforeRestore';
+export const EVT_RESTORE = 'restore';
+
 export const EVT_BEFORE_RESIZE = 'beforeResize';
 export const EVT_RESIZE = 'resize';
 
@@ -88,12 +94,17 @@ const _desktopLinkedState = new DesktopLinkedState();
  * @extends React.Component
  */
 class Window extends Component {
-  static propTypes = {
-    // Optional
-    appRuntime: PropTypes.instanceOf(AppRuntime),
+  static propTypes = { 
+    // TODO: Fix this
+    // Currently throws the following error message:
+    // "Failed prop type: Right-hand side of 'instanceof' is not an object"
+    // appRuntime: PropTypes.instanceOf(AppRuntime),
+    
     initialWidth: PropTypes.number,
     initialHeight: PropTypes.number,
-    sizeable: PropTypes.bool
+    isResizable: PropTypes.bool,
+
+    onClose: PropTypes.func,
 
     // TODO: PropType additional types
   };
@@ -123,6 +134,9 @@ class Window extends Component {
 
     // Base DOM element for the Window
     this._el = null;
+    
+    // Whether to prevent updates from props / state
+    this._isSkippingUpdates = false;
 
     this._moveableComponent = null;
     this._resizableComponent = null;
@@ -139,6 +153,8 @@ class Window extends Component {
 
     this._isClosing = false;
     this._isClosed = false;
+
+    this._perspective = 0;
 
     /**
      * @type {WindowSize}
@@ -204,10 +220,15 @@ class Window extends Component {
 
       this.emit(EVT_MOUNT);
 
+      // Automatically focus on mount
       this.focus();
     } catch (exc) {
       throw exc;
     }
+  }
+
+  shouldComponentUpdate() {
+    return !this._isSkippingUpdates;
   }
 
   componentDidUpdate() {
@@ -338,8 +359,20 @@ class Window extends Component {
       return;
     }
 
-    // Focus window if touched
-    this.focus();
+    // Skip / re-allow update cycle utilized to prevent loss of touch control
+    // while focusing.  Without this in place, Windows cannot be focused and
+    // resized / moved without clicking twice.
+    if (!this._isFocused) {
+      // Prevent updates during window focus cycle
+      this._isSkippingUpdates = true;
+      
+      this.focus();
+      
+      // Allow updates to continue after focus
+      setTimeout(() => {
+        this._isSkippingUpdates = false;
+      }, 1);
+    }
   };
 
   async focus() {
@@ -353,7 +386,7 @@ class Window extends Component {
 
       this.restore();
 
-      $(this._el).addClass(CSS_CLASS_NAME_FOCUS);
+      $(this._el).addClass(style[CSS_CLASS_NAME_FOCUS]);
 
       this._isFocused = true;
 
@@ -375,7 +408,7 @@ class Window extends Component {
       
       this._isFocused = false;
   
-      $(this._el).removeClass(CSS_CLASS_NAME_FOCUS);
+      $(this._el).removeClass(style[CSS_CLASS_NAME_FOCUS]);
   
       this.doCoverIfShould();
 
@@ -472,11 +505,7 @@ class Window extends Component {
   // TODO: Await for any effects to complete
   async minimize() {
     try {
-      // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
-      this.emit(EVT_BEFORE_RESIZE);
-
-      // this.emit(EVT_BEFORE_MINIMIZE);
+      this.emit(EVT_BEFORE_MINIMIZE);
   
       if (!this._isMinimized) {
         // await this.animate(EFFECT_MINIMIZE);
@@ -489,20 +518,20 @@ class Window extends Component {
         await this.hide();
       }
   
-      // this.emit(EVT_MINIMIZE);
-  
-      // Since this.resize() is not called in this method, wrap w/
-      // EVT_BEFORE_RESIZE/EVT_RESIZE hooks
-      this.emit(EVT_RESIZE);
+      this.emit(EVT_MINIMIZE);
     } catch (exc) {
       throw exc;
     }
   }
 
+  getIsMinimized() {
+    return this._isMinimized;
+  }
+
   // TODO: Await for any effects to complete
   async restore() {
     try {
-      // this.emit(EVT_BEFORE_RESTORE);
+      this.emit(EVT_BEFORE_RESTORE);
 
       if(this._isMinimized) {
         this._isMinimized = false;
@@ -518,7 +547,7 @@ class Window extends Component {
 
       // await this.animate(EFFECT_RESTORE);
 
-      // this.emit(EVT_RESTORE); 
+      this.emit(EVT_RESTORE); 
     } catch (exc) {
       throw exc;
     }
@@ -538,7 +567,7 @@ class Window extends Component {
 
   async maximize() {
     try {
-      if (!this.getIsResizeEnabled()) {
+      if (!this.getIsUserResizable()) {
         console.warn('Window is not resize enabled, so it cannot be maximized');
         return;
       }
@@ -570,6 +599,10 @@ class Window extends Component {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  getIsMaximized() {
+    return this._isMaximized;
   }
 
   /**
@@ -607,6 +640,24 @@ class Window extends Component {
   
   moveTo(posX, posY) {
     this._moveableComponent.moveTo(posX, posY);
+  }
+
+
+  setRotation(rotation = {degX: undefined, degY: undefined, translateZ: undefined}) {
+    this._moveableComponent.setRotation(rotation);
+  }
+
+  setPerspective(perspective) {
+    if (!this._el) {
+      return;
+    }
+
+    perspective = parseInt(perspective);
+    this._perspective = perspective;
+
+    window.requestAnimationFrame(() => {
+      this._el.style.perspective = `${perspective}px`;
+    });
   }
 
   /**
@@ -727,10 +778,10 @@ class Window extends Component {
   /**
    * @return {boolean} Whether or not the window can be resized by the user. 
    */
-  getIsResizeEnabled() {
-    const { sizeable } = this.props;
+  getIsUserResizable() {
+    const { isResizable } = this.props;
 
-    const isResizeEnabled = (typeof sizeable === 'undefined' || sizeable === true);
+    const isResizeEnabled = (typeof isResizable === 'undefined' || isResizable === true);
 
     return isResizeEnabled;
   }
@@ -744,7 +795,7 @@ class Window extends Component {
       
       initialWidth,
       initialHeight,
-      sizeable, // TODO: Rename to isResizable
+      isResizable,
 
       toolbar,
       toolbarRight,
@@ -758,7 +809,7 @@ class Window extends Component {
       ...propsRest
     } = this.props;
 
-    const isResizeEnabled = this.getIsResizeEnabled();
+    const isResizeEnabled = this.getIsUserResizable();
 
     minWidth = minWidth || DESKTOP_WINDOW_MIN_WIDTH;
     minHeight = minHeight || DESKTOP_WINDOW_MIN_HEIGHT;
@@ -781,7 +832,7 @@ class Window extends Component {
 
         // Note: The width & height of the transition layer are intentionally
         // kept at 0 width / height
-        className="zd-window"
+        className={style['window']}
       >
 
         <Moveable
@@ -790,7 +841,7 @@ class Window extends Component {
         // initialX={...}
         // initialY={...}
         >
-          <ContextMenu>
+          <ContextMenuProvider>
 
             <DragResizable
               ref={c => this._resizableComponent = c}
@@ -800,7 +851,7 @@ class Window extends Component {
               moveableComponent={this._moveableComponent}
               minWidth={minWidth}
               minHeight={minHeight}
-              bodyClassName="zd-window-resizable"
+              bodyClassName={style['window-resizable']}
               onBodyMount={c => this._resizableBody = c}
               onResizeMove={this._handleMove}
               enable={isResizeEnabled}
@@ -812,7 +863,7 @@ class Window extends Component {
                   <div
                     {...propsRest}
                     ref={c => this._paintedComponent = c}
-                    className="zd-window-painted"
+                    className={style['window-painted']}
                   >
 
                     {
@@ -835,13 +886,13 @@ class Window extends Component {
                     }
                     <div
                       ref={c => this.windowBodyWrapper = c}
-                      className="zd-window-body-wrapper"
+                      className={style['window-body-wrapper']}
                     >
 
                       {
                         // Window background
                       }
-                      <Cover className="zd-window-body-background">
+                      <Cover className={style['window-body-background']}>
                         {
                           // This is the background of the window
                         }
@@ -852,7 +903,7 @@ class Window extends Component {
                       }
                       <Cover
                         ref={c => this._windowBodyComponent = c}
-                        className="zd-window-body"
+                        className={style['window-body']}
                         style={bodyStyle}
                       >
                         <ErrorBoundary>
@@ -892,7 +943,7 @@ class Window extends Component {
               }
 
             </DragResizable>
-          </ContextMenu>
+          </ContextMenuProvider>
         </Moveable>
       </div>
     );
@@ -927,6 +978,11 @@ class Window extends Component {
 
       // Unregister event listeners
       this._events.removeAllListeners();
+
+      const { onClose } = this.props;
+      if (typeof onClose === 'function') {
+        onClose();
+      }
       this._events = null;
     } catch (exc) {
       throw exc;

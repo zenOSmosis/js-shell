@@ -1,17 +1,17 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import CalculatorWindow from './CalculatorWindow';
-import config from 'config';
+import CalculatorIcon from 'components/componentIcons/CalculatorIcon';
 
 export default registerApp({
   title: 'Calculator',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <CalculatorWindow {...props} />
     )
   },
-  minWidth:200,
-  minHeight:200,
-  sizeable: false,
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}calculator/calculator.svg`
+  minWidth: 200,
+  minHeight: 200,
+  isResizable: false,
+  iconView: () => <CalculatorIcon />
 });

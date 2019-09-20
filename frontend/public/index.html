@@ -9,8 +9,11 @@
     <!--
       See: https://developer.mozilla.org/en-US/docs/Mozilla/Mobile/Viewport_meta_tag
     -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000" />
+    
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -29,7 +32,7 @@
     <!--
       TODO: Dynamically replace title w/ variable placeholder
     -->
-    <title>JS Shell (prototype)</title>
+    <title>%REACT_APP_PROJECT_NAME%</title>
     <style>
       html, body {
         background-color: #000;

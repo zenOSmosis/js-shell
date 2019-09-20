@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Menu, MenuDivider, MenuItem, /* SubMenu */ } from 'components/Menu';
-import Image from 'components/Image';
+import TransparentButton from 'components/TransparentButton';
 import { getWindowStackCentral } from 'core/ShellDesktop';
 import { Tooltip } from 'antd';
-import './style.css';
+import classNames from 'classnames';
+import style from './Dock.module.scss';
 
 const EVT_CONTEXT_MENU = 'contextmenu';
 const EVT_MOUSEDOWN = 'mousedown';
@@ -80,7 +81,7 @@ export default class DockItem extends Component {
     const { appRegistration } = this.props;
     const isLaunched = appRegistration.getIsLaunched();
     const allowLaunch = !isLaunched || appRegistration.getAllowMultipleWindows();
-    const iconSrc = appRegistration.getIconSrc();
+    const IconView = appRegistration.getIconView();
     const title = appRegistration.getTitle();
     const appRuntimes = appRegistration.getJoinedAppRuntimes();
 
@@ -88,26 +89,43 @@ export default class DockItem extends Component {
       <div
         ref={c => this._root = c}
         // effect="wobble" // TODO: Use variable
-        className={`zd-desktop-dock-item ${isLaunched ? 'open' : ''}`}
+        className={classNames(style['dock-item'], (isLaunched ? style['open'] : null))}
       >
         <Tooltip
           title={title}
           visible={!isMenuVisible && isDockItemHovered}
         >
-          <button
+          <TransparentButton
             onMouseOver={evt => this.setState({ isDockItemHovered: true })}
             onMouseLeave={evt => this.setState({ isDockItemHovered: false })}
             onClick={evt => this._handleDockItemClick(appRegistration)}
+            className={style['dock-item-button']}
           >
-            <Image className="zd-desktop-dock-item-icon" src={iconSrc} />
-          </button>
+            <IconView />
+
+            <div className={style['app-indicator-wrapper']}>
+              {
+                appRuntimes.map((appRuntime, idx) => {
+                  // Prevent more than 5 indicators
+                  // TODO: Make this configurable
+                  if (idx > 4) {
+                    return false;
+                  }
+
+                  return (
+                    <div key={idx} className={style['app-indicator']}></div>
+                  );
+                })
+              }
+            </div>
+          </TransparentButton>
         </Tooltip>
         {
           isMenuVisible &&
-          <div style={{ position: 'absolute' }}>
+          <div className={style['dock-item-context-menu-wrapper']}>
             <div
               ref={ref => { this._overlay = ref }}
-              className="zd-context-menu-overlay "
+              className={style['overlay']}
             >
               <Menu
                 onClick={evt => { this.setState({ isMenuVisible: false }) }}
@@ -116,12 +134,13 @@ export default class DockItem extends Component {
               >
                 {
                   // Title
-                  appRuntimes.map((runtime, idx) => (
+                  appRuntimes.map((appRuntime, idx) => (
                     <MenuItem
                       key={`focus-${idx}`}
                       style={{ fontWeight: 'bold' }}
+                      onClick={ evt => { appRuntime.focus() }}
                     >
-                      {runtime.getTitle()}
+                      {appRuntime.getTitle()}
                     </MenuItem>
                   ))
                 }
@@ -179,32 +198,4 @@ export default class DockItem extends Component {
       </div>
     );
   }
-
-  /*
-  _handleMenuClick = (evt, appRegistration) => {
-    console.debug('click', evt.key, appRegistration);
-    const { key } = evt;
-
-    switch (key) {
-      // case 'launch':
-      //   appRegistration.launchApp();
-      // break;
-
-      // case 'focus':
-      //  appRegistration.focus();
-      // break;
-
-      default:
-        let [key, idx] = evt.key.split('-');
-    
-        // Absorb key so it doesn't trigger a warning
-        isUndefined(key);
-
-        console.debug(idx);
-        
-        // appRegistration.getJoinedAppRuntimes()[idx].focus();
-      break;
-    }
-  };
-  */
 }

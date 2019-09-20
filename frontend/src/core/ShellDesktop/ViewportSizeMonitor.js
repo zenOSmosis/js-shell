@@ -1,6 +1,5 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import DesktopLinkedState from 'state/DesktopLinkedState';
-import $ from 'jquery';
 
 /**
  * Keeps track of the browser window size on the native device and updates
@@ -40,21 +39,20 @@ class ViewportSizeMonitor extends ClientProcess {
 
   _initSizeMonitoring() {
     // TODO: Use constant for resize
-    $(window).on('resize', this._handleViewportSizeUpdate);
+    window.addEventListener('resize', this._handleViewportSizeUpdate);
   }
 
   _deinitSizeMonitoring() {
     // TODO: Use constant for resize
-    $(window).off('resize', this._handleViewportSizeUpdate);
+    window.removeEventListener('resize', this._handleViewportSizeUpdate);
   }
 
   /**
    * IMPORTANT! This handles Viewport focus/blur, not Desktop Window.
    */
   _handleViewportSizeUpdate = (e) => {
-    const $window = $(window);
-    const width = $window.width();
-    const height = $window.height();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
     this._desktopLinkedState.setState({
       viewportSize: {

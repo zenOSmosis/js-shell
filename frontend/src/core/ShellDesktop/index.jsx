@@ -1,18 +1,18 @@
-import ShellDesktop, { getShellDesktopProcess } from './ShellDesktop';
-import P2PMonitor from './P2PMonitor';
+import ShellDesktopAppRuntime, { getShellDesktopProcess } from './ShellDesktopAppRuntime';
+import AppControlCentral from './AppControlCentral';
+import P2PController from './P2PController';
 import ViewportFocusMonitor from './ViewportFocusMonitor';
 import ViewportSizeMonitor from './ViewportSizeMonitor';
-import AppControlCentral from './AppControlCentral';
 import WindowStackCentral, { getWindowStackCentral } from './WindowStackCentral';
 
-export default ShellDesktop;
+export default ShellDesktopAppRuntime;
 export {
   getShellDesktopProcess,
   
-  P2PMonitor,
+  AppControlCentral,
+  P2PController,
   ViewportFocusMonitor,
   ViewportSizeMonitor,
-  AppControlCentral,
   
   WindowStackCentral,
   getWindowStackCentral

@@ -1,5 +1,8 @@
-# TODO: Use node:12
 FROM node:10
+LABEL maintainer "jeremy.harris@zenosmosis.com"
+
+# TODO: Implement ability to obtain dynamic username
+RUN useradd -ms /bin/bash user
 
 WORKDIR /shell/frontend
 

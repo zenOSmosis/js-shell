@@ -8,8 +8,8 @@ import ClientAudioWorkerProcess from 'process/ClientAudioWorkerProcess';
 const importScripts = () => null; // Not evaluated within Worker
 const io = () => null; // Not evaulated within Worker
 
-const createAudioWorker = (appProcess) => {
-  const audioWorker = new ClientAudioWorkerProcess(appProcess, (audioWorker) => {
+const createAudioWorker = (appRuntime) => {
+  const audioWorker = new ClientAudioWorkerProcess(appRuntime, (audioWorker) => {
     // TODO: Bundle Socket.io directly in Worker
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js');
 
@@ -18,7 +18,7 @@ const createAudioWorker = (appProcess) => {
     const EVT_BACKEND_WS_OPEN = 'wsOpen';
     const EVT_BACKEND_WS_CLOSE = 'wsClose';
     const EVT_BACKEND_WS_ERROR = 'wsError';
-    const EVT_TRANSCRIPTION = 'transcription';
+    const EVT_TRANSCRIPT = 'transcript';
   
     const sttSocket = io(self.location.origin, {
       // TODO: Replace hard-coded Socket.io path
@@ -71,34 +71,17 @@ const createAudioWorker = (appProcess) => {
       });
     });
   
-    // Handle the received transcription
-    sttSocket.on(EVT_TRANSCRIPTION, (transcription) => {
-      // console.debug('transcription data', transcription);
+    // Handle the received transcript
+    sttSocket.on(EVT_TRANSCRIPT, (transcript) => {
+      console.debug('transcript data', transcript);
   
-      const { message } = transcription;
-  
-      if (message) {
-        const { result } = message;
-  
-        if (result) {
-          const { hypotheses } = result;
-  
-          if (hypotheses) {
-            // const lenHypotheses = hypotheses.length;
-  
-            // console.debug('hypotheses', hypotheses);
-            hypotheses.forEach((testHypotheses, idx) => {
-              // console.debug(`hypotheses ${idx + 1} of ${lenHypotheses}`, testHypotheses);
+      const { text } = transcript;
 
-              const { transcript } = testHypotheses;
-              // console.debug(`transcript`, transcript);
-              audioWorker.stdout.write({
-                transcript
-              });
-            });
-          }
+      audioWorker.stdout.write({
+        transcript: {
+          text
         }
-      }
+      });
     });
 
     /**

@@ -1,0 +1,101 @@
+@import 'core/core.styles.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: $bodyBgColor;
+  color: $bodyTextColor;
+}
+
+body, html, .root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  /*
+    .noselect 
+    @see https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting
+  */
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+* {
+  box-sizing: border-box !important;
+}
+
+h1 { 
+  font-size: 1.2rem;
+  color: $bodyTextColor;
+  border-bottom: 1px $bodyTextColor solid;
+  text-align: left;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  padding: 8px;
+  margin: 8px;
+  font-family: "Arial Black", Gadget, sans-serif;
+}
+
+p {
+  display: block;
+  margin: 1rem 0rem;
+}
+
+*:not(input[type="radio"]) {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+button,
+input,
+textarea,
+select,
+select option {
+  background-color: $inputBgColor;
+  color: $inputTextColor;
+  border: 1px $inputBorderColor solid;
+  position: relative;
+}
+
+*::placeholder {
+  color: $inputPlaceholderColor;
+  font-style: $inputPlaceholderFontStyle;
+}
+
+select option:checked,
+select option:hover {
+  background-color: $inputHighlightBgColor !important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.label {
+  font-weight: bold;
+}

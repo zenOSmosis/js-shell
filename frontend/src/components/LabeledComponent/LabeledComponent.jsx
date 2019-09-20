@@ -2,7 +2,12 @@ import React from 'react';
 import './LabeledComponent.css';
 
 const LabeledComponent = (props) => {
-  const { children, className, label, ...propsRest } = props;
+  const {
+    children,
+    className,
+    label,
+    ...propsRest
+  } = props;
 
   return (
     <div

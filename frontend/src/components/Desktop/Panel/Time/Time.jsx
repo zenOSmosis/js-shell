@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TransparentButton from 'components/TransparentButton';
 import moment from 'moment';
 
 const _days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -55,7 +56,7 @@ export default class Time extends Component {
   getTime() {
     // @see https://flaviocopes.com/momentjs/
     const timeFormat = `hh:mm:ss A`;
-    
+
     const formattedTime = moment().format(timeFormat);
 
     const dayIdx = parseInt(moment().format('e'));
@@ -69,9 +70,9 @@ export default class Time extends Component {
     const { timeString } = this.state;
 
     return (
-      <div style={{display: 'inline-block'}}>
-          {timeString}
-      </div>
+      <TransparentButton>
+        {timeString}
+      </TransparentButton>
     );
   }
 }

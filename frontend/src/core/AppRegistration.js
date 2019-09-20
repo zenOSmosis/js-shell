@@ -3,18 +3,9 @@ import AppRuntime from './AppRuntime';
 import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 import { getAppControlCentral } from './ShellDesktop/AppControlCentral';
 import { EVT_TICK, EVT_EXIT } from 'process/ClientProcess';
+import './AppRegistration.typedefs.js';
 
 const _appRegistryLinkedState = new AppRegistryLinkedState();
-
-/**
- * @typedef {Object} AppRegistrationProps
- * @property {string} title
- * @property {string} iconSrc
- * @property {React.Component} mainView // TODO: Rename to view
- * @property {function} cmd Command to run inside of AppRuntime's
- * ClientGUIProcess.
- * @property {boolean} allowMultipleWindows? [default = false]
- */
 
 /**
  * Creates a registration which automatically populates app menus and the Dock
@@ -35,35 +26,37 @@ class AppRegistration extends EventEmitter {
 
     const {
       title,
-      iconSrc,
-      mainView, // TODO: Rename to view
+      iconView,
+      view,
       cmd: runCmd,
-      supportedMimes, // TODO: Rename to supportedMimeTypes
-      menuItems,
+      mimeTypes,
+      menus,
       allowMultipleWindows,
+      onExternalFileOpenRequest,
     } = appRegistrationProps;
 
     this._appRegistrationProps = appRegistrationProps;
 
     this._isLaunched = false;
 
-    // [8/12/2019] TODO: Map all appRegistrationProps as properties
+    // TODO: Map all appRegistrationProps as properties
     this._title = title;
-    this._iconSrc = iconSrc;
-    this._view = mainView; // TODO: Rename to view
+    this._iconView = iconView;
+    this._view = view;
     this._runCmd = runCmd;
 
-    // TODO: Handle accordingly
-    this._menuItems = menuItems || [];
+    this._menus = menus || [];
 
     // Previous position and size
     // this._lastPosition = { x: 0, y: 0 };
     // this._lastSize = { width: 0, height: 0 };
 
     this._isUnregistered = false;
-    this._supportedMimes = supportedMimes || [];
+    this._mimeTypes = mimeTypes || [];
 
     this._allowMultipleWindows = allowMultipleWindows;
+
+    this._onExternalFileOpenRequest = onExternalFileOpenRequest;
 
     // Add this app registration to the registry
     _appRegistryLinkedState.addAppRegistration(this);
@@ -77,13 +70,49 @@ class AppRegistration extends EventEmitter {
   }
 
   /**
+   * Note: This is placed in AppRegistration, instead of AppRuntime, as there
+   * might not already be a running app when a file is requested to be opened.
+   * 
+   * @param {string} filePath
+   * @return {Promise<void>}
+   */
+  async processFileOpenRequest(filePath) {
+    try {
+      const { onExternalFileOpenRequest } = this._appRegistrationProps;
+
+      if (typeof onExternalFileOpenRequest !== 'function') {
+        throw new Error(`No onExternalFileOpenRequest available for appRegistration with title: ${this._title}`);
+      }
+
+      let appRuntime;
+
+      if (!this.getIsLaunched()) {
+        appRuntime = await this.launchApp();
+      } else {
+        const joinedAppRuntimes = this.getJoinedAppRuntimes();
+
+        // Use most recent appRuntime as the launcher
+        // TODO: Launch in most recently focused AppRuntime
+        appRuntime = joinedAppRuntimes[joinedAppRuntimes.length -1];
+
+        // Focus existing AppRuntime instance
+        appRuntime.focus();
+      }
+
+      await onExternalFileOpenRequest(appRuntime, filePath);
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
    * Launches an AppRuntime based on this registration.
    * 
-   * @param {any} cmdArguments? Optional cmd data to be sent to the
+   * @param {any[]} cmdArguments? cmd data to be sent to the
    * AppRuntime instance.
    * @return {Promise<AppRuntime> | boolean}
    */
-  async launchApp(cmdArguments = null) {
+  async launchApp(cmdArguments = []) {
     try {
       const appControlCentral = getAppControlCentral();
 
@@ -94,7 +123,7 @@ class AppRegistration extends EventEmitter {
       }
       
       if (!appRuntime) {
-        console.debug('AppControlCentral blocked launching of app registration', this);
+        console.warn('AppControlCentral blocked launching of app registration', this);
         return;
       }
 
@@ -157,6 +186,10 @@ class AppRegistration extends EventEmitter {
     return this._allowMultipleWindows;
   }
 
+  getMenus() {
+    return this._menus;
+  }
+
   /**
    * Retrieves the launched app's process runtimes, if available.
    * 
@@ -165,6 +198,10 @@ class AppRegistration extends EventEmitter {
   getJoinedAppRuntimes() {
     const appControlCentral = getAppControlCentral();
 
+    if (!appControlCentral) {
+      return [];
+    }
+
     return appControlCentral.getJoinedAppRuntimesByRegistration(this);
   }
 
@@ -172,8 +209,8 @@ class AppRegistration extends EventEmitter {
    * TODO: Document
    * TODO: Rename to getSupportedMimeTypes
    */
-  getSupportedMimes() {
-    return this._supportedMimes;
+  getMimeTypes() {
+    return this._mimeTypes;
   }
 
   /**
@@ -183,8 +220,8 @@ class AppRegistration extends EventEmitter {
     return this._title;
   }
 
-  getIconSrc() {
-    return this._iconSrc;
+  getIconView() {
+    return this._iconView;
   }
 
   /**

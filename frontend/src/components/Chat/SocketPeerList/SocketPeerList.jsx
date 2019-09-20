@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-// import Center from 'components/Center';
-// import Full from 'components/Full';
-import TileList, { Tile } from 'components/TileList';
-// import { Avatar } from 'antd';
-import P2PLinkedState from 'state/P2PLinkedState';
-import hocConnect from 'state/hocConnect';
-
-// import fetchRandomUsers from 'utils/fetchRandomUsers';
+import { Grid, GridItem } from 'components/Grid';
+import TransparentButton from 'components/TransparentButton';
+import { Avatar } from 'antd';
 
 /**
  * @typedef {Object} P2PUser
@@ -15,38 +10,7 @@ import hocConnect from 'state/hocConnect';
  */
 
 class SocketPeerList extends Component {
-  /*
-  componentDidMount() {
-    // Fetching of random users
-    // TODO: Remove
-
-    (async () => {
-      try {
-        const randomUsers = await fetchRandomUsers();
-        const lenRandomUsers = randomUsers.length;
-
-        const users = [];
-
-        for (let i = 0; i < lenRandomUsers; i++) {
-          const randomUser = randomUsers[i];
-
-          users.push({
-            nickname: randomUser.name.first,
-            imageSrc: randomUser.picture.large
-          });
-        }
-
-        this.setState({
-          users
-        });
-      } catch (exc) {
-        throw exc;
-      }
-    })();
-  }
-  */
-
- _handleSocketPeerClick(socketPeerID, evt) {
+  _handleSocketPeerClick(socketPeerID, evt) {
     const { onSocketPeerClick } = this.props;
 
     if (typeof onSocketPeerClick === 'function') {
@@ -55,28 +19,37 @@ class SocketPeerList extends Component {
   }
 
   render() {
-    let { socketPeerIDs } = this.props;
-    socketPeerIDs = socketPeerIDs || [];
+    const { socketPeerIDs } = this.props;
 
     return (
-      <TileList>
+      <Grid>
         {
           socketPeerIDs.map((socketPeerID, idx) => {
             return (
-              <Tile
+              <GridItem
                 key={idx}
                 // title={user.nickname}
-                onClick={ evt => this._handleSocketPeerClick(socketPeerID, evt) }
+                // 
               >
-                {socketPeerID}
-                {
-                  // <img src={user.imageSrc} style={{width: '100%'}} />
-                }
-              </Tile>
+                <TransparentButton
+                  onClick={evt => this._handleSocketPeerClick(socketPeerID, evt)}
+                >
+                  <div>
+                    <Avatar
+                      size={36}
+                      icon="user"
+                    />
+                  </div>
+                  
+                  <div>
+                    {socketPeerID}
+                  </div>
+                </TransparentButton>
+              </GridItem>
             );
           })
         }
-      </TileList>
+      </Grid>
     );
 
     /*
@@ -124,16 +97,4 @@ class SocketPeerList extends Component {
   }
 }
 
-export default hocConnect(SocketPeerList, P2PLinkedState, (updatedState) => {
-  const { socketPeerIDs } = updatedState;
-
-  if (typeof socketPeerIDs !== 'undefined') {
-    return {
-      socketPeerIDs
-    };
-  }
-});
-
-export {
-  SocketPeerList
-};
+export default SocketPeerList;

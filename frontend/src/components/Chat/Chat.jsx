@@ -1,55 +1,75 @@
 import React, { Component } from 'react';
 import Full from '../Full';
-import Scrollable from '../Scrollable';
 import ChatHeader from './Header';
-import {/* Layout, Content, Footer,*/ Row, Column } from '../Layout';
-import TextComposer from './TextComposer';
+import { Layout, Header, Content, Footer } from '../Layout';
+import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-import sendSocketPeerData from 'utils/p2p/socket.io/sendSocketPeerData';
+import P2PLinkedState, { STATE_CACHED_CHAT_MESSAGES, ACTION_GET_CACHED_CHAT_MESSAGES } from 'state/P2PLinkedState';
+import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 class Chat extends Component {
-  // TODO: Convert messageBody to socketPeerDataPacket
-  async _handleMessageSend(messageBody) {
-    try {
-      const { remoteSocketPeerID } = this.props;
-
-      await sendSocketPeerData(remoteSocketPeerID, messageBody);
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
   render() {
     const { remoteSocketPeerID } = this.props;
 
     return (
-      <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
-        <Row style={{ height: '100%' }}>
-          <Column>
-            <Row>
-              <Column>
-                <ChatHeader
-                  remoteSocketPeerID={remoteSocketPeerID}
-                />
-              </Column>
-            </Row>
-            <Row style={{ height: '100%' }}>
-              <Column>
-                <Scrollable>
-                  <MessageList />
-                </Scrollable>
-              </Column>
-            </Row>
-            <Row>
-              <Column>
-                <TextComposer
-                  onMessageSend={messageBody => { this._handleMessageSend(messageBody) }}
-                />
-              </Column>
-            </Row>
-          </Column>
-        </Row>
-      </Full>
+      <LinkedStateRenderer
+        key={remoteSocketPeerID}
+        linkedState={P2PLinkedState}
+        onUpdate={(updatedState, p2pLinkedState) => {
+          const { [STATE_CACHED_CHAT_MESSAGES]: stateChatMessages } = updatedState;
+
+          if (stateChatMessages !== undefined) {
+            /**
+             * @type {ChatMessage[]}
+             */
+            const chatMessages = p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGES, (testChatMessage) => {
+              const testToSocketPeerID = testChatMessage.getToSocketPeerID();
+              if (testToSocketPeerID === remoteSocketPeerID) {
+                return true;
+              } else {
+                const testFromSocketPeerID = testChatMessage.getFromSocketPeerID();
+                if (testFromSocketPeerID === remoteSocketPeerID) {
+                  return true;
+                }
+              }
+              
+              return false;
+            });
+
+            const ret = {
+              chatMessages
+            };
+
+            return ret;
+          }
+        }}
+        render={(renderProps) => {
+          const { chatMessages } = renderProps;
+
+          return (
+            <Full style={{ backgroundColor: 'rgba(255,255,255,.2)' }}>
+              <Layout>
+                <Header>
+                  <ChatHeader
+                    // TODO: Rename to toSocketPeerID
+                    remoteSocketPeerID={remoteSocketPeerID}
+                  />
+                </Header>
+
+                <Content>
+                  <MessageList chatMessages={chatMessages} />
+                </Content>
+
+                <Footer>
+                  <MessageComposer
+                    toSocketPeerID={remoteSocketPeerID}
+                  />
+                </Footer>
+              </Layout>
+            </Full>
+          )
+        }}
+      />
     );
   }
 }

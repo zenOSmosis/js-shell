@@ -9,13 +9,11 @@ import Core from './Core';
 import ShellDesktop, {
   ViewportFocusMonitor,
   ViewportSizeMonitor,
-  P2PMonitor,
+  P2PController,
   AppControlCentral,
   WindowStackCentral
 } from './ShellDesktop';
-import config from 'config';
-
-const { DOM_ROOT_ID } = config;
+import { DOM_ROOT_ID } from 'config';
 
 let _hasStarted = false;
 
@@ -43,7 +41,8 @@ const startup = async () => {
       new ViewportSizeMonitor(desktop);
       new AppControlCentral(desktop);
       new WindowStackCentral(desktop);
-      new P2PMonitor(desktop);
+      
+      new P2PController(desktop);
 
       _hasStarted = true;
     }

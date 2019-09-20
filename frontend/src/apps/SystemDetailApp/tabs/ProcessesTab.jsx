@@ -116,7 +116,7 @@ class Processes extends Component {
                 Thread Type
               </td>
               <td>
-                Service URI
+                Service URL
               </td>
               <td>
                 Uptime
@@ -147,7 +147,7 @@ class Processes extends Component {
                 const title = process.getTitle();
                 const renderedName = title || className;
                 const threadType = process.getThreadType();
-                const serviceURI = process.getServiceURI();
+                const serviceURL = process.getServiceURL();
                 const parentPID = process.getParentPID();
 
                 return (
@@ -165,7 +165,7 @@ class Processes extends Component {
                       {threadType}
                     </td>
                     <td style={{ maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                      {serviceURI}
+                      {serviceURL}
                     </td>
                     <td style={{ maxWidth: 200, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                       {

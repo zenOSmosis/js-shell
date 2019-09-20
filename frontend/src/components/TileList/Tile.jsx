@@ -1,8 +1,11 @@
 import React from 'react';
 import Cover from 'components/Cover';
+import ellipses from 'text-ellipsis';
 
 const Tile = (props) => {
-  const { children, className, title, ...propsRest } = props;
+  const { children, className, header, title: propsTitle, ...propsRest } = props;
+
+  const title = (propsTitle ? propsTitle.toString() : '').trim();
 
   return (
     <button
@@ -13,8 +16,17 @@ const Tile = (props) => {
         children
       }
       <Cover>
+        <div className="header">
+          { 
+            // TODO: Move header outside of outer button DOM descendants, so we
+            // can include additional buttons w/o triggering invalidation
+            // warnings
+            header
+          }
+        </div>
+
         <div className="title">
-          { title }
+          { ellipses(title, 40) }
         </div>
       </Cover>
     </button>

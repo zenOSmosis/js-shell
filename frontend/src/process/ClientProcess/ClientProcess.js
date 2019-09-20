@@ -113,7 +113,7 @@ class ClientProcess extends EventEmitter {
     this._cmd = cmd;
     this._startTime = getUnixTime();
     this._options = options;
-    this._serviceURI = null;
+    this._serviceURL = null;
 
     this._initPosition = {x: 0,y: 0};
     this._initSize = {width:0, height:0};
@@ -134,7 +134,7 @@ class ClientProcess extends EventEmitter {
 
     if (typeof window !== 'undefined') {
       // TODO: Can a service worker use this, somehow?
-      this._serviceURI = window.location.href;
+      this._serviceURL = window.location.href;
     }
 
     // Provides stdin/stdout/stderr
@@ -428,22 +428,6 @@ class ClientProcess extends EventEmitter {
     return this._cmdArguments;
   }
 
-  setInitPosition(position) {
-    this._initPosition = position;
-  }
-
-  getInitPosition() {
-    return this._initPosition;
-  }
-
-  setInitSize(size) {
-    this._initSize = size;
-  }
-
-  getInitSize() {
-    return this._initSize;
-  }
-
   /**
    * Retrieves the direct descendant processes forked from this current
    * process.
@@ -481,7 +465,7 @@ class ClientProcess extends EventEmitter {
    */
   async _launch() {
     try {
-      // Prevent possiblity of double-launch
+      // Prevent possibility of double-launch
       if (this._isLaunchStarted) {
         // console.warn('Process has already launched');
         return;
@@ -669,8 +653,8 @@ class ClientProcess extends EventEmitter {
    * 
    * @return {string}
    */
-  getServiceURI() {
-    return this._serviceURI;
+  getServiceURL() {
+    return this._serviceURL;
   }
 
   /**

@@ -1,8 +1,9 @@
-import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import ClientProcess, { EVT_EXIT } from 'process/ClientProcess';
 import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
 
 let _appControlCentral = null;
+let _appControlCentralHasExited = false;
 
 /**
  * In-memory, one-to-one join of an AppRegistration & AppRuntime instance.
@@ -36,8 +37,9 @@ class AppControlCentral extends ClientProcess {
 
     // Handle cleanup before exit
     // This should never exit, actually
-    this.on(EVT_BEFORE_EXIT, () => {
+    this.on(EVT_EXIT, () => {
       _appControlCentral = null;
+      _appControlCentralHasExited = true;
     });
 
     // Register process flag
@@ -48,7 +50,7 @@ class AppControlCentral extends ClientProcess {
    * @param {AppRegistration} appRegistration
    * @return {Promise<AppRuntime>}
    */
-  async launchAppRegistration(appRegistration) {
+  async launchAppRegistration(appRegistration, cmdArguments = []) {
     try {
       if (!(appRegistration instanceof AppRegistration)) {
         throw new Error('appRegistration is not an AppRegistration instance');
@@ -64,9 +66,9 @@ class AppControlCentral extends ClientProcess {
       }
 
       // Create the app process
-      const appRuntime = new AppRuntime(appRegistration);
+      const appRuntime = new AppRuntime(appRegistration, cmdArguments);
 
-      appRuntime.once(EVT_BEFORE_EXIT, () => {
+      appRuntime.once(EVT_EXIT, () => {
         this._removeConnectedAppRuntime(appRuntime);
       });
 
@@ -150,8 +152,11 @@ class AppControlCentral extends ClientProcess {
  * AppLaunchController
  */
 const getAppControlCentral = () => {
-  if (!_appControlCentral) {
-    throw new Error('No App Control Central defined');
+  if (_appControlCentralHasExited) {
+    console.warn('AppControlCentral has exited and can no longer be retrieved');
+    return;
+  } else if (!_appControlCentral) {
+    throw new Error('AppControlCentral has not launched');
   }
 
   return _appControlCentral;

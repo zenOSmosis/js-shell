@@ -1,95 +1,101 @@
-// @see https://github.com/zertosh/v8-compile-cache#readme
-// @see [further reading] https://medium.com/@felixrieseberg/javascript-on-the-desktop-fast-and-slow-2b744dfb8b55
-require('v8-compile-cache');
+// @see https://github.com/elad/node-cluster-socket.io
 
-const cluster = require('cluster');
-const workers = [];
-const cpus = require('os').cpus().length;
-const { HTTP_LISTEN_PORT } = require('./config');
-// const clients = {};
-const net = require('net');
-const farmhash = require('farmhash');
-const express = require('express');
-// const redis = require('socket.io-redis'); 
-// const socketio = require('socket.io');
-// const path = require('path');
-const memored = require('memored');
-// const circularjson = require('circular-json');
+// "esm is the world’s most advanced ECMAScript module loader."
+// @see https://www.npmjs.com/package/esm
+require('esm');
 
-if(cluster.isMaster){
-    console.log('Master started process id', process.pid);
-
-    for(let i=0;i<cpus;i++){
-        workers.push( cluster.fork());
-        console.log('worker strated '+workers[i].id);
-
-        workers[i].on('disconnect',() => {
-            console.log('worker '+ workers[i].id+'died');
-        });
-
-        // handling process.send message events in master
-        workers[i].on('message',(msg) => {
-          if(msg.cmd==='newMessage'){
-              console.log("master is notified about new message by worker",workers[i].id);
-              sendNewmessage(msg);
-          }
-        })
-    }
-
-    // notifying all workers about new client
-    sendNewmessage = (msg) => {
-        workers[msg.workerID-1].send({
-           ...msg 
-        })
-    }
-
-    // get worker index based on Ip and total no of workers so that it can be tranferred to same worker
-    const getWorker_index = (ip,len) => {
-        return farmhash.fingerprint32(ip)%len;
-    }
-
-    // ceating TCP server
-    const server = net.createServer({
-        // seting pauseOnCOnnect to true , so that when  we receive a connection pause it
-        // and send to corresponding worker
-        pauseOnConnect: true 
-    }, (connection) => {
-        // We received a connection and need to pass it to the appropriate
-		    // worker. Get the worker for this connection's source IP and pass
-        // it the connection. we use above defined getworker_index func for that
-        const worker = workers[getWorker_index(connection.remoteAddress,cpus)];
-
-        // send the connection to the worker and send resume it there using .resume()
-        worker.send({
-            cmd:'sticky-session'
-        },connection);
-    }).listen(HTTP_LISTEN_PORT);
-
-
-    process.on('SIGINT',() => {
-        console.log('cleaning up master server...');
-        server.close();
-        memored.clean(() => {
-            onsole.log('cleaned memory..');
-        })
-        process.exit(1);
-    });
-
-} else {
 // Enable module aliases
 // @see https://www.npmjs.com/package/module-alias
 require('module-alias/register');
 
-  const expressServer = require('./servers/expressServer');
+const cluster = require('cluster');
+// const cpus = require('os').cpus().length;
+const { HTTP_LISTEN_PORT } = require('./config');
+// const clients = {};
+const net = require('net');
+const farmhash = require('farmhash');
+// const express = require('express');
+// const redis = require('socket.io-redis'); 
+// const socketio = require('socket.io');
+// const path = require('path');
+// const memored = require('memored');
+// const circularjson = require('circular-json');
+const express = require('express');
+const sio = require('socket.io');
+const sio_redis = require('socket.io-redis');
 
-  expressServer.start();
+const port = HTTP_LISTEN_PORT;
+const num_processes = require('os').cpus().length;
 
+if (cluster.isMaster) {
+	// This stores our workers. We need to keep them to be able to reference
+	// them based on source IP address. It's also useful for auto-restart,
+	// for example.
+	const workers = [];
 
-// TODO: Handle this better
-// @see https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2
-// @see https://medium.com/@trekinbami/using-environment-variables-in-react-6b0a99d83cf5
-process.on('unhandledRejection', (reason/*, promise*/) => {
-  console.error('Unhandled Rejection at:', reason.stack || reason);
-  // or whatever crash reporting service you use
-});
+	// Helper function for spawning worker at index 'i'.
+	var spawn = function(i) {
+		workers[i] = cluster.fork();
+
+		// Optional: Restart worker on exit
+		workers[i].on('exit', function(code, signal) {
+			console.log('respawning worker', i);
+			spawn(i);
+		});
+    };
+
+    // Spawn workers.
+	for (var i = 0; i < num_processes; i++) {
+		spawn(i);
+	}
+
+	// Helper function for getting a worker index based on IP address.
+	// This is a hot path so it should be really fast. The way it works
+	// is by converting the IP address to a number by removing non numeric
+  // characters, then compressing it to the number of slots we have.
+	//
+	// Compared against "real" hashing (from the sticky-session code) and
+	// "real" IP number conversion, this function is on par in terms of
+	// worker index distribution only much faster.
+	var worker_index = function(ip, len) {
+		return farmhash.fingerprint32(ip) % len; // Farmhash is the fastest and works with IPv6, too
+	};
+
+	// Create the outside facing server listening on our port.
+	var server = net.createServer({ pauseOnConnect: true }, function(connection) {
+		// We received a connection and need to pass it to the appropriate
+		// worker. Get the worker for this connection's source IP and pass
+		// it the connection.
+		var worker = workers[worker_index(connection.remoteAddress, num_processes)];
+		worker.send('sticky-session:connection', connection);
+	}).listen(port);
+} else {
+    // Note we don't use a port here because the master listens on it for us.
+	var app = new express();
+
+	// Here you might use middleware, attach routes, etc.
+
+	// Don't expose our internal server to the outside.
+	var server = app.listen(0, 'localhost'),
+	    io = sio(server);
+
+	// Tell Socket.IO to use the redis adapter. By default, the redis
+	// server is assumed to be on localhost:6379. You don't have to
+	// specify them explicitly unless you want to change them.
+	io.adapter(sio_redis({ host: 'backend-redis', port: 6379 }));
+
+	// Here you might use Socket.IO middleware for authorization etc.
+
+	// Listen to messages sent from the master. Ignore everything else.
+	process.on('message', function(message, connection) {
+		if (message !== 'sticky-session:connection') {
+			return;
+		}
+
+		// Emulate a connection event on the server by emitting the
+		// event with the connection the master sent us.
+		server.emit('connection', connection);
+
+		connection.resume();
+	});
 }

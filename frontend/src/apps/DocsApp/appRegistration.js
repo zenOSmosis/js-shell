@@ -1,14 +1,14 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import DocsWindow from './DocsWindow';
-import config from 'config';
+import DocumentationIcon from 'components/componentIcons/DocumentationIcon';
 
 export default registerApp({
   title: 'Docs',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <DocsWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}documentation/documentation.svg`
+  iconView: () => <DocumentationIcon />
 });

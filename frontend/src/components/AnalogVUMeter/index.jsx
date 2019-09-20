@@ -6,6 +6,7 @@ export default class AnalogVUMeter extends Component {
     super(...args);
 
     this._iFrame = null;
+    this._isIFrameLoaded = false;
   }
 
   componentDidMount() {
@@ -28,7 +29,7 @@ export default class AnalogVUMeter extends Component {
 
   // TODO: Document
   setVULevel(vuLevel) {
-    if (this._iFrame) {
+    if (this._iFrame && this._isIFrameLoaded) {
       this._iFrame.postMessage({
         vuLevel
       });
@@ -37,7 +38,11 @@ export default class AnalogVUMeter extends Component {
 
   render() {
     return (
-      <IFrame ref={c => this._iFrame = c} src="/components/analog-vu-meter" />
+      <IFrame
+        ref={c => this._iFrame = c}
+        src="/components/analog-vu-meter"
+        onLoad={ evt => this._isIFrameLoaded = true }
+      />
     )
   }
 }

@@ -36,6 +36,7 @@ const SegmentedControlItem = (props = {}) => {
   )
 };
 
+export default SegmentedControl;
 export {
   SegmentedControl,
   SegmentedControlItem

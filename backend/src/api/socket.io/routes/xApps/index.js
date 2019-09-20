@@ -1,8 +1,9 @@
 const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
-const {fetchFreedesktopApps} = require('utils/freedesktop.org/appUtils');
+const { fetchFreedesktopApps } = require('utils/freedesktop.org/appUtils');
 
-const requestXApps = async(options = {}, ack) => {
-  return handleSocketAPIRoute(async () => {
+// TODO: Remove this API
+const requestXApps = async (options = {}, ack) => {
+  return await handleSocketAPIRoute(async () => {
     try {
       const apps = await fetchFreedesktopApps();
 

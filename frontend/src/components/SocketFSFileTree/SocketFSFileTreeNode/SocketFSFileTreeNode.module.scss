@@ -1,0 +1,12 @@
+@import 'core/core.styles.scss';
+
+.file-tree-node {
+  white-space: nowrap;
+  margin: .1em 0em;
+  color: $inputTextColor;
+}
+
+.file-tree-node:hover {
+  background-color: $inputBgColorHover;
+  color: $inputTextColorHover;
+}

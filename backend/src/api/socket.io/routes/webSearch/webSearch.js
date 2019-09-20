@@ -29,12 +29,12 @@ const _fetchQueryResults = async (queryOptions) => {
   }
 };
 
- /**
-  * @param {SearxSearchOptions} options // TODO: Document 
-  * @return {Promise<void>}
-  */
-const webSearch = async(options, ack) => {
-  return handleSocketAPIRoute(async () => {
+/**
+ * @param {SearxSearchOptions} options // TODO: Document 
+ * @return {Promise<void>}
+ */
+const webSearch = async (options, ack) => {
+  return await handleSocketAPIRoute(async () => {
     try {
       return await _fetchQueryResults(options);
     } catch (exc) {

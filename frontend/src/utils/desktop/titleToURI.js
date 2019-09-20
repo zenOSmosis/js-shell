@@ -1,12 +1,12 @@
 /**
- * Converts a title into a pretty URI.
+ * Converts a title into a pretty URL.
  * 
- * This works in contrast to a URI-encoded string.
+ * This works in contrast to a URL-encoded string.
  * 
  * @param {string} title 
  */
-const titleToURI = (title) => {  
+const titleToURL = (title) => {  
   return title.split(' ').join('-');
 };
 
-export default titleToURI;
+export default titleToURL;

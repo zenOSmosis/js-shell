@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
-import config from './../config';
-import SocketLinkedState from '../state/SocketLinkedState';
-import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+import { SOCKET_IO_URL } from 'config';
+import SocketLinkedState from 'state/SocketLinkedState';
+import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
 
 const socketLinkedState = new SocketLinkedState();
 
@@ -14,25 +14,25 @@ export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 // TODO: Wrap w/ LinkedState
 // TODO: Enable multiple connections
 
-const socket = io.connect(config.SOCKET_IO_URI);
+const socket = io.connect(SOCKET_IO_URL);
 
 /**
  * Overrides socket.disconnect() with request disconnect event, as there does
  * not seem to be a way to disconnect the Socket directly from the client side.
  */
 socket.disconnect = () => {
-  socket.emit(socketAPIRoutes.SOCKET_API_ROUTE_REQUEST_DISCONNECT);
+  socket.emit(SOCKET_API_ROUTE_REQUEST_DISCONNECT);
 };
 
 // Socket connect
 socket.on(EVT_SOCKET_CONNECT, () => {
   console.debug('Socket.io connected', socket);
 
-  const {id: socketId} = socket;
+  const {id: socketID} = socket;
 
   socketLinkedState.setState({
     isConnected: true,
-    socketId
+    socketID
   });
 });
 
@@ -42,7 +42,7 @@ socket.on(EVT_SOCKET_DISCONNECT, () => {
 
   socketLinkedState.setState({
     isConnected: false,
-    socketId: null
+    socketID: null
   });
 });
 
@@ -62,7 +62,17 @@ socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
   });
 });
 
+/**
+ * @return {string | null} Returns null if the local user is not online.
+ */
+const getSocketID = () => {
+  const { socketID } = socketLinkedState.getState();
+
+  return socketID;
+};
+
 export default socket;
 export {
-  SocketLinkedState
+  SocketLinkedState,
+  getSocketID
 };

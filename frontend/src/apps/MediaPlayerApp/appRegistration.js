@@ -1,17 +1,18 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import MediaPlayerWindow from './MediaPlayerWindow';
-import config from 'config';
+import MediaIcon from 'components/componentIcons/MediaIcon';
 
 export default registerApp({
   title: 'Media Player',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <MediaPlayerWindow {...props} />
     )
   },
   // allowMultipleWindows: true,
-  // supportedMimes: ['audio/mpeg', 'video/mp4'],
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}media/media.svg`,
-  menuItems: [{title: 'play', onClick:()=>{alert('play clicked')}}]
+  // mimeTypes: ['audio/mpeg', 'video/mp4'],
+  iconView: () => <MediaIcon />,
+  
+  // menuItems: [{title: 'play', onClick:()=>{alert('play clicked')}}]
 });

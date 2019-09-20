@@ -1,13 +1,18 @@
-import ClientGUIProcess, { EVT_BEFORE_EXIT, EVT_FIRST_RENDER, EVT_TICK } from 'process/ClientGUIProcess';
+import { EVT_EXIT, EVT_TICK } from 'process/ClientProcess';
+import ClientGUIProcess, { EVT_FIRST_RENDER } from 'process/ClientGUIProcess';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import AppRegistration from './AppRegistration';
 import { getShellDesktopProcess } from 'core/ShellDesktop'; // TODO: Move import
-import Menubar from './ShellDesktop/Menubar';
+import AppRuntimeMenubar, { EVT_UPDATE as EVT_MENUBAR_UPDATE } from './ShellDesktop/AppRuntimeMenubar';
+import Window, { EVT_MINIMIZE, EVT_MAXIMIZE, EVT_RESTORE } from 'components/Desktop/Window';
 
 const _appRuntimeLinkedState = new AppRuntimeLinkedState();
 
 export const EVT_FOCUS = 'focus';
 export const EVT_BLUR = 'blur';
+export {
+  EVT_MENUBAR_UPDATE
+};
 
 /**
  * Application runtime for Shell Desktop.
@@ -16,9 +21,10 @@ export const EVT_BLUR = 'blur';
  */
 class AppRuntime extends ClientGUIProcess {
   /**
-   * @param {AppRegistration} appRegistration 
+   * @param {AppRegistration} appRegistration
+   * @param {any[]} cmdArguments?
    */
-  constructor(appRegistration) {
+  constructor(appRegistration, cmdArguments = []) {
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration is not of AppRegistration type');
     }
@@ -30,32 +36,38 @@ class AppRuntime extends ClientGUIProcess {
 
     this._appRegistration = appRegistration;
 
-    // this._defaultTitle = null;
-    // this._iconSrc = null;
-    // this._mainView = null;
-    // this._appCmd = null;
-
-    // this._isFocused = false;
-    // this._isMinimized = false;
-
     /**
      * @type {Window | null} Shell Desktop Window.
      */
     this._window = null;
 
+    this._cmdArguments = cmdArguments;
+
     //TODO: do get set?
     // this.menuItems = runProps.menuItems || [];
-
-    this._menubar = new Menubar(this);
 
     (() => {
       const appRegistrationProps = appRegistration.getProps();
 
       const {
         title,
-        mainView: view,
-        cmd: runCmd
+        view,
+        cmd: runCmd,
+        menus: menusData
       } = appRegistrationProps;
+
+      this._runCmd = runCmd;
+
+      // Handle menubar
+      (() => {
+        this._menubar = new AppRuntimeMenubar(this, menusData);
+        this._menubar.on(EVT_MENUBAR_UPDATE, () => {
+          this.emit(EVT_MENUBAR_UPDATE);
+        });
+        this.once(EVT_EXIT, () => {
+          this._menubar = null;
+        });
+      })();
 
       if (title) {
         this.setTitle(title);
@@ -63,12 +75,6 @@ class AppRuntime extends ClientGUIProcess {
 
       if (view) {
         this.setView(view);
-      }
-
-      if (runCmd) {
-        this.setImmediate(() => {
-          this.evalInProcessContext(runCmd);
-        });
       }
     })();
   }
@@ -93,7 +99,7 @@ class AppRuntime extends ClientGUIProcess {
       });
 
       // Handle exit cleanup
-      this.once(EVT_BEFORE_EXIT, () => {        
+      this.once(EVT_EXIT, () => {        
         // Unregister from DesktopLinkedState
         _appRuntimeLinkedState.removeAppRuntime(this);
       });
@@ -116,6 +122,10 @@ class AppRuntime extends ClientGUIProcess {
       })();
 
       await super._init();
+
+      if (this._runCmd) {
+        await this.evalInProcessContext(this._runCmd);
+      }
     } catch (exc) {
       throw exc;
     }
@@ -131,17 +141,63 @@ class AppRuntime extends ClientGUIProcess {
   }
 
   /**
+   * @return {any[]}
+   */
+  getCmdArguments() {
+    return this._cmdArguments;
+  }
+
+  /**
    * TODO: Document
    * 
-   * @return {Menubar}
+   * @return {AppRuntimeMenubar}
    */
   getMenubar() {
     return this._menubar;
   }
 
+  /**
+   * Sets menubar data, outside of System/App/Window default menus.
+   * 
+   * TODO: Document Object type
+   * 
+   * @param {Object[]} menusData 
+   */
+  setMenubarData(menusData) {
+    this._menubar.setAuxMenusData(menusData);
+  }
+
+  /**
+   * Retrieves menubar data, outside of System/App/Window default menus.
+   * 
+   * @return {Object[]}
+   */
+  getAppRuntimeMenubarData() {
+    return this._menubar.getAuxMenusData();
+  }
+
   setWindow(desktopWindow) {
+    if (this._window) {
+      console.warn('A window is already associated with this runtime');
+      return;
+    } else if (!(desktopWindow instanceof Window)) {
+      throw new Error('desktopWindow is not a Window instance');
+    }
+
     this.setImmediate(() => {
       this._window = desktopWindow;
+
+      this._window.on(EVT_MINIMIZE, () => {
+        this.setImmediate();
+      });
+
+      this._window.on(EVT_MAXIMIZE, () => {
+        this.setImmediate();
+      });
+
+      this._window.on(EVT_RESTORE, () => {
+        this.setImmediate();
+      });
     });
   }
 
@@ -183,7 +239,7 @@ class AppRuntime extends ClientGUIProcess {
     this._isFocused = isFocused;
 
     if (isFocused) {
-      // This allows the Menubar to accurately set on the first render by
+      // This allows the AppRuntimeMenubar to accurately set on the first render by
       // waiting until it might have information
       _appRuntimeLinkedState.setFocusedAppRuntime(this);
 

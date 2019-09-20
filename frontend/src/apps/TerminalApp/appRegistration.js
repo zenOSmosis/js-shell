@@ -1,15 +1,15 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import TerminalWindow from './TerminalWindow';
-import config from 'config';
+import TerminalIcon from 'components/componentIcons/TerminalIcon';
 
 export default registerApp({
   allowMultipleWindows: true,
   title: 'Terminal',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <TerminalWindow {...props} />
     )
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}terminal/terminal.svg`
+  iconView: () => <TerminalIcon />
 });

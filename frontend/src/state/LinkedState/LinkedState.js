@@ -1,8 +1,12 @@
+// TODO: Add optional actions for setting individual state properties
+// (e.g. (actions).setXProperty(linkedState, prevValue)) The return value from
+// this action would be used to set the state property
+
+// TODO: Add linked list for state history?
+
 import EventEmitter from 'events';
 import mlscs, { MasterLinkedStateControllerSingleton } from './_masterController';
 import uuidv4 from 'uuid/v4';
-
-// TODO: Add linked list for state history?
 
 // This emits when the current state scope has updated
 export const EVT_LINKED_STATE_UPDATE = 'update';
@@ -20,9 +24,12 @@ export const DEFAULT_LINKED_SCOPE_NAME = 'default-shared';
 class LinkedState extends EventEmitter {
   /**
    * @param {string} linkedScopeName The name of the shared linked scope.
-   * @param {Object} initialDefaultState The default state of the instance. 
+   * @param {Object} initialDefaultState The default state of the instance. The
+   * keys of this initial state must be utilized when updating the state, or
+   * it will raise an error.
+   * @param {Object} options TODO: Document these
    */
-  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState = {}) {
+  constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = { actions: {} }) {
     super();
 
     // Whether this is the original instance in the collective scope
@@ -36,15 +43,35 @@ class LinkedState extends EventEmitter {
 
     this._linkedScopeName = linkedScopeName;
 
-    mlscs.addLinkedState(this, initialDefaultState);
-
     // Important! Initial state is kept as a clone so it isn't altered
+    // TODO: Move this handling to the master controller
     this._initialDefaultState = Object.freeze({
-      ...{},
+      ...{}, 
       ...initialDefaultState
     });
 
-    // this.setState(initialDefaultState);
+    this._options = options;
+
+    // TODO: Move this handling to the master controller
+    this._initialDefaultKeys = Object.keys(this._initialDefaultState);
+
+    mlscs.addLinkedState(this, initialDefaultState);
+  }
+
+  /**
+   * @param {string} actionName 
+   * @param  {Array} actionData 
+   */
+  dispatchAction(actionName, ...actionData) {
+    const { actions } = this._options;
+    if (!actions || typeof actions[actionName] !== 'function') {
+      throw new Error(`No dispatchable action with name: ${actionName}`);
+    }
+
+    const action = actions[actionName];
+    const result = action(...actionData);
+
+    return result;
   }
 
   /**
@@ -114,17 +141,21 @@ class LinkedState extends EventEmitter {
   }
 
   /**
-   * Sets a common state across all shared LinkedState instances.
+   * Sets a common state across all LinkedState instances with the same scope.
    * 
    * @param {Object} updatedState 
-   * @param {function} onSet [default = null] Optional callback to be
-   * performed after state has been updated
+   * @param {function} onSet? Optional callback to be performed after state has
+   * been updated.
+   * @throws {Error} If trying to set a key in the updatedState which is not
+   * present in the initial state, an error will be thrown.
    */
   setState(updatedState = {}, onSet = null) {
-    // const prevState = this.getState();
-
-    // Pre-set event hook
-    // this.emit(EVT_LINKED_STATE_WILL_UPDATE, prevState);
+    // TODO: Move this handling to the master controller
+    for (let updatedKey of Object.keys(updatedState)) {
+      if (this._initialDefaultKeys.indexOf(updatedKey) === -1) {
+        throw new Error(`Updated key "${updatedKey}" is not present in initial keys`);
+      }
+    }
 
     mlscs.setSharedState(this, {
       updatedState,
@@ -146,11 +177,17 @@ class LinkedState extends EventEmitter {
   /**
    * Retrieves a common state across all shared link state instances.
    * 
+   * @param {string} withKey?
    * @return {Object}
    */
-  getState() {
-    // return sharedStates[this._linkedScopeName];
-    return mlscs.getSharedState(this);
+  getState(withKey = null) {
+    const sharedState = mlscs.getSharedState(this);
+
+    if (!withKey) {
+      return sharedState;
+    } else {
+      return sharedState[withKey];
+    }
   }
 
   /**

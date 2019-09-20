@@ -1,0 +1,12 @@
+.file-tab {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0em .1em;
+}
+
+.file-name {
+  text-overflow: ellipsis;
+  max-width: 20rem;
+  margin: 0em .5em;
+}

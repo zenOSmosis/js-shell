@@ -7,6 +7,10 @@ export {
 
 const LINKED_SCOPE_NAME = 'zd-client-processes';
 
+export const STATE_PROCESSES = 'processes';
+export const STATE_GUI_PROCESSES = 'guiProcesses';
+export const STATE_LAST_UPDATED_PROCESS = 'lastUpdatedProcess';
+
 /**
  * A registry of all registered running processes in the Desktop.
  * 
@@ -15,13 +19,13 @@ const LINKED_SCOPE_NAME = 'zd-client-processes';
 class ClientProcessLinkedState extends LinkedState {
   constructor() {
     super(LINKED_SCOPE_NAME, {
-      processes: [], // All processes
+      [STATE_PROCESSES]: [], // All processes
 
-      guiProcesses: [], // GUI process subset of all processes
+      [STATE_GUI_PROCESSES]: [], // GUI process subset of all processes
 
       // The last process which was updated
-      // TODO: Rename to lastUpdatedProcess
-      updatedProcess: null
+      
+      [STATE_LAST_UPDATED_PROCESS]: null
     });
   }
 
@@ -32,7 +36,10 @@ class ClientProcessLinkedState extends LinkedState {
 
     // console.debug('Adding process', process);
 
-    const { processes, guiProcesses } = this.getState();
+    const {
+      [STATE_PROCESSES]: processes,
+      [STATE_GUI_PROCESSES]: guiProcesses
+    } = this.getState();
 
     processes.push(process);
 
@@ -48,19 +55,19 @@ class ClientProcessLinkedState extends LinkedState {
     });
 
     this.setState({
-      processes,
-      guiProcesses
+      [STATE_PROCESSES]: processes,
+      [STATE_GUI_PROCESSES]: guiProcesses
     });
   }
 
   /**
    * This is called internally on each process tick.
    * 
-   * @param {ClientProcess} updatedProcess The process which was updated.
+   * @param {ClientProcess} lastUpdatedProcess The process which was updated.
    */
-  _handleProcessUpdate = (updatedProcess) => {
+  _handleProcessUpdate = (lastUpdatedProcess) => {
     this.setState({
-      updatedProcess
+      [STATE_LAST_UPDATED_PROCESS]: lastUpdatedProcess
     });
   }
 
@@ -76,7 +83,10 @@ class ClientProcessLinkedState extends LinkedState {
 
     // console.debug('Removing process', process);
 
-    let { processes, guiProcesses } = this.getState();
+    let {
+      [STATE_PROCESSES]: processes,
+      [STATE_GUI_PROCESSES]: guiProcesses
+    } = this.getState();
 
     // Filter out the process
     processes = processes.filter(testProcess => {
@@ -90,8 +100,8 @@ class ClientProcessLinkedState extends LinkedState {
     }
 
     this.setState({
-      processes,
-      guiProcesses
+      [STATE_PROCESSES]: processes,
+      [STATE_GUI_PROCESSES]: guiProcesses
     });
   }
 
@@ -99,7 +109,7 @@ class ClientProcessLinkedState extends LinkedState {
    * @return {ClientProcess[]}
    */
   getProcesses() {
-    const { processes } = this.getState();
+    const { [STATE_PROCESSES]: processes } = this.getState();
 
     return processes;
   }

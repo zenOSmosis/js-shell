@@ -1,4 +1,4 @@
-const ChildProcess = require('../ChildProcess');
+const ChildProcess = require('../old.ChildProcess');
 
 const fetchAmixerContents = () => {
   return new Promise((resolve, reject) => {

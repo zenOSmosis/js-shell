@@ -10,20 +10,21 @@ const fetchStackTrace = require('stacktrace-js');
  * passed back up to the client via the ack response.
  * 
  * @param {Function} serviceCall The serviceCall function to run. 
- * @param {Function} ack Data passed to this function is returned to the
- * client.
+ * @param {Function} ack? Data passed to this function is returned to the
+ * client's ack call.
  * @return {Promise<void>}
  */
-const handleSocketAPIRoute = async (serviceCall, ack) => {
+const handleSocketAPIRoute = async (serviceCall, ack = null) => {
   try {
     if (typeof ack !== 'function') {
-      ack = () => null;
+      // Forge ack call if one does not exist
+      ack = ([]) => null;
     }
 
     const serviceResp = await serviceCall();
 
     // Send acknowledgement to client
-    ack(serviceResp);
+    ack([null, serviceResp]);
   } catch (err) {
     // Emit error to local console
     console.error(err);
@@ -36,24 +37,29 @@ const handleSocketAPIRoute = async (serviceCall, ack) => {
     // Send serialized error to ack
     // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
     await (async () => {
-      let { message, fileName, lineNumber, columnNumber, name } = err;
+      try {
+        let { message, fileName, lineNumber, columnNumber, name } = err;
 
-      // Debuggable error stack
-      const stack = await fetchStackTrace.fromError(err);
-
-      const serialzedErr = {
-        err: {
-          message,
-          name,
-          fileName,
-          lineNumber,
-          columnNumber,
-          stack,
-          code: serviceCall.toString()
-        }
-      };
-
-      ack(serialzedErr);
+        // Debuggable error stack
+        const stack = await fetchStackTrace.fromError(err);
+  
+        const serializedErr = {
+          err: {
+            message,
+            name,
+            fileName,
+            lineNumber,
+            columnNumber,
+            stack,
+            code: serviceCall.toString()
+          }
+        };
+  
+        ack([serializedErr]);
+      } catch (exc) {
+        console.error(exc);
+        ack([]);
+      }
     })();
   }
 };

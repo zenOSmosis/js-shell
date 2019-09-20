@@ -1,0 +1,49 @@
+.chat-message {
+  margin: 1em;
+  overflow: auto;
+
+  .avatar {
+    display: inline-block;
+  }
+
+  .chat-bubble {
+    display: inline-block;
+    position: relative;
+    background: #7a89ff;
+    border-radius: 1em;
+    width: 80%;
+    padding: .5em;
+    color: #000;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.remote {
+    text-align: left;
+
+    .avatar {
+      margin-right: .4em;
+      float: left;
+    }
+
+    .chat-bubble {
+      margin-left: .2em;
+      border-top-left-radius: .4em;
+    }
+  }
+
+  &.local {
+    text-align: right;
+
+    .avatar {
+      margin-left: .4em;
+      float: right;
+    }
+
+    .chat-bubble {
+      margin-right: .2em;
+      border-top-right-radius: .4em;
+    }
+  }
+}

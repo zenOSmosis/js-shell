@@ -19,7 +19,7 @@ const pty = require('node-pty');
  * @param {function} ack?
  */
 const createXTermSocketChannel = async (options = {}, ack) => {
-  return handleSocketAPIRoute(() => {
+  return await handleSocketAPIRoute(() => {
     const { socket } = options;
 
     const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';

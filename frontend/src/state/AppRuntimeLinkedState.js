@@ -1,10 +1,14 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
+import { getShellDesktopProcess } from 'core/ShellDesktop';
 
 export {
   EVT_LINKED_STATE_UPDATE
 };
 
 export const APP_RUNTIMES_LINKED_SCOPE_NAME = 'appRuntimes';
+
+export const STATE_APP_RUNTIMES = 'appRuntimes';
+export const STATE_FOCUSED_APP_RUNTIME = 'focusedAppRuntime';
 
 /**
  * A registry of all running applications for the Desktop.
@@ -15,10 +19,10 @@ class AppRuntimeLinkedState extends LinkedState {
   constructor() {
     super(APP_RUNTIMES_LINKED_SCOPE_NAME, {
       // All AppRuntime instances
-      appRuntimes: [],
-      
+      [STATE_APP_RUNTIMES]: [],
+
       // The most recently focused AppRuntime instance
-      focusedAppRuntime: null
+      [STATE_FOCUSED_APP_RUNTIME]: null
     });
   }
 
@@ -30,12 +34,12 @@ class AppRuntimeLinkedState extends LinkedState {
     }
     */
 
-    let { appRuntimes } = this.getState();
+    let { [STATE_APP_RUNTIMES]: appRuntimes } = this.getState();
 
     appRuntimes.push(appRuntime);
 
     this.setState({
-      appRuntimes
+      [STATE_APP_RUNTIMES]: appRuntimes
     });
   }
 
@@ -47,28 +51,26 @@ class AppRuntimeLinkedState extends LinkedState {
 
   // TODO: Document
   removeAppRuntime(appRuntime) {
-    let { appRuntimes, focusedAppRuntime } = this.getState();
-
-    // Remove focused app runtime if this is the last runtime
-    if (Object.is(focusedAppRuntime, appRuntime)) {
-      focusedAppRuntime = null;
-    }
+    let {
+      [STATE_APP_RUNTIMES]: appRuntimes,
+      [STATE_FOCUSED_APP_RUNTIME]: focusedAppRuntime
+    } = this.getState();
 
     appRuntimes = appRuntimes.filter(testRuntime => {
       return !Object.is(testRuntime, appRuntime);
     });
 
     this.setState({
-      appRuntimes,
-      focusedAppRuntime
+      [STATE_APP_RUNTIMES]: appRuntimes,
+      [STATE_FOCUSED_APP_RUNTIME]: focusedAppRuntime
     });
-  }
 
-  // TODO: Document
-  getAppRuntimes() {
-    const appRegistrations = super.getRegistrations();
+    // Revert to ShellDesktopProcess if the other apps are closed
+    if (appRuntimes.length === 1) {
+      const shellDesktopProcess = getShellDesktopProcess();
 
-    return appRegistrations;
+      shellDesktopProcess.focus();
+    }
   }
 }
 

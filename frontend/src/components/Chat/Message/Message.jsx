@@ -1,28 +1,45 @@
 import React from 'react';
 import { Avatar } from 'antd';
 // import { Row, Column } from 'components/Layout';
-import './Message.css';
+import classNames from 'classnames';
+import style from './Message.module.scss';
 
 const MessageAvatar = () => {
   return (
     <Avatar
-      size={48}
+      size={36}
       icon="user"
-      className="zd-chat-message-avatar"
+      className={style['avatar']}
     />
   )
 };
 
 const Message = (props = {}) => {
-  const { children, fromLocal } = props;
+  const { chatMessage } = props;
+  const isFromLocal = chatMessage.getIsFromLocal();
+  const isFinalized = chatMessage.getIsFinalized();
+
+  if (isFromLocal && !isFinalized) {
+    return false;
+  }
+
+  const messageBody = chatMessage.getMessageBody();
+  const isTyping = chatMessage.getIsTyping();
 
   return (
-    <div className={`zd-chat-message ${fromLocal ? 'local' : 'remote'}`}>
+    <div
+      className={classNames(style['chat-message'], (isFromLocal ? style['local'] : style['remote']))}
+    >
       <MessageAvatar />
 
-      <div className="zd-chat-message-bubble">
+      <div className={style['chat-bubble']}>
         {
-          children
+          isTyping &&
+          <span style={{fontStyle: 'italic'}}>...typing</span>
+        }
+        {
+          // TODO: Implement link parsing, etc.
+          messageBody
         }
       </div>
     </div>

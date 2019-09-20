@@ -1,0 +1,21 @@
+@import 'core/core.styles.scss';
+
+.file-drop-zone {
+
+  .drag-cover {
+    background-color: $inputBgColor;
+    z-index: 9999999;
+    
+    .inner-full {
+      margin: 2.5% -2.5% -2.5px 2.5%;
+      border: 5px $activeHighlightBgColor dashed;
+      width: 95%;
+      height: 95%;
+
+      .center {
+        color: $inputTextColor;
+        font-size: 24px;
+      }
+    }
+  }
+}

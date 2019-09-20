@@ -1,14 +1,14 @@
 import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import HelloWorldWindow from './UserProfileWindow';
-import config from 'config';
+import AvatarIcon from 'components/componentIcons/AvatarIcon';
 
 export default registerApp({
   title: 'User Profile',
-  mainView: (props) => {
+  view: (props) => {
     return (
       <HelloWorldWindow {...props} />
     );
   },
-  iconSrc: `${config.HOST_ICON_URI_PREFIX}avatar/avatar.svg`
+  iconView: () => <AvatarIcon />
 });

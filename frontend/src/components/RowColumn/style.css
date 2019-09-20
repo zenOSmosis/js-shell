@@ -1,9 +1,11 @@
 .zd-row {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   width: 100%;
   position: relative;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
 .zd-column {
@@ -12,4 +14,6 @@
   flex-basis: 100%;
   flex: 1;
   position: relative;
+  padding: 0px !important;
+  margin: 0px !important;
 }

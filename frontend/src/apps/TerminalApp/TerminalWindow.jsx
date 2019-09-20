@@ -79,7 +79,7 @@ export default class TerminalWindow extends Component {
         {...propsRest}
         // minWidth="740"
         // minHeight="440"
-        // sizeable= "false"=
+        // isResizable= "false"
         ref={window => this._window = window}
       >
         {

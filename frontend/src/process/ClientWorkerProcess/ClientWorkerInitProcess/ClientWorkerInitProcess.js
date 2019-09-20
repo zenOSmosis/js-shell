@@ -69,11 +69,11 @@ class ClientWorkerInitProcess extends ClientProcess {
                         const { ctrlName, ctrlData } = data;
     
                         if (ctrlName === STAGE_0_WORKER_HELLO) {
-                          const { serviceURI } = ctrlData;
+                          const { serviceURL } = ctrlData;
     
                           // TODO: Don't write directly to (semi)private variables
                           this._clientWorker.setImmediate(() => {
-                            this._clientWorker._serviceURI = serviceURI;
+                            this._clientWorker._serviceURL = serviceURL;
   
                             resolve();
                           });
@@ -93,12 +93,12 @@ class ClientWorkerInitProcess extends ClientProcess {
               
               workerCommand: async () => {
                 try {
-                  const serviceURI = this._clientWorker.getServiceURI();
+                  const serviceURL = this._clientWorker.getServiceURL();
 
                   this._clientWorker.stdctrl.write({
                     ctrlName: STAGE_0_WORKER_HELLO,
                     ctrlData: {
-                      serviceURI
+                      serviceURL
                     }
                   });
                 } catch (exc) {

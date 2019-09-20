@@ -1,5 +1,4 @@
 import ClientWorkerProcessController from '../ClientWorkerProcess';
-import BabelCompilerWorkerProcess from './dispatch.worker';
 
 /**
  * Main-threaded controller for the BabelCompilerWorkerProcess.
@@ -11,7 +10,7 @@ class BabelCompilerWorkerProcessController extends ClientWorkerProcessController
     // Default options
     const defOptions = {
       // The non-instantiated class of the Worker implementation
-      DispatchWorker: BabelCompilerWorkerProcess,
+      nativeWorker: new Worker('./dispatch.worker.js', { type: 'module' }),
     };
 
     options = {...defOptions, ...options};

@@ -8,16 +8,18 @@
  */
 
 import './FilesApp';
+import './LocalStorageManagerApp';
 // import './HelloWorldApp';
 import './UserProfileApp';
-import './P2PConnectionsApp';
-// import './VoiceInputApp';
+import './ChatApp';
+import './VoiceInputApp';
 import './ScreenRecorderApp';
 import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
 import './SourceCodeApp';
-import './TextEditorApp';
+// import './TextEditorApp';
+// import './A3DApp';
 import './TerminalApp';
 // import './DocsApp';
 // import './SettingsApp';

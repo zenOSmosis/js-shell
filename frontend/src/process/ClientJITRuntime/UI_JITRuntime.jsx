@@ -18,7 +18,6 @@ import Center from 'components/Center';
 import Cover from 'components/Cover';
 import IFrame from 'components/IFrame';
 import Window from 'components/Desktop/Window';
-import WebSearchTileList from 'components/WebSearchTileList';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import SocketChannel from 'shared/socketAPI/SocketChannel';
 
@@ -29,6 +28,7 @@ import SocketChannel from 'shared/socketAPI/SocketChannel';
 import beep from 'utils/audio/beep';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import getPrototypeChain from 'utils/class/getPrototypeChain';
+import * as socketFS from 'utils/socketFS';
 
 /**
  * @extends ClientJITRuntime
@@ -63,8 +63,7 @@ class UI_JITRuntime extends ClientJITRuntime {
         Center,
         Cover,
         IFrame,
-        Window,
-        WebSearchTileList
+        Window
       },
 
       utils: {
@@ -76,6 +75,8 @@ class UI_JITRuntime extends ClientJITRuntime {
         socketAPIQuery,
         // socketAPIRoutes,
         // socketAPIEvents
+
+        socketFS
       }
     };
 

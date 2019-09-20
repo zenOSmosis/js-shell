@@ -1,0 +1,37 @@
+@import 'core/core.styles.scss';
+
+.menubar {
+  display: inline-block;
+  list-style-type: none;
+  padding: 0px;
+  vertical-align: middle;
+}
+
+.menubar > li.title {
+  display: inline-block;
+  padding: 0px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  font-weight: 500px;
+  vertical-align: middle;
+}
+
+.menubar > li.title.active {
+  background-color: $activeHighlightBgColor;
+}
+
+/* Fixes flyout icons */
+.menubar i {
+  color: $bodyTextColor !important;
+}
+
+.menubar .item.active {
+  color: $bodyTextColor;
+  background-color: $activeHighlightBgColor;
+}
+
+.dropdown-menu {
+  /* Closes gap between panel and dropdown */
+  margin-top: -4px;
+}

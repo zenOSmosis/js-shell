@@ -1,5 +1,4 @@
-import config from '../config';
-const { HOST_REST_URI } = config;
+import { HOST_REST_URL } from 'config';
 
 /**
  * Fetches the IP address of the client, relative to the server.
@@ -8,7 +7,7 @@ const { HOST_REST_URI } = config;
  */
 const fetchClientIP = async () => {
   try {
-    const res = await fetch(`${HOST_REST_URI}/client/ip`);
+    const res = await fetch(`${HOST_REST_URL}/client/ip`);
     const clientIP = await res.text();
 
     return clientIP;

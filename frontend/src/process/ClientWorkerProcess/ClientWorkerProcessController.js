@@ -9,7 +9,6 @@
 // TODO: Implement terminate detection
 
 import ClientWorkerProcessCommonCore from './ClientWorkerProcessCommonCore';
-import ClientWorkerProcess from './dispatch.worker';
 
 /**
  * @extends ClientWorkerProcessCommonCore
@@ -32,7 +31,7 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
     const defOptions = {
       // The native Web Worker implementation
       // worker-loader callable *.worker.js extension
-      DispatchWorker: ClientWorkerProcess
+      nativeWorker: new Worker('./dispatch.worker.js', { type: 'module' })
     };
 
     options = {...defOptions, ...options};
@@ -60,7 +59,7 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
 
     // This is set by the ClientWorkerProcess (or extension) after it has
     // initialized
-    this._serviceURI = '[Initializing...]';
+    this._serviceURL = '[Initializing...]';
 
     // Important! It is IMPERATIVE to use setImmediate (or timeout w/ 0 time
     // value) here, or the command will not be utilize class extensions, and
@@ -156,8 +155,13 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
         }
 
         // Launch the native Web Worker
-        const { DispatchWorker } = this._options;
-        this._nativeWorker = new DispatchWorker();
+        const { nativeWorker } = this._options;
+
+        this._nativeWorker = nativeWorker;
+
+        this._nativeWorker.onerror = (error) => {
+          console.error(error);
+        };
 
         // Re-route native Web Worker postMessage() calls
         this._nativeWorker.onmessage = (message) => {

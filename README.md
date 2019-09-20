@@ -12,6 +12,12 @@ It is like a virtual desktop into a Docker / Linux server, though the desktop is
 
 The Shell GUI frontend will have full local user privileges (and can be elevated) into the Docker / Linux server it is bound to.
 
+## Multi-Device Testing
+
+We use [BrowserStack](https://www.browserstack.com) to test on a variety of devices and operating systems.
+
+<a href="https://www.browserstack.com" target="_blank"><img src="assets/BrowserStack-logo.svg" alt="BrowserStack" width="320"></a>
+
 ## Current Development State
 
 Pre-initial prototype.
@@ -42,8 +48,8 @@ $ ./build.prod.sh
 $ ./build.dev.sh
 # ---------------
 
-# Running
-$ docker-compose up
+# Launch
+$ ./run.sh
 ```
 
 ## System Design
@@ -56,7 +62,7 @@ TODO: Document out further
 
 The entire backend environment can be run locally, for development by following the "Building / Running" section above.
 
-#### Nginx Reverse Proxy
+#### Nginx (Reverse Proxy / SSL Termination Endpoint)
 
 Nginx is the primary SSL termination endpoint and reverse proxy for https://github.com/zenOSmosis/docker-dev-ssl-proxy in the development environment.
 
@@ -68,30 +74,22 @@ TODO: Determine if docker-letsencrypt STAGING set to true can replace using dock
 
 The {root}/docker_modules directory specifies additional Docker packages which help form the infrastructure of the Shell and its related services.
 
-#### Main Node.js Server
+#### Node.js Server
 
-Currently developed with Node.js 10, run straight from source (not compiled) and supports ES5 require statements.
+Currently developed with Node.js 10, run straight from source (not compiled).
 
 - Source file compilation: None
-- Module import syntax:
-  ```
-  const package = require('module-name');
-  ```
-
 - Module path resolution definitions: backend/package.json (_moduleAliases)
+- Supports ES6+ import w/ Node.js 10 via https://www.npmjs.com/package/esm
 
 ### Frontend
 
-Currently developed with Node.js 10, compiled with Webpack, and supports ES6+ / CommonJS import statements.
+Currently developed with Node.js 10, compiled with Webpack.
 
 - Built on: [Facebook's Create React App](https://github.com/facebook/create-react-app)
 - Source file compilation: Webpack
 - [react-app-rewired](https://github.com/timarney/react-app-rewired) config: frontend/config-overrides.js
 - HMR (Hot Module Replacement) supported: Yes
-- Module import syntax (ES6+ / CommonJS):
-  ```
-  import package from 'module-name';
-  ```
 - Module path resolution definitions: frontend/jsonconfig.json (compilerOptions.paths)
 
 Path resolutions:
@@ -107,6 +105,16 @@ The following paths make up the various utilities and views which bootstrap the 
 - "shared" (frontend/src/shared): Data structures and code which are shared between server and client.
 - "state" (frontend/src/state): A set of classes which provide multi-channeled state management for the Shell Desktop environment.
 - "utils" (frontend/src/utils): Utility methods and factory functions for controlling the Shell Desktop environment.  These utilities make simple, programmatic interfaces for controlling all facets of the Shell Desktop environment.
+
+### Naming Conventions
+
+Except where usage of 3rd party libraries is concerned, with their own naming conventions:
+
+- Variable names in camelCase.
+  - Class names begin with UpperCase character.
+  - Class instances being with lowerCase character.
+- Boolean variable / property names prefixed with "is," unless the words "has" or "have" are utilized elsewhere in the name.
+- American English spelling variations (e.g. "isSizable" instead of "isSizeable").
 
 ## Optional
 The following serve as notes for additional server monitoring, though their API implementations are not currently developed on the server.

@@ -1,7 +1,7 @@
-const fetchSocketIDs = require('./fetchSocketIDs');
-const sendSocketPeerData = require('./sendSocketPeerData');
+import fetchSocketIDs from './fetchSocketIDs';
+import routeSocketPeerData from './routeSocketPeerData';
 
-module.exports = {
+export {
   fetchSocketIDs,
-  sendSocketPeerData
+  routeSocketPeerData
 };

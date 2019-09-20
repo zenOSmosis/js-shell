@@ -4,10 +4,10 @@ import Cover from 'components/Cover';
 import Window from 'components/Desktop/Window';
 import IFrame from 'components/IFrame';
 import config from 'config';
-const {HOST_REST_URI} = config;
+const {HOST_REST_URL} = config;
 
 // TODO: Extract base from config
-const appURL =  `${HOST_REST_URI}/desktopApps?filePath=ScreenRecorder/screen-recorder.html`;
+const appURL =  `${HOST_REST_URL}/desktopApps?filePath=ScreenRecorder/screen-recorder.html`;
 
 export default class ScreenRecorderWindow extends Component {
   render() {

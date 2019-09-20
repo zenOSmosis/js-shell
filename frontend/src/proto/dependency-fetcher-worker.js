@@ -5,7 +5,7 @@ import ClientWorkerProcess from 'process/ClientWorkerProcess';
 /**
  * Usage:
  * 
- * Write to stdin an array of URIs to fetch.
+ * Write to stdin an array of URLs to fetch.
  * 
  * Read from stdout the fetched texts.
  * 
@@ -21,7 +21,7 @@ export default class DependencyFetcherWorker extends ClientWorkerProcess {
           const uris = JSON.parse(data);
 
           if (!uris) {
-            console.error('No URIs to fetch');
+            console.error('No URLs to fetch');
             return;
           }
 

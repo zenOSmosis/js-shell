@@ -12,14 +12,11 @@ const commonAppRegistryLinkedState = new AppRegistryLinkedState();
  * Note: When hot module replacement (HMR) is run, this function is executed
  * again.  This includes internal provisions for handling of HMR situations.
  * 
- * @param {Object} appProps Props to create the AppRegistration
+ * @param {AppRegistrationProps} appProps Props to create the AppRegistration
  * @return {AppRegistration} Constructed AppRegistration instance
  */
 const registerApp = (appProps) => {
-  // TODO: Verify appProps for API compatibility
-
-  // TODO: Don't create new app process until the app is launched
-  const newAppRegistration = new AppRegistration(appProps); // AppRuntime should be when the app is launched, not registered
+  const newAppRegistration = new AppRegistration(appProps);
 
   // Existing applications already in memory, as a result of source code edits during runtime
   const hmrMatchedRegistrations = getMatchedAppRegistrations(newAppRegistration);
@@ -97,15 +94,17 @@ const unregister = async (hmrMatchedRegistration) => {
 /**
  * Retrieves matched app registrations based on the given app registration.
  * 
- * (e.g. ~ if the icons are the same, assume the app is the same)
+ * (Performs comparative title matching)
  * 
  * @param {AppRegistration} appRegistration
  * @return {AppRegistration[]}
  */
 const getMatchedAppRegistrations = (appRegistration) => {
   if (!module.hot) {
-    return;
+    return [];
   }
+
+  const appRegistrationTitle = appRegistration.getTitle();
 
   const appRegistrations = commonAppRegistryLinkedState.getAppRegistrations();
   const lenAppRegistrations = appRegistrations.length;
@@ -121,11 +120,8 @@ const getMatchedAppRegistrations = (appRegistration) => {
       continue;
     }
 
-    // Check if icon src is the same
-    // TODO: Implement more versatile checking
-    const testIconSrc = testAppRegistration.getIconSrc();
-    const iconSrc = appRegistration.getIconSrc();
-    if (testIconSrc === iconSrc) {
+    // Validate titles match
+    if (testAppRegistration.getTitle() === appRegistrationTitle) {
       hmrMatchedRegistrations.push(testAppRegistration);
     }
   }

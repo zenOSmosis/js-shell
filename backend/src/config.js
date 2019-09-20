@@ -11,8 +11,8 @@ const hostConfig = {
   // Directory for static URL resources
   PATH_PUBLIC: path.resolve(__dirname, '../', 'public'),
 
-  // Proxy frontend requests to this URI
-  FRONTEND_PROXY_URI: 'http://frontend:3000',
+  // Proxy frontend requests to this URL
+  FRONTEND_PROXY_URL: 'http://frontend:3000',
 
   TERMINAL_COMMAND: 'xterm',
 

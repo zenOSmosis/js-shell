@@ -23,9 +23,9 @@ class Login extends Component {
   }
 
   async handleSubmit(evt) {
-    console.log(this.state, `${config.HOST_REST_URI}/auth/login`)
+    console.log(this.state, `${config.HOST_REST_URL}/auth/login`)
     evt.preventDefault();
-    const res = await fetch(`${config.HOST_REST_URI}/auth/login`, {
+    const res = await fetch(`${config.HOST_REST_URL}/auth/login`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state)
@@ -59,7 +59,7 @@ class Login extends Component {
     return (
       <div ref={ref => this._form = ref} >
         <div class="login-form" >
-          <img src={`${config.HOST_ICON_URI_PREFIX}user/user.jpg`} alt="user logo" class="avatar" />
+          <img src={`${config.HOST_ICON_URL_PREFIX}user/user.jpg`} alt="user logo" class="avatar" />
           <h2>JS Shell</h2>
           <form onSubmit={this.handleSubmit.bind(this)}>
             <p>Username</p>
