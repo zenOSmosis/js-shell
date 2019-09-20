@@ -6,14 +6,12 @@ import expressAPIRoutes from './api/express/routes';
 // const io = require('socket.io')(server);
 import { initSocketAPIRoutes } from './api/socket.io/routes';
 import { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } from './api/socket.io/events';
-
-// TODO: Convert to ES6 import
-const {
+import {
   EXPRESS_CUSTOM_RESPONSE_HEADERS,
   PATH_PUBLIC,
   FRONTEND_PROXY_URL,
   HTTP_LISTEN_PORT
-} = require('./config');
+} from './config';
 
 const initClustWorkerAPIServer = (app, io) => {
   // Apply custom response headers

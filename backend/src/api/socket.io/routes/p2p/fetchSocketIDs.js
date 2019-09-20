@@ -1,5 +1,4 @@
-// TODO: Convert to ES6 import
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 
 // TODO: Utilize utils/fetchPeerIDs and don't use this different implementation
 const fetchSocketIDs = async (options, ack) => {
@@ -22,5 +21,4 @@ const fetchSocketIDs = async (options, ack) => {
   }, ack);
 };
 
-// TODO: Convert to ES6 export
-module.exports = fetchSocketIDs;
+export default fetchSocketIDs;

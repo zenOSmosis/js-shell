@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 
 const ping = async (data = {}, ack) => {
   return await handleSocketAPIRoute(() => {
@@ -6,4 +6,4 @@ const ping = async (data = {}, ack) => {
   }, ack);
 };
 
-module.exports = ping;
+export default ping;

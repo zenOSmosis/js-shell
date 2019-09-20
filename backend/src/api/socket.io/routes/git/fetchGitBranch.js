@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 import { fetchGitBranch as utilsFetchGitBranch } from 'utils/git';
 
 const fetchGitBranch = async (options = {}, ack) => {

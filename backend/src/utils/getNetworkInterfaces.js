@@ -6,6 +6,4 @@ const getNetworkInterfaces = () => {
   return os.networkInterfaces();
 };
 
-module.exports = {
-  getNetworkInterfaces
-};
+export default getNetworkInterfaces();

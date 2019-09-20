@@ -1,5 +1,5 @@
-const createXTermSocketChannel = require('./createXTermSocketChannel');
+import createXTermSocketChannel from './createXTermSocketChannel';
 
-module.exports = {
+export {
   createXTermSocketChannel
 };

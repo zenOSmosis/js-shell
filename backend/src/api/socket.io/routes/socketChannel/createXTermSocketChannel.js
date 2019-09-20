@@ -1,15 +1,13 @@
 // @see https://gist.github.com/steinwaywhw/9920493
 
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
-const {
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
+import {
   SocketChannel,
-  EVT_DATA: EVT_SOCKET_CHANNEL_DATA,
-  EVT_BEFORE_DISCONNECT: EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT
-} = require('utils/socketAPI/SocketChannel');
-const os = require('os');
+  EVT_DATA as EVT_SOCKET_CHANNEL_DATA,
+  EVT_BEFORE_DISCONNECT as EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT
+} from 'utils/socketAPI/SocketChannel';
+import os from 'os';
 const pty = require('node-pty');
-// const terminal = require('term.js');
-// const fs = require('fs');
 
 /**
  * Creates a virtual socket channel on top of the existing Socket.io connection
@@ -74,4 +72,4 @@ const createXTermSocketChannel = async (options = {}, ack) => {
   }, ack);
 };
 
-module.exports = createXTermSocketChannel;
+export default createXTermSocketChannel;

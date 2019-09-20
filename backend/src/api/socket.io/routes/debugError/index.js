@@ -1,6 +1,6 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 
-const error = async (options = {}, ack) => {
+const debugError = async (options = {}, ack) => {
   return await handleSocketAPIRoute(async () => {
     try {
       return await new Promise(async (resolve, reject) => {
@@ -16,4 +16,4 @@ const error = async (options = {}, ack) => {
   }, ack);
 };
 
-module.exports = error;
+export default debugError;

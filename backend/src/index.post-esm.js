@@ -1,37 +1,17 @@
 // @see https://github.com/elad/node-cluster-socket.io
 
+import cluster from 'cluster';
+import express from 'express';
+import { HTTP_LISTEN_PORT } from './config';
 import initClusterWorkerAPIServer from './initClusterWorkerAPIServer';
-
-// TODO: Handle this better
-// @see https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2
-// @see https://medium.com/@trekinbami/using-environment-variables-in-react-6b0a99d83cf5
-// process.on('unhandledRejection', (reason/*, promise*/) => {
-//  console.error('Unhandled Rejection at:', reason.stack || reason);
-// or whatever crash reporting service you use
-// });
-
-// const expressServer = require('./servers/expressServer');
-
-// expressServer.start();
-
-const cluster = require('cluster');
-// const cpus = require('os').cpus().length;
-const { HTTP_LISTEN_PORT } = require('./config');
-// const clients = {};
-const net = require('net');
-const farmhash = require('farmhash');
-// const express = require('express');
-// const redis = require('socket.io-redis'); 
-// const socketio = require('socket.io');
-// const path = require('path');
-// const memored = require('memored');
-// const circularjson = require('circular-json');
-const express = require('express');
-const sio = require('socket.io');
-const sioRedis = require('socket.io-redis');
+import net from 'net';
+import farmhash from 'farmhash';
+import sio from 'socket.io';
+import sioRedis from 'socket.io-redis';
+import { cpus } from 'os';
 
 const port = HTTP_LISTEN_PORT;
-const num_processes = require('os').cpus().length;
+const lenCPUs = cpus().length;
 
 const { BACKEND_REDIS_HOST, BACKEND_REDIS_PORT } = process.env;
 
@@ -41,7 +21,7 @@ if (cluster.isMaster) {
   // for example.
   const workers = [];
 
-  // Helper function for spawning worker at index 'i'.
+  // Helper function for spawning worker at index 'i'
   let spawn = function (i) {
     workers[i] = cluster.fork();
 
@@ -52,8 +32,8 @@ if (cluster.isMaster) {
     });
   };
 
-  // Spawn workers.
-  for (let i = 0; i < num_processes; i++) {
+  // Spawn workers
+  for (let i = 0; i < lenCPUs; i++) {
     spawn(i);
   }
 
@@ -70,12 +50,12 @@ if (cluster.isMaster) {
     // works with IPv6, too
   };
 
-  // Create the outside facing server listening on our port.
+  // Create the outside facing server listening on our port
   net.createServer({ pauseOnConnect: true }, function (connection) {
     // We received a connection and need to pass it to the appropriate
     // worker. Get the worker for this connection's source IP and pass
     // it the connection.
-    let worker = workers[worker_index(connection.remoteAddress, num_processes)];
+    let worker = workers[worker_index(connection.remoteAddress, lenCPUs)];
     worker.send('sticky-session:connection', connection);
   }).listen(port);
 } else {
@@ -85,12 +65,10 @@ if (cluster.isMaster) {
   // detect the Node.js uptime
   require('utils/node/nodeUptime');
 
-  // Note we don't use a port here because the master listens on it for us.
+  // Note we don't use a port here because the master listens on it for us
   const app = new express();
 
-  // Here you might use middleware, attach routes, etc.
-
-  // Don't expose our internal server to the outside.
+  // Don't expose our internal server to the outside
   const server = app.listen(0, 'localhost');
   const io = sio(server);
 
@@ -101,8 +79,6 @@ if (cluster.isMaster) {
     host: BACKEND_REDIS_HOST,
     port: BACKEND_REDIS_PORT
   }));
-
-  // Here you might use Socket.IO middleware for authorization etc.
 
   // Listen to messages sent from the master. Ignore everything else.
   process.on('message', function (message, connection) {
@@ -115,6 +91,14 @@ if (cluster.isMaster) {
     server.emit('connection', connection);
 
     connection.resume();
+  });
+
+  // TODO: Handle this better
+  // @see https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2
+  // @see https://medium.com/@trekinbami/using-environment-variables-in-react-6b0a99d83cf5
+  process.on('unhandledRejection', (reason/*, promise*/) => {
+    console.error('Unhandled Rejection at:', reason.stack || reason);
+    // or whatever crash reporting service you use
   });
 
   initClusterWorkerAPIServer(app, io);

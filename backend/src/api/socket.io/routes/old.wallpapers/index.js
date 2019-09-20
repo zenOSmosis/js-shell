@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 const {fetchWallpaperPaths: doFetchWallpaperPaths} = require('utils/freedesktop.org/wallpapers');
 
 const fetchWallpaperPaths = async (options = {}, ack) => {

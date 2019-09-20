@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 import { fetchGitPublicSignature as utilsFetchGitPublicSignature } from 'utils/git';
 
 const fetchGitPublicSignature = async (options = {}, ack) => {

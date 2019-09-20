@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 
 // TODO: Rename / move to node/fetchSystemTime or node/fetchUnixTime
 const systemTime = async (options = {}, ack) => {
@@ -7,4 +7,4 @@ const systemTime = async (options = {}, ack) => {
   }, ack);
 };
 
-module.exports = systemTime;
+export default systemTime;

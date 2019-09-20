@@ -1,8 +1,8 @@
-const {userInfo} = require('os');
+const { userInfo } = require('os');
 
 const getLocalUsername = () => {
-  const {username} = userInfo();
+  const { username } = userInfo();
   return username;
 };
 
-module.exports = getLocalUsername;
+export default getLocalUsername;

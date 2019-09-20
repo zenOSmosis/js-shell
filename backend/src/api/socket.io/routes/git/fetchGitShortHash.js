@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 import { fetchGitShortHash as utilsFetchGitShortHash } from 'utils/git';
 
 const fetchGitShortHash = async (options = {}, ack) => {

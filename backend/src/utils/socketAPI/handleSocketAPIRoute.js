@@ -1,6 +1,4 @@
-// TODO: Rename to handleSocketAPIRoute
-
-const fetchStackTrace = require('stacktrace-js');
+import fetchStackTrace from 'stacktrace-js';
 
 /**
  * Directly handles Socket.io events, abstracting them as "routes."
@@ -64,4 +62,4 @@ const handleSocketAPIRoute = async (serviceCall, ack = null) => {
   }
 };
 
-module.exports = handleSocketAPIRoute;
+export default handleSocketAPIRoute;

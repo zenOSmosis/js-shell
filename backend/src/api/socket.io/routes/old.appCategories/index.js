@@ -1,4 +1,4 @@
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 const appCategories = require('utils/freedesktop.org/appCategories');
 
 const requestAppCategories = async (options = {}, ack) => {

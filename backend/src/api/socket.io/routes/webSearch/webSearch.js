@@ -3,10 +3,10 @@
  * Docker Compose configuration.
  */
 
-const handleSocketAPIRoute = require('utils/socketAPI/handleSocketAPIRoute');
-const axios = require('axios');
-const urlencode = require('urlencode');
-require('../typedefs');
+import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
+import axios from 'axios';
+import urlencode from 'urlencode';
+import '../typedefs';
 
 /**
  * TODO: Move this to
@@ -43,4 +43,4 @@ const webSearch = async (options, ack) => {
   }, ack);
 };
 
-module.exports = webSearch;
+export default webSearch;
