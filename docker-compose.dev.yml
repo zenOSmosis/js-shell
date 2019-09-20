@@ -43,6 +43,8 @@ services:
     environment:
       - NODE_ENV=development
       - TERM=xterm # Enables interactive CLI environments
+      - BACKEND_REDIS_HOST=backend_redis
+      - BACKEND_REDIS_PORT=6379
     networks:
       - shell-core-service-network
     command: ["npm", "run", "start"]
