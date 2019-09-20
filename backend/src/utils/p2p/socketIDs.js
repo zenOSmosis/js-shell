@@ -1,5 +1,7 @@
 let _socketIDs = [];
 
+// TODO: Use Redis backend instead
+
 const addSocketID = (socketID) => {
   _socketIDs.push(socketID);
 };

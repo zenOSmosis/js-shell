@@ -81,7 +81,7 @@ const webSearch = require('./webSearch');
  * 
  * @param {object} socket A socket.io socket.
  */
-const initSocket = (socket) => {
+const initSocketAPIRoutes = (socket) => {
   console.log(`Initializing Socket.io routes for socket with id: ${socket.id}`);
 
   socket.on(SOCKET_API_ROUTE_FETCH_NODE_ENV, fetchNodeEnv);
@@ -144,6 +144,6 @@ const initSocket = (socket) => {
   console.log(`Initialized Socket.io routes for socket with id: ${socket.id}`);
 };
 
-module.exports = {
-  initSocket
+export {
+  initSocketAPIRoutes
 };

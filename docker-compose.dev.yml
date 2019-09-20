@@ -34,6 +34,8 @@ services:
 
   backend:
     build: ./backend
+    depends_on:
+      - backend_redis
     volumes:
       # - ./backend:/shell/backend # Only during development
       - /tmp:/tmp # Only during development
@@ -43,8 +45,6 @@ services:
       - TERM=xterm # Enables interactive CLI environments
     networks:
       - shell-core-service-network
-    links:
-      - frontend
     command: ["npm", "run", "start"]
     # Only during development or special deployments
     # Note: Note: These options are ignored when deploying a stack in swarm mode with a (version 3) Compose file.
@@ -52,12 +52,19 @@ services:
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
       - NET_ADMIN # Only during development or special deployments
-    # ports:
-    #  - 3001:3001
+    expose:
+      - 3001
     user: ${CURRENT_UID}
   
-  backend-redis:
+  # @see https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
+  backend_redis:
     image: redis
+    expose:
+      - 6379
+    networks:
+      - shell-core-service-network
+    # ports:
+    #  - 6379:6379
 
   # Note: No direct network access to frontend; proxied through backend
   frontend:
@@ -76,16 +83,16 @@ services:
     networks:
       - shell-core-service-network
     command: ["npm", "run", "start"]
-    # ports:
-    #  - 3000:3000
+    expose:
+      - 3000
     user: ${CURRENT_UID}
 
   # searx:
   #   build: ./docker_modules/searx
   #  networks:
   #    - shell-core-service-network
-    # ports:
-    #  - 3020:8080 # TODO: Close off outside port unless necessary
+  #  expose:
+  #    - 8080
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
@@ -99,10 +106,12 @@ services:
   #    - 65435-65535:65435-65535/udp
 
   # Prototype STT socket w/ Socket.io interface
-  # stt-socket:
+  # stt-socket: # TODO: Rename to stt_socket (w/ underscore) for consistency 
   #  build: ./docker_modules/docker-stt-socket
   #  networks:
   #    - shell-core-service-network
+  #  expose:
+  #    - 80
   #  volumes:
   #    - ./docker_modules/docker-stt-socket:/app # Only during development
   #    - /tmp/stt-socket:/tmp # Only during development

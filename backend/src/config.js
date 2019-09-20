@@ -1,3 +1,5 @@
+// TODO: Convert to ES6 import / export
+
 const path = require('path');
 
 const hostConfig = {
