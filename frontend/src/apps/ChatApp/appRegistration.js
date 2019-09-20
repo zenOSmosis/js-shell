@@ -19,7 +19,7 @@ export default registerApp({
       p2pLinkedState = null;
     });
 
-    appRuntime.setViewProps({
+    appRuntime.setState({
       p2pLinkedState
     });
   },

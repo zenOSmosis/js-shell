@@ -1,6 +1,8 @@
 import EventEmitter from 'events';
 
 export const EVT_SHARED_UPDATE = 'sharedUpdate';
+export const EVT_PRIVATE_UPDATE = 'privateUpdate';
+export const EVT_ANY_UPDATE = 'anyUpdate';
 
 class P2PSharedObject extends EventEmitter {
   constructor(initialPrivateData, initialSharedData = {}) {
@@ -17,6 +19,7 @@ class P2PSharedObject extends EventEmitter {
     this._sharedData = { ...this._sharedData, ...params };
 
     this.emit(EVT_SHARED_UPDATE);
+    this.emit(EVT_ANY_UPDATE);
   }
 
   /**
@@ -31,13 +34,20 @@ class P2PSharedObject extends EventEmitter {
    */
   _setPrivateData(params) {
     this._privateData = { ...this._privateData, ...params };
+
+    this.emit(EVT_PRIVATE_UPDATE);
+    this.emit(EVT_ANY_UPDATE);
   }
 
   destroy() {
-    this.removeAllListeners();
-
     this._sharedData = {};
     this._privateData = {};
+
+    this.emit(EVT_PRIVATE_UPDATE);
+    this.emit(EVT_SHARED_UPDATE);
+    this.emit(EVT_ANY_UPDATE);
+
+    this.removeAllListeners();
   }
 }
 

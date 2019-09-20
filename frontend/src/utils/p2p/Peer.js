@@ -1,5 +1,6 @@
-import P2PSharedObject, { EVT_SHARED_UPDATE } from './P2PSharedObject';
+import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject';
 import Bowser from 'bowser';
+import { setItem, getItem } from '../encryptedLocalStorage';
 
 export { EVT_SHARED_UPDATE };
 
@@ -45,12 +46,24 @@ class Peer extends P2PSharedObject {
       _localPeer = this;
     }
 
-    // TODO: Remove
-    this.on(EVT_SHARED_UPDATE, () => {
-      console.warn({
-        sharedData: this.getSharedData()
-      })
-    });
+    if (isLocalPeer) {
+      const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
+
+      const cachedLocalPeerData = getItem(LOCAL_PEER_STORAGE_KEY);
+      if (cachedLocalPeerData) {
+        const { privateData, sharedData } = cachedLocalPeerData;
+
+        this._setPrivateData(privateData);
+        this.setSharedData(sharedData);
+      }
+
+      this.on(EVT_ANY_UPDATE, () => {
+        setItem(LOCAL_PEER_STORAGE_KEY, {
+          privateData: this._privateData,
+          sharedData: this._sharedData
+        });
+      });
+    }
   }
 
   setNickname(nickname) {

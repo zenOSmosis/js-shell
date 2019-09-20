@@ -24,7 +24,8 @@ export default class LocalStorageManagerWindow extends Component {
 
     this._defaultState = { ...this.state };
 
-    this._encryptedLocalStorageLinkedState = this.props.encryptedLocalStorageLinkedState;
+    const { encryptedLocalStorageLinkedState } = this.props.appRuntime.getState();
+    this._encryptedLocalStorageLinkedState = encryptedLocalStorageLinkedState;
 
     this._handleLocalStorageKeysUpdate = this._handleLocalStorageKeysUpdate.bind(this);
   }
@@ -146,7 +147,7 @@ export default class LocalStorageManagerWindow extends Component {
             }
             {
               localStorageKeys.length > 0 &&
-              <table style={{ width: '100%'}}>
+              <table style={{ width: '100%' }}>
                 <thead>
                   <tr>
                     <td>
@@ -164,28 +165,33 @@ export default class LocalStorageManagerWindow extends Component {
                   {
                     localStorageKeys.map((itemKey, idx) => {
                       const isDisplayed = displayedItemKeys.includes(itemKey);
+                      let renderedItemValue = null;
+                      if (isDisplayed) {
+                        const itemValue = getItem(itemKey);
+                        if (typeof itemValue === 'string') {
+                          renderedItemValue = itemValue;
+                        } else {
+                          renderedItemValue = JSON.stringify(itemValue);
+                        }
+                      }
 
                       return (
                         <tr key={idx}>
                           <td>
                             {itemKey}
                           </td>
-                          <td style={{width: '100%'}}>
+                          <td style={{ width: '100%' }}>
                             {
-                              !isDisplayed &&
-                              <span style={{fontStyle: 'italic'}}>Hidden</span>
-                            }
-                            {
-                              isDisplayed &&
-                              <div>
-                                {
-                                  getItem(itemKey)
-                                }
-                              </div>
+                              (
+                                !isDisplayed ?
+                                  <span style={{ fontStyle: 'italic' }}>Hidden</span>
+                                  :
+                                  renderedItemValue
+                              )
                             }
                           </td>
                           <td>
-                            <div style={{whiteSpace: 'nowrap'}}>
+                            <div style={{ whiteSpace: 'nowrap' }}>
                               <button onClick={evt => this.toggleDisplayItem(itemKey)}>
                                 {(!isDisplayed ? 'View' : 'Hide')}
                               </button>

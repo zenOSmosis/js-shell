@@ -20,7 +20,7 @@ export default registerApp({
       encryptedLocalStorageLinkedState = null;
     });
 
-    appRuntime.setViewProps({
+    appRuntime.setState({
       encryptedLocalStorageLinkedState
     });
   }

@@ -19,7 +19,8 @@ class ChatAppWindow extends Component {
       selectedSocketPeerID: null
     };
 
-    this._p2pLinkedState = this.props.p2pLinkedState;
+    const { p2pLinkedState } = this.props.appRuntime.getState();
+    this._p2pLinkedState = p2pLinkedState;
   }
 
   _handleSocketPeerClick = (socketPeerID) => {
@@ -30,7 +31,6 @@ class ChatAppWindow extends Component {
 
   render() {
     const { ...propsRest } = this.props;
-
     const { selectedSocketPeerID } = this.state;
 
     return (
