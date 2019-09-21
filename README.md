@@ -40,7 +40,7 @@ It can be preliminarily spun up by executing:
 
 # ---------------
 # If Production
-$ ./build.prod.sh
+$ ./build.prod.sh # Currently not available
 
 # or...
 
@@ -54,7 +54,7 @@ $ ./run.sh
 
 ## System Design
 
-TODO: Document out further
+The following represents a non-extensive design overview of the system architecture.
 
 ### Backend
 
@@ -73,6 +73,13 @@ TODO: Determine if docker-letsencrypt STAGING set to true can replace using dock
 #### Docker Modules
 
 The {root}/docker_modules directory specifies additional Docker packages which help form the infrastructure of the Shell and its related services.
+
+Note that some of the Docker modules are pulled directly from upstream and do not live in this directory.
+
+- [dev-ssl-proxy](https://github.com/zenOSmosis/docker-dev-ssl-proxy): An Nginx server utilized as a reverse proxy and SSL termination point for the development environment.
+- [Redis](https://hub.docker.com/_/redis): Utilized to manage multiple Socket.io connections across multiple Node.js processes.
+- [docker-coturn](https://hub.docker.com/r/zenosmosis/docker-coturn): STUN / TURN servers for WebRTC.
+- [Searx](https://github.com/asciimoo/searx): A free metasearch engine with the aim of protecting the privacy of its users. To this end, searx does not share users' IP addresses or search history with the search engines from which it gathers results.
 
 #### Node.js Server
 
@@ -113,17 +120,8 @@ Except where usage of 3rd party libraries is concerned, with their own naming co
 - Variable names in camelCase.
   - Class names begin with UpperCase character.
   - Class instances being with lowerCase character.
-- Boolean variable / property names prefixed with "is," unless the words "has" or "have" are utilized elsewhere in the name.
+- Boolean variable / property names prefixed with "is," unless the words "has," "have," "are" (or other forms of plural designation) are utilized elsewhere in the name.
 - American English spelling variations (e.g. "isSizable" instead of "isSizeable").
-
-## Optional
-The following serve as notes for additional server monitoring, though their API implementations are not currently developed on the server.
-
-### Linux (Ubuntu / Debian) Temperature
-In some cases you need to install the linux sensors package to be able to measure temperature e.g. on DEBIAN based systems by running sudo apt-get install lm-sensors
-
-### Linux (Ubuntu / Debian) S.M.A.R.T. Status
-To be able to detect S.M.A.R.T. status on Linux you need to install smartmontools. On DEBIAN based linux distributions you can install it by running sudo apt-get install smartmontools
 
 ## Motto
 
