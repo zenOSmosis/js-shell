@@ -30,6 +30,7 @@ services:
     environment:
       - PROXY_ADDRESS=http://backend:3001 # Important, don't use quotations here, or it may break the template
     ports:
+      - 80:80
       - 443:443
 
   backend:
@@ -65,8 +66,6 @@ services:
       - 6379
     networks:
       - shell-core-service-network
-    # ports:
-    #  - 6379:6379
 
   # Note: No direct network access to frontend; proxied through backend
   frontend:
@@ -89,12 +88,12 @@ services:
       - 3000
     user: ${CURRENT_UID}
 
-  # searx:
-  #   build: ./docker_modules/searx
-  #  networks:
-  #    - shell-core-service-network
-  #  expose:
-  #    - 8080
+  searx:
+    build: ./docker_modules/searx
+    networks:
+      - shell-core-service-network
+    expose:
+      - 8080
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
