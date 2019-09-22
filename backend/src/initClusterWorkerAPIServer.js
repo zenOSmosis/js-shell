@@ -3,7 +3,6 @@ import session from 'express-session';
 import httpProxy from 'http-proxy';
 import requestIp from 'request-ip';
 import expressAPIRoutes from './api/express/routes';
-// const io = require('socket.io')(server);
 import { initSocketAPIRoutes } from './api/socket.io/routes';
 import { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } from './api/socket.io/events';
 import {
