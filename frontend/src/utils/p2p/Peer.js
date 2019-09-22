@@ -1,11 +1,15 @@
 import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject';
-import Bowser from 'bowser';
 import { setItem, getItem } from '../encryptedLocalStorage';
+import generateId from '../string/generateId';
+import Bowser from 'bowser';
 
 export { EVT_SHARED_UPDATE };
 
 let _localPeer = null;
 
+export const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
+
+export const PRIVATE_DATA_PEER_ID = 'peerId';
 export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer';
 
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
@@ -29,6 +33,7 @@ class Peer extends P2PSharedObject {
     }
 
     const initialPrivateData = {
+      [PRIVATE_DATA_PEER_ID]: generateId(),
       [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalPeer
     };
 
@@ -47,8 +52,6 @@ class Peer extends P2PSharedObject {
     }
 
     if (isLocalPeer) {
-      const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
-
       const cachedLocalPeerData = getItem(LOCAL_PEER_STORAGE_KEY);
       if (cachedLocalPeerData) {
         const { privateData, sharedData } = cachedLocalPeerData;
@@ -58,12 +61,19 @@ class Peer extends P2PSharedObject {
       }
 
       this.on(EVT_ANY_UPDATE, () => {
-        setItem(LOCAL_PEER_STORAGE_KEY, {
-          privateData: this._privateData,
-          sharedData: this._sharedData
-        });
+        this._writeToLocalStorage();   
       });
+
+      // Perform initial encrypted storage sync
+      this._writeToLocalStorage();
     }
+  }
+
+  _writeToLocalStorage() {
+    setItem(LOCAL_PEER_STORAGE_KEY, {
+      privateData: this._privateData,
+      sharedData: this._sharedData
+    });
   }
 
   setNickname(nickname) {
