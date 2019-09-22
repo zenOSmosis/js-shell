@@ -12,6 +12,9 @@ import {
   FRONTEND_PROXY_URL,
   HTTP_LISTEN_PORT
 } from './config';
+import mongoConnect from 'utils/mongo/mongoClientConnect';
+import expressConnectMongo from 'connect-mongo';
+const MongoSessionStore = expressConnectMongo(session);
 
 const initClustWorkerAPIServer = (app, io) => {
   // Apply custom response headers
@@ -31,14 +34,20 @@ const initClustWorkerAPIServer = (app, io) => {
     // Number of proxies Express is behind
     // app.set('trust proxy', 1) // trust first proxy
 
+    // @see https://nodesource.com/blog/nine-security-tips-to-keep-express-from-getting-pwned/
+
     app.use(session({
-      secret: 'keyboard cat', // TODO: Use centralized config
+      secret: 'keyboard-cat', // TODO: Use centralized config
+      key: 'shell-session', // The name of the cookie - if left default (connect.sid), it can be detected and give away that an application is using Express as a web server.
       // store: // TODO: Handle store; currently defaults to MemoryStore
       resave: false,
       saveUninitialized: true,
       cookie: {
         secure: false // TODO: Set to true if using secure session
-      }
+      },
+      store: new MongoSessionStore({
+        clientPromise: mongoConnect()
+      })
     }), (req, res, next) => {
       // console.log(req.session);
       next();

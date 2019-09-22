@@ -45,8 +45,13 @@ services:
     environment:
       NODE_ENV: development
       TERM: xterm # Enables interactive CLI environments
-      BACKEND_REDIS_HOST: redis
-      BACKEND_REDIS_PORT: 6379
+      BACKEND_REDIS_HOST: redis # TODO: Rename to REDIS_HOSTNAME
+      BACKEND_REDIS_PORT: 6379  # TODO: Rename to REDIS_PORT
+      MONGO_HOSTNAME: mongo
+      MONGO_PORT: 27017
+      MONGO_SHELL_DB_NAME: dev_shell
+      MONGO_SHELL_USERNAME: shellusername
+      MONGO_SHELL_PASSWORD: shellpassword
     user: ${CURRENT_UID}
     command: ["npm", "run", "start:dev"]
     cap_add:
@@ -68,29 +73,6 @@ services:
       - shell-core-service-network
     expose:
       - 6379
-
-  # Note: No direct network access to frontend; proxied through backend
-  frontend:
-    build: ./frontend
-    depends_on:
-      - backend
-    volumes:
-      # Backend is mapped w/ frontend because of shared object in utils/bind
-      # jh: Not yet sure how this will work in production environment
-      # - ./frontend:/shell/frontend # Only during development
-      # - ./backend:/shell/backend # Only during development
-      # - ./cli:/shell/cli # Only during development
-      - ./:/shell # Only during development
-    environment:
-      - NODE_ENV=development
-      - REACT_APP_PROJECT_NAME=Shell Desktop
-      # - HTTPS=true
-    networks:
-      - shell-core-service-network
-    command: ["npm", "run", "start"]
-    expose:
-      - 3000
-    user: ${CURRENT_UID}
   
   mongo:
     image: mongo
@@ -98,7 +80,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_SHELL_DB_NAME: shell
+      MONGO_SHELL_DB_NAME: dev_shell
       MONGO_SHELL_USERNAME: shellusername
       MONGO_SHELL_PASSWORD: shellpassword
     volumes:
@@ -126,6 +108,29 @@ services:
       - shell-core-service-network
     expose:
       - 8080
+
+  # Note: No direct network access to frontend; proxied through backend
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    volumes:
+      # Backend is mapped w/ frontend because of shared object in utils/bind
+      # jh: Not yet sure how this will work in production environment
+      # - ./frontend:/shell/frontend # Only during development
+      # - ./backend:/shell/backend # Only during development
+      # - ./cli:/shell/cli # Only during development
+      - ./:/shell # Only during development
+    environment:
+      NODE_ENV: development
+      REACT_APP_PROJECT_NAME: Shell Desktop
+      # - HTTPS=true
+    networks:
+      - shell-core-service-network
+    command: ["npm", "run", "start"]
+    expose:
+      - 3000
+    user: ${CURRENT_UID}
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
