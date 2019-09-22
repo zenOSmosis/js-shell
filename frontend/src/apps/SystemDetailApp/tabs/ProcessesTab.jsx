@@ -61,7 +61,7 @@ class Processes extends Component {
     const { processes } = this.props;
 
     const hiddenProcessIds = processes.map((process) => {
-      return process.getPID();
+      return process.getPid();
     });
 
     this.setState({
@@ -135,7 +135,7 @@ class Processes extends Component {
                   return false;
                 }
 
-                const pid = process.getPID();
+                const pid = process.getPid();
 
                 // Don't render hidden processes
                 if (hiddenProcessIds.includes(pid)) {
@@ -148,7 +148,7 @@ class Processes extends Component {
                 const renderedName = title || className;
                 const threadType = process.getThreadType();
                 const serviceURL = process.getServiceURL();
-                const parentPID = process.getParentPID();
+                const parentPid = process.getParentPid();
 
                 return (
                   <tr key={`${pid}-${idx}`}>
@@ -156,7 +156,7 @@ class Processes extends Component {
                       {pid}
                     </td>
                     <td>
-                      {parentPID}
+                      {parentPid}
                     </td>
                     <td>
                       {renderedName}

@@ -82,7 +82,7 @@ class EditorWithFileTabs extends Component {
 
                       const { language, fileContent } = appFile;
 
-                      const { uuid: appFileUUID } = appFile;
+                      const { uuid: appFileUuid } = appFile;
 
                       return (
                         <MonacoEditor
@@ -91,7 +91,7 @@ class EditorWithFileTabs extends Component {
                           // Hide editors which are not active
                           containerClassName={classNames(style['editor'], isHidden ? style['hidden'] : null)}
 
-                          key={appFileUUID}
+                          key={appFileUuid}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}
                           language={language}
                           initialValue={fileContent}

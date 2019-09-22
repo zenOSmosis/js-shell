@@ -17,8 +17,8 @@ export default class ProcessTesterWindow extends Component {
 
         /*
 
-        const proc_pid = proc.getPID();
-        const this_pid = this.getPID();
+        const proc_pid = proc.getPid();
+        const this_pid = this.getPid();
       
         if (proc_pid === this_pid) {
           console.debug('PIDs match!', this);

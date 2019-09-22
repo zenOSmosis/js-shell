@@ -2,7 +2,7 @@ import _handleReceivedSocketPeerDataPacket from './_handleReceivedSocketPeerData
 import _handleSocketPeerConnectionStatusUpdate from './_handleSocketPeerConnectionStatusUpdate';
 import createSocketPeerDataPacket from './createSocketPeerDataPacket';
 import createSocketPeerReceivedReceiptDataPacket from './createSocketPeerReceivedReceiptDataPacket';
-import fetchSocketPeerIDs from './fetchSocketPeerIDs';
+import fetchSocketPeerIds from './fetchSocketPeerIds';
 import sendSocketPeerDataPacket from './sendSocketPeerDataPacket';
 
 export {
@@ -10,6 +10,6 @@ export {
   _handleSocketPeerConnectionStatusUpdate,
   createSocketPeerDataPacket,
   createSocketPeerReceivedReceiptDataPacket,
-  fetchSocketPeerIDs,
+  fetchSocketPeerIds,
   sendSocketPeerDataPacket
 };

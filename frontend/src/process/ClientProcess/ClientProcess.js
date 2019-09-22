@@ -32,7 +32,7 @@ const _cpuTimeLinkedState = new CPUTimeLinkedState();
 
 // The process id of the next process (auto-incremented in the ClientProcess
 // constructor)
-let _nextPID = 1;
+let _nextPid = 1;
 
 // The first process in the thread
 let _rootProcess = null;
@@ -69,12 +69,12 @@ class ClientProcess extends EventEmitter {
     this._rootThreadTimer = null;
     this._handleCPUThreadCycle = this._handleCPUThreadCycle.bind(this);
 
-    this._pid = _nextPID;
-    // Increment _nextPID for the next process
-    ++_nextPID;
+    this._pid = _nextPid;
+    // Increment _nextPid for the next process
+    ++_nextPid;
 
     this._parentProcess = parentProcess;
-    this._parentPID = null;
+    this._parentPid = null;
 
     if (parentProcess &&
       parentProcess.getIsExited()) {
@@ -84,13 +84,13 @@ class ClientProcess extends EventEmitter {
     } else if (!_rootProcess) {
       throw new Error('rootProcess not internally set!');
     } else if (parentProcess === false && this._isRootProcess) {
-      this._parentPID = -1;
+      this._parentPid = -1;
     } else if (!this._parentProcess) {
       this._parentProcess = _rootProcess;
     }
 
-    if (!this._parentPID && this._parentProcess) {
-      this._parentPID = this._parentProcess.getPID();
+    if (!this._parentPid && this._parentProcess) {
+      this._parentPid = this._parentProcess.getPid();
     }
 
     // Set to true after process has initialized
@@ -400,12 +400,12 @@ class ClientProcess extends EventEmitter {
   /**
    * Retrieves the process identifier.
    */
-  getPID() {
+  getPid() {
     return this._pid;
   }
 
-  getParentPID() {
-    return this._parentPID;
+  getParentPid() {
+    return this._parentPid;
   }
 
   setTitle(title) {
@@ -436,12 +436,12 @@ class ClientProcess extends EventEmitter {
    */
   getChildren() {
     const { processes } = _processLinkedState.getState();
-    const pid = this.getPID();
+    const pid = this.getPid();
 
     const children = processes.filter((proc) => {
-      const testParentPID = proc.getParentPID();
+      const testParentPid = proc.getParentPid();
 
-      return testParentPID === pid;
+      return testParentPid === pid;
     });
 
     return children;

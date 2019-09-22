@@ -16,22 +16,22 @@ class ChatAppWindow extends Component {
     super(...args);
 
     this.state = {
-      selectedSocketPeerID: null
+      selectedSocketPeerId: null
     };
 
     const { p2pLinkedState } = this.props.appRuntime.getState();
     this._p2pLinkedState = p2pLinkedState;
   }
 
-  _handleSocketPeerClick = (socketPeerID) => {
+  _handleSocketPeerClick = (socketPeerId) => {
     this.setState({
-      selectedSocketPeerID: socketPeerID
+      selectedSocketPeerId: socketPeerId
     });
   };
 
   render() {
     const { ...propsRest } = this.props;
-    const { selectedSocketPeerID } = this.state;
+    const { selectedSocketPeerId } = this.state;
 
     return (
       <Window
@@ -63,21 +63,21 @@ class ChatAppWindow extends Component {
         }
       >
         <LinkedStateRenderer
-          key={selectedSocketPeerID}
+          key={selectedSocketPeerId}
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
-            const { socketPeerIDs } = updatedState;
+            const { socketPeerIds } = updatedState;
 
-            if (socketPeerIDs !== undefined) {
+            if (socketPeerIds !== undefined) {
               return {
-                socketPeerIDs
+                socketPeerIds
               };
             }
           }}
           render={(renderProps) => {
-            const { socketPeerIDs } = renderProps;
+            const { socketPeerIds } = renderProps;
 
-            if (!socketPeerIDs.length) {
+            if (!socketPeerIds.length) {
               return (
                 <Center>
                   No connected peers
@@ -93,16 +93,16 @@ class ChatAppWindow extends Component {
                 >
                   <Full>
                     <SocketPeerList
-                      socketPeerIDs={socketPeerIDs}
-                      onSocketPeerClick={socketPeerID => { this._handleSocketPeerClick(socketPeerID) }}
+                      socketPeerIds={socketPeerIds}
+                      onSocketPeerClick={socketPeerId => { this._handleSocketPeerClick(socketPeerId) }}
                     />
                   </Full>
 
                   <Full>
                     {
-                      selectedSocketPeerID &&
+                      selectedSocketPeerId &&
                       <Chat
-                        remoteSocketPeerID={selectedSocketPeerID}
+                        remoteSocketPeerId={selectedSocketPeerId}
                       />
                     }
                   </Full>

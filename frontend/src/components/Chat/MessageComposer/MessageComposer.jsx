@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './MessageComposer.css';
 import ChatMessage from 'utils/p2p/ChatMessage';
-import { getSocketID } from 'utils/socket.io';
+import { getSocketId } from 'utils/socket.io';
 import PropTypes from 'prop-types';
 
 class MessageComposer extends Component {
   static propTypes = {
-    toSocketPeerID: PropTypes.string.isRequired
+    toSocketPeerId: PropTypes.string.isRequired
   };
 
   constructor(...args) {
@@ -30,14 +30,14 @@ class MessageComposer extends Component {
   }
 
   _handleKeyDown(evt) {
-    const { toSocketPeerID } = this.props;
+    const { toSocketPeerId } = this.props;
     const { keyCode } = evt;
 
     // Start a new chat message, if one is not already present
     if (!this._currentChatMessage) {
-      const fromSocketPeerID = getSocketID();
+      const fromSocketPeerId = getSocketId();
 
-      this._currentChatMessage = new ChatMessage(true, fromSocketPeerID, toSocketPeerID);
+      this._currentChatMessage = new ChatMessage(true, fromSocketPeerId, toSocketPeerId);
     }
 
     // Enter key

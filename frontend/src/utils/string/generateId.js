@@ -11,10 +11,10 @@ const _dec2hex = (dec) => {
  * @param {number} len?
  * @return {string}
  */
-const generateID = (len = 40) => {
+const generateId = (len = 40) => {
   var arr = new Uint8Array((len) / 2);
   window.crypto.getRandomValues(arr);
   return Array.from(arr, _dec2hex).join('');
 };
 
-export default generateID;
+export default generateId;

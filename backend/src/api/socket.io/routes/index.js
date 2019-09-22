@@ -50,7 +50,7 @@ import {
 } from './git';
 import { fetchNodeEnv, fetchNodeUptime } from './node';
 import {
-  fetchSocketIDs as p2pFetchSocketIDs,
+  fetchSocketIds as p2pFetchSocketIds,
   routeSocketPeerData as p2pRouteSocketPeerData
 } from './p2p';
 import ping from './ping';
@@ -95,7 +95,7 @@ const initSocketAPIRoutes = (socket, io) => {
     // Add io to existing options
     options = { ...(options || {}), ...{ io } };
 
-    p2pFetchSocketIDs(options, ack);
+    p2pFetchSocketIds(options, ack);
   });
   socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
     p2pRouteSocketPeerData({

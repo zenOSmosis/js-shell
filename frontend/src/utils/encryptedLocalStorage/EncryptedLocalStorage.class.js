@@ -1,4 +1,4 @@
-import generateID from '../string/generateID';
+import generateId from '../string/generateId';
 import SecureLS from 'secure-ls';
 import EncryptedLocalStorageLinkedState, {
   ACTION_HANDLE_STORAGE_UPDATE
@@ -12,7 +12,7 @@ class EncryptedLocalStorage {
 
     let cachedSecretKey = localStorage.getItem(encodedMasterKey);
     if (!cachedSecretKey) {
-      cachedSecretKey = generateID(128);
+      cachedSecretKey = generateId(128);
       localStorage.setItem(encodedMasterKey, cachedSecretKey);
     }
 

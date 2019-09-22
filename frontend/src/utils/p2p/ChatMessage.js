@@ -15,12 +15,12 @@ export const SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE = 'ChatMessage';
 export const PRIVATE_DATA_KEY_IS_FROM_LOCAL = 'isFromLocal';
 export const PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS = 'isSendingInProgress';
 export const PRIVATE_DATA_KEY_IS_SENT = 'isSent';
-export const PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS = 'receivedBySocketPeerIDs';
-export const PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS = 'readBySocketPeerIDs';
+export const PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS = 'receivedBySocketPeerIds';
+export const PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS = 'readBySocketPeerIds';
 
-export const SHARED_DATA_KEY_FROM_SOCKET_PEER_ID = 'fromSocketPeerID';
-export const SHARED_DATA_KEY_TO_SOCKET_PEER_ID = 'toSocketPeerID';
-export const SHARED_DATA_KEY_MESSAGE_UUID = 'messageUUID';
+export const SHARED_DATA_KEY_FROM_SOCKET_PEER_ID = 'fromSocketPeerId';
+export const SHARED_DATA_KEY_TO_SOCKET_PEER_ID = 'toSocketPeerId';
+export const SHARED_DATA_KEY_MESSAGE_UUID = 'messageUuid';
 export const SHARED_DATA_KEY_IS_TYPING = 'isTyping';
 export const SHARED_DATA_KEY_MESSAGE_BODY = 'messageBody';
 export const SHARED_DATA_KEY_IS_FINALIZED = 'isFinalized';
@@ -35,16 +35,16 @@ class ChatMessage extends P2PSharedObject {
    */
   static handleReceivedSocketPeerDataPacket(dataPacket) {
     const { data: sharedData } = dataPacket;
-    const { messageUUID } = sharedData;
+    const { messageUuid } = sharedData;
 
-    let chatMessage = commonP2PLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID);
+    let chatMessage = commonP2PLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid);
 
     if (!chatMessage) {
       chatMessage = ChatMessage.createFromSharedData(false, sharedData);
     } else {
       // Manipulate existing
 
-      commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID, (updatableChatMessage) => {
+      commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, (updatableChatMessage) => {
         updatableChatMessage.setSharedData(sharedData);
 
         const updatedChatMessage = updatableChatMessage;
@@ -63,9 +63,9 @@ class ChatMessage extends P2PSharedObject {
    * @return {ChatMessage}
    */
   static createFromSharedData(isFromLocal, sharedData) {
-    const { fromSocketPeerID, toSocketPeerID } = sharedData;
+    const { fromSocketPeerId, toSocketPeerId } = sharedData;
 
-    const chatMessage = new ChatMessage(isFromLocal, fromSocketPeerID, toSocketPeerID, sharedData);
+    const chatMessage = new ChatMessage(isFromLocal, fromSocketPeerId, toSocketPeerId, sharedData);
 
     // Add the chat message to the cache
     commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, chatMessage);
@@ -73,7 +73,7 @@ class ChatMessage extends P2PSharedObject {
     return chatMessage;
   };
 
-  constructor(isFromLocal, fromSocketPeerID, toSocketPeerID, existingSharedData = null) {
+  constructor(isFromLocal, fromSocketPeerId, toSocketPeerId, existingSharedData = null) {
     const initialPrivateData = {
       [PRIVATE_DATA_KEY_IS_FROM_LOCAL]: isFromLocal,
       [PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS]: false,
@@ -83,8 +83,8 @@ class ChatMessage extends P2PSharedObject {
     };
 
     const initialSharedData = existingSharedData || {
-      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerID,
-      [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerID,
+      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerId,
+      [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerId,
       [SHARED_DATA_KEY_MESSAGE_UUID]: uuidv4(),
       [SHARED_DATA_KEY_IS_TYPING]: false,
       [SHARED_DATA_KEY_MESSAGE_BODY]: null,
@@ -114,10 +114,10 @@ class ChatMessage extends P2PSharedObject {
       if (!existingSharedData) {
         commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
 
-        const messageUUID = this.getUUID();
+        const messageUuid = this.getUuid();
 
         this.on(EVT_SHARED_UPDATE, () => {
-          commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUUID, () => {
+          commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, () => {
             return this;
           });
         });
@@ -142,10 +142,10 @@ class ChatMessage extends P2PSharedObject {
   /**
    * @return {string}
    */
-  getUUID() {
-    const { [SHARED_DATA_KEY_MESSAGE_UUID]: messageUUID } = this._sharedData;
+  getUuid() {
+    const { [SHARED_DATA_KEY_MESSAGE_UUID]: messageUuid } = this._sharedData;
 
-    return messageUUID;
+    return messageUuid;
   }
 
   /**
@@ -161,9 +161,9 @@ class ChatMessage extends P2PSharedObject {
         return;
       }
 
-      const toSocketPeerID = this.getToSocketPeerID();
+      const toSocketPeerId = this.getToSocketPeerId();
 
-      const dataPacket = createSocketPeerDataPacket(toSocketPeerID, SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE, this.getSharedData());
+      const dataPacket = createSocketPeerDataPacket(toSocketPeerId, SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE, this.getSharedData());
       await sendSocketPeerDataPacket(dataPacket);
     } catch (exc) {
       throw exc;
@@ -173,19 +173,19 @@ class ChatMessage extends P2PSharedObject {
   /**
    * @return {string}
    */
-  getToSocketPeerID() {
-    const { [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerID } = this._sharedData;
+  getToSocketPeerId() {
+    const { [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerId } = this._sharedData;
 
-    return toSocketPeerID;
+    return toSocketPeerId;
   }
 
   /**
    * @return {string}
    */
-  getFromSocketPeerID() {
-    const { [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerID } = this._sharedData;
+  getFromSocketPeerId() {
+    const { [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerId } = this._sharedData;
 
-    return fromSocketPeerID;
+    return fromSocketPeerId;
   }
 
   // TODO: Block this if not from local
@@ -324,47 +324,47 @@ class ChatMessage extends P2PSharedObject {
 
   /**
    * 
-   * @param {string} socketPeerID 
+   * @param {string} socketPeerId 
    */
-  addReadBySocketPeerID(socketPeerID) {
-    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIDs } = this._privateData;
+  addReadBySocketPeerId(socketPeerId) {
+    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IdS]: readBySocketPeerIds } = this._privateData;
 
-    readBySocketPeerIDs.push(socketPeerID);
+    readBySocketPeerIds.push(socketPeerId);
 
     this._setPrivateData({
-      readBySocketPeerIDs
+      readBySocketPeerIds
     });
   }
 
   /**
    * @return {string[]}
    */
-  getReadBySocketPeerIDs() {
-    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIDs } = this._privateData;
+  getReadBySocketPeerIds() {
+    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIds } = this._privateData;
 
-    return readBySocketPeerIDs;
+    return readBySocketPeerIds;
   }
 
   /**
-   * @param {string} socketPeerID 
+   * @param {string} socketPeerId 
    */
-  addReceivedBySocketPeerID(socketPeerID) {
-    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIDs } = this._privateData;
+  addReceivedBySocketPeerId(socketPeerId) {
+    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIds } = this._privateData;
 
-    receivedBySocketPeerIDs.push(socketPeerID);
+    receivedBySocketPeerIds.push(socketPeerId);
 
     this._setPrivateData({
-      receivedBySocketPeerIDs
+      receivedBySocketPeerIds
     });
   }
 
   /**
    * @return {string[]}
    */
-  getReceivedBySocketPeerIDs() {
-    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIDs } = this._privateData;
+  getReceivedBySocketPeerIds() {
+    const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedBySocketPeerIds } = this._privateData;
 
-    return receivedBySocketPeerIDs;
+    return receivedBySocketPeerIds;
   }
 }
 

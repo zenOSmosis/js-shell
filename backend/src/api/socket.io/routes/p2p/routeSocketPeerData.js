@@ -16,14 +16,14 @@ const routeSocketPeerData = async (dataBundle, ack) => {
   return await handleSocketAPIRoute(() => {
     const { socket, socketPeerDataPacket } = dataBundle;
 
-    const { toSocketPeerID } = socketPeerDataPacket;
+    const { toSocketPeerId } = socketPeerDataPacket;
 
-    if (!toSocketPeerID) {
-      throw new Error('No toSocketPeerID set');
+    if (!toSocketPeerId) {
+      throw new Error('No toSocketPeerId set');
     }
 
     // TODO: Handle emit ack
-    socket.to(toSocketPeerID).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);
+    socket.to(toSocketPeerId).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);
   }, ack);
 };
 

@@ -2,21 +2,21 @@ import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import { SOCKET_API_ROUTE_FETCH_SOCKET_IDS } from 'shared/socketAPI/socketAPIRoutes';
 
 /**
- * Retrieves Socket.io IDs of remote peers, connected to the server.
+ * Retrieves Socket.io Ids of remote peers, connected to the server.
  * 
  * IMPORTANT!  This iteration is not very scalable and WILL result in low
  * performance, and/or crashing if a lot of peers are connected remotely.
  * 
  * @return {Promise<string[]>}
  */
-const fetchSocketPeerIDs = async () => {
+const fetchSocketPeerIds = async () => {
   try {
-    const socketPeerIDs = await socketAPIQuery(SOCKET_API_ROUTE_FETCH_SOCKET_IDS);
+    const socketPeerIds = await socketAPIQuery(SOCKET_API_ROUTE_FETCH_SOCKET_IDS);
 
-    return socketPeerIDs;
+    return socketPeerIds;
   } catch (exc) {
     throw exc;
   }
 };
 
-export default fetchSocketPeerIDs;
+export default fetchSocketPeerIds;

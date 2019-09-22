@@ -162,7 +162,7 @@ const LinkedStateGroups = (props = {}) => {
         {
           uniqueInstances.map((instance, idx) => {
             return (
-              <Option key={idx} value={instance.getUUID()}>{
+              <Option key={idx} value={instance.getUuid()}>{
                 instance.getClassName()
               }</Option>
             )

@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const makeUUID = require('uuidv4');
+const makeUuid = require('uuidv4');
 
 const EVT_CONNECT = 'connect';
 const EVT_DATA = 'data';
@@ -16,14 +16,14 @@ const EVT_DISCONNECT = 'disconnect';
 class SocketChannel extends EventEmitter {
   /**
    * @param {Object} socket socket.io socket.
-   * @param {string} channelID? If null, this instance is the host instance.
+   * @param {string} channelId? If null, this instance is the host instance.
    */
-  constructor(socket, channelID = null) {
+  constructor(socket, channelId = null) {
     super();
 
     this._socket = socket;
 
-    this._channelID = channelID || `socketChannel/${makeUUID()}`;
+    this._channelId = channelId || `socketChannel/${makeUuid()}`;
 
     this._init();
 
@@ -37,16 +37,16 @@ class SocketChannel extends EventEmitter {
   /**
    * @return {string}
    */
-  getChannelID() {
-    return this._channelID;
+  getChannelId() {
+    return this._channelId;
   }
 
   _init() {
-    this._socket.on(this.getChannelID(), this._handleRawSocketData.bind(this));
+    this._socket.on(this.getChannelId(), this._handleRawSocketData.bind(this));
   }
 
   _deinit() {
-    this._socket.off(this.getChannelID(), this._handleRawSocketData.bind(this));
+    this._socket.off(this.getChannelId(), this._handleRawSocketData.bind(this));
   }
 
   /**
@@ -57,7 +57,7 @@ class SocketChannel extends EventEmitter {
    */
   emit(evtName, data) {
     // Send artbitrary event data over Socket.io
-    this._socket.emit(this.getChannelID(), {
+    this._socket.emit(this.getChannelId(), {
       evtName,
       data
     });

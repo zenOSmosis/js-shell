@@ -1,5 +1,5 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import { getSocketID } from 'utils/socket.io';
+import { getSocketId } from 'utils/socket.io';
 
 export {
   EVT_LINKED_STATE_UPDATE
@@ -7,7 +7,7 @@ export {
 
 export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
-export const STATE_SOCKET_PEER_IDS = 'socketPeerIDs';
+export const STATE_SOCKET_PEER_IDS = 'socketPeerIds';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
 export const STATE_LOCAL_PEER = 'localPeer';
@@ -15,8 +15,8 @@ export const STATE_REMOTE_PEERS = 'remotePeers';
 
 export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
 export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
-export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUUID';
-export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUUID';
+export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUuid';
+export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUuid';
 export const ACTION_SET_LOCAL_PEER = 'setLocalPeer';
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 
@@ -68,14 +68,14 @@ export default class P2PLinkedState extends LinkedState {
           return chatMessages;
         },
 
-        [ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUUID) => {
+        [ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid) => {
           const chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
           const lenChatMessages = chatMessages.length;
 
           // Walk backwards
           for (let i = lenChatMessages - 1; i >= 0; i--) {
-            const testChatMessageUUID = chatMessages[i].getUUID();
-            if (testChatMessageUUID === chatMessageUUID) {
+            const testChatMessageUuid = chatMessages[i].getUuid();
+            if (testChatMessageUuid === chatMessageUuid) {
               return chatMessages[i];
             }
           }
@@ -84,7 +84,7 @@ export default class P2PLinkedState extends LinkedState {
         /**
          * Updates an existing chat message with updated data.
          */
-        [ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUUID, updateHandler) => {
+        [ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid, updateHandler) => {
           if (typeof updateHandler !== 'function') {
             throw new Error('updateHandler is not a function');
           }
@@ -92,9 +92,9 @@ export default class P2PLinkedState extends LinkedState {
           let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
 
           chatMessages = chatMessages.map(chatMessage => {
-            const testChatMessageUUID = chatMessage.getUUID();
+            const testChatMessageUuid = chatMessage.getUuid();
 
-            if (testChatMessageUUID === chatMessageUUID) {
+            if (testChatMessageUuid === chatMessageUuid) {
               // updateHandler must return the chatMessage
               chatMessage = updateHandler(chatMessage);
             }
@@ -126,48 +126,48 @@ export default class P2PLinkedState extends LinkedState {
     });
   }
 
-  setSocketPeerIDs(socketPeerIDs = []) {
-    if (!Array.isArray(socketPeerIDs)) {
-      throw new Error('socketPeerIDs is not an array');
+  setSocketPeerIds(socketPeerIds = []) {
+    if (!Array.isArray(socketPeerIds)) {
+      throw new Error('socketPeerIds is not an array');
     }
 
-    // Filter out local ID from peer IDs
-    const socketID = getSocketID();
-    socketPeerIDs = socketPeerIDs.filter(socketPeerID => {
-      return socketPeerID !== socketID;
+    // Filter out local Id from peer Ids
+    const socketId = getSocketId();
+    socketPeerIds = socketPeerIds.filter(socketPeerId => {
+      return socketPeerId !== socketId;
     });
 
     this.setState({
-      [STATE_SOCKET_PEER_IDS]: socketPeerIDs
+      [STATE_SOCKET_PEER_IDS]: socketPeerIds
     });
   }
 
   /** 
-   * @param {number} socketPeerID 
+   * @param {number} socketPeerId 
    */
-  addSocketPeerID(socketPeerID) {
-    const { [STATE_SOCKET_PEER_IDS]: socketPeerIDs } = this.getState();
+  addSocketPeerId(socketPeerId) {
+    const { [STATE_SOCKET_PEER_IDS]: socketPeerIds } = this.getState();
 
-    socketPeerIDs.push(socketPeerID);
+    socketPeerIds.push(socketPeerId);
 
     this.setState({
-      [STATE_SOCKET_PEER_IDS]: socketPeerIDs
+      [STATE_SOCKET_PEER_IDS]: socketPeerIds
     });
   }
 
   /**
-   * @param {number} socketPeerID 
+   * @param {number} socketPeerId 
    */
-  removeSocketPeerID(socketPeerID) {
-    const { [STATE_SOCKET_PEER_IDS]: socketPeerIDs } = this.getState();
+  removeSocketPeerId(socketPeerId) {
+    const { [STATE_SOCKET_PEER_IDS]: socketPeerIds } = this.getState();
 
-    const rmIdx = socketPeerIDs.indexOf(socketPeerID);
+    const rmIdx = socketPeerIds.indexOf(socketPeerId);
 
     if (rmIdx > -1) {
-      socketPeerIDs.splice(rmIdx, 1);
+      socketPeerIds.splice(rmIdx, 1);
 
       this.setState({
-        [STATE_SOCKET_PEER_IDS]: socketPeerIDs
+        [STATE_SOCKET_PEER_IDS]: socketPeerIds
       });
     }
   }

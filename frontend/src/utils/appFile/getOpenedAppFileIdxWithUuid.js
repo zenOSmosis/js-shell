@@ -8,7 +8,7 @@ import { OPENED_APP_FILES } from 'state/UniqueMultiAppFileLinkedState';
  * @param {string} uuid
  * @return {number} -1 if the path is not in the index.
  */
-const getOpenedAppFileIdxWithUUID = (uniqueMultiAppFileLinkedState, uuid) => {
+const getOpenedAppFileIdxWithUuid = (uniqueMultiAppFileLinkedState, uuid) => {
   const { [OPENED_APP_FILES]: openedAppFiles } = uniqueMultiAppFileLinkedState.getState();
   const lenOpenedAppFiles = openedAppFiles.length;
 
@@ -21,4 +21,4 @@ const getOpenedAppFileIdxWithUUID = (uniqueMultiAppFileLinkedState, uuid) => {
   return -1;
 };
 
-export default getOpenedAppFileIdxWithUUID;
+export default getOpenedAppFileIdxWithUuid;

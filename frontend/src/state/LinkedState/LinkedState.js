@@ -80,7 +80,7 @@ class LinkedState extends EventEmitter {
    * 
    * @return {string}
    */
-  getUUID() {
+  getUuid() {
     return this._uuid;
   }
 
@@ -218,7 +218,7 @@ class LinkedState extends EventEmitter {
     // @see https://nodejs.org/api/events.html#events_emitter_removealllisteners_eventname
     this.removeAllListeners();
 
-    mlscs.removeLinkedStateWithUUID(this._uuid);
+    mlscs.removeLinkedStateWithUuid(this._uuid);
   }
 
   /**

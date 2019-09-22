@@ -1,6 +1,6 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
-import fetchSocketPeerIDs from 'utils/p2p/socketPeer/fetchSocketPeerIDs';
+import fetchSocketPeerIds from 'utils/p2p/socketPeer/fetchSocketPeerIds';
 import P2PLinkedState from 'state/P2PLinkedState';
 import Peer from 'utils/p2p/Peer';
 import {
@@ -63,10 +63,10 @@ class P2PController extends ClientProcess {
 
   async _initSocketIOServices() {
     try {
-      // TODO: Sync socket peer IDs on each connect
+      // TODO: Sync socket peer Ids on each connect
       socket.on(EVT_SOCKET_CONNECT, async () => {
         try {
-          await this.syncSocketPeerIDs();
+          await this.syncSocketPeerIds();
         } catch (exc) {
           throw exc;
         }
@@ -86,7 +86,7 @@ class P2PController extends ClientProcess {
       // Post init; _init() has already finished when this starts
       this.setImmediate(async () => {
         try {
-          await this.syncSocketPeerIDs();
+          await this.syncSocketPeerIds();
         } catch (exc) {
           throw exc;
         }
@@ -97,23 +97,23 @@ class P2PController extends ClientProcess {
   }
 
   /**
-   * Fetches Socket Peer IDs from the server and sync them with P2PLinkedState.
+   * Fetches Socket Peer Ids from the server and sync them with P2PLinkedState.
    * 
    * @return {Promise<void>}
    */
-  async syncSocketPeerIDs(asInitial = true) {
+  async syncSocketPeerIds(asInitial = true) {
     try {
       if (!this._hasInitialSocketPeerSync) {
         this._hasInitialSocketPeerSync = true;
       } else if (asInitial) {
-        console.debug('Skipping second "initial" syncSocketPeerID()');
+        console.debug('Skipping second "initial" syncSocketPeerId()');
         return;
       }
 
-      const socketPeerIDs = await fetchSocketPeerIDs();
+      const socketPeerIds = await fetchSocketPeerIds();
           
-      // Sync socketPeerIDs with P2PLinkedState
-      this._p2pLinkedState.setSocketPeerIDs(socketPeerIDs);
+      // Sync socketPeerIds with P2PLinkedState
+      this._p2pLinkedState.setSocketPeerIds(socketPeerIds);
     } catch (exc) {
       throw exc;
     }
@@ -122,23 +122,23 @@ class P2PController extends ClientProcess {
   /**
    * Associates connected Socket.io peer with P2PLinkedState.
    */
-  _handleSocketPeerConnect = (socketPeerID) => {
+  _handleSocketPeerConnect = (socketPeerId) => {
     if (this._p2pLinkedState) {
-      this._p2pLinkedState.addSocketPeerID(socketPeerID);
+      this._p2pLinkedState.addSocketPeerId(socketPeerId);
     }
 
-    _handleSocketPeerConnectionStatusUpdate(socketPeerID, true);
+    _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
   }
 
   /**
    * Disassociates connected Socket.io peer with P2PLinkedState.
    */
-  _handleSocketPeerDisconnect = (socketPeerID) => {
+  _handleSocketPeerDisconnect = (socketPeerId) => {
     if (this._p2pLinkedState) {
-      this._p2pLinkedState.removeSocketPeerID(socketPeerID, false);
+      this._p2pLinkedState.removeSocketPeerId(socketPeerId, false);
     }
 
-    _handleSocketPeerConnectionStatusUpdate(socketPeerID, false);
+    _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
   }
 
   _handleReceivedSocketPeerDataPacket = (dataPacket) => {

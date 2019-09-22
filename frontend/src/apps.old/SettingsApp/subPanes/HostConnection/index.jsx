@@ -160,7 +160,7 @@ class HostConnection extends Component {
 
     console.debug('socket api routes', socketAPIRoutes);
 
-    let socketID = this.props.socketID || 'N/A';
+    let socketId = this.props.socketId || 'N/A';
 
     // const { socketLatency } = this.state;
 
@@ -267,7 +267,7 @@ class HostConnection extends Component {
                 </Column>
                 <Column>
                   <div style={{position: 'fixed', bottom: 0}}>
-                    Socket id: {socketID}
+                    Socket id: {socketId}
                   </div>
                 </Column>
               </Row>

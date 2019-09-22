@@ -86,11 +86,11 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     }
   }
 
-  removeLinkedStateWithUUID(uuid) {
+  removeLinkedStateWithUuid(uuid) {
     this._linkedStateInstances = this._linkedStateInstances.filter((linkedState) => {
-      const linkedStateUUID = linkedState.getUUID();
+      const linkedStateUuid = linkedState.getUuid();
 
-      return (linkedStateUUID !== uuid);
+      return (linkedStateUuid !== uuid);
     });
 
     if (this._masterLinkedStateListener) {

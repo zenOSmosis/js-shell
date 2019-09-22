@@ -71,7 +71,7 @@ const initClustWorkerAPIServer = (app, io) => {
 
         const collection = db.collection('peers');
         const resp = await collection.insertOne({
-          socketID: socket.id,
+          socketId: socket.id,
           connectionTime: new Date().toISOString()
         });
 

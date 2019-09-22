@@ -120,7 +120,7 @@ class ClientWorkerInitProcess extends ClientProcess {
               controllerCommand: async () => {
                 try {
                   this._clientWorker.setImmediate(() => {  
-                    const pid = this._clientWorker.getPID();
+                    const pid = this._clientWorker.getPid();
                     let workerCmd = this._clientWorker.getWorkerCmd();
                     if (workerCmd) {
                       // Serialize workerCmd, so we can pass it 

@@ -347,7 +347,7 @@ class Window extends Component {
    * 
    * @return {string}
    */
-  getUUID() {
+  getUuid() {
     return this._uuid;
   }
 

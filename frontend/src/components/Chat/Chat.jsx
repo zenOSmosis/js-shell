@@ -9,11 +9,11 @@ import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 class Chat extends Component {
   render() {
-    const { remoteSocketPeerID } = this.props;
+    const { remoteSocketPeerId } = this.props;
 
     return (
       <LinkedStateRenderer
-        key={remoteSocketPeerID}
+        key={remoteSocketPeerId}
         linkedState={P2PLinkedState}
         onUpdate={(updatedState, p2pLinkedState) => {
           const { [STATE_CACHED_CHAT_MESSAGES]: stateChatMessages } = updatedState;
@@ -23,12 +23,12 @@ class Chat extends Component {
              * @type {ChatMessage[]}
              */
             const chatMessages = p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGES, (testChatMessage) => {
-              const testToSocketPeerID = testChatMessage.getToSocketPeerID();
-              if (testToSocketPeerID === remoteSocketPeerID) {
+              const testToSocketPeerId = testChatMessage.getToSocketPeerId();
+              if (testToSocketPeerId === remoteSocketPeerId) {
                 return true;
               } else {
-                const testFromSocketPeerID = testChatMessage.getFromSocketPeerID();
-                if (testFromSocketPeerID === remoteSocketPeerID) {
+                const testFromSocketPeerId = testChatMessage.getFromSocketPeerId();
+                if (testFromSocketPeerId === remoteSocketPeerId) {
                   return true;
                 }
               }
@@ -51,8 +51,8 @@ class Chat extends Component {
               <Layout>
                 <Header>
                   <ChatHeader
-                    // TODO: Rename to toSocketPeerID
-                    remoteSocketPeerID={remoteSocketPeerID}
+                    // TODO: Rename to toSocketPeerId
+                    remoteSocketPeerId={remoteSocketPeerId}
                   />
                 </Header>
 
@@ -62,7 +62,7 @@ class Chat extends Component {
 
                 <Footer>
                   <MessageComposer
-                    toSocketPeerID={remoteSocketPeerID}
+                    toSocketPeerId={remoteSocketPeerId}
                   />
                 </Footer>
               </Layout>

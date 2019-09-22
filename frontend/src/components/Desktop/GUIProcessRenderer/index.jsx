@@ -14,7 +14,7 @@ import equals from 'equals';
  */
 class GUIProcessRenderer extends Component {
   render() {
-    let { childGUIProcesses, childGUIProcessPIDs } = this.props;
+    let { childGUIProcesses, childGUIProcessPids } = this.props;
     return (
         <StackingContext>
           {
@@ -27,7 +27,7 @@ class GUIProcessRenderer extends Component {
 
               return (
                 <GUIProcessView
-                  key={childGUIProcessPIDs[idx]}
+                  key={childGUIProcessPids[idx]}
                 />
               )
             })
@@ -38,35 +38,35 @@ class GUIProcessRenderer extends Component {
 }
 
 const ConnectedGUIProcessRenderer = (() => {
-  // A cache of previously rendered GUI process IDs
-  let _prevChildGUIProcessPIDs = [];
+  // A cache of previously rendered GUI process Ids
+  let _prevChildGUIProcessPids = [];
 
-  let _shellDesktopPID = null;
+  let _shellDesktopPid = null;
 
   let _renderIdx = -1;
 
   return hocConnect(GUIProcessRenderer, ClientProcessLinkedState, (updatedState) => {
     ++_renderIdx;
     
-    if (!_shellDesktopPID) {
+    if (!_shellDesktopPid) {
       const shellGUIProcess = getShellDesktopProcess();
-      _shellDesktopPID = shellGUIProcess.getPID();
+      _shellDesktopPid = shellGUIProcess.getPid();
     }
 
     const { guiProcesses } = updatedState;
 
     if (typeof guiProcesses !== 'undefined') {
-      // A collection of PIDs which does not include the main Shell Desktop GUI
+      // A collection of Pids which does not include the main Shell Desktop GUI
       // process
-      const childGUIProcessPIDs = [];
+      const childGUIProcessPids = [];
 
       // A filtered list of GUI processes which does not include the main Shell
       // Desktop GUI process
       const childGUIProcesses = guiProcesses.filter(guiProcess => {
-        const _pid = guiProcess.getPID();
+        const _pid = guiProcess.getPid();
         
-        if (_pid !== _shellDesktopPID) {
-          childGUIProcessPIDs.push(_pid);
+        if (_pid !== _shellDesktopPid) {
+          childGUIProcessPids.push(_pid);
 
           return true;
         } else {
@@ -76,15 +76,15 @@ const ConnectedGUIProcessRenderer = (() => {
         }
       });
 
-      // Determine if the previous AppRuntime IDs are the same as the current
+      // Determine if the previous AppRuntime Ids are the same as the current
       // in order to prevent unnecessary render cycles
       // @see https://www.npmjs.com/package/equals
-      if (_renderIdx === 0 || !equals(_prevChildGUIProcessPIDs, childGUIProcessPIDs)) {
-        _prevChildGUIProcessPIDs = childGUIProcessPIDs;
+      if (_renderIdx === 0 || !equals(_prevChildGUIProcessPids, childGUIProcessPids)) {
+        _prevChildGUIProcessPids = childGUIProcessPids;
 
         return {
           childGUIProcesses,
-          childGUIProcessPIDs
+          childGUIProcessPids
         };
       }
     }

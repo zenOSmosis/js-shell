@@ -1,7 +1,7 @@
-import fetchSocketIDs from './fetchSocketIDs';
+import fetchSocketIds from './fetchSocketIds';
 import routeSocketPeerData from './routeSocketPeerData';
 
 export {
-  fetchSocketIDs,
+  fetchSocketIds,
   routeSocketPeerData
 };

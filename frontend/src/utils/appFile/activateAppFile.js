@@ -1,5 +1,5 @@
 import { ACTIVE_APP_FILE, OPENED_APP_FILES } from 'state/UniqueMultiAppFileLinkedState';
-import getOpenedAppFileIdxWithUUID from './getOpenedAppFileIdxWithUUID';
+import getOpenedAppFileIdxWithUuid from './getOpenedAppFileIdxWithUuid';
 
 /**
  * Applies active state to the given AppFile.
@@ -13,7 +13,7 @@ const activateAppFile = (uniqueMultiAppFileLinkedState, appFile) => {
     const { uuid } = appFile;
 
     // If file already is opened, switch to it in the editor
-    const openedFilePathIdx = getOpenedAppFileIdxWithUUID(uniqueMultiAppFileLinkedState, uuid);
+    const openedFilePathIdx = getOpenedAppFileIdxWithUuid(uniqueMultiAppFileLinkedState, uuid);
     if (openedFilePathIdx > -1) {
       uniqueMultiAppFileLinkedState.setState({
         [ACTIVE_APP_FILE]: openedAppFiles[openedFilePathIdx]

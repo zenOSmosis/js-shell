@@ -24,7 +24,7 @@ const createXTermSocketChannel = async (options = {}, ack) => {
 
     // Establish the virtual channel
     const socketChannel = new SocketChannel(socket);
-    const socketChannelID = socketChannel.getChannelID();
+    const socketChannelId = socketChannel.getChannelId();
 
     // Create shell process
     const ptyProcess = pty.spawn(shell, [], {
@@ -54,18 +54,18 @@ const createXTermSocketChannel = async (options = {}, ack) => {
 
     socketChannel.on(EVT_SOCKET_CHANNEL_BEFORE_DISCONNECT, () => {
       // TODO: Is there not a way to directly exit the ptyProcess?
-      const { _pid: ptyProcessPID } = ptyProcess;
-      process.kill(ptyProcessPID, 'SIGHUP');
+      const { _pid: ptyProcessPid } = ptyProcess;
+      process.kill(ptyProcessPid, 'SIGHUP');
     });
 
-    // console.log('socketChannelID', socketChannelID);
+    // console.log('socketChannelId', socketChannelId);
 
     // ptyProcess.write('ls\r');
     // ptyProcess.resize(100, 40);
     // ptyProcess.write('ls\r');
 
     return {
-      socketChannelID
+      socketChannelId
     };
 
     // return new Date();

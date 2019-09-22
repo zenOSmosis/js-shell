@@ -30,15 +30,15 @@ class MasterLinkedStateListener extends LinkedState {
     return mlscs.getLinkedStateInstancesByScopeName(linkedScopeName);
   }
 
-  getLinkedStateInstanceByUUID(uuid) {
+  getLinkedStateInstanceByUuid(uuid) {
     const linkedStateInstances = this.getLinkedStateInstances();
 
     const linkedState = linkedStateInstances.reduce((a, b) => {
-      if (a && a.getUUID() === uuid) {
+      if (a && a.getUuid() === uuid) {
         return a;
       }
 
-      if (b && b.getUUID() === uuid) {
+      if (b && b.getUuid() === uuid) {
         return b;
       }
 

@@ -14,7 +14,7 @@ export default class TerminalWindow extends Component {
     super(props);
 
     this.state = {
-      socketChannelID: null
+      socketChannelId: null
     };
 
     this._window = null;
@@ -26,12 +26,12 @@ export default class TerminalWindow extends Component {
 
   async _initSocketChannel() {
     try {
-      const { socketChannelID } = await socketAPIQuery(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL);
+      const { socketChannelId } = await socketAPIQuery(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL);
 
-      this._socketChannel = new SocketChannel(socket, socketChannelID);
+      this._socketChannel = new SocketChannel(socket, socketChannelId);
 
       this.setState({
-        socketChannelID
+        socketChannelId
       });
 
       this._connectTerminal();
@@ -73,7 +73,7 @@ export default class TerminalWindow extends Component {
 
   render() {
     const { ...propsRest } = this.props;
-    const { socketChannelID } = this.state;
+    const { socketChannelId } = this.state;
     return (
       <Window
         {...propsRest}
@@ -83,7 +83,7 @@ export default class TerminalWindow extends Component {
         ref={window => this._window = window}
       >
         {
-          socketChannelID &&
+          socketChannelId &&
           <XTerm
             // TODO: Enable support for resize / etc
 

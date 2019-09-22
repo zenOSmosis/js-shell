@@ -90,11 +90,11 @@ class ClientWorkerProcessController extends ClientWorkerProcessCommonCore {
    */
   async _init() {
     try {
-      console.debug('INITIALIZING WORKER PROCESS CONTROLLER', this.getPID());
+      console.debug('INITIALIZING WORKER PROCESS CONTROLLER', this.getPid());
 
       await this._initNativeWorker();
 
-      const pid = this.getPID();
+      const pid = this.getPid();
 
       // Important! It is IMPERATIVE to use Promise here, or the
       // serialized cmd won't be available for the worker 

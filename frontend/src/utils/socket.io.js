@@ -28,11 +28,11 @@ socket.disconnect = () => {
 socket.on(EVT_SOCKET_CONNECT, () => {
   console.debug('Socket.io connected', socket);
 
-  const {id: socketID} = socket;
+  const {id: socketId} = socket;
 
   socketLinkedState.setState({
     isConnected: true,
-    socketID
+    socketId
   });
 });
 
@@ -42,7 +42,7 @@ socket.on(EVT_SOCKET_DISCONNECT, () => {
 
   socketLinkedState.setState({
     isConnected: false,
-    socketID: null
+    socketId: null
   });
 });
 
@@ -65,14 +65,14 @@ socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
 /**
  * @return {string | null} Returns null if the local user is not online.
  */
-const getSocketID = () => {
-  const { socketID } = socketLinkedState.getState();
+const getSocketId = () => {
+  const { socketId } = socketLinkedState.getState();
 
-  return socketID;
+  return socketId;
 };
 
 export default socket;
 export {
   SocketLinkedState,
-  getSocketID
+  getSocketId
 };

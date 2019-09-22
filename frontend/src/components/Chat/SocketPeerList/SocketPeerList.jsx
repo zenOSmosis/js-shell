@@ -10,21 +10,21 @@ import { Avatar } from 'antd';
  */
 
 class SocketPeerList extends Component {
-  _handleSocketPeerClick(socketPeerID, evt) {
+  _handleSocketPeerClick(socketPeerId, evt) {
     const { onSocketPeerClick } = this.props;
 
     if (typeof onSocketPeerClick === 'function') {
-      onSocketPeerClick(socketPeerID, evt);
+      onSocketPeerClick(socketPeerId, evt);
     }
   }
 
   render() {
-    const { socketPeerIDs } = this.props;
+    const { socketPeerIds } = this.props;
 
     return (
       <Grid>
         {
-          socketPeerIDs.map((socketPeerID, idx) => {
+          socketPeerIds.map((socketPeerId, idx) => {
             return (
               <GridItem
                 key={idx}
@@ -32,7 +32,7 @@ class SocketPeerList extends Component {
                 // 
               >
                 <TransparentButton
-                  onClick={evt => this._handleSocketPeerClick(socketPeerID, evt)}
+                  onClick={evt => this._handleSocketPeerClick(socketPeerId, evt)}
                 >
                   <div>
                     <Avatar
@@ -42,7 +42,7 @@ class SocketPeerList extends Component {
                   </div>
                   
                   <div>
-                    {socketPeerID}
+                    {socketPeerId}
                   </div>
                 </TransparentButton>
               </GridItem>
@@ -56,17 +56,17 @@ class SocketPeerList extends Component {
     return (
       <Full>
         {
-          socketPeerIDs.length === 0 &&
+          socketPeerIds.length === 0 &&
           <Center>
             <span style={{fontStyle: 'italic'}}>No connected peers...</span>
           </Center>
         }
         {
           // TODO: Replace with <TileList />
-          socketPeerIDs.length > 0 &&
+          socketPeerIds.length > 0 &&
           <ul style={{ listStyle: 'none', width: '100%' }}>
             {
-              socketPeerIDs.map((peer, idx) => {
+              socketPeerIds.map((peer, idx) => {
                 return (
                   <li
                     key={idx}

@@ -5,7 +5,7 @@ import closeAppFile from './closeAppFile';
 import getActiveAppFile from './getActiveAppFile';
 import getActiveAppFilePath from './getActiveAppFilePath';
 import getOpenedAppFileIdxWithPath from './getOpenedAppFileIdxWithPath';
-import getOpenedAppFileIdxWithUUID from './getOpenedAppFileIdxWithUUID';
+import getOpenedAppFileIdxWithUuid from './getOpenedAppFileIdxWithUuid';
 import getOpenedAppFileWithPath from './getOpenedAppFileWithPath';
 import openAppFile from './openAppFile';
 import openNewAppFile from './openNewAppFile';
@@ -18,7 +18,7 @@ export {
   getActiveAppFile,
   getActiveAppFilePath,
   getOpenedAppFileIdxWithPath,
-  getOpenedAppFileIdxWithUUID,
+  getOpenedAppFileIdxWithUuid,
   getOpenedAppFileWithPath,
   openAppFile,
   openNewAppFile,
