@@ -60,24 +60,44 @@ const initClustWorkerAPIServer = (app, io) => {
 
     console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
-    io.on('connection', (socket) => {
-      console.log(`Socket.io Client connected with id: ${socket.id}`);
+    io.on('connection', async (socket) => {
+      try {
+        console.log(`Socket.io Client connected with id: ${socket.id}`);
 
-      // Initialize the Socket Routes with the socket
-      initSocketAPIRoutes(socket, io);
+        /*
+        // Prototype peer storage
+        const mongoClient = await mongoConnect();
+        const db = mongoClient.db();
 
-      // Emit to everyone we're connected
-      // TODO: Limit this to only namespaces the socket is connected to
-      // @see https://socket.io/docs/emit-cheatsheet/
-      socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
+        const collection = db.collection('peers');
+        const resp = await collection.insertOne({
+          socketID: socket.id,
+          connectionTime: new Date().toISOString()
+        });
 
-      socket.on('disconnect', () => {
-        // Emit to everyone we're disconnected
-        // TODO: Limit this to only namespaces the socket was connected to
-        socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
+        console.log('write resp', {
+          resp
+        });
+        */
 
-        console.log(`Socket.io Client disconnected with id: ${socket.id}`);
-      });
+        // Initialize the Socket Routes with the socket
+        initSocketAPIRoutes(socket, io);
+  
+        // Emit to everyone we're connected
+        // TODO: Limit this to only namespaces the socket is connected to
+        // @see https://socket.io/docs/emit-cheatsheet/
+        socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
+  
+        socket.on('disconnect', () => {
+          // Emit to everyone we're disconnected
+          // TODO: Limit this to only namespaces the socket was connected to
+          socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
+  
+          console.log(`Socket.io Client disconnected with id: ${socket.id}`);
+        });
+      } catch (exc) {
+        console.error(exc);
+      }
     });
 
     console.log(`Socket.io Server (Express / *:${HTTP_LISTEN_PORT}) started`);
