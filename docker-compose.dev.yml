@@ -48,7 +48,7 @@ services:
       BACKEND_REDIS_HOST: redis
       BACKEND_REDIS_PORT: 6379
     user: ${CURRENT_UID}
-    command: ["npm", "run", "start"]
+    command: ["npm", "run", "start:dev"]
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
       - NET_ADMIN # Only during development or special deployments
