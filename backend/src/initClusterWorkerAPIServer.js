@@ -15,7 +15,16 @@ import mongoConnect from 'utils/mongo/mongoClientConnect';
 import expressConnectMongo from 'connect-mongo';
 const MongoSessionStore = expressConnectMongo(session);
 
-const initClustWorkerAPIServer = (app, io) => {
+let _isInitStarted = false;
+
+const initClusterWorkerAPIServer = (app, io) => {
+  // Prevent trying to initialize more than once
+  if (_isInitStarted) {
+    throw new Error('CluserWorkerAPIServer is already init');
+  } else {
+    _isInitStarted = true;
+  }
+
   // Apply custom response headers
   app.all('*', (req, res, next) => {
     for (const [header, value] of Object.entries(EXPRESS_CUSTOM_RESPONSE_HEADERS)) {
@@ -138,4 +147,4 @@ const initClustWorkerAPIServer = (app, io) => {
   })();
 };
 
-export default initClustWorkerAPIServer;
+export default initClusterWorkerAPIServer;
