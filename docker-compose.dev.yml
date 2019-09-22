@@ -28,7 +28,7 @@ services:
     volumes:
       - ./docker_modules/dev-ssl-proxy:/app # Only during development
     environment:
-      - PROXY_ADDRESS=http://backend:3001 # Important, don't use quotations here, or it may break the template
+      PROXY_ADDRESS: http://backend:3001 # Important, don't use quotations here, or it may break the template
     ports:
       - 80:80
       - 443:443
@@ -36,40 +36,44 @@ services:
   backend:
     build: ./backend
     depends_on:
-      - backend_redis
+      - redis
+      - mongo
     volumes:
       # - ./backend:/shell/backend # Only during development
       - /tmp:/tmp # Only during development
       - ./:/shell # Only during development
     environment:
-      - NODE_ENV=development
-      - TERM=xterm # Enables interactive CLI environments
-      - BACKEND_REDIS_HOST=backend_redis
-      - BACKEND_REDIS_PORT=6379
-    networks:
-      - shell-core-service-network
+      NODE_ENV: development
+      TERM: xterm # Enables interactive CLI environments
+      BACKEND_REDIS_HOST: redis
+      BACKEND_REDIS_PORT: 6379
+    user: ${CURRENT_UID}
     command: ["npm", "run", "start"]
-    # Only during development or special deployments
-    # Note: Note: These options are ignored when deploying a stack in swarm mode with a (version 3) Compose file.
-    # @see https://docs.docker.com/compose/compose-file/
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
       - NET_ADMIN # Only during development or special deployments
-    expose:
-      - 3001
-    user: ${CURRENT_UID}
-  
-  # @see https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
-  backend_redis:
-    image: redis
-    expose:
-      - 6379
     networks:
       - shell-core-service-network
+    # Only during development or special deployments
+    # Note: Note: These options are ignored when deploying a stack in swarm mode with a (version 3) Compose file.
+    # @see https://docs.docker.com/compose/compose-file/
+    expose:
+      - 3001
+    
+  
+  # @see https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
+  redis:
+    image: redis
+    networks:
+      - shell-core-service-network
+    expose:
+      - 6379
 
   # Note: No direct network access to frontend; proxied through backend
   frontend:
     build: ./frontend
+    depends_on:
+      - backend
     volumes:
       # Backend is mapped w/ frontend because of shared object in utils/bind
       # jh: Not yet sure how this will work in production environment
@@ -87,6 +91,34 @@ services:
     expose:
       - 3000
     user: ${CURRENT_UID}
+  
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_SHELL_DB_NAME: shell
+      MONGO_SHELL_USERNAME: shellusername
+      MONGO_SHELL_PASSWORD: shellpassword
+    volumes:
+      - ./scripts/mongo.init:/docker-entrypoint-initdb.d
+    networks:
+      - shell-core-service-network
+    expose:
+      - 27017
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_SITE_BASEURL: /mongo-express
+    networks:
+      - shell-core-service-network
+    expose:
+      - 8081
 
   searx:
     build: ./docker_modules/searx

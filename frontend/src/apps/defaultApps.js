@@ -20,6 +20,7 @@ import './CalculatorApp';
 import './SourceCodeApp';
 // import './TextEditorApp';
 // import './A3DApp';
+import './MongoExpressApp';
 import './TerminalApp';
 // import './DocsApp';
 // import './SettingsApp';
