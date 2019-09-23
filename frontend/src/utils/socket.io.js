@@ -68,8 +68,18 @@ const getSocketId = () => {
   return socketId;
 };
 
+/**
+ * @return {boolean}
+ */
+const getIsConnected = () => {
+  const socketId = getSocketId();
+
+  return (socketId ? true : false);
+};
+
 export default socket;
 export {
   SocketLinkedState,
-  getSocketId
+  getSocketId,
+  getIsConnected
 };
