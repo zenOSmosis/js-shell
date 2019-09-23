@@ -51,7 +51,11 @@ const initClusterWorkerAPIServer = (app, io) => {
       resave: false,
       saveUninitialized: true,
       cookie: {
-        secure: false // TODO: Set to true if using secure session
+        secure: false // Intentionally not forcing weak integrity due to it not
+        // setting in development environment, and thus, may not work correctly
+        // in some staging environments.
+        // "This issue is officially referred to as Weak Integrity."
+        // @see https://en.wikipedia.org/wiki/Secure_cookie
       },
       store: new MongoSessionStore({
         clientPromise: mongoConnect()
