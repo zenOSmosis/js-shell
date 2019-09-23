@@ -12,7 +12,9 @@ import {
   HTTP_LISTEN_PORT
 } from './config';
 import mongoConnect from 'utils/mongo/mongoClientConnect';
+import { addSocketId, removeSocketId } from 'utils/mongo/collections/sockets';
 import expressConnectMongo from 'connect-mongo';
+
 const MongoSessionStore = expressConnectMongo(session);
 
 let _isInitStarted = false;
@@ -77,22 +79,9 @@ const initClusterWorkerAPIServer = (app, io) => {
       try {
         console.log(`Socket.io Client connected with id: ${socket.id}`);
 
-        /*
-        // Prototype peer storage
-        const mongoClient = await mongoConnect();
-        const db = mongoClient.db();
-
-        const collection = db.collection('peers');
-        const resp = await collection.insertOne({
-          socketId: socket.id,
-          connectionTime: new Date().toISOString()
-        });
-
-        console.log('write resp', {
-          resp
-        });
-        */
-
+        // Add socket to MongoDB sockets collection
+        await addSocketId(socket.id);
+  
         // Initialize the Socket Routes with the socket
         initSocketAPIRoutes(socket, io);
   
@@ -101,15 +90,22 @@ const initClusterWorkerAPIServer = (app, io) => {
         // @see https://socket.io/docs/emit-cheatsheet/
         socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
   
-        socket.on('disconnect', () => {
-          // Emit to everyone we're disconnected
-          // TODO: Limit this to only namespaces the socket was connected to
-          socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
-  
-          console.log(`Socket.io Client disconnected with id: ${socket.id}`);
+        socket.on('disconnect', async () => {
+          try {
+            // Emit to everyone we're disconnected
+            // TODO: Limit this to only namespaces the socket was connected to
+            socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
+
+            console.log(`Socket.io Client disconnected with id: ${socket.id}`);
+
+            // Remove socket from MongoDB sockets collection
+            await removeSocketId(socket.id);
+          } catch (exc) {
+            throw exc;
+          }
         });
       } catch (exc) {
-        console.error(exc);
+        throw exc;
       }
     });
 
