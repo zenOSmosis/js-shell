@@ -107,7 +107,7 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
 
     const { updatedState } = updatedStateWithMetadata;
 
-    this._sharedStates[linkedScopeName] = Object.assign(this._sharedStates[linkedScopeName], updatedState);
+    this._sharedStates[linkedScopeName] = Object.assign({}, this._sharedStates[linkedScopeName], updatedState);
 
     this.broadcast(linkedState, EVT_LINKED_STATE_UPDATE, updatedState);
 
