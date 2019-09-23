@@ -1,6 +1,11 @@
 import io from 'socket.io-client';
 import { SOCKET_IO_URL } from 'config';
-import SocketLinkedState from 'state/SocketLinkedState';
+import SocketLinkedState, {
+  STATE_SOCKET_ID,
+  STATE_IS_CONNECTED,
+  STATE_RECONNECT_ATTEMPT_NUMBER,
+  STATE_SOCKET_CONNECT_ERROR
+} from 'state/SocketLinkedState';
 import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
 
 const socketLinkedState = new SocketLinkedState();
@@ -28,8 +33,8 @@ socket.on(EVT_SOCKET_CONNECT, () => {
   const {id: socketId} = socket;
 
   socketLinkedState.setState({
-    isConnected: true,
-    socketId
+    [STATE_IS_CONNECTED]: true,
+    [STATE_SOCKET_ID]: socketId
   });
 });
 
@@ -38,24 +43,24 @@ socket.on(EVT_SOCKET_DISCONNECT, () => {
   console.debug('Socket.io disconnected', socket);
 
   socketLinkedState.setState({
-    isConnected: false,
-    socketId: null
+    [STATE_IS_CONNECTED]: false,
+    [STATE_SOCKET_ID]: null
   });
 });
 
 // Socket connect error
 socket.on(EVT_SOCKET_CONNECT_ERROR, (socketConnectError) => {
-  console.warn('Socket.io connect error', socketConnectError);
+  console.error('Socket.io connect error', socketConnectError);
 
   socketLinkedState.setState({
-    socketConnectError
+    [STATE_SOCKET_CONNECT_ERROR]: socketConnectError
   });
 });
 
 // Socket reconnect attempt
 socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
   socketLinkedState.setState({
-    reconnectAttemptNumber
+    [STATE_RECONNECT_ATTEMPT_NUMBER]: reconnectAttemptNumber
   });
 });
 
