@@ -52,7 +52,7 @@ services:
       MONGO_SHELL_DB_NAME: dev_shell
       MONGO_SHELL_USERNAME: shellusername
       MONGO_SHELL_PASSWORD: shellpassword
-    user: ${CURRENT_UID}
+    user: ${UGID}
     command: ["npm", "run", "start:dev"]
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
@@ -130,7 +130,7 @@ services:
     command: ["npm", "run", "start"]
     expose:
       - 3000
-    user: ${CURRENT_UID}
+    user: ${UGID}
    
   # coturn:
   #  build: ./docker_modules/docker-coturn
