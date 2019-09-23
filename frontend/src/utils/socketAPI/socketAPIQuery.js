@@ -5,7 +5,11 @@
 // TODO: Implement throwing of error if Socket disconnects before the response
 
 import socket from 'utils/socket.io';
-import { SOCKET_API_ROUTES } from 'shared/socketAPI/socketAPIRoutes';
+import * as enumeratedSocketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
+
+const socketAPIRoutes = Object.keys(enumeratedSocketAPIRoutes).map(route => { 
+  return enumeratedSocketAPIRoutes[route];
+});
 
 /**
  * A Promise-based wrapper around Socket.io's emit and ack() callback.
@@ -16,7 +20,7 @@ import { SOCKET_API_ROUTES } from 'shared/socketAPI/socketAPIRoutes';
  */
 const socketAPIQuery = (eventName, requestData = null) => {
   return new Promise((resolve, reject) => {
-    if (!SOCKET_API_ROUTES.includes(eventName)) {
+    if (!socketAPIRoutes.includes(eventName)) {
       throw new Error(`Unknown socketAPI route: ${eventName}`);
     }
 
