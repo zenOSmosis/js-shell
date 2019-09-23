@@ -11,9 +11,6 @@ export const EVT_SOCKET_DISCONNECT = 'disconnect';
 export const EVT_SOCKET_CONNECT_ERROR = 'connect_error';
 export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 
-// TODO: Wrap w/ LinkedState
-// TODO: Enable multiple connections
-
 const socket = io.connect(SOCKET_IO_URL);
 
 /**
