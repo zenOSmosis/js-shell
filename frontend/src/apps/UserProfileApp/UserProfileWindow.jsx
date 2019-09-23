@@ -4,7 +4,7 @@ import Scrollable from 'components/Scrollable';
 import Section from 'components/Section';
 import { Content, Layout } from 'components/Layout';
 import { Avatar } from 'antd';
-import { getLocalPeer, EVT_SHARED_UPDATE } from 'utils/p2p/Peer';
+import { getLocalPeer, EVT_SHARED_UPDATE } from 'utils/p2p/Peer.class';
 
 export default class UserProfileWindow extends Component {
   constructor(props) {

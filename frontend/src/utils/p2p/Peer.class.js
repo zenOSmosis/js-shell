@@ -1,4 +1,4 @@
-import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject';
+import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject.class';
 import { setItem, getItem } from '../encryptedLocalStorage';
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
@@ -61,7 +61,7 @@ class Peer extends P2PSharedObject {
       }
 
       this.on(EVT_ANY_UPDATE, () => {
-        this._writeToLocalStorage();   
+        this._writeToLocalStorage();
       });
 
       // Perform initial encrypted storage sync
@@ -69,6 +69,9 @@ class Peer extends P2PSharedObject {
     }
   }
 
+  /**
+   * Writes private and shared data to local storage.
+   */
   _writeToLocalStorage() {
     setItem(LOCAL_PEER_STORAGE_KEY, {
       privateData: this._privateData,

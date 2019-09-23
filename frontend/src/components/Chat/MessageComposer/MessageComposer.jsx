@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './MessageComposer.css';
-import ChatMessage from 'utils/p2p/ChatMessage';
+import ChatMessage from 'utils/p2p/ChatMessage.class';
 import { getSocketId } from 'utils/socket.io';
 import PropTypes from 'prop-types';
 

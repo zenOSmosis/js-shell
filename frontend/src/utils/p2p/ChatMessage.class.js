@@ -1,4 +1,4 @@
-import P2PSharedObject, { EVT_SHARED_UPDATE } from './P2PSharedObject';
+import P2PSharedObject, { EVT_SHARED_UPDATE } from './P2PSharedObject.class';
 import uuidv4 from 'uuidv4';
 import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socketPeer';
 import P2PLinkedState, {

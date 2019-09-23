@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from 'App';
 import { DOM_ROOT_ID, PROJECT_NAME } from 'config';
 import preventPullToRefresh from 'utils/preventPullToRefresh';
+import LocalUser from 'utils/localUser/LocalUser.class';
 import * as serviceWorker from 'utils/reactServiceWorker';
 
 import {
@@ -56,6 +57,8 @@ class ShellDesktop extends AppRuntime {
     this._socketLinkedState = null;
     this._areCommonEventsInit = false;
 
+    this._localUser = null;
+
     // Set the process flag
     _shellDesktopProcess = this;
   }
@@ -68,10 +71,11 @@ class ShellDesktop extends AppRuntime {
   async _init() {
     try {
       this._desktopLinkedState = new DesktopLinkedState();
-
       this._desktopLinkedState.setShellDesktopProcess(this);
 
       this._socketLinkedState = new SocketLinkedState();
+
+      this._localUser = new LocalUser();
 
       this.on(EVT_BEFORE_EXIT, () => {
         this._desktopLinkedState.destroy();
@@ -79,6 +83,9 @@ class ShellDesktop extends AppRuntime {
 
         this._socketLinkedState.destroy();
         this._socketLinkedState = null;
+
+        this._localUser.destroy();
+        this._localUser = null;
       });
 
       const rootEl = document.getElementById(DOM_ROOT_ID);

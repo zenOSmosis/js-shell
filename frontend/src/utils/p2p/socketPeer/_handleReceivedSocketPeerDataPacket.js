@@ -1,4 +1,4 @@
-import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage';
+import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage.class';
 
 /**
  * Internally called when the client has received a SocketPeerDataPacket from
