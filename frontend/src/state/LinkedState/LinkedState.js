@@ -157,7 +157,7 @@ class LinkedState extends EventEmitter {
       }
     }
 
-    mlscs.setSharedState(this, {
+    mlscs.setSharedStateWithMetadata(this, {
       updatedState,
       meta: {
         rawDate: new Date(),
@@ -191,7 +191,7 @@ class LinkedState extends EventEmitter {
   }
 
   /**
-   * Broadcasts an events across all shared linked state instances.
+   * Broadcasts an events across all LinkedState instances with same scope.
    * 
    * @param {string} eventName 
    * @param {any} args

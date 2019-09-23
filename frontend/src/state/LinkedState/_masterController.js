@@ -33,16 +33,29 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     }, 0);
   }
 
+  /**
+   * Registers the MasterLinkedStateListener class.
+   * 
+   * @param {MasterLinkedStateListener} MasterLinkedStateListener IMPORTANT!
+   * This is the class, not the instance.
+   */
   setMasterLinkedStateListenerClass(MasterLinkedStateListener) {
     if (this._masterLinkedStateListener) {
       throw new Error('MasterLinkedStateListener already set');
     }
+
     this._masterLinkedStateListener = new MasterLinkedStateListener();
     this._masterLinkedStateListener.setState({
       mlscs: this
     });
   }
 
+  /**
+   * Registers a LinkedState instance with the master controller.
+   * 
+   * @param {LinkedState} linkedState 
+   * @param {Object} initialDefaultState 
+   */
   addLinkedState(linkedState, initialDefaultState = {}) {
     if (!(linkedState instanceof LinkedState)) {
       throw new Error('linkedState must be an instance of LinkedState');
@@ -86,6 +99,12 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     }
   }
 
+  /**
+   * Unregisters the LinkedState instance with the given UUID from the master
+   * controller.
+   * 
+   * @param {string} uuid
+   */
   removeLinkedStateWithUuid(uuid) {
     this._linkedStateInstances = this._linkedStateInstances.filter((linkedState) => {
       const linkedStateUuid = linkedState.getUuid();
@@ -101,14 +120,25 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     }
   }
 
-  // TODO: Document differences between using this and broadcast; or privatize broadcast
-  setSharedState(linkedState, updatedStateWithMetadata) {
+  /**
+   * Internally called when a LinkedState instance is updating state.
+   * 
+   * @param {LinkedState} linkedState LinkedState instance.
+   * @param {Object} updatedStateWithMetadata TODO: Document this object
+   * typedef. 
+   */
+  setSharedStateWithMetadata(linkedState, updatedStateWithMetadata = {}) {
     const linkedScopeName = linkedState.getLinkedScopeName();
 
     const { updatedState } = updatedStateWithMetadata;
 
-    this._sharedStates[linkedScopeName] = Object.assign({}, this._sharedStates[linkedScopeName], updatedState);
+    // Full state
+    const nextFullSharedState = Object.assign({}, this._sharedStates[linkedScopeName], updatedState);
+    
+    // Set full shared state on each LinkedState instance within this scope
+    this._sharedStates[linkedScopeName] = nextFullSharedState;
 
+    // Broadcast updated state, not the updated keys
     this.broadcast(linkedState, EVT_LINKED_STATE_UPDATE, updatedState);
 
     if (this._masterLinkedStateListener) {
@@ -120,13 +150,25 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     }
   }
 
+  /**
+   * Retrieves the shared state for the given LinkedState's scope.
+   * 
+   * @param {LinkedState} linkedState
+   * @return {Object} 
+   */
   getSharedState(linkedState) {
     const linkedScopeName = linkedState.getLinkedScopeName();
 
     return this._sharedStates[linkedScopeName];
   }
 
-  // TODO: Enable this to only work within self and MasterLinkedStateListener contexts
+  /**
+   * Broadcasts an event across all LinkedState instances with the same scope.
+   * 
+   * @param {LinkedState} linkedState 
+   * @param {string} eventName 
+   * @param  {...any} args 
+   */
   broadcast(linkedState, eventName, ...args) {
     const linkedScopeName = linkedState.getLinkedScopeName();
 
@@ -137,10 +179,21 @@ export class MasterLinkedStateControllerSingleton extends EventEmitter {
     });
   }
 
+  /**
+   * Retrieves all LinkedState instances, regardless of scope.
+   * 
+   * @return {LinkedState[]}
+   */
   getLinkedStateInstances() {
     return this._linkedStateInstances;
   }
 
+  /**
+   * Retrieves all LinkedState instances with the given scope name.
+   * 
+   * @param {string} linkedScopeName
+   * @return {LinkedState[]}
+   */
   getLinkedStateInstancesByScopeName(linkedScopeName) {
     return this._linkedStateInstances.filter((testInstance) => {
       const testLinkedScopeName = testInstance.getLinkedScopeName();

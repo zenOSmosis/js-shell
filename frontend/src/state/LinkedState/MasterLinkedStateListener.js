@@ -16,20 +16,42 @@ class MasterLinkedStateListener extends LinkedState {
     });
   }
 
-  getLinkedStateInstances() {
-    return mlscs.getLinkedStateInstances();
-  }
-
+  /**
+   * Retrieves the number of all LinkedState instances, regardless of scope.
+   * 
+   * @return {number}
+   */
   getLinkedStateCount() {
     const { lenLinkedStateInstances } = this.getState();
 
     return lenLinkedStateInstances;
   }
 
+  /**
+   * Retrieves all LinkedState instances, regardless of scope.
+   * 
+   * @return {LinkedState[]}
+   */
+  getLinkedStateInstances() {
+    return mlscs.getLinkedStateInstances();
+  }
+
+  /**
+   * Retrieves all LinkedState instances with the given scope name.
+   * 
+   * @param {string} linkedScopeName
+   * @return {LinkedState[]}
+   */
   getLinkedStateInstancesByScopeName(linkedScopeName) {
     return mlscs.getLinkedStateInstancesByScopeName(linkedScopeName);
   }
 
+  /**
+   * Retrieves the LinkedState instance with the given UUID.
+   * 
+   * @param {string} uuid
+   * @return {LinkedState}
+   */
   getLinkedStateInstanceByUuid(uuid) {
     const linkedStateInstances = this.getLinkedStateInstances();
 
