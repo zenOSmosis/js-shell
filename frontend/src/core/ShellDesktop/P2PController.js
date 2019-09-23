@@ -1,5 +1,9 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
-import socket, { EVT_SOCKET_CONNECT } from 'utils/socket.io';
+import socket, {
+  EVT_SOCKET_CONNECT,
+  EVT_SOCKET_DISCONNECT,
+  getIsConnected as getIsSocketConnected
+} from 'utils/socket.io';
 import fetchSocketPeerIds from 'utils/p2p/socketPeer/fetchSocketPeerIds';
 import P2PLinkedState from 'state/P2PLinkedState';
 import {
@@ -10,7 +14,7 @@ import {
 import {
   _handleSocketPeerConnectionStatusUpdate,
   _handleReceivedSocketPeerDataPacket
- } from 'utils/p2p/socketPeer';
+} from 'utils/p2p/socketPeer';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -22,7 +26,6 @@ class P2PController extends ClientProcess {
     super(...args);
 
     this._p2pLinkedState = null;
-    this._hasInitialSocketPeerSync = false;
   };
 
   async _init() {
@@ -42,10 +45,12 @@ class P2PController extends ClientProcess {
       });
 
       console.debug('Initializing Socket.io peer connections');
-      await this._initSocketIOServices();
+      this._initSocketIOServices();
 
+      /*
       console.debug('Initialzing WebRTC services');
-      await this._initWebRTCServices();
+      this._initWebRTCServices();
+      */
 
       await super._init();
 
@@ -54,39 +59,30 @@ class P2PController extends ClientProcess {
     }
   }
 
-  async _initSocketIOServices() {
-    try {
-      // TODO: Sync socket peer Ids on each connect
-      socket.on(EVT_SOCKET_CONNECT, async () => {
-        try {
-          await this.syncSocketPeerIds();
-        } catch (exc) {
-          throw exc;
-        }
-      });
+  _initSocketIOServices() {
+    socket.on(EVT_SOCKET_CONNECT, this._syncSocketPeerIds);
+    socket.on(EVT_SOCKET_DISCONNECT, this._syncSocketPeerIds);
+    socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
+    socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+    socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
 
-      socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
-      socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
-      socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
+    this.on(EVT_BEFORE_EXIT, () => {
+      socket.off(EVT_SOCKET_CONNECT, this._syncSocketPeerIds);
+      socket.off(EVT_SOCKET_DISCONNECT, this._syncSocketPeerIds);
+      socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleRemoteSocketPeerConnect);
+      socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+      socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
+    });
 
-      this.on(EVT_BEFORE_EXIT, () => {
-        socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
-        socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
-        socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
-      });
-
-      // Perform initial sync
-      // Post init; _init() has already finished when this starts
-      this.setImmediate(async () => {
-        try {
-          await this.syncSocketPeerIds();
-        } catch (exc) {
-          throw exc;
-        }
-      });
-    } catch (exc) {
-      throw exc;
-    }
+    // Perform initial sync
+    // Post init; _init() has already finished when this starts
+    this.setImmediate(async () => {
+      try {
+        await this._syncSocketPeerIds();
+      } catch (exc) {
+        throw exc;
+      }
+    });
   }
 
   /**
@@ -94,17 +90,14 @@ class P2PController extends ClientProcess {
    * 
    * @return {Promise<void>}
    */
-  async syncSocketPeerIds(asInitial = true) {
+  _syncSocketPeerIds = async () => {
     try {
-      if (!this._hasInitialSocketPeerSync) {
-        this._hasInitialSocketPeerSync = true;
-      } else if (asInitial) {
-        console.debug('Skipping second "initial" syncSocketPeerId()');
-        return;
+      let socketPeerIds = [];
+
+      if (getIsSocketConnected()) {
+        socketPeerIds = await fetchSocketPeerIds();
       }
 
-      const socketPeerIds = await fetchSocketPeerIds();
-          
       // Sync socketPeerIds with P2PLinkedState
       this._p2pLinkedState.setSocketPeerIds(socketPeerIds);
     } catch (exc) {
@@ -138,13 +131,11 @@ class P2PController extends ClientProcess {
     _handleReceivedSocketPeerDataPacket(dataPacket);
   };
 
-  async _initWebRTCServices() {
-    try {
-      console.warn('TODO: Handle WebRTC services init');
-    } catch (exc) {
-      throw exc;
-    }
+  /*
+  _initWebRTCServices() {
+    console.warn('TODO: Handle WebRTC services init');
   }
+  */
 }
 
 export default P2PController;
