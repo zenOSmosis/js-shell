@@ -327,7 +327,7 @@ class ChatMessage extends P2PSharedObject {
    * @param {string} socketPeerId 
    */
   addReadBySocketPeerId(socketPeerId) {
-    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IdS]: readBySocketPeerIds } = this._privateData;
+    const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readBySocketPeerIds } = this._privateData;
 
     readBySocketPeerIds.push(socketPeerId);
 
