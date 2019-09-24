@@ -15,6 +15,7 @@ export const SOCKET_API_ROUTE_FETCH_NODE_ENV = 'api/node/fetchNodeEnv';
 export const SOCKET_API_ROUTE_FETCH_NODE_UPTIME = 'api/node/fetchNodeUptime';
 
 // p2p
+export const SOCKET_API_ROUTE_FETCH_CONNECTED_USERS = 'api/p2p/fetchConnectedUsers';
 export const SOCKET_API_ROUTE_FETCH_SOCKET_IDS = 'api/p2p/fetchSocketIds';
 export const SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA = 'api/p2p/routeSocketPeerData';
 

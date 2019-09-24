@@ -27,8 +27,6 @@ const initClusterWorkerAPIServer = (app, io) => {
     _isInitStarted = true;
   }
 
-  _setIO(io);
-
   // Apply custom response headers
   app.all('*', (req, res, next) => {
     for (const [header, value] of Object.entries(EXPRESS_CUSTOM_RESPONSE_HEADERS)) {
@@ -73,7 +71,8 @@ const initClusterWorkerAPIServer = (app, io) => {
 
   // Socket.io
   (() => {
-    // TODO: Include any specific URL routes in log output here
+    // Set the Socket.io variable so that other scripts can use it
+    _setIO(io);
 
     console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
@@ -81,6 +80,7 @@ const initClusterWorkerAPIServer = (app, io) => {
       console.log(`Socket.io Client connected with id: ${socket.id}`);
 
       // Initialize the Socket Routes with the socket
+      // TODO: Include any specific URL routes in log output here
       initSocketAPIRoutes(socket, io);
 
       // Emit to everyone we're connected

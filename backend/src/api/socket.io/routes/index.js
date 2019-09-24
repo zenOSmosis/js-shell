@@ -20,6 +20,7 @@ import {
   SOCKET_API_ROUTE_FETCH_NODE_UPTIME,
 
   // p2p
+  SOCKET_API_ROUTE_FETCH_CONNECTED_USERS,
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
   SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
 
@@ -55,6 +56,7 @@ import {
 } from './git';
 import { fetchNodeEnv, fetchNodeUptime } from './node';
 import {
+  fetchConnectedUsers as p2pFetchConnectedUsers,
   fetchSocketIds as p2pFetchSocketIds,
   routeSocketPeerData as p2pRouteSocketPeerData
 } from './p2p';
@@ -95,7 +97,10 @@ const initSocketAPIRoutes = (socket, io) => {
   socket.on(SOCKET_API_ROUTE_FETCH_NODE_UPTIME, fetchNodeUptime);
 
   // p2p
-  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS,  p2pFetchSocketIds);
+  socket.on(SOCKET_API_ROUTE_FETCH_CONNECTED_USERS, (options = {}, ack) => {
+    p2pFetchConnectedUsers(socket, ack);
+  });
+  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2pFetchSocketIds);
   socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
     p2pRouteSocketPeerData({
       socket,

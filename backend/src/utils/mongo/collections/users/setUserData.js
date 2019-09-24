@@ -3,7 +3,7 @@ import {
   MONGO_DB_USERS_FIELD_USER_ID,
   MONGO_DB_USERS_FIELD_UPDATE_TIME
 } from './fields';
-import changeCase from 'change-case';
+import { objPropsCamelCaseToSnakeCase } from '../../converters';
 
 /**
  * @param {MongoShellUserData} mongoShellUserData 
@@ -18,13 +18,7 @@ const setUserData = async (userData, socket = null) => {
       throw new Error('userId must be specified when setting user data');
     }
 
-    // Convert userData to snake_case
-    const writeUserData = {};
-    Object.keys(userData).forEach((clientKey) => {
-      const convertedKey = changeCase.snakeCase(clientKey);
-
-      writeUserData[convertedKey] = userData[clientKey];
-    });
+    const writeUserData = objPropsCamelCaseToSnakeCase(userData);
 
     await usersCollection.updateOne({
       [MONGO_DB_USERS_FIELD_USER_ID]: userId
