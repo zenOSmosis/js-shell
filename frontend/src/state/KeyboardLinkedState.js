@@ -25,7 +25,7 @@ class KeyboardLinkedState extends LinkedState {
     }, {
       actions: {
         [ACTION_HANDLE_KEY_UP]: () => {
-          const keys = this._initialDefaultKeys;
+          const keys = this.getKeys();
 
           const updatedState = {};
           for (let i = 0; i < keys.length; i++) {

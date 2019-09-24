@@ -32,6 +32,11 @@ class LinkedState extends EventEmitter {
   constructor(linkedScopeName = DEFAULT_LINKED_SCOPE_NAME, initialDefaultState, options = { actions: {} }) {
     super();
 
+    // Prevent new properties from being added, and make all existing
+    // properties as non-configurable
+    Object.seal(initialDefaultState);
+    this._keys = Object.keys(initialDefaultState);
+
     // Whether this is the original instance in the collective scope
     // LinkedState's share the same "scope" across multiple instances
     this._isScopeOriginalInstance = null; // Set to boolean later
@@ -43,19 +48,18 @@ class LinkedState extends EventEmitter {
 
     this._linkedScopeName = linkedScopeName;
 
-    // Important! Initial state is kept as a clone so it isn't altered
-    // TODO: Move this handling to the master controller
-    this._initialDefaultState = Object.freeze({
-      ...{}, 
-      ...initialDefaultState
-    });
-
     this._options = options;
 
-    // TODO: Move this handling to the master controller
-    this._initialDefaultKeys = Object.keys(this._initialDefaultState);
-
     mlscs.addLinkedState(this, initialDefaultState);
+  }
+
+  /**
+   * Retrieves the state property names.
+   * 
+   * @return {string[]}
+   */
+  getKeys() {
+    return this._keys;
   }
 
   /**
@@ -150,13 +154,6 @@ class LinkedState extends EventEmitter {
    * present in the initial state, an error will be thrown.
    */
   setState(updatedState = {}, onSet = null) {
-    // TODO: Move this handling to the master controller
-    for (let updatedKey of Object.keys(updatedState)) {
-      if (this._initialDefaultKeys.indexOf(updatedKey) === -1) {
-        throw new Error(`Updated key "${updatedKey}" is not present in initial keys`);
-      }
-    }
-
     mlscs.setSharedStateWithMetadata(this, {
       updatedState,
       meta: {
@@ -198,15 +195,6 @@ class LinkedState extends EventEmitter {
    */
   broadcast(eventName, ...args) {
     mlscs.broadcast(this, eventName, ...args);
-  }
-
-  /**
-   * Resets the state to the initial default state.
-   */
-  reset() {
-    console.error(this._initialDefaultState);
-
-    this.setState(this._initialDefaultState);
   }
 
   /**

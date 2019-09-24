@@ -36,9 +36,6 @@ class P2PController extends ClientProcess {
       this._p2pLinkedState = new P2PLinkedState();
 
       this.on(EVT_BEFORE_EXIT, () => {
-        // Reset so that any UI views / etc. don't show connected peers
-        this._p2pLinkedState.reset();
-
         // Unlink P2PLinkedState
         this._p2pLinkedState.destroy();
         this._p2pLinkedState = null;
