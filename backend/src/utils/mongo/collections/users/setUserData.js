@@ -8,7 +8,7 @@ import changeCase from 'change-case';
 /**
  * @param {MongoShellUserData} mongoShellUserData 
  */
-const setUserData = async (userData) => {
+const setUserData = async (userData, socket = null) => {
   try {
     const usersCollection = await fetchUsersCollection();
 
@@ -32,6 +32,10 @@ const setUserData = async (userData) => {
       $set: {
         ...writeUserData,
         [MONGO_DB_USERS_FIELD_UPDATE_TIME]: new Date().toISOString()
+      },
+
+      $addToSet: {
+        socket_ids: socket.id
       }
     }, {
       upsert: true // On non-exist, create

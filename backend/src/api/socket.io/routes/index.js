@@ -127,7 +127,9 @@ const initSocketAPIRoutes = (socket, io) => {
   // systemTime
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
 
-  socket.on(SOCKET_API_ROUTE_SET_USER_DATA, setUserData);
+  socket.on(SOCKET_API_ROUTE_SET_USER_DATA, (userData = {}, ack) => {
+    setUserData(userData, socket, ack);
+  });
 
   // webSearch
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);

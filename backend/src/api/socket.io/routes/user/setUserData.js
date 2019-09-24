@@ -4,10 +4,10 @@ import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 
 import dbSetUserData from 'utils/mongo/collections/users/setUserData';
 
-const setUserData = async (userData, ack) => {
+const setUserData = async (userData, socket, ack) => {
   return await handleSocketAPIRoute(async () => {
     try {
-      await dbSetUserData(userData);
+      await dbSetUserData(userData, socket);
     } catch (exc) {
       throw exc;
     }
