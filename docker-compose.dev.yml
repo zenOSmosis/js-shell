@@ -64,7 +64,6 @@ services:
     # @see https://docs.docker.com/compose/compose-file/
     expose:
       - 3001
-    
   
   # @see https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
   redis:
