@@ -95,12 +95,7 @@ const initSocketAPIRoutes = (socket, io) => {
   socket.on(SOCKET_API_ROUTE_FETCH_NODE_UPTIME, fetchNodeUptime);
 
   // p2p
-  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, (options = {}, ack) => {
-    // Add io to existing options
-    options = { ...(options || {}), ...{ io } };
-
-    p2pFetchSocketIds(options, ack);
-  });
+  socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS,  p2pFetchSocketIds);
   socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
     p2pRouteSocketPeerData({
       socket,
