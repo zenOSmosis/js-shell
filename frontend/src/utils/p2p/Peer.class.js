@@ -80,8 +80,7 @@ class Peer extends P2PSharedObject {
 
       // Write to remote storage
       await socketAPIQuery(SOCKET_API_ROUTE_SET_USER_DATA, {
-        privateData,
-        sharedData
+        ...sharedData
       });
     } catch (exc) {
       throw exc;
