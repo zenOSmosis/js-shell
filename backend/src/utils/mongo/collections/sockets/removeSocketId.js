@@ -6,9 +6,9 @@ import {
 const removeSocketId = async (socketId) => {
   try {
     const socketCollection = await fetchSocketsCollection();
-    await socketCollection.remove({
+    await socketCollection.deleteOne({
       [MONGO_DB_SOCKETS_FIELD_SOCKET_ID]: socketId
-    }, true); // Second argument specifies remove just one
+    });
   } catch (exc) {
     throw exc;
   }
