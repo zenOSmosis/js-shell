@@ -2,6 +2,8 @@ import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedO
 import { setItem, getItem } from '../encryptedLocalStorage';
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
+import { socketAPIQuery } from '../socketAPI';
+import { SOCKET_API_ROUTE_SET_USER_DATA } from '../../shared/socketAPI/socketAPIRoutes';
 
 export { EVT_SHARED_UPDATE };
 
@@ -9,13 +11,12 @@ let _localPeer = null;
 
 export const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
 
-export const PRIVATE_DATA_PEER_ID = 'peerId';
+export const PRIVATE_DATA_PEER_ID = 'userId';
 export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer';
 
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
-
 
 /**
  * @see https://www.npmjs.com/package/bowser
@@ -61,22 +62,36 @@ class Peer extends P2PSharedObject {
       }
 
       this.on(EVT_ANY_UPDATE, () => {
-        this._writeToLocalStorage();
+        this._write();
       });
 
       // Perform initial encrypted storage sync
-      this._writeToLocalStorage();
+      this._write();
     }
   }
 
   /**
    * Writes private and shared data to local storage.
    */
-  _writeToLocalStorage() {
-    setItem(LOCAL_PEER_STORAGE_KEY, {
-      privateData: this._privateData,
-      sharedData: this._sharedData
-    });
+  async _write() {
+    try {
+      // TODO: Block this if not the local peer
+
+      const privateData = this._privateData;
+      const sharedData = this._sharedData;
+
+      setItem(LOCAL_PEER_STORAGE_KEY, {
+        privateData,
+        sharedData
+      });
+
+      await socketAPIQuery(SOCKET_API_ROUTE_SET_USER_DATA, {
+        privateData,
+        sharedData
+      });
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   setNickname(nickname) {

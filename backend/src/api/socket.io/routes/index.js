@@ -36,7 +36,7 @@ import {
   SOCKET_API_ROUTE_FETCH_SYSTEM_TIME,
 
   // user
-  // SOCKET_API_ROUTE_SET_USER_DATA,
+  SOCKET_API_ROUTE_SET_USER_DATA,
   // SOCKET_API_ROUTE_GET_USER_DATA,
 
   // webSearch
@@ -62,6 +62,9 @@ import ping from './ping';
 import { createXTermSocketChannel } from './socketChannel';
 import socketFS from './socketFS';
 import systemTime from './systemTime';
+import {
+  setUserData
+} from './user';
 import webSearch from './webSearch';
 
 /**
@@ -123,6 +126,8 @@ const initSocketAPIRoutes = (socket, io) => {
 
   // systemTime
   socket.on(SOCKET_API_ROUTE_FETCH_SYSTEM_TIME, systemTime);
+
+  socket.on(SOCKET_API_ROUTE_SET_USER_DATA, setUserData);
 
   // webSearch
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
