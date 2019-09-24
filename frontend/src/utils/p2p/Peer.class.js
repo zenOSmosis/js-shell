@@ -11,12 +11,12 @@ let _localPeer = null;
 
 export const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
 
-export const PRIVATE_DATA_PEER_ID = 'userId';
-export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer';
-
+export const SHARED_DATA_KEY_PEER_ID = 'userId';
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
+
+export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer'
 
 /**
  * @see https://www.npmjs.com/package/bowser
@@ -28,23 +28,19 @@ const _getLocalSystemInfo = () => {
 }
 
 class Peer extends P2PSharedObject {
-  constructor(isLocalPeer) {
-    if (isLocalPeer === undefined) {
-      throw new Error('isLocalPeer is not defined');
-    }
-
-    const initialPrivateData = {
-      [PRIVATE_DATA_PEER_ID]: generateId(),
-      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalPeer
-    };
-
+  constructor(isLocalPeer = false) {
     const initialSharedData = {
+      [SHARED_DATA_KEY_PEER_ID]: (isLocalPeer ? generateId() : null),
       [SHARED_DATA_KEY_SYSTEM_INFO]: _getLocalSystemInfo(),
       [SHARED_DATA_KEY_NICKNAME]: null,
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
     };
+    
+    const initialPrivateData = {
+      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalPeer
+    };
 
-    super(initialPrivateData, initialSharedData);
+    super(initialSharedData, initialPrivateData);
 
     if (isLocalPeer && _localPeer) {
       throw new Error('_localPeer is already set');
@@ -70,21 +66,19 @@ class Peer extends P2PSharedObject {
     }
   }
 
-  /**
-   * Writes private and shared data to local storage.
-   */
+  // TODO: Block this if not the local peer
   async _write() {
     try {
-      // TODO: Block this if not the local peer
-
       const privateData = this._privateData;
       const sharedData = this._sharedData;
 
+      // Write to local storage
       setItem(LOCAL_PEER_STORAGE_KEY, {
         privateData,
         sharedData
       });
 
+      // Write to remote storage
       await socketAPIQuery(SOCKET_API_ROUTE_SET_USER_DATA, {
         privateData,
         sharedData
@@ -94,12 +88,33 @@ class Peer extends P2PSharedObject {
     }
   }
 
+  /**
+   * @return {string}
+   */
+  getPeerId() {
+    const { [SHARED_DATA_KEY_PEER_ID]: peerId } = this._sharedData;
+
+    return peerId;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getIsLocalUser() {
+    const { [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalUser } = this._privateData;
+
+    return isLocalUser;
+  }
+
   setNickname(nickname) {
     this.setSharedData({
       [SHARED_DATA_KEY_NICKNAME]: nickname
     });
   }
 
+  /**
+   * @return {string}
+   */
   getNickname() {
     const { [SHARED_DATA_KEY_NICKNAME]: nickname } = this._sharedData;
 
@@ -112,6 +127,9 @@ class Peer extends P2PSharedObject {
     });
   }
 
+  /**
+   * @return {string}
+   */
   getAboutDescription() {
     const { [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: aboutDescription } = this._sharedData;
 

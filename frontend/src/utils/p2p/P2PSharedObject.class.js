@@ -5,11 +5,11 @@ export const EVT_PRIVATE_UPDATE = 'privateUpdate';
 export const EVT_ANY_UPDATE = 'anyUpdate';
 
 class P2PSharedObject extends EventEmitter {
-  constructor(initialPrivateData, initialSharedData = {}) {
+  constructor(initialSharedData, initialPrivateData = {}) {
     super();
 
-    this._privateData = initialPrivateData;
     this._sharedData = initialSharedData;
+    this._privateData = initialPrivateData;
   }
 
   /**

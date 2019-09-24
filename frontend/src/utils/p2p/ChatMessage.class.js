@@ -74,14 +74,6 @@ class ChatMessage extends P2PSharedObject {
   };
 
   constructor(isFromLocal, fromSocketPeerId, toSocketPeerId, existingSharedData = null) {
-    const initialPrivateData = {
-      [PRIVATE_DATA_KEY_IS_FROM_LOCAL]: isFromLocal,
-      [PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS]: false,
-      [PRIVATE_DATA_KEY_IS_SENT]: false, // TODO: Dynamically determine when constructed
-      [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: [],
-      [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: []
-    };
-
     const initialSharedData = existingSharedData || {
       [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: fromSocketPeerId,
       [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toSocketPeerId,
@@ -91,7 +83,15 @@ class ChatMessage extends P2PSharedObject {
       [SHARED_DATA_KEY_IS_FINALIZED]: false
     };
 
-    super(initialPrivateData, initialSharedData);
+    const initialPrivateData = {
+      [PRIVATE_DATA_KEY_IS_FROM_LOCAL]: isFromLocal,
+      [PRIVATE_DATA_KEY_IS_SENDING_IN_PROGRESS]: false,
+      [PRIVATE_DATA_KEY_IS_SENT]: false, // TODO: Dynamically determine when constructed
+      [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: [],
+      [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: []
+    };
+
+    super(initialSharedData, initialPrivateData);
 
     // Non-serializable; direct class property
     this._isTypingTimeout = null;
