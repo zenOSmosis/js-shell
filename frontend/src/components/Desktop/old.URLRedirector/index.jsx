@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState'; 
+import React, { Component, Fragment } from 'react';
+import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import { withRouter } from 'react-router-dom';
 
 let _isInstantiated = false;
@@ -23,7 +23,7 @@ class URLRedirector extends Component {
   }
 
   componentDidUpdate() {
-    const {redirectLocation} = this.props;
+    const { redirectLocation } = this.props;
     if (redirectLocation && (redirectLocation !== this._redirectLocation)) {
       this.props.history.push(redirectLocation);
       this._redirectLocation = redirectLocation;
@@ -32,16 +32,16 @@ class URLRedirector extends Component {
 
   render() {
     return (
-      <div style={{display: 'none'}}></div>
-    )
+      <Fragment></Fragment>
+    );
   }
 }
 
 /**
- * Binds URLRedirectory w/ DesktopLinkedState.
+ * Binds URLRedirector w/ DesktopLinkedState.
  */
 export default withRouter(hocConnect(URLRedirector, DesktopLinkedState, (updatedState) => {
-  const {redirectLocation} = updatedState;
+  const { redirectLocation } = updatedState;
 
   if (redirectLocation) {
     return {
@@ -49,4 +49,3 @@ export default withRouter(hocConnect(URLRedirector, DesktopLinkedState, (updated
     };
   }
 }));
-
