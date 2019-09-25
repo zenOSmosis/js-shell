@@ -1,5 +1,4 @@
 import fetchUsersCollection from './fetchUsersCollection';
-import { objPropsSnakeCaseToCamelCase } from '../../converters';
 
 /**
  * Retrieves the user with the given Socket.io id.
@@ -26,11 +25,8 @@ const fetchUserIdWithSocketId = async (socketId) => {
     if (!objUserId) {
       return;
     }
-
-    // Convert snake_case to camelCase
-    objUserId = objPropsSnakeCaseToCamelCase(objUserId);
     
-    const { userId } = objUserId;
+    const { user_id: userId } = objUserId;
     return userId;
   } catch (exc) {
     throw exc;
