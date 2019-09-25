@@ -19,9 +19,6 @@ export const SOCKET_API_ROUTE_FETCH_CONNECTED_USERS = 'api/p2p/fetchConnectedUse
 export const SOCKET_API_ROUTE_FETCH_SOCKET_IDS = 'api/p2p/fetchSocketIds';
 export const SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA = 'api/p2p/routeSocketPeerData';
 
-// ping
-export const SOCKET_API_ROUTE_PING = 'api/ping'; // ping is a reserved Socket.io word
-
 // socketChannel
 export const SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL = 'api/socketChannel/createXTermSocketChannel';
 

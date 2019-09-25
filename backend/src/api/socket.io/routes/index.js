@@ -24,9 +24,6 @@ import {
   SOCKET_API_ROUTE_FETCH_SOCKET_IDS,
   SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA,
 
-  // ping
-  SOCKET_API_ROUTE_PING, // ping is a reserved Socket.io word
-
   // socketChannel
   SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL,
 
@@ -60,7 +57,6 @@ import {
   fetchSocketIds as p2pFetchSocketIds,
   routeSocketPeerData as p2pRouteSocketPeerData
 } from './p2p';
-import ping from './ping';
 import { createXTermSocketChannel } from './socketChannel';
 import socketFS from './socketFS';
 import systemTime from './systemTime';
@@ -107,9 +103,6 @@ const initSocketAPIRoutes = (socket, io) => {
       socketPeerDataPacket
     }, ack);
   });
-
-  // ping
-  socket.on(SOCKET_API_ROUTE_PING, ping);
 
   // socketChannel
   socket.on(SOCKET_API_ROUTE_CREATE_XTERM_SOCKET_CHANNEL, (options = {}, ack) => {
