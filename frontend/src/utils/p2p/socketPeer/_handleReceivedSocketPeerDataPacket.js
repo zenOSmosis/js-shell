@@ -28,12 +28,12 @@ const _handleReceivedSocketPeerDataPacket = (dataPacket) => {
   // Handle received receipt, if requested
   if (isReceivedReceiptRequested) {
     const {
-      fromSocketPeerId: toSocketPeerId,
+      fromPeerId: toPeerId,
       packetUuid: originPacketUuid
     } = receivedData;
 
     // TODO: Create received receipt and return it
-    const receivedReceiptDataPacket = createSocketPeerReceivedReceiptDataPacket(toSocketPeerId, originPacketUuid);
+    const receivedReceiptDataPacket = createSocketPeerReceivedReceiptDataPacket(toPeerId, originPacketUuid);
 
     console.debug('created received receipt data packet', receivedReceiptDataPacket);
 

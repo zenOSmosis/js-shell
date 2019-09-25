@@ -4,7 +4,7 @@ import httpProxy from 'http-proxy';
 import requestIp from 'request-ip';
 import expressAPIRoutes from './api/express/routes';
 import { initSocketAPIRoutes } from './api/socket.io/routes';
-import { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } from './api/socket.io/events';
+import { SOCKET_API_EVT_PEER_ID_CONNECT, SOCKET_API_EVT_PEER_ID_DISCONNECT } from './api/socket.io/events';
 import {
   EXPRESS_CUSTOM_RESPONSE_HEADERS,
   PATH_PUBLIC,
@@ -14,6 +14,7 @@ import {
 import mongoConnect from 'utils/mongo/mongoClientConnect';
 import expressConnectMongo from 'connect-mongo';
 import _setIO from 'utils/socketIO/_setIO';
+import { setUserData } from './utils/mongo/collections/users';
 
 const MongoSessionStore = expressConnectMongo(session);
 
@@ -76,26 +77,67 @@ const initClusterWorkerAPIServer = (app, io) => {
 
     console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
 
-    io.on('connection', (socket) => {
-      console.log(`Socket.io Client connected with id: ${socket.id}`);
+    io.on('connection', async (socket) => {
+      try {
+        const userId = await (async () => {
+          try {
+            const rawHeader = socket.handshake.headers['x-shell-authenticate'];
 
-      // Initialize the Socket Routes with the socket
-      // TODO: Include any specific URL routes in log output here
-      initSocketAPIRoutes(socket, io);
+            console.log(rawHeader);
+  
+            if (!rawHeader) {
+              throw new Error('No x-auth header present');
+            }
+  
+            const xAuth = JSON.parse(rawHeader);
+            const { userId } = xAuth;
 
-      // Emit to everyone we're connected
-      // TODO: Limit this to only namespaces the socket is connected to
-      // @see https://socket.io/docs/emit-cheatsheet/
-      socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
+            if (!userId) {
+              throw new Error('No userId present');
+            }
 
-      // Handle socket disconnect
-      socket.on('disconnect', () => {
-        // Emit to everyone we're disconnected
-        // TODO: Limit this to only namespaces the socket was connected to
-        socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
+            await setUserData({
+              userId
+            }, socket);
 
-        console.log(`Socket.io Client disconnected with id: ${socket.id}`);
-      });
+            return userId;
+          } catch (exc) {
+            throw exc;
+          }
+        })();
+
+        // Initialize the Socket Routes with the socket
+        // TODO: Include any specific URL routes in log output here
+        initSocketAPIRoutes(socket, io);
+
+        console.log(`Socket.io Client connected\n`, {
+          socketId: socket.id,
+          userId
+        });
+
+        // Emit to everyone we're connected
+        // TODO: Limit this to only namespaces the socket is connected to
+        // @see https://socket.io/docs/emit-cheatsheet/
+        socket.broadcast.emit(SOCKET_API_EVT_PEER_ID_CONNECT, userId);
+
+        // Handle socket disconnect
+        socket.on('disconnect', async () => {
+          try {
+            // Emit to everyone we're disconnected
+            // TODO: Limit this to only namespaces the socket was connected to
+            socket.broadcast.emit(SOCKET_API_EVT_PEER_ID_DISCONNECT, userId);
+
+            console.log(`Socket.io Client disconnected\n`, {
+              socketId: socket.id,
+              userId
+            });
+          } catch (exc) {
+            throw exc;
+          }
+        });
+      } catch (exc) {
+        throw exc;
+      }
     });
 
     console.log(`Socket.io Server (Express / *:${HTTP_LISTEN_PORT}) started`);

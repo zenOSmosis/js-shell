@@ -10,29 +10,29 @@ import { Avatar } from 'antd';
  */
 
 class SocketPeerList extends Component {
-  _handleSocketPeerClick(socketPeerId, evt) {
-    const { onSocketPeerClick } = this.props;
+  selectPeer(peer) {
+    const { onPeerSelect } = this.props;
 
-    if (typeof onSocketPeerClick === 'function') {
-      onSocketPeerClick(socketPeerId, evt);
+    if (typeof onPeerSelect === 'function') {
+      onPeerSelect(peer);
     }
   }
 
   render() {
-    const { socketPeerIds } = this.props;
+    const { connectedPeers } = this.props;
 
     return (
       <Grid>
         {
-          socketPeerIds.map((socketPeerId, idx) => {
+          connectedPeers.map((peer, idx) => {
             return (
               <GridItem
                 key={idx}
-                // title={user.nickname}
-                // 
+              // title={user.nickname}
+              // 
               >
                 <TransparentButton
-                  onClick={evt => this._handleSocketPeerClick(socketPeerId, evt)}
+                  onClick={evt => this.selectPeer(peer)}
                 >
                   <div>
                     <Avatar
@@ -40,9 +40,11 @@ class SocketPeerList extends Component {
                       icon="user"
                     />
                   </div>
-                  
+
                   <div>
-                    {socketPeerId}
+                    {
+                      peer.getPeerId()
+                    }
                   </div>
                 </TransparentButton>
               </GridItem>

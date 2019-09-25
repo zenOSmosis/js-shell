@@ -24,7 +24,7 @@ class AppRuntime extends ClientGUIProcess {
    * @param {AppRegistration} appRegistration
    * @param {any[]} cmdArguments?
    */
-  constructor(appRegistration, cmdArguments = []) {
+  constructor(appRegistration, cmdArguments = [], forcedParentProcess = null) {
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration is not of AppRegistration type');
     }
@@ -32,7 +32,7 @@ class AppRuntime extends ClientGUIProcess {
     // Fork apps from the Shell Desktop Process (for now)
     // TODO: Fork from AppControlCentral
     const shellDesktopProcess = getShellDesktopProcess();
-    super(shellDesktopProcess);
+    super(forcedParentProcess || shellDesktopProcess);
 
     this._appRegistration = appRegistration;
 

@@ -7,6 +7,9 @@ import LabeledComponent from 'components/LabeledComponent';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
 import Switch from 'components/Switch';
+import {
+  STATE_REMOTE_PEERS
+} from 'state/P2PLinkedState';
 
 // import { Avatar, Input } from 'antd';
 // const { Search } = Input;
@@ -16,22 +19,22 @@ class ChatAppWindow extends Component {
     super(...args);
 
     this.state = {
-      selectedSocketPeerId: null
+      selectedPeer: null
     };
 
     const { p2pLinkedState } = this.props.appRuntime.getState();
     this._p2pLinkedState = p2pLinkedState;
   }
 
-  _handleSocketPeerClick = (socketPeerId) => {
+  _handlePeerSelect = (peer) => {
     this.setState({
-      selectedSocketPeerId: socketPeerId
+      selectedPeer: peer
     });
   };
 
   render() {
     const { ...propsRest } = this.props;
-    const { selectedSocketPeerId } = this.state;
+    const { selectedPeer } = this.state;
 
     return (
       <Window
@@ -63,21 +66,21 @@ class ChatAppWindow extends Component {
         }
       >
         <LinkedStateRenderer
-          key={selectedSocketPeerId}
+          key={selectedPeer ? selectedPeer.getPeerId() : new Date().toISOString()}
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
-            const { socketPeerIds } = updatedState;
+            const { [STATE_REMOTE_PEERS]: connectedPeers } = updatedState;
 
-            if (socketPeerIds !== undefined) {
+            if (connectedPeers !== undefined) {
               return {
-                socketPeerIds
+                connectedPeers
               };
             }
           }}
           render={(renderProps) => {
-            const { socketPeerIds } = renderProps;
+            const { connectedPeers } = renderProps;
 
-            if (!socketPeerIds.length) {
+            if (!connectedPeers.length) {
               return (
                 <Center>
                   No connected peers
@@ -93,16 +96,16 @@ class ChatAppWindow extends Component {
                 >
                   <Full>
                     <SocketPeerList
-                      socketPeerIds={socketPeerIds}
-                      onSocketPeerClick={socketPeerId => { this._handleSocketPeerClick(socketPeerId) }}
+                      connectedPeers={connectedPeers}
+                      onPeerSelect={peer => this._handlePeerSelect(peer)}
                     />
                   </Full>
 
                   <Full>
                     {
-                      selectedSocketPeerId &&
+                      selectedPeer &&
                       <Chat
-                        remoteSocketPeerId={selectedSocketPeerId}
+                        remotePeer={selectedPeer}
                       />
                     }
                   </Full>

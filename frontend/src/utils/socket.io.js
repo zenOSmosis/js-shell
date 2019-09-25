@@ -16,7 +16,9 @@ export const EVT_SOCKET_DISCONNECT = 'disconnect';
 export const EVT_SOCKET_CONNECT_ERROR = 'connect_error';
 export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 
-const socket = io.connect(SOCKET_IO_URL);
+const socket = io.connect(SOCKET_IO_URL, {
+  autoConnect: false
+});
 
 /**
  * Overrides socket.disconnect() with request disconnect event, as there does
@@ -65,6 +67,30 @@ socket.on(EVT_SOCKET_RECONNECT_ATTEMPT, (reconnectAttemptNumber) => {
 });
 
 /**
+ * Connects to Socket.io backend with custom authentication.
+ * 
+ * IMPORTANT! Should only be called by core/ShellDesktop/LocalUserController.
+ * 
+ * @param {Object} authParams 
+ */
+const openAuthenticate = (authParams) => {
+  // Close existing connection, if present
+  socket.close();
+
+  // Set initial polling transport options before upgrade to WebSocket
+  socket.io.opts.transportOptions = {
+    polling: {
+      extraHeaders: {
+        'x-shell-authenticate': JSON.stringify(authParams)
+      }
+    }
+  };
+
+  // Connect the socket
+  socket.open();
+};
+
+/**
  * @return {string | null} Returns null if the local user is not online.
  */
 const getSocketId = () => {
@@ -84,6 +110,7 @@ const getIsConnected = () => {
 
 export default socket;
 export {
+  openAuthenticate,
   SocketLinkedState,
   getSocketId,
   getIsConnected

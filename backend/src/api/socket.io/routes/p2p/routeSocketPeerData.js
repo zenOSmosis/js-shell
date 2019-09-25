@@ -1,29 +1,30 @@
 import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
 import 'utils/p2p/SocketPeerDataPacket.typedef';
 import { SOCKET_API_EVT_PEER_DATA } from '../../events';
+import { fetchUserSocketId } from 'utils/mongo/collections/users';
 
 /**
- * @typedef {Object} RouteSocketPeerDataBundle
- * @property {Object} socket
- * @property {SocketPeerDataPacket} socketPeerDataPacket
- */
-
-/**
- * @param {RouteSocketPeerDataBundle} dataBundle 
+ * @param {Socket} socket
+ * @param {SocketPeerDataPacket} socketPeerDataPacket
  * @param {function} ack 
  */
-const routeSocketPeerData = async (dataBundle, ack) => {
-  return await handleSocketAPIRoute(() => {
-    const { socket, socketPeerDataPacket } = dataBundle;
+const routeSocketPeerData = async (socket, socketPeerDataPacket, ack) => {
+  return await handleSocketAPIRoute(async () => {
+    try {
+      const { toPeerId } = socketPeerDataPacket;
+  
+      if (!toPeerId) {
+        throw new Error('No toPeerId set');
+      }
 
-    const { toSocketPeerId } = socketPeerDataPacket;
-
-    if (!toSocketPeerId) {
-      throw new Error('No toSocketPeerId set');
+      // Obtain socket id for the to peer
+      const toSocketId = await fetchUserSocketId(toPeerId);
+  
+      // TODO: Handle routed event ack (it's not avialable on broadcast)
+      socket.to(toSocketId).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);
+    } catch (exc) {
+      throw exc;
     }
-
-    // TODO: Handle emit ack
-    socket.to(toSocketPeerId).emit(SOCKET_API_EVT_PEER_DATA, socketPeerDataPacket);
   }, ack);
 };
 
