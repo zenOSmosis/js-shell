@@ -12,8 +12,6 @@ export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
-export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalUser';
-
 /**
  * @see https://www.npmjs.com/package/bowser
  * 
@@ -49,12 +47,13 @@ class Peer extends P2PSharedObject {
     };
     
     const initialPrivateData = {
-      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalUser
     };
 
     super(initialSharedData, initialPrivateData);
 
-    if (isLocalUser) {
+    this._isLocalUser = isLocalUser;
+
+    if (this._isLocalUser) {
       if (_localUser) {
         // Enforce only one local peer
         throw new Error('_localUser is already set');
@@ -79,9 +78,7 @@ class Peer extends P2PSharedObject {
    * @return {boolean}
    */
   getIsLocalUser() {
-    const { [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalUser } = this._privateData;
-
-    return isLocalUser;
+    return this._isLocalUser;
   }
 
   setNickname(nickname) {
