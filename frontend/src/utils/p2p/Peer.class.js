@@ -1,22 +1,18 @@
 import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject.class';
-import { setItem, getItem } from '../encryptedLocalStorage';
+
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
-import { socketAPIQuery } from '../socketAPI';
-import { SOCKET_API_ROUTE_SET_USER_DATA } from '../../shared/socketAPI/socketAPIRoutes';
 
-export { EVT_SHARED_UPDATE };
+export { EVT_SHARED_UPDATE, EVT_ANY_UPDATE };
 
-let _localPeer = null;
-
-export const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
+let _localUser = null;
 
 export const SHARED_DATA_KEY_PEER_ID = 'userId';
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
-export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer'
+export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalUser';
 
 /**
  * @see https://www.npmjs.com/package/bowser
@@ -27,64 +23,47 @@ const _getLocalSystemInfo = () => {
   return Bowser.parse(window.navigator.userAgent);
 }
 
+const _peers = [];
+
 class Peer extends P2PSharedObject {
-  constructor(isLocalPeer = false) {
+  static createFromRawData = (rawData) => {
+    const { peerId } = rawData;
+
+    let peer = getPeerWithId(peerId);
+    if (!peer) {
+      peer = new Peer(false);
+    }
+  
+    // Map raw user object to Peer object
+    peer.setSharedData(rawData);
+
+    return peer;
+  };
+
+  constructor(isLocalUser = false) {
     const initialSharedData = {
-      [SHARED_DATA_KEY_PEER_ID]: (isLocalPeer ? generateId() : null),
+      [SHARED_DATA_KEY_PEER_ID]: (isLocalUser ? generateId() : null),
       [SHARED_DATA_KEY_SYSTEM_INFO]: _getLocalSystemInfo(),
       [SHARED_DATA_KEY_NICKNAME]: null,
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
     };
     
     const initialPrivateData = {
-      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalPeer
+      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalUser
     };
 
     super(initialSharedData, initialPrivateData);
 
-    if (isLocalPeer && _localPeer) {
-      throw new Error('_localPeer is already set');
-    } else {
-      _localPeer = this;
-    }
-
-    if (isLocalPeer) {
-      const cachedLocalPeerData = getItem(LOCAL_PEER_STORAGE_KEY);
-      if (cachedLocalPeerData) {
-        const { privateData, sharedData } = cachedLocalPeerData;
-
-        this._setPrivateData(privateData);
-        this.setSharedData(sharedData);
+    if (isLocalUser) {
+      if (_localUser) {
+        // Enforce only one local peer
+        throw new Error('_localUser is already set');
+      } else {
+        _localUser = this;
       }
-
-      this.on(EVT_ANY_UPDATE, () => {
-        this._write();
-      });
-
-      // Perform initial encrypted storage sync
-      this._write();
     }
-  }
 
-  // TODO: Block this if not the local peer
-  async _write() {
-    try {
-      const privateData = this._privateData;
-      const sharedData = this._sharedData;
-
-      // Write to local storage
-      setItem(LOCAL_PEER_STORAGE_KEY, {
-        privateData,
-        sharedData
-      });
-
-      // Write to remote storage
-      await socketAPIQuery(SOCKET_API_ROUTE_SET_USER_DATA, {
-        ...sharedData
-      });
-    } catch (exc) {
-      throw exc;
-    }
+    _peers.push(this);
   }
 
   /**
@@ -136,11 +115,29 @@ class Peer extends P2PSharedObject {
   }
 }
 
-const getLocalPeer = () => {
-  return _localPeer;
-}
-
 export default Peer;
-export {
-  getLocalPeer
+
+export const getLocalUser = () => {
+  return _localUser;
+};
+
+export const getLocalUserId = () => {
+  if (!_localUser) {
+    return;
+  } else {
+    return _localUser.getPeerId();
+  }
+};
+
+export const getPeerWithId = (peerId) => {
+  const lenPeers = _peers.length;
+
+  for (let i = 0; i < lenPeers; i++) {
+    const testPeer = _peers[i];
+    const testPeerId = testPeer.getPeerId();
+
+    if (peerId === testPeerId) {
+      return testPeer;
+    }
+  }
 };

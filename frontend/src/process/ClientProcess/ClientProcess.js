@@ -274,8 +274,17 @@ class ClientProcess extends EventEmitter {
     });
   }
 
+  /**
+   * Process-level state setting.
+   * 
+   * Note, this is separate from LinkedState.
+   * @see LinkedState
+   * 
+   * @param {Object} nextState 
+   * @param {function} onSet? 
+   */
   setState(nextState, onSet = null) {
-    if (this._isShuttingDown || this._isExited) {
+    if (this._isExited) {
       console.error('Ignoring state set on shut down process.  This could indicate a memory leak somewhere in the application.');
       return;
     }
@@ -292,6 +301,9 @@ class ClientProcess extends EventEmitter {
     this.emit(EVT_STATE_UPDATE, nextState);
   }
 
+  /**
+   * @return {Object}
+   */
   getState() {
     return this._state;
   }
@@ -328,6 +340,9 @@ class ClientProcess extends EventEmitter {
     });
   }
 
+  /**
+   * @return {boolean}
+   */
   getIsRootProcess() {
     return this._isRootProcess;
   }

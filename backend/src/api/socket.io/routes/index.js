@@ -1,7 +1,6 @@
 /**
  * API routing for the client Socket.io connection.
  */
-
 import {
   // debugError
   SOCKET_API_ROUTE_DEBUG_ERROR,
@@ -98,10 +97,7 @@ const initSocketAPIRoutes = (socket, io) => {
   });
   socket.on(SOCKET_API_ROUTE_FETCH_SOCKET_IDS, p2pFetchSocketIds);
   socket.on(SOCKET_API_ROUTE_SEND_SOCKET_PEER_DATA, (socketPeerDataPacket, ack) => {
-    p2pRouteSocketPeerData({
-      socket,
-      socketPeerDataPacket
-    }, ack);
+    p2pRouteSocketPeerData(socket, socketPeerDataPacket, ack);
   });
 
   // socketChannel

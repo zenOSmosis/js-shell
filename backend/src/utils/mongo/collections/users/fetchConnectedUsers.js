@@ -2,6 +2,10 @@ import fetchUsersCollection from './fetchUsersCollection';
 import fetchConnectedSocketIds from 'utils/socketIO/fetchConnectedSocketIds';
 import { objPropsSnakeCaseToCamelCase } from '../../converters';
 
+/**
+ * @param {string} ignoreSocketId? Socket.io id to ignore.
+ * @return {Promise<Object[]>}
+ */
 const fetchConnectedUsers = async (ignoreSocketId = null) => {
   try {
     const connectedSocketIds = await fetchConnectedSocketIds();
@@ -14,7 +18,7 @@ const fetchConnectedUsers = async (ignoreSocketId = null) => {
     const usersCollection = await fetchUsersCollection();
     
     let connectedUsers = await usersCollection.find({
-      socket_ids: {
+      socket_id: {
         $in: connectedSocketIds
       }
     }).toArray();

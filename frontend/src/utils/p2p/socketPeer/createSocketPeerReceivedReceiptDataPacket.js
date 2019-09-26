@@ -1,7 +1,7 @@
 import createSocketPeerDataPacket from './createSocketPeerDataPacket';
 
-const createSocketPeerReceivedReceiptDataPacket = (toSocketPeerId, originPacketUuid) => {
-  const dataPacket = createSocketPeerDataPacket(toSocketPeerId, 'receivedReceipt', {
+const createSocketPeerReceivedReceiptDataPacket = (toPeerId, originPacketUuid) => {
+  const dataPacket = createSocketPeerDataPacket(toPeerId, 'receivedReceipt', {
     originPacketUuid
   }, false);
 

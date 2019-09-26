@@ -11,6 +11,7 @@ import Panel from './Panel';
 import Dock from './Dock';
 import Notifications from './Notifications';
 import DesktopKeyboardInterruptProvider from './DesktopKeyboardInterruptProvider';
+import Center from '../Center';
 import ContextMenuProvider from 'components/ContextMenuProvider';
 import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
@@ -23,6 +24,9 @@ import FileChooserOverlayContext from './FileChooserOverlayContext';
 
 // import LinkedStateComponent from 'state/LinkedStateComponent';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
+import SocketLinkedState, {
+  STATE_SOCKET_AUTHENTICATION_ERROR
+} from 'state/SocketLinkedState';
 import GUIProcessRenderer from './GUIProcessRenderer';
 
 // Registers default Shell Desktop apps
@@ -32,7 +36,31 @@ import 'apps/defaultApps';
 
 class Desktop extends Component {
   render() {
-    const { isFullScreenRequested } = this.props;
+    const {
+      [STATE_SOCKET_AUTHENTICATION_ERROR]: socketAuthenticationError,
+      isFullScreenRequested
+    } = this.props;
+
+    if (socketAuthenticationError) {
+      return (
+        <FullViewport>
+          <Center>
+            <div>
+              <h1>There has been a problem trying to authenticate.</h1>
+
+              <div>
+                Server error:<br />
+                {
+                  socketAuthenticationError
+                }
+              </div>
+
+              <button onClick={evt => window.location.reload()}>Try Again</button>
+            </div>
+          </Center>
+        </FullViewport>
+      )
+    }
 
     return (
       <div ref={c => this._el = c}>
@@ -107,7 +135,7 @@ class Desktop extends Component {
   }
 }
 
-export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
+const DesktopLinkedStateDesktop = hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
   const { isFullScreenRequested } = updatedState;
 
   const filteredState = {};
@@ -120,3 +148,5 @@ export default hocConnect(Desktop, DesktopLinkedState, (updatedState) => {
     return filteredState;
   }
 });
+
+export default hocConnect(DesktopLinkedStateDesktop, SocketLinkedState);

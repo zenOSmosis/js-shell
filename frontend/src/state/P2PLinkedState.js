@@ -7,18 +7,20 @@ export {
 
 export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
-export const STATE_SOCKET_PEER_IDS = 'socketPeerIds';
+export const STATE_CONNECTED_SOCKET_PEERS = 'connectedSocketPeers';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
-export const STATE_LOCAL_PEER = 'localPeer';
+export const STATE_LOCAL_PEER = 'localUser';
 export const STATE_REMOTE_PEERS = 'remotePeers';
 
 export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
 export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
 export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUuid';
 export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUuid';
-export const ACTION_SET_LOCAL_PEER = 'setLocalPeer';
+export const ACTION_SET_LOCAL_PEER = 'setLocalUser';
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
+export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
+export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -29,7 +31,7 @@ export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
       // Peers which are connected over Socket.io (proxied through server)
-      [STATE_SOCKET_PEER_IDS]: [],
+      [STATE_CONNECTED_SOCKET_PEERS]: [],
 
       // Peers which are directly connected via WebRTC
       [STATE_WEBRTC_CONNECTIONS]: [],
@@ -95,15 +97,15 @@ export default class P2PLinkedState extends LinkedState {
             const testChatMessageUuid = chatMessage.getUuid();
 
             if (testChatMessageUuid === chatMessageUuid) {
-              // updateHandler must return the chatMessage
+              // IMPORTANT! updateHandler must return the chatMessage or it will be undefined
               chatMessage = updateHandler(chatMessage);
+
+              if (!chatMessage) {
+                throw new Error('chatMessage not returned from updateHandler');
+              }
             }
 
             return chatMessage;
-          });
-
-          console.debug('updatedState', {
-            chatMessages
           });
 
           this.setState({
@@ -111,9 +113,11 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        [ACTION_SET_LOCAL_PEER]: (localPeer) => {
+        // TODO: Rename to ACTION_SET_LOCAL_USER
+        [ACTION_SET_LOCAL_PEER]: (localUser) => {
           this.setState({
-            [STATE_LOCAL_PEER]: localPeer
+            // TODO: Rename to STATE_LOCAL_USER
+            [STATE_LOCAL_PEER]: localUser
           });
         },
 
@@ -121,82 +125,31 @@ export default class P2PLinkedState extends LinkedState {
           this.setState({
             [STATE_REMOTE_PEERS]: remotePeers
           });
+        },
+
+        [ACTION_ADD_REMOTE_PEER]: (remotePeer) => {
+          const remotePeers = this.getState(STATE_REMOTE_PEERS);
+
+          remotePeers.push(remotePeer);
+
+          this.setState({
+            [STATE_REMOTE_PEERS]: remotePeers
+          });
+        },
+
+        [ACTION_REMOVE_REMOTE_PEER_WITH_ID]: (remotePeerId) => {
+          let remotePeers = this.getState(STATE_REMOTE_PEERS);
+          remotePeers = remotePeers.filter(testRemotePeer => {
+            const testRemotePeerId = testRemotePeer.getPeerId();
+
+            return testRemotePeerId !== remotePeerId;
+          });
+
+          this.setState({
+            [STATE_REMOTE_PEERS]: remotePeers
+          });
         }
       }
     });
   }
-
-  setSocketPeerIds(socketPeerIds = []) {
-    if (!Array.isArray(socketPeerIds)) {
-      throw new Error('socketPeerIds is not an array');
-    }
-
-    // Filter out local Id from peer Ids
-    const socketId = getSocketId();
-    socketPeerIds = socketPeerIds.filter(socketPeerId => {
-      return socketPeerId !== socketId;
-    });
-
-    this.setState({
-      [STATE_SOCKET_PEER_IDS]: socketPeerIds
-    });
-  }
-
-  /** 
-   * @param {number} socketPeerId 
-   */
-  addSocketPeerId(socketPeerId) {
-    const { [STATE_SOCKET_PEER_IDS]: socketPeerIds } = this.getState();
-
-    socketPeerIds.push(socketPeerId);
-
-    this.setState({
-      [STATE_SOCKET_PEER_IDS]: socketPeerIds
-    });
-  }
-
-  /**
-   * @param {number} socketPeerId 
-   */
-  removeSocketPeerId(socketPeerId) {
-    const { [STATE_SOCKET_PEER_IDS]: socketPeerIds } = this.getState();
-
-    const rmIdx = socketPeerIds.indexOf(socketPeerId);
-
-    if (rmIdx > -1) {
-      socketPeerIds.splice(rmIdx, 1);
-
-      this.setState({
-        [STATE_SOCKET_PEER_IDS]: socketPeerIds
-      });
-    }
-  }
-
-  // add / remove p2p
-
-  /*
-  addWebRTCConnection(webRTCConnection) {
-    const { [STATE_WEBRTC_CONNECTIONS]: webRTCConnections } = this.getState();
-
-    webRTCConnections.push(webRTCConnection);
-
-    this.setState({
-      [STATE_WEBRTC_CONNECTIONS]: webRTCConnections
-    });
-  }
-  */
-
-  /*
-  removeWebRTCConnection(webRTCConnection) {
-    let { [STATE_WEBRTC_CONNECTIONS]: webRTCConnections } = this.getState();
-
-    webRTCConnections = webRTCConnections.filter(testWebRTCConnection => {
-
-    });
-
-    this.setState({
-      [STATE_WEBRTC_CONNECTIONS]: webRTCConnections
-    });
-  }
-  */
 }

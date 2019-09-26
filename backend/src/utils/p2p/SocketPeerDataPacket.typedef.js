@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} SocketPeerDataPacket
- * @property {string} toSocketPeerId
- * @property {string} fromSocketPeerId
+ * @property {string} toPeerId
+ * @property {string} fromPeerId
  * @property {string} packetUuid
  * @property {string} packetType
  * @property {any} messageData

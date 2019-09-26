@@ -2,13 +2,19 @@
  * @event
  * ...
  */
-export const SOCKET_API_EVT_PEER_CONNECT = 'api/evt/peer-connect';
+export const SOCKET_API_EVT_AUTHENTICATION_ERROR = 'api/evt/authentication-error';
 
 /**
  * @event
  * ...
  */
-export const SOCKET_API_EVT_PEER_DISCONNECT = 'api/evt/peer-disconnect';
+export const SOCKET_API_EVT_PEER_ID_CONNECT = 'api/evt/peer-connect';
+
+/**
+ * @event
+ * ...
+ */
+export const SOCKET_API_EVT_PEER_ID_DISCONNECT = 'api/evt/peer-disconnect';
 
 /**
  * @event

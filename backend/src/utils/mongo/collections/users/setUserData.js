@@ -6,7 +6,8 @@ import {
 import { objPropsCamelCaseToSnakeCase } from '../../converters';
 
 /**
- * @param {MongoShellUserData} mongoShellUserData 
+ * @param {Object} userData
+ * @param {SocketIO.Socket | string} socket?
  */
 const setUserData = async (userData, socket = null) => {
   try {
@@ -18,7 +19,19 @@ const setUserData = async (userData, socket = null) => {
       throw new Error('userId must be specified when setting user data');
     }
 
-    const writeUserData = objPropsCamelCaseToSnakeCase(userData);
+    const socketId = (
+      socket === null ?
+        undefined :
+        typeof socket === 'string' ?
+          socket : socket.id
+    );
+
+    const writeUserData = objPropsCamelCaseToSnakeCase({
+      ...userData,
+      ...{
+        socketId
+      }
+    });
 
     await usersCollection.updateOne({
       [MONGO_DB_USERS_FIELD_USER_ID]: userId
@@ -27,10 +40,6 @@ const setUserData = async (userData, socket = null) => {
         ...writeUserData,
         [MONGO_DB_USERS_FIELD_UPDATE_TIME]: new Date().toISOString()
       },
-
-      $addToSet: {
-        socket_ids: socket.id
-      }
     }, {
       upsert: true // On non-exist, create
     });

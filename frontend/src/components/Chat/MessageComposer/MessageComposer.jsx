@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import './MessageComposer.css';
 import ChatMessage from 'utils/p2p/ChatMessage.class';
-import { getSocketId } from 'utils/socket.io';
 import PropTypes from 'prop-types';
 
 class MessageComposer extends Component {
   static propTypes = {
-    toSocketPeerId: PropTypes.string.isRequired
+    toPeerId: PropTypes.string.isRequired
   };
 
   constructor(...args) {
@@ -30,14 +29,12 @@ class MessageComposer extends Component {
   }
 
   _handleKeyDown(evt) {
-    const { toSocketPeerId } = this.props;
+    const { toPeerId } = this.props;
     const { keyCode } = evt;
 
     // Start a new chat message, if one is not already present
     if (!this._currentChatMessage) {
-      const fromSocketPeerId = getSocketId();
-
-      this._currentChatMessage = new ChatMessage(true, fromSocketPeerId, toSocketPeerId);
+      this._currentChatMessage = new ChatMessage(true, toPeerId);
     }
 
     // Enter key
@@ -66,7 +63,6 @@ class MessageComposer extends Component {
         // TODO: Dispatch action to UI indicating a message is currently being sent
 
         console.warn('Sending of message ignored because the MessageComposer is currently in a sendingMessage state.');
-
         return;
       }
       

@@ -4,7 +4,7 @@ import httpProxy from 'http-proxy';
 import requestIp from 'request-ip';
 import expressAPIRoutes from './api/express/routes';
 import { initSocketAPIRoutes } from './api/socket.io/routes';
-import { SOCKET_API_EVT_PEER_CONNECT, SOCKET_API_EVT_PEER_DISCONNECT } from './api/socket.io/events';
+import { SOCKET_API_EVT_PEER_ID_CONNECT, SOCKET_API_EVT_PEER_ID_DISCONNECT } from './api/socket.io/events';
 import {
   EXPRESS_CUSTOM_RESPONSE_HEADERS,
   PATH_PUBLIC,
@@ -13,7 +13,9 @@ import {
 } from './config';
 import mongoConnect from 'utils/mongo/mongoClientConnect';
 import expressConnectMongo from 'connect-mongo';
+import { SOCKET_API_EVT_AUTHENTICATION_ERROR } from './api/socket.io/events';
 import _setIO from 'utils/socketIO/_setIO';
+import { setUserData, fetchUserSocketId } from './utils/mongo/collections/users';
 
 const MongoSessionStore = expressConnectMongo(session);
 
@@ -74,28 +76,105 @@ const initClusterWorkerAPIServer = (app, io) => {
     // Set the Socket.io variable so that other scripts can use it
     _setIO(io);
 
+    // TODO: Remove defunct user sockets on startup
+    // Remove user sockets which do not have a logged-in user
+
     console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
+  
+    // Socket.io authentication middleware (naive implementation)
+    // Middleware documentation buried deep in Socket.io documentation
+    // @see https://socket.io/docs/migrating-from-0-9/
+    io.use(async (socket, next) => {
+      try {
+        const userId = await (async () => {
+          try {
+            const rawHeader = socket.handshake.headers['x-shell-authenticate'];
+  
+            if (!rawHeader) {
+              throw new Error('No x-auth header present');
+            }
+  
+            const xAuth = JSON.parse(rawHeader);
+            const { userId } = xAuth;
 
-    io.on('connection', (socket) => {
-      console.log(`Socket.io Client connected with id: ${socket.id}`);
+            if (!userId) {
+              throw new Error('No userId present');
+            }
 
-      // Initialize the Socket Routes with the socket
-      // TODO: Include any specific URL routes in log output here
-      initSocketAPIRoutes(socket, io);
+            // Prevent multiple connections from same browser
+            const userSocketId = await fetchUserSocketId(userId);
+            if (userSocketId) {
+              throw new Error('User / Device is already connected');
+            }
 
-      // Emit to everyone we're connected
-      // TODO: Limit this to only namespaces the socket is connected to
-      // @see https://socket.io/docs/emit-cheatsheet/
-      socket.broadcast.emit(SOCKET_API_EVT_PEER_CONNECT, socket.id);
+            await setUserData({
+              userId
+            }, socket);
 
-      // Handle socket disconnect
-      socket.on('disconnect', () => {
-        // Emit to everyone we're disconnected
-        // TODO: Limit this to only namespaces the socket was connected to
-        socket.broadcast.emit(SOCKET_API_EVT_PEER_DISCONNECT, socket.id);
+            return userId;
+          } catch (exc) {
+            throw exc;
+          }
+        })();
 
-        console.log(`Socket.io Client disconnected with id: ${socket.id}`);
-      });
+        socket.userId = userId;
+
+        // Must call next, regardless of whether authentication was performed or not
+        next();
+      } catch (exc) {
+        console.error(exc);
+
+        socket.authenticationError = exc.toString();
+        next();
+      }
+    });
+
+    io.on('connection', async (socket) => {
+      try {
+        if (socket.authenticationError) {
+          socket.emit(SOCKET_API_EVT_AUTHENTICATION_ERROR, socket.authenticationError);
+          socket.disconnect();
+          return;
+        }
+
+        // Initialize the Socket Routes with the socket
+        // TODO: Include any specific URL routes in log output here
+        initSocketAPIRoutes(socket, io);
+
+        const { userId } = socket;
+
+        console.log(`Socket.io Client connected\n`, {
+          socketId: socket.id,
+          userId
+        });
+
+        // Emit to everyone we're connected
+        // TODO: Limit this to only namespaces the socket is connected to
+        // @see https://socket.io/docs/emit-cheatsheet/
+        socket.broadcast.emit(SOCKET_API_EVT_PEER_ID_CONNECT, userId);
+
+        // Handle socket disconnect
+        socket.on('disconnect', async () => {
+          try {
+            // Emit to everyone we're disconnected
+            // TODO: Limit this to only namespaces the socket was connected to
+            socket.broadcast.emit(SOCKET_API_EVT_PEER_ID_DISCONNECT, userId);
+
+            console.log(`Socket.io Client disconnected\n`, {
+              socketId: socket.id,
+              userId
+            });
+
+            await setUserData({
+              userId
+            }, null);
+          } catch (exc) {
+            throw exc;
+          }
+        });
+      } catch (exc) {
+        throw exc;
+      }
     });
 
     console.log(`Socket.io Server (Express / *:${HTTP_LISTEN_PORT}) started`);

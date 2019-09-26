@@ -4,17 +4,22 @@ import socket, {
   EVT_SOCKET_DISCONNECT,
   getIsConnected as getIsSocketConnected
 } from 'utils/socket.io';
-import fetchSocketPeerIds from 'utils/p2p/socketPeer/fetchSocketPeerIds';
-import P2PLinkedState from 'state/P2PLinkedState';
+import { fetchConnectedPeers } from 'utils/p2p/socketPeer';
+import P2PLinkedState, {
+  ACTION_SET_REMOTE_PEERS,
+  ACTION_ADD_REMOTE_PEER,
+  ACTION_REMOVE_REMOTE_PEER_WITH_ID
+} from 'state/P2PLinkedState';
 import {
-  SOCKET_API_EVT_PEER_CONNECT,
-  SOCKET_API_EVT_PEER_DISCONNECT,
+  SOCKET_API_EVT_PEER_ID_CONNECT,
+  SOCKET_API_EVT_PEER_ID_DISCONNECT,
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
 import {
   _handleSocketPeerConnectionStatusUpdate,
   _handleReceivedSocketPeerDataPacket
 } from 'utils/p2p/socketPeer';
+import Peer, { SHARED_DATA_KEY_PEER_ID } from 'utils/p2p/Peer.class';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -57,17 +62,17 @@ class P2PController extends ClientProcess {
   }
 
   _initSocketIOServices() {
-    socket.on(EVT_SOCKET_CONNECT, this._syncSocketPeerIds);
-    socket.on(EVT_SOCKET_DISCONNECT, this._syncSocketPeerIds);
-    socket.on(SOCKET_API_EVT_PEER_CONNECT, this._handleSocketPeerConnect);
-    socket.on(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+    socket.on(EVT_SOCKET_CONNECT, this._syncConnectedSocketPeers);
+    socket.on(EVT_SOCKET_DISCONNECT, this._syncConnectedSocketPeers);
+    socket.on(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleSocketPeerConnect);
+    socket.on(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
     socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
 
     this.on(EVT_BEFORE_EXIT, () => {
-      socket.off(EVT_SOCKET_CONNECT, this._syncSocketPeerIds);
-      socket.off(EVT_SOCKET_DISCONNECT, this._syncSocketPeerIds);
-      socket.off(SOCKET_API_EVT_PEER_CONNECT, this._handleRemoteSocketPeerConnect);
-      socket.off(SOCKET_API_EVT_PEER_DISCONNECT, this._handleSocketPeerDisconnect);
+      socket.off(EVT_SOCKET_CONNECT, this._syncConnectedSocketPeers);
+      socket.off(EVT_SOCKET_DISCONNECT, this._syncConnectedSocketPeers);
+      socket.off(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleRemoteSocketPeerConnect);
+      socket.off(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
       socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
     });
 
@@ -75,7 +80,7 @@ class P2PController extends ClientProcess {
     // Post init; _init() has already finished when this starts
     this.setImmediate(async () => {
       try {
-        await this._syncSocketPeerIds();
+        await this._syncConnectedSocketPeers();
       } catch (exc) {
         throw exc;
       }
@@ -87,16 +92,16 @@ class P2PController extends ClientProcess {
    * 
    * @return {Promise<void>}
    */
-  _syncSocketPeerIds = async () => {
+  _syncConnectedSocketPeers = async () => {
     try {
-      let socketPeerIds = [];
+      let connectedSocketPeers = [];
 
       if (getIsSocketConnected()) {
-        socketPeerIds = await fetchSocketPeerIds();
+        connectedSocketPeers = await fetchConnectedPeers();
       }
 
       // Sync socketPeerIds with P2PLinkedState
-      this._p2pLinkedState.setSocketPeerIds(socketPeerIds);
+      this._p2pLinkedState.dispatchAction(ACTION_SET_REMOTE_PEERS, connectedSocketPeers);
     } catch (exc) {
       throw exc;
     }
@@ -105,21 +110,23 @@ class P2PController extends ClientProcess {
   /**
    * Associates connected Socket.io peer with P2PLinkedState.
    */
-  _handleSocketPeerConnect = (socketPeerId) => {
-    if (this._p2pLinkedState) {
-      this._p2pLinkedState.addSocketPeerId(socketPeerId);
-    }
+  // TODO: Handle for SocketPeer
+  _handleSocketPeerConnect = (peerId) => {
+    const peer = Peer.createFromRawData({
+      [SHARED_DATA_KEY_PEER_ID]: peerId
+    });
+    this._p2pLinkedState.dispatchAction(ACTION_ADD_REMOTE_PEER, peer);
 
+    const socketPeerId = peer.getPeerId();
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
   }
 
   /**
    * Disassociates connected Socket.io peer with P2PLinkedState.
    */
+  // TODO: Handle for SocketPeer
   _handleSocketPeerDisconnect = (socketPeerId) => {
-    if (this._p2pLinkedState) {
-      this._p2pLinkedState.removeSocketPeerId(socketPeerId, false);
-    }
+    this._p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, socketPeerId);
 
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
   }

@@ -11,6 +11,7 @@ import ShellDesktop, {
   ViewportSizeMonitor,
   P2PController,
   AppControlCentral,
+  LocalUserController,
   WindowStackCentral
 } from './ShellDesktop';
 import { DOM_ROOT_ID } from 'config';
@@ -33,8 +34,10 @@ const startup = async () => {
 
       const core = new Core();
 
+      const localUserController = new LocalUserController(core);
+
       // Mount the Shell Desktop
-      const desktop = new ShellDesktop(core);
+      const desktop = new ShellDesktop(localUserController);
       
       // Mount the Shell Desktop services
       new ViewportFocusMonitor(desktop);
