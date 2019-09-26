@@ -275,7 +275,7 @@ class ClientProcess extends EventEmitter {
   }
 
   setState(nextState, onSet = null) {
-    if (this._isShuttingDown || this._isExited) {
+    if (this._isExited) {
       console.error('Ignoring state set on shut down process.  This could indicate a memory leak somewhere in the application.');
       return;
     }
