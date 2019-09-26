@@ -4,7 +4,7 @@ import Scrollable from 'components/Scrollable';
 import Section from 'components/Section';
 import { Content, Layout } from 'components/Layout';
 import { Avatar } from 'antd';
-import { getLocalPeer, EVT_SHARED_UPDATE } from 'utils/p2p/Peer.class';
+import { getLocalUser, EVT_SHARED_UPDATE } from 'utils/p2p/Peer.class';
 
 export default class UserProfileWindow extends Component {
   constructor(props) {
@@ -15,31 +15,31 @@ export default class UserProfileWindow extends Component {
       aboutDescription: ''
     };
 
-    this._localPeer = getLocalPeer();
+    this._localUser = getLocalUser();
 
     this._nicknameInput = null;
     this._aboutDescriptionInput = null;
     
-    this._handleLocalPeerUpdate = this._handleLocalPeerUpdate.bind(this);
+    this._handleLocalUserUpdate = this._handleLocalUserUpdate.bind(this);
   }
 
   componentDidMount() {
-    this._localPeer.on(EVT_SHARED_UPDATE, this._handleLocalPeerUpdate);
+    this._localUser.on(EVT_SHARED_UPDATE, this._handleLocalUserUpdate);
 
     // Perform initial sync
-    this._handleLocalPeerUpdate();
+    this._handleLocalUserUpdate();
   }
 
   componentWillUnmount() {
-    this._localPeer.off(EVT_SHARED_UPDATE, this._handleLocalPeerUpdate);
+    this._localUser.off(EVT_SHARED_UPDATE, this._handleLocalUserUpdate);
   }
 
   /**
-   * Internally called once the localPeer updates.
+   * Internally called once the localUser updates.
    */
-  _handleLocalPeerUpdate() {
-    const nickname = this._localPeer.getNickname() || '';
-    const aboutDescription = this._localPeer.getAboutDescription() || '';
+  _handleLocalUserUpdate() {
+    const nickname = this._localUser.getNickname() || '';
+    const aboutDescription = this._localUser.getAboutDescription() || '';
 
     this.setState({
       nickname,
@@ -66,8 +66,8 @@ export default class UserProfileWindow extends Component {
   _handleSave() {
     const { nickname, aboutDescription } = this.state;
 
-    this._localPeer.setNickname(nickname);
-    this._localPeer.setAboutDescription(aboutDescription);
+    this._localUser.setNickname(nickname);
+    this._localUser.setAboutDescription(aboutDescription);
   }
 
   render() {
@@ -106,7 +106,7 @@ export default class UserProfileWindow extends Component {
                     ref={c => this._nicknameInput = c}
                     value={nickname}
                     onChange={evt => this._handleNicknameInput(evt)}
-                  // onChange={ evt => this._localPeer.setNickname(evt.target.value) }
+                  // onChange={ evt => this._localUser.setNickname(evt.target.value) }
                   />
                 </Section>
 
@@ -116,7 +116,7 @@ export default class UserProfileWindow extends Component {
                     ref={c => this._aboutDescriptionInput = c}
                     value={aboutDescription}
                     onChange={evt => this._handleAboutDescriptionInput(evt)}
-                  // onChange={ evt => this._localPeer.setAboutDescription(evt.target.value) }
+                  // onChange={ evt => this._localUser.setAboutDescription(evt.target.value) }
                   ></textarea>
                 </Section>
               </div>

@@ -7,7 +7,7 @@ import P2PLinkedState, {
   ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID
 } from 'state/P2PLinkedState';
 import 'shared/p2p/SocketPeerDataPacket.typedef';
-import { getLocalPeerId } from './Peer.class';
+import { getLocalUserId } from './Peer.class';
 
 export { EVT_SHARED_UPDATE };
 
@@ -72,10 +72,10 @@ class ChatMessage extends P2PSharedObject {
     return chatMessage;
   };
 
-  // TODO: Remove isFromLocal (can be determined from localPeerId)
+  // TODO: Remove isFromLocal (can be determined from localUserId)
   constructor(isFromLocal, toPeerId, fromPeerId = null, existingSharedData = null) {
     const initialSharedData = existingSharedData || {
-      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: (fromPeerId ? fromPeerId : getLocalPeerId()),
+      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: (fromPeerId ? fromPeerId : getLocalUserId()),
       [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toPeerId,
       [SHARED_DATA_KEY_MESSAGE_UUID]: uuidv4(),
       [SHARED_DATA_KEY_IS_TYPING]: false,

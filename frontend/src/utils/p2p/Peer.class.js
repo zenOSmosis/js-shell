@@ -5,14 +5,14 @@ import Bowser from 'bowser';
 
 export { EVT_SHARED_UPDATE, EVT_ANY_UPDATE };
 
-let _localPeer = null;
+let _localUser = null;
 
 export const SHARED_DATA_KEY_PEER_ID = 'userId';
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
-export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalPeer';
+export const PRIVATE_DATA_KEY_IS_LOCAL_PEER = 'isLocalUser';
 
 /**
  * @see https://www.npmjs.com/package/bowser
@@ -40,26 +40,26 @@ class Peer extends P2PSharedObject {
     return peer;
   };
 
-  constructor(isLocalPeer = false) {
+  constructor(isLocalUser = false) {
     const initialSharedData = {
-      [SHARED_DATA_KEY_PEER_ID]: (isLocalPeer ? generateId() : null),
+      [SHARED_DATA_KEY_PEER_ID]: (isLocalUser ? generateId() : null),
       [SHARED_DATA_KEY_SYSTEM_INFO]: _getLocalSystemInfo(),
       [SHARED_DATA_KEY_NICKNAME]: null,
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
     };
     
     const initialPrivateData = {
-      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalPeer
+      [PRIVATE_DATA_KEY_IS_LOCAL_PEER]: isLocalUser
     };
 
     super(initialSharedData, initialPrivateData);
 
-    if (isLocalPeer) {
-      if (_localPeer) {
+    if (isLocalUser) {
+      if (_localUser) {
         // Enforce only one local peer
-        throw new Error('_localPeer is already set');
+        throw new Error('_localUser is already set');
       } else {
-        _localPeer = this;
+        _localUser = this;
       }
     }
 
@@ -117,15 +117,15 @@ class Peer extends P2PSharedObject {
 
 export default Peer;
 
-export const getLocalPeer = () => {
-  return _localPeer;
+export const getLocalUser = () => {
+  return _localUser;
 };
 
-export const getLocalPeerId = () => {
-  if (!_localPeer) {
+export const getLocalUserId = () => {
+  if (!_localUser) {
     return;
   } else {
-    return _localPeer.getPeerId();
+    return _localUser.getPeerId();
   }
 };
 

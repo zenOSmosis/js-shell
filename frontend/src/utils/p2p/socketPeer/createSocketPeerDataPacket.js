@@ -1,6 +1,6 @@
 import 'shared/p2p/SocketPeerDataPacket.typedef';
 import uuidv4 from 'uuidv4';
-import { getLocalPeerId } from '../Peer.class';
+import { getLocalUserId } from '../Peer.class';
 
 /**
  * Creates a new data packet to be utilized for sending a message to another
@@ -16,7 +16,7 @@ import { getLocalPeerId } from '../Peer.class';
  * @return {SocketPeerDataPacket} 
  */
 const createSocketPeerDataPacket = (toPeerId, packetType, data, isReceivedReceiptRequested = false) => {
-  const fromPeerId = getLocalPeerId();
+  const fromPeerId = getLocalUserId();
 
   if (!fromPeerId) {
     throw new Error('Socket is not connected. Cannot create a new Socket Peer data packet.');

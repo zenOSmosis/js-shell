@@ -6,15 +6,15 @@ import { socketAPIQuery } from '../socketAPI';
 import { SOCKET_API_ROUTE_SET_USER_DATA } from '../../shared/socketAPI/socketAPIRoutes';
 
 // TODO: Rename to LOCAL_USER_STORAGE_KEY
-export const LOCAL_PEER_STORAGE_KEY = 'LocalPeer';
+export const LOCAL_PEER_STORAGE_KEY = 'LocalUser';
 
 class LocalUser extends Peer {
   constructor() {
     super(true);
 
-    const cachedLocalPeerData = getItem(LOCAL_PEER_STORAGE_KEY);
-    if (cachedLocalPeerData) {
-      const { privateData, sharedData } = cachedLocalPeerData;
+    const cachedLocalUserData = getItem(LOCAL_PEER_STORAGE_KEY);
+    if (cachedLocalUserData) {
+      const { privateData, sharedData } = cachedLocalUserData;
 
       this._setPrivateData(privateData);
       this.setSharedData(sharedData);
