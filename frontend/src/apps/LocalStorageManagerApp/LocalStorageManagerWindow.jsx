@@ -5,7 +5,6 @@ import Layout, { Header, Content, Footer } from 'components/Layout';
 import AddKeyForm from './subComponents/AddKeyForm';
 import {
   getAllKeys as getAllLocalStorageKeys,
-  clear,
   setItem,
   getItem,
   removeItem,
