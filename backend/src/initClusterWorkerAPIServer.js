@@ -13,8 +13,9 @@ import {
 } from './config';
 import mongoConnect from 'utils/mongo/mongoClientConnect';
 import expressConnectMongo from 'connect-mongo';
+import { SOCKET_API_EVT_AUTHENTICATION_ERROR } from './api/socket.io/events';
 import _setIO from 'utils/socketIO/_setIO';
-import { setUserData } from './utils/mongo/collections/users';
+import { setUserData, fetchUserSocketId } from './utils/mongo/collections/users';
 
 const MongoSessionStore = expressConnectMongo(session);
 
@@ -75,15 +76,19 @@ const initClusterWorkerAPIServer = (app, io) => {
     // Set the Socket.io variable so that other scripts can use it
     _setIO(io);
 
-    console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
+    // TODO: Remove defunct user sockets on startup
+    // Remove user sockets which do not have a logged-in user
 
-    io.on('connection', async (socket) => {
+    console.log(`Starting Socket.io Server (via Express Server on *:${HTTP_LISTEN_PORT})`);
+  
+    // Socket.io authentication middleware (naive implementation)
+    // Middleware documentation buried deep in Socket.io documentation
+    // @see https://socket.io/docs/migrating-from-0-9/
+    io.use(async (socket, next) => {
       try {
         const userId = await (async () => {
           try {
             const rawHeader = socket.handshake.headers['x-shell-authenticate'];
-
-            console.log(rawHeader);
   
             if (!rawHeader) {
               throw new Error('No x-auth header present');
@@ -96,6 +101,12 @@ const initClusterWorkerAPIServer = (app, io) => {
               throw new Error('No userId present');
             }
 
+            // Prevent multiple connections from same browser
+            const userSocketId = await fetchUserSocketId(userId);
+            if (userSocketId) {
+              throw new Error('User / Device is already connected');
+            }
+
             await setUserData({
               userId
             }, socket);
@@ -106,9 +117,31 @@ const initClusterWorkerAPIServer = (app, io) => {
           }
         })();
 
+        socket.userId = userId;
+
+        // Must call next, regardless of whether authentication was performed or not
+        next();
+      } catch (exc) {
+        console.error(exc);
+
+        socket.authenticationError = exc.toString();
+        next();
+      }
+    });
+
+    io.on('connection', async (socket) => {
+      try {
+        if (socket.authenticationError) {
+          socket.emit(SOCKET_API_EVT_AUTHENTICATION_ERROR, socket.authenticationError);
+          socket.disconnect();
+          return;
+        }
+
         // Initialize the Socket Routes with the socket
         // TODO: Include any specific URL routes in log output here
         initSocketAPIRoutes(socket, io);
+
+        const { userId } = socket;
 
         console.log(`Socket.io Client connected\n`, {
           socketId: socket.id,
@@ -131,6 +164,10 @@ const initClusterWorkerAPIServer = (app, io) => {
               socketId: socket.id,
               userId
             });
+
+            await setUserData({
+              userId
+            }, null);
           } catch (exc) {
             throw exc;
           }

@@ -16,6 +16,7 @@ export const STATE_SOCKET_ID = 'socketId';
 export const STATE_IS_CONNECTED = 'isConnected';
 export const STATE_IS_RECONNECTING = 'isReconnecting';
 export const STATE_RECONNECT_ATTEMPT_NUMBER = 'reconnectAttemptNumber';
+export const STATE_SOCKET_AUTHENTICATION_ERROR = 'socketAuthenticationError';
 export const STATE_SOCKET_CONNECT_ERROR = 'socketConnectError';
 export const STATE_CONNECTION_STATUS = 'connectionStatus';
 export const STATE_CLIENT_IP = 'clientIP';
@@ -29,6 +30,7 @@ export default class SocketLinkedState extends LinkedState {
       [STATE_IS_CONNECTED]: false, // socket.io.connected
       [STATE_IS_RECONNECTING]: false, //socket.io.reconnecting
       [STATE_RECONNECT_ATTEMPT_NUMBER]: 0,
+      [STATE_SOCKET_AUTHENTICATION_ERROR]: null,
       [STATE_SOCKET_CONNECT_ERROR]: null,
 
       [STATE_CONNECTION_STATUS]: null,

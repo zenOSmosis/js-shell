@@ -79,6 +79,7 @@ select option {
   color: $inputTextColor;
   border: 1px $inputBorderColor solid;
   position: relative;
+  vertical-align: middle;
 }
 
 *::placeholder {

@@ -2,6 +2,12 @@
  * @event
  * ...
  */
+export const SOCKET_API_EVT_AUTHENTICATION_ERROR = 'api/evt/authentication-error';
+
+/**
+ * @event
+ * ...
+ */
 export const SOCKET_API_EVT_PEER_ID_CONNECT = 'api/evt/peer-connect';
 
 /**

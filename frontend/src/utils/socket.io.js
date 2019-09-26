@@ -4,9 +4,11 @@ import SocketLinkedState, {
   STATE_SOCKET_ID,
   STATE_IS_CONNECTED,
   STATE_RECONNECT_ATTEMPT_NUMBER,
+  STATE_SOCKET_AUTHENTICATION_ERROR,
   STATE_SOCKET_CONNECT_ERROR
 } from 'state/SocketLinkedState';
 import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
+import { SOCKET_API_EVT_AUTHENTICATION_ERROR } from 'shared/socketAPI/socketAPIEvents';
 
 const socketLinkedState = new SocketLinkedState();
 
@@ -24,6 +26,7 @@ const socket = io.connect(SOCKET_IO_URL, {
  * Overrides socket.disconnect() with request disconnect event, as there does
  * not seem to be a way to disconnect the Socket directly from the client side.
  */
+// TODO: Use socket.close() on client
 socket.disconnect = () => {
   socket.emit(SOCKET_API_ROUTE_REQUEST_DISCONNECT);
 };
@@ -40,13 +43,9 @@ socket.on(EVT_SOCKET_CONNECT, () => {
   });
 });
 
-// Socket disconnect
-socket.on(EVT_SOCKET_DISCONNECT, () => {
-  console.debug('Socket.io disconnected', socket);
-
+socket.on(SOCKET_API_EVT_AUTHENTICATION_ERROR, (reason) => {
   socketLinkedState.setState({
-    [STATE_IS_CONNECTED]: false,
-    [STATE_SOCKET_ID]: null
+    [STATE_SOCKET_AUTHENTICATION_ERROR]: reason
   });
 });
 
@@ -56,6 +55,16 @@ socket.on(EVT_SOCKET_CONNECT_ERROR, (socketConnectError) => {
 
   socketLinkedState.setState({
     [STATE_SOCKET_CONNECT_ERROR]: socketConnectError
+  });
+});
+
+// Socket disconnect
+socket.on(EVT_SOCKET_DISCONNECT, () => {
+  console.debug('Socket.io disconnected', socket);
+
+  socketLinkedState.setState({
+    [STATE_IS_CONNECTED]: false,
+    [STATE_SOCKET_ID]: null
   });
 });
 

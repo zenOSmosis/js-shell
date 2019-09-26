@@ -1,4 +1,5 @@
 import fetchUsersCollection from './fetchUsersCollection';
+import fetchConnectedSocketIds from 'utils/socketIO/fetchConnectedSocketIds';
 
 const fetchUserSocketId = async (userId) => {
   try {
@@ -9,10 +10,8 @@ const fetchUserSocketId = async (userId) => {
       user_id: userId,
     }, {
       projection: {
-        _id: true, // Include _id (to include something), or the sliced socket_ids will return all of the fields
-        socket_ids: {
-          $slice: -1
-        }
+        _id: false,
+        socket_id: true
       }
     });
 
@@ -20,9 +19,12 @@ const fetchUserSocketId = async (userId) => {
       return;
     }
 
-    const { socket_ids: socketIds } = objResult;
+    const { socket_id: socketId } = objResult;
 
-    const socketId = socketIds[0];
+    const connectedSocketIds = await fetchConnectedSocketIds();
+    if (!connectedSocketIds.includes(socketId)) {
+      return;
+    }
 
     return socketId;
   } catch (exc) {

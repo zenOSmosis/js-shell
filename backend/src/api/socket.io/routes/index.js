@@ -1,7 +1,6 @@
 /**
  * API routing for the client Socket.io connection.
  */
-
 import {
   // debugError
   SOCKET_API_ROUTE_DEBUG_ERROR,

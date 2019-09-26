@@ -23,6 +23,9 @@ class LocalUser extends Peer {
     this.on(EVT_ANY_UPDATE, () => {
       this._write();
     });
+
+    // Perform initial sync
+    this._write();
   }
 
   async writeRemote() {

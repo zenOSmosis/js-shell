@@ -12,9 +12,7 @@ const fetchUserIdWithSocketId = async (socketId) => {
 
     // @see https://mongodb.github.io/node-mongodb-native/3.3/api/Collection.html#findOne
     let objUserId = await usersCollection.findOne({
-      socket_ids: {
-        $in: [socketId]
-      },
+      socket_id: socketId
     }, {
       projection: {
         _id: false,
