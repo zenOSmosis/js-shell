@@ -18,7 +18,7 @@ const fetchConnectedUsers = async (ignoreSocketId = null) => {
     const usersCollection = await fetchUsersCollection();
     
     let connectedUsers = await usersCollection.find({
-      socket_ids: {
+      socket_id: {
         $in: connectedSocketIds
       }
     }).toArray();
