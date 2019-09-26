@@ -1,5 +1,4 @@
 import LinkedState, { EVT_LINKED_STATE_UPDATE } from './LinkedState';
-import { getSocketId } from 'utils/socket.io';
 
 export {
   EVT_LINKED_STATE_UPDATE
