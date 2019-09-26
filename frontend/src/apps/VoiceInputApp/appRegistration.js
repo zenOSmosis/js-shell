@@ -17,8 +17,11 @@ export default registerApp({
   },
   cmd: (appRuntime) => {
     let _voiceInputLinkedState = new VoiceInputLinkedState();
-    appRuntime.on('beforeExit', () => {
+
+    // TODO: Use EVT_EXIT
+    appRuntime.on('exit', () => {
       _voiceInputLinkedState.destroy();
+      _voiceInputLinkedState = null;
     });
 
     // Keeps view synced to runtime state
