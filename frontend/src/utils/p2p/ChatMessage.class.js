@@ -41,7 +41,7 @@ class ChatMessage extends P2PSharedObject {
     let chatMessage = commonP2PLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid);
 
     if (!chatMessage) {
-      chatMessage = ChatMessage.createFromSharedData(false, sharedData);
+      chatMessage = ChatMessage.createFromSharedData(sharedData);
     } else {
       // Manipulate existing
 
@@ -58,24 +58,27 @@ class ChatMessage extends P2PSharedObject {
   /**
    * Creates a new ChatMessage instance from the given sharedData and registers
    * it w/ P2PLinkedState.
-   * 
-   * @param {boolean} isFromLocal Whether the local peer originated the
-   * ChatMessage.
+   *
    * @param {Object} sharedData
    * @return {ChatMessage}
    */
-  static createFromSharedData(isFromLocal, sharedData) {
-    const { fromPeerId, toPeerId } = sharedData;
+  static createFromSharedData(sharedData) {
+    const { toPeerId, fromPeerId } = sharedData;
 
-    const chatMessage = new ChatMessage(isFromLocal, toPeerId, fromPeerId, sharedData);
+    const chatMessage = new ChatMessage(toPeerId, fromPeerId, sharedData);
 
     return chatMessage;
   };
 
-  // TODO: Remove isFromLocal (can be determined from localUserId)
-  constructor(isFromLocal, toPeerId, fromPeerId = null, existingSharedData = null) {
+  constructor(toPeerId, fromPeerId = null, existingSharedData = null) {
+    const localUserId = getLocalUserId();
+    const isFromLocal = (
+      (!fromPeerId && !existingSharedData) /* Constucted class w/ only toPeerId */ ||
+      (fromPeerId === localUserId) /* Explicit match */
+    );
+
     const initialSharedData = existingSharedData || {
-      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: (fromPeerId ? fromPeerId : getLocalUserId()),
+      [SHARED_DATA_KEY_FROM_SOCKET_PEER_ID]: (fromPeerId ? fromPeerId : localUserId),
       [SHARED_DATA_KEY_TO_SOCKET_PEER_ID]: toPeerId,
       [SHARED_DATA_KEY_MESSAGE_UUID]: uuidv4(),
       [SHARED_DATA_KEY_IS_TYPING]: false,
@@ -93,7 +96,7 @@ class ChatMessage extends P2PSharedObject {
 
     super(initialSharedData, initialPrivateData);
 
-    // Non-serializable; direct class property
+    // Native timeout which keeps track of whether the user is typing or not
     this._isTypingTimeout = null;
 
     // Add the message to the state store
