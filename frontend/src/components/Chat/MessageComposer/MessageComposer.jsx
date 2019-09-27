@@ -34,7 +34,7 @@ class MessageComposer extends Component {
 
     // Start a new chat message, if one is not already present
     if (!this._currentChatMessage) {
-      this._currentChatMessage = new ChatMessage(true, toPeerId);
+      this._currentChatMessage = new ChatMessage(toPeerId);
     }
 
     // Enter key

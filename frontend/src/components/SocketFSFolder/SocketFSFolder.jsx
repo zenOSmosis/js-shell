@@ -31,6 +31,9 @@ class SocketFSFolder extends Component {
       dirChildren: [],
       selectedDirChildren: []
     };
+
+    // Apply debounce (see method comments for documentation)
+    this._handleDebouncedNodeInteract = debounce(this._handleDebouncedNodeInteract, 50);
   }
 
   setState(newState, callback = null) {
@@ -122,10 +125,19 @@ class SocketFSFolder extends Component {
     });
   }
 
+  _handleNodeInteract(evt, dirChild) {
+    evt.persist();
+    this._handleDebouncedNodeInteract(evt, dirChild);
+  }
+
   /**
-   * Important!  The event must be persisted prior to calling this method.
+   * IMPORTANT! Debouncing is applied so that dblclick can be intercepted
+   * without triggering prior state change resulting from left-click.
+   * 
+   * @param {Object} evt 
+   * @param {Object} dirChild 
    */
-  _handleNodeInteract = debounce((evt, dirChild) => {
+  _handleDebouncedNodeInteract(evt, dirChild) {
     if (evt.type === 'dblclick') {
       if (dirChild.isDir) {
         this.chdir(dirChild.path);
@@ -162,7 +174,7 @@ class SocketFSFolder extends Component {
         selectedDirChildren
       });
     }
-  }, 50);
+  }
 
   render() {
     const { dirChildren, selectedDirChildren } = this.state;
@@ -182,8 +194,8 @@ class SocketFSFolder extends Component {
 
               return {
                 className: classNames(style['node'], (isSelected ? style['selected'] : null)),
-                onDoubleClick: (evt) => { evt.persist(); this._handleNodeInteract(evt, dirChild) },
-                onMouseDown: (evt) => { evt.persist(); this._handleNodeInteract(evt, dirChild) },
+                onDoubleClick: (evt) => this._handleNodeInteract(evt, dirChild),
+                onMouseDown: (evt) => this._handleNodeInteract(evt, dirChild),
                 // onTouchStart: (evt) => this._handleNodeInteract(evt, dirChild)
               };
             }}
@@ -272,7 +284,7 @@ class SocketFSFolder extends Component {
             ]}
           />
         );
-        // break; // returned before
+      // break; // returned before
 
       case LAYOUT_TYPE_ICON:
       default:
@@ -298,7 +310,7 @@ class SocketFSFolder extends Component {
             }
           </Full>
         );
-        // break; // returned before
+      // break; // returned before
     }
   }
 }

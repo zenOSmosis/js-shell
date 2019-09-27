@@ -10,6 +10,9 @@ class P2PSharedObject extends EventEmitter {
 
     this._sharedData = initialSharedData;
     this._privateData = initialPrivateData;
+
+    // See emit() for usage
+    this._eventAnyUpdateDebounceTimeout = null;
   }
 
   /**
@@ -20,6 +23,20 @@ class P2PSharedObject extends EventEmitter {
 
     this.emit(EVT_SHARED_UPDATE);
     this.emit(EVT_ANY_UPDATE);
+  }
+
+  emit(eventName, eventData = null) {
+    // Prevent double-firing on EVT_ANY_UPDATE, due to this event being
+    // emitted twice on shared/private update multi-sets
+    if (eventName === EVT_ANY_UPDATE) {
+      clearTimeout(this._eventAnyUpdateDebounceTimeout);
+
+      this._eventAnyUpdateDebounceTimeout = setTimeout(() => {
+        super.emit(EVT_ANY_UPDATE);
+      }, 0);
+    } else {
+      super.emit(eventName, eventData);
+    }
   }
 
   /**

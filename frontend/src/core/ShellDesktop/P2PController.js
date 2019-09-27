@@ -13,6 +13,7 @@ import P2PLinkedState, {
 import {
   SOCKET_API_EVT_PEER_ID_CONNECT,
   SOCKET_API_EVT_PEER_ID_DISCONNECT,
+  SOCKET_API_EVT_PEER_DETAIL,
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
 import {
@@ -66,6 +67,7 @@ class P2PController extends ClientProcess {
     socket.on(EVT_SOCKET_DISCONNECT, this._syncConnectedSocketPeers);
     socket.on(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleSocketPeerConnect);
     socket.on(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
+    socket.on(SOCKET_API_EVT_PEER_DETAIL, this._handleReceivedSocketPeerDetail);
     socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
 
     this.on(EVT_BEFORE_EXIT, () => {
@@ -73,6 +75,7 @@ class P2PController extends ClientProcess {
       socket.off(EVT_SOCKET_DISCONNECT, this._syncConnectedSocketPeers);
       socket.off(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleRemoteSocketPeerConnect);
       socket.off(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
+      socket.off(SOCKET_API_EVT_PEER_DETAIL, this._handleReceivedSocketPeerDetail);
       socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
     });
 
@@ -105,7 +108,13 @@ class P2PController extends ClientProcess {
     } catch (exc) {
       throw exc;
     }
-  }
+  };
+
+  _handleReceivedSocketPeerDetail = (socketPeerDetail) => {
+    console.warn('TODO: _handleReceivedSocketPeerDetail', {
+      socketPeerDetail
+    });
+  };
 
   /**
    * Associates connected Socket.io peer with P2PLinkedState.
@@ -119,7 +128,7 @@ class P2PController extends ClientProcess {
 
     const socketPeerId = peer.getPeerId();
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
-  }
+  };
 
   /**
    * Disassociates connected Socket.io peer with P2PLinkedState.
@@ -129,7 +138,7 @@ class P2PController extends ClientProcess {
     this._p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, socketPeerId);
 
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
-  }
+  };
 
   _handleReceivedSocketPeerDataPacket = (dataPacket) => {
     _handleReceivedSocketPeerDataPacket(dataPacket);

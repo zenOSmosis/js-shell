@@ -1,0 +1,2 @@
+Utilize MessageChannel API for message transport
+@see https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel

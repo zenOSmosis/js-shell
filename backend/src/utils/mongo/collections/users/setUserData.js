@@ -1,9 +1,11 @@
 import fetchUsersCollection from './fetchUsersCollection';
 import {
   MONGO_DB_USERS_FIELD_USER_ID,
+  MONGO_DB_USERS_FIELD_SHARED_DATA,
+  MONGO_DB_USERS_FIELD_PRIVATE_DATA,
+  MONGO_DB_USERS_FIELD_SOCKET_ID,
   MONGO_DB_USERS_FIELD_UPDATE_TIME
 } from './fields';
-import { objPropsCamelCaseToSnakeCase } from '../../converters';
 
 /**
  * @param {Object} userData
@@ -11,9 +13,11 @@ import { objPropsCamelCaseToSnakeCase } from '../../converters';
  */
 const setUserData = async (userData, socket = null) => {
   try {
+    const { sharedData, privateData } = userData;
+
     const usersCollection = await fetchUsersCollection();
 
-    const { userId } = userData;
+    const { userId } = sharedData;
 
     if (userId === undefined) {
       throw new Error('userId must be specified when setting user data');
@@ -26,23 +30,20 @@ const setUserData = async (userData, socket = null) => {
           socket : socket.id
     );
 
-    const writeUserData = objPropsCamelCaseToSnakeCase({
-      ...userData,
-      ...{
-        socketId
-      }
-    });
-
     await usersCollection.updateOne({
       [MONGO_DB_USERS_FIELD_USER_ID]: userId
     }, {
       $set: {
-        ...writeUserData,
+        [MONGO_DB_USERS_FIELD_SHARED_DATA]: sharedData,
+        [MONGO_DB_USERS_FIELD_PRIVATE_DATA]: privateData,
+        [MONGO_DB_USERS_FIELD_SOCKET_ID]: socketId,
         [MONGO_DB_USERS_FIELD_UPDATE_TIME]: new Date().toISOString()
       },
     }, {
       upsert: true // On non-exist, create
     });
+
+    return sharedData;
   } catch (exc) {
     throw exc;
   }

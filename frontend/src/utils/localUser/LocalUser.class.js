@@ -31,10 +31,12 @@ class LocalUser extends Peer {
   async writeRemote() {
     try {
       const sharedData = this._sharedData;
+      const privateData = this._privateData;
 
       // Write to remote
       await socketAPIQuery(SOCKET_API_ROUTE_SET_USER_DATA, {
-        ...sharedData
+        sharedData,
+        privateData
       });
     } catch (exc) {
       throw exc;

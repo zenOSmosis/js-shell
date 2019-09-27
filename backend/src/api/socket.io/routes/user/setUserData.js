@@ -1,13 +1,14 @@
-// TODO: Set user data in utils/user/setUserData
-// TODO: Broadcast user update to all connected users, if public data exists
 import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
-
 import dbSetUserData from 'utils/mongo/collections/users/setUserData';
+import broadcast from 'utils/p2p/broadcast';
+import { SOCKET_API_EVT_PEER_DETAIL } from '../../events';
 
 const setUserData = async (userData, socket, ack) => {
   return await handleSocketAPIRoute(async () => {
     try {
-      await dbSetUserData(userData, socket);
+      const sharedData = await dbSetUserData(userData, socket);
+
+      broadcast(socket, SOCKET_API_EVT_PEER_DETAIL, sharedData);
     } catch (exc) {
       throw exc;
     }

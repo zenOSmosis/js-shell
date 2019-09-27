@@ -108,7 +108,9 @@ const initClusterWorkerAPIServer = (app, io) => {
             }
 
             await setUserData({
-              userId
+              sharedData: {
+                userId
+              }
             }, socket);
 
             return userId;
