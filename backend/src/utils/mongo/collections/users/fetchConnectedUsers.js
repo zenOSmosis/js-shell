@@ -1,6 +1,9 @@
 import fetchUsersCollection from './fetchUsersCollection';
-import fetchConnectedSocketIds from 'utils/socketIO/fetchConnectedSocketIds';
-import { objPropsSnakeCaseToCamelCase } from '../../converters';
+import fetchConnectedSocketIds from 'utils/p2p/fetchConnectedSocketIds';
+import {
+  MONGO_DB_USERS_FIELD_SOCKET_ID,
+  MONGO_DB_USERS_FIELD_SHARED_DATA
+} from './fields';
 
 /**
  * @param {string} ignoreSocketId? Socket.io id to ignore.
@@ -17,15 +20,27 @@ const fetchConnectedUsers = async (ignoreSocketId = null) => {
 
     const usersCollection = await fetchUsersCollection();
     
-    let connectedUsers = await usersCollection.find({
-      socket_id: {
+    const dbConnectedUsers = await usersCollection.find({
+      [MONGO_DB_USERS_FIELD_SOCKET_ID]: {
         $in: connectedSocketIds
+      }
+    }, {
+      projection: {
+        _id: false,
+        [MONGO_DB_USERS_FIELD_SHARED_DATA]: true
       }
     }).toArray();
 
-    // Convert each user to camelCase
-    connectedUsers = connectedUsers.map(user => {
-      return objPropsSnakeCaseToCamelCase(user);
+    if (!dbConnectedUsers) {
+      return [];
+    }
+
+    // Extract sharedData from each user
+    // (can this be done w/ the projection, instead?)
+    const connectedUsers = dbConnectedUsers.map(user => {
+      const { [MONGO_DB_USERS_FIELD_SHARED_DATA]: sharedData } = user;
+
+      return sharedData;
     });
 
     return connectedUsers;

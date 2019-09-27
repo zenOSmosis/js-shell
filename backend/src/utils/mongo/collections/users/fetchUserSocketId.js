@@ -1,5 +1,9 @@
 import fetchUsersCollection from './fetchUsersCollection';
-import fetchConnectedSocketIds from 'utils/socketIO/fetchConnectedSocketIds';
+import fetchConnectedSocketIds from 'utils/p2p/fetchConnectedSocketIds';
+import {
+  MONGO_DB_USERS_FIELD_SOCKET_ID,
+  MONGO_DB_USERS_FIELD_USER_ID
+} from './fields';
 
 const fetchUserSocketId = async (userId) => {
   try {
@@ -7,11 +11,11 @@ const fetchUserSocketId = async (userId) => {
 
     // @see https://mongodb.github.io/node-mongodb-native/3.3/api/Collection.html#findOne
     const objResult = await usersCollection.findOne({
-      user_id: userId,
+      [MONGO_DB_USERS_FIELD_USER_ID]: userId,
     }, {
       projection: {
         _id: false,
-        socket_id: true
+        [MONGO_DB_USERS_FIELD_SOCKET_ID]: true
       }
     });
 
@@ -19,8 +23,9 @@ const fetchUserSocketId = async (userId) => {
       return;
     }
 
-    const { socket_id: socketId } = objResult;
+    const { socketId } = objResult;
 
+    // If user is not connected, don't return the socketId
     const connectedSocketIds = await fetchConnectedSocketIds();
     if (!connectedSocketIds.includes(socketId)) {
       return;

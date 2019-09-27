@@ -1,5 +1,5 @@
 import handleSocketAPIRoute from 'utils/socketAPI/handleSocketAPIRoute';
-import fetchConnectedSocketIds from 'utils/socketIO/fetchConnectedSocketIds';
+import fetchConnectedSocketIds from 'utils/p2p/fetchConnectedSocketIds';
 
 const fetchSocketIds = async (options = {}, ack) => {
   return await handleSocketAPIRoute(async () => {
