@@ -5,12 +5,6 @@ import socket, {
   getIsConnected as getIsSocketConnected
 } from 'utils/socket.io';
 import { fetchConnectedPeers } from 'utils/p2p/socketPeer';
-import P2PLinkedState, {
-  ACTION_SET_REMOTE_PEERS,
-  ACTION_ADD_REMOTE_PEER,
-  ACTION_REMOVE_REMOTE_PEER_WITH_ID,
-  ACTION_NOTIFY_PEER_UPDATE
-} from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_ID_CONNECT,
   SOCKET_API_EVT_PEER_ID_DISCONNECT,
@@ -29,24 +23,9 @@ import Peer, { SHARED_DATA_KEY_PEER_ID } from 'utils/p2p/Peer.class';
  * @extends ClientProcess
  */
 class P2PController extends ClientProcess {
-  constructor(...args) {
-    super(...args);
-
-    this._p2pLinkedState = null;
-  };
-
   async _init() {
     try {
       this.setTitle('P2P Controller');
-
-      // Note: Destructor for this is found in _initSocketIOServices
-      this._p2pLinkedState = new P2PLinkedState();
-
-      this.on(EVT_BEFORE_EXIT, () => {
-        // Unlink P2PLinkedState
-        this._p2pLinkedState.destroy();
-        this._p2pLinkedState = null;
-      });
 
       console.debug('Initializing Socket.io peer connections');
       this._initSocketIOServices();
@@ -92,9 +71,9 @@ class P2PController extends ClientProcess {
   }
 
   /**
-   * Fetches Socket Peer Ids from the server and sync them with P2PLinkedState.
+   * Fetches Socket Peers from the server and sync them with P2PLinkedState.
    * 
-   * @return {Promise<void>}
+   * @return {Promise<Peer[]>}
    */
   _syncConnectedSocketPeers = async () => {
     try {
@@ -104,39 +83,32 @@ class P2PController extends ClientProcess {
         connectedSocketPeers = await fetchConnectedPeers();
       }
 
-      // Sync socketPeerIds with P2PLinkedState
-      this._p2pLinkedState.dispatchAction(ACTION_SET_REMOTE_PEERS, connectedSocketPeers);
+      return connectedSocketPeers;
     } catch (exc) {
       throw exc;
     }
   };
 
   _handleReceivedSocketPeerDetail = (socketPeerSharedData) => {
-    const peer = Peer.createFromRawData(socketPeerSharedData);
-
-    this._p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, peer);
+    Peer.createFromRawData(socketPeerSharedData);
   };
 
-  /**
-   * Associates connected Socket.io peer with P2PLinkedState.
-   */
-  // TODO: Handle for SocketPeer
   _handleSocketPeerConnect = (peerId) => {
     const peer = Peer.createFromRawData({
       [SHARED_DATA_KEY_PEER_ID]: peerId
     });
-    this._p2pLinkedState.dispatchAction(ACTION_ADD_REMOTE_PEER, peer);
 
     const socketPeerId = peer.getPeerId();
+
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
   };
-
-  /**
-   * Disassociates connected Socket.io peer with P2PLinkedState.
-   */
-  // TODO: Handle for SocketPeer
+  
   _handleSocketPeerDisconnect = (socketPeerId) => {
-    this._p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, socketPeerId);
+    const peer = Peer.createFromRawData({
+      [SHARED_DATA_KEY_PEER_ID]: socketPeerId
+    });
+
+    peer.disconnect();
 
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
   };

@@ -113,12 +113,6 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        [ACTION_SET_REMOTE_PEERS]: (remotePeers) => {
-          this.setState({
-            [STATE_REMOTE_PEERS]: remotePeers
-          });
-        },
-
         [ACTION_ADD_REMOTE_PEER]: (remotePeer) => {
           const remotePeers = this.getState(STATE_REMOTE_PEERS);
 

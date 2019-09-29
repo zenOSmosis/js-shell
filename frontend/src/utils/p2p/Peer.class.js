@@ -1,4 +1,15 @@
-import P2PSharedObject, { EVT_SHARED_UPDATE, EVT_ANY_UPDATE } from './P2PSharedObject.class';
+import P2PSharedObject, {
+  EVT_SHARED_UPDATE,
+  EVT_ANY_UPDATE
+} from './P2PSharedObject.class';
+
+import P2PLinkedState, {
+  ACTION_ADD_REMOTE_PEER,
+  ACTION_REMOVE_REMOTE_PEER_WITH_ID,
+  ACTION_NOTIFY_PEER_UPDATE,
+
+  STATE_REMOTE_PEERS
+} from 'state/P2PLinkedState';
 
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
@@ -12,6 +23,8 @@ export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
+const _p2pLinkedState = new P2PLinkedState();
+
 /**
  * @see https://www.npmjs.com/package/bowser
  * 
@@ -21,8 +34,6 @@ const _getLocalSystemInfo = () => {
   return Bowser.parse(window.navigator.userAgent);
 }
 
-const _peers = [];
-
 class Peer extends P2PSharedObject {
 
   // TODO: Rename to createFromSharedData
@@ -30,7 +41,7 @@ class Peer extends P2PSharedObject {
     const { [SHARED_DATA_KEY_PEER_ID]: userId } = rawData;
 
     let peer = getPeerWithId(userId);
-    if (!peer) {
+    if (!peer || !peer.getIsConnected()) {
       peer = new Peer(false);
     }
   
@@ -54,6 +65,12 @@ class Peer extends P2PSharedObject {
 
     this._isLocalUser = isLocalUser;
 
+    if (!this._isLocalUser) {
+      _p2pLinkedState.dispatchAction(ACTION_ADD_REMOTE_PEER, this);
+    }
+
+    this._isConnected = true;
+
     if (this._isLocalUser) {
       if (_localUser) {
         // Enforce only one local peer
@@ -62,8 +79,12 @@ class Peer extends P2PSharedObject {
         _localUser = this;
       }
     }
+  }
 
-    _peers.push(this);
+  setSharedData(sharedData) {
+    super.setSharedData(sharedData);
+
+    _p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, this);
   }
 
   /**
@@ -111,6 +132,20 @@ class Peer extends P2PSharedObject {
 
     return aboutDescription;
   }
+
+  getIsConnected() {
+    return this._isConnected;
+  }
+
+  disconnect() {
+    if (this._isLocalUser) {
+      console.error('Cannot disconnect local user');
+    } else {
+      this._isConnected = true;
+
+      _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
+    }
+  }
 }
 
 export default Peer;
@@ -128,10 +163,13 @@ export const getLocalUserId = () => {
 };
 
 export const getPeerWithId = (peerId) => {
-  const lenPeers = _peers.length;
+  const { [STATE_REMOTE_PEERS]: remotePeers } = _p2pLinkedState.getState();
+  
+  const allPeers = [_localUser, ...remotePeers];
+  const lenPeers = allPeers.length;
 
   for (let i = 0; i < lenPeers; i++) {
-    const testPeer = _peers[i];
+    const testPeer = allPeers[i];
     const testPeerId = testPeer.getPeerId();
 
     if (peerId === testPeerId) {
