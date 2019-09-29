@@ -24,10 +24,12 @@ const _getLocalSystemInfo = () => {
 const _peers = [];
 
 class Peer extends P2PSharedObject {
-  static createFromRawData = (rawData) => {
-    const { peerId } = rawData;
 
-    let peer = getPeerWithId(peerId);
+  // TODO: Rename to createFromSharedData
+  static createFromRawData = (rawData) => {
+    const { [SHARED_DATA_KEY_PEER_ID]: userId } = rawData;
+
+    let peer = getPeerWithId(userId);
     if (!peer) {
       peer = new Peer(false);
     }
@@ -46,8 +48,7 @@ class Peer extends P2PSharedObject {
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
     };
     
-    const initialPrivateData = {
-    };
+    const initialPrivateData = {};
 
     super(initialSharedData, initialPrivateData);
 

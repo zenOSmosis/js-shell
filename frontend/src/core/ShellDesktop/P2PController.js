@@ -8,7 +8,8 @@ import { fetchConnectedPeers } from 'utils/p2p/socketPeer';
 import P2PLinkedState, {
   ACTION_SET_REMOTE_PEERS,
   ACTION_ADD_REMOTE_PEER,
-  ACTION_REMOVE_REMOTE_PEER_WITH_ID
+  ACTION_REMOVE_REMOTE_PEER_WITH_ID,
+  ACTION_NOTIFY_PEER_UPDATE
 } from 'state/P2PLinkedState';
 import {
   SOCKET_API_EVT_PEER_ID_CONNECT,
@@ -110,10 +111,10 @@ class P2PController extends ClientProcess {
     }
   };
 
-  _handleReceivedSocketPeerDetail = (socketPeerDetail) => {
-    console.warn('TODO: _handleReceivedSocketPeerDetail', {
-      socketPeerDetail
-    });
+  _handleReceivedSocketPeerDetail = (socketPeerSharedData) => {
+    const peer = Peer.createFromRawData(socketPeerSharedData);
+
+    this._p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, peer);
   };
 
   /**
