@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
-import { getPeerWithId } from 'utils/p2p/Peer.class';
+import Peer from 'utils/p2p/Peer.class';
 
 class Header extends Component {
   render() {
     const { remotePeerId } = this.props;
 
-    const remotePeer = getPeerWithId(remotePeerId);
+    const remotePeer = Peer.getPeerWithId(remotePeerId);
     if (!remotePeer) {
       return false;
     }

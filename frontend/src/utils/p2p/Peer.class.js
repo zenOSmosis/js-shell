@@ -35,12 +35,11 @@ const _getLocalSystemInfo = () => {
 }
 
 class Peer extends P2PSharedObject {
-
   // TODO: Rename to createFromSharedData
   static createFromRawData = (rawData) => {
     const { [SHARED_DATA_KEY_PEER_ID]: userId } = rawData;
 
-    let peer = getPeerWithId(userId);
+    let peer = Peer.getPeerWithId(userId);
     if (!peer || !peer.getIsConnected()) {
       peer = new Peer(false);
     }
@@ -49,6 +48,25 @@ class Peer extends P2PSharedObject {
     peer.setSharedData(rawData);
 
     return peer;
+  };
+
+  /**
+   * @return {Peer}
+   */
+  static getPeerWithId = (peerId) => {
+    const { [STATE_REMOTE_PEERS]: remotePeers } = _p2pLinkedState.getState();
+    
+    const allPeers = [_localUser, ...remotePeers];
+    const lenPeers = allPeers.length;
+  
+    for (let i = 0; i < lenPeers; i++) {
+      const testPeer = allPeers[i];
+      const testPeerId = testPeer.getPeerId();
+  
+      if (peerId === testPeerId) {
+        return testPeer;
+      }
+    }
   };
 
   constructor(isLocalUser = false) {
@@ -159,21 +177,5 @@ export const getLocalUserId = () => {
     return;
   } else {
     return _localUser.getPeerId();
-  }
-};
-
-export const getPeerWithId = (peerId) => {
-  const { [STATE_REMOTE_PEERS]: remotePeers } = _p2pLinkedState.getState();
-  
-  const allPeers = [_localUser, ...remotePeers];
-  const lenPeers = allPeers.length;
-
-  for (let i = 0; i < lenPeers; i++) {
-    const testPeer = allPeers[i];
-    const testPeerId = testPeer.getPeerId();
-
-    if (peerId === testPeerId) {
-      return testPeer;
-    }
   }
 };
