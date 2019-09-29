@@ -15,7 +15,7 @@ import {
   _handleSocketPeerConnectionStatusUpdate,
   _handleReceivedSocketPeerDataPacket
 } from 'utils/p2p/socketPeer';
-import Peer, { SHARED_DATA_KEY_PEER_ID } from 'utils/p2p/Peer.class';
+import Peer, { SHARED_DATA_KEY_USER_ID } from 'utils/p2p/Peer.class';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
@@ -95,7 +95,7 @@ class P2PController extends ClientProcess {
 
   _handleSocketPeerConnect = (peerId) => {
     const peer = Peer.createFromRawData({
-      [SHARED_DATA_KEY_PEER_ID]: peerId
+      [SHARED_DATA_KEY_USER_ID]: peerId
     });
 
     const socketPeerId = peer.getPeerId();
@@ -105,7 +105,7 @@ class P2PController extends ClientProcess {
   
   _handleSocketPeerDisconnect = (socketPeerId) => {
     const peer = Peer.createFromRawData({
-      [SHARED_DATA_KEY_PEER_ID]: socketPeerId
+      [SHARED_DATA_KEY_USER_ID]: socketPeerId
     });
 
     peer.disconnect();

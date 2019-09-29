@@ -18,7 +18,7 @@ export { EVT_SHARED_UPDATE, EVT_ANY_UPDATE };
 
 let _localUser = null;
 
-export const SHARED_DATA_KEY_PEER_ID = 'userId';
+export const SHARED_DATA_KEY_USER_ID = 'userId';
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
@@ -37,7 +37,7 @@ const _getLocalSystemInfo = () => {
 class Peer extends P2PSharedObject {
   // TODO: Rename to createFromSharedData
   static createFromRawData = (rawData) => {
-    const { [SHARED_DATA_KEY_PEER_ID]: userId } = rawData;
+    const { [SHARED_DATA_KEY_USER_ID]: userId } = rawData;
 
     let peer = Peer.getPeerWithId(userId);
     if (!peer || !peer.getIsConnected()) {
@@ -71,7 +71,7 @@ class Peer extends P2PSharedObject {
 
   constructor(isLocalUser = false) {
     const initialSharedData = {
-      [SHARED_DATA_KEY_PEER_ID]: (isLocalUser ? generateId() : null),
+      [SHARED_DATA_KEY_USER_ID]: (isLocalUser ? generateId() : null),
       [SHARED_DATA_KEY_SYSTEM_INFO]: _getLocalSystemInfo(),
       [SHARED_DATA_KEY_NICKNAME]: null,
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
@@ -90,6 +90,8 @@ class Peer extends P2PSharedObject {
     this._isConnected = true;
 
     if (this._isLocalUser) {
+      // TODO: Enforce that this originated from LocalUser class
+
       if (_localUser) {
         // Enforce only one local peer
         throw new Error('_localUser is already set');
@@ -109,7 +111,7 @@ class Peer extends P2PSharedObject {
    * @return {string}
    */
   getPeerId() {
-    const { [SHARED_DATA_KEY_PEER_ID]: peerId } = this._sharedData;
+    const { [SHARED_DATA_KEY_USER_ID]: peerId } = this._sharedData;
 
     return peerId;
   }
