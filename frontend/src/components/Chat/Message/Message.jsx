@@ -26,6 +26,12 @@ const Message = (props = {}) => {
   const messageBody = chatMessage.getMessageBody();
   const isTyping = chatMessage.getIsTyping();
 
+  if (!isTyping && !isFinalized) {
+    // Don't show anything if remote peer is neither typing, or hasn't sent the
+    // full message
+    return false;
+  }
+
   return (
     <div
       className={classNames(style['chat-message'], (isFromLocal ? style['local'] : style['remote']))}
