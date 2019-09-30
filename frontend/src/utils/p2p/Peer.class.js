@@ -89,6 +89,8 @@ class Peer extends P2PSharedObject {
 
     this._isConnected = true;
 
+    this._webRTCPeer = null;
+
     if (this._isLocalUser) {
       // TODO: Enforce that this originated from LocalUser class
 
@@ -99,6 +101,20 @@ class Peer extends P2PSharedObject {
         _localUser = this;
       }
     }
+  }
+
+  setWebRTCPeer(webRTCPeer) {
+    if (this._isLocalUser) {
+      throw new Error('LocalUser cannot directly set WebRTCPeer');
+    } else if (this._webRTCPeer) {
+      throw new Error('Peer already has a WebRTCPeer instance');
+    }
+
+    this._webRTCPeer = webRTCPeer;
+  }
+
+  getWebRTCPeer() {
+    return this._webRTCPeer;
   }
 
   setSharedData(sharedData) {
