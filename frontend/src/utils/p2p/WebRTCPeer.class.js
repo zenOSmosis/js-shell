@@ -130,11 +130,16 @@ class WebRTCPeer extends EventEmitter {
         // stream: this._mediaStream
       });
 
+      /**
+       * @type {SimplePeer.SignalData} signalData
+       */
       this._simplePeer.on('signal', signalData => {
         const dataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE, signalData);
         sendSocketPeerDataPacket(dataPacket);
 
-        console.debug(`Received signal from peer with id: ${remotePeerId}`);
+        console.debug(`Emitting signal to peer with id: ${remotePeerId}`, {
+          signalData
+        });
       });
 
       this._simplePeer.on('connect', () => {
@@ -205,9 +210,17 @@ class WebRTCPeer extends EventEmitter {
     return this._isConnecting;
   }
 
+  /**
+   * @param {SimplePeer.SignalData} signalData 
+   */
   signal(signalData) {
     try {
       this._simplePeer.signal(signalData);
+
+      const remotePeerId = this._remotePeer.getPeerId();
+      console.debug(`Received signal from peer with id: ${remotePeerId}`, {
+        signalData
+      });
     } catch (exc) {
       console.error(exc);
     }
