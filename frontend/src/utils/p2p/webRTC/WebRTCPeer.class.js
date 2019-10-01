@@ -1,47 +1,59 @@
 import EventEmitter from 'events';
 import Peer from '../Peer.class';
 import SimplePeer from 'simple-peer';
-import { 
-  createSocketPeerDataPacket, 
+import {
+  createSocketPeerDataPacket,
   sendSocketPeerDataPacket
 } from '../socketPeer';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
 
+// Emitted between Peers when one wishes to disconnect
+export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
+
 class WebRTCPeer extends EventEmitter {
   static async initiateConnection(remotePeer, mediaStream = null) {
-    let webRTCPeer = remotePeer.getWebRTCPeer();
-    if (!webRTCPeer) {
-      webRTCPeer = new WebRTCPeer(true, remotePeer, mediaStream);
+    try {
+      let webRTCPeer = remotePeer.getWebRTCPeer();
+      if (!webRTCPeer) {
+        webRTCPeer = new WebRTCPeer(true, remotePeer, mediaStream);
+      }
+
+      await webRTCPeer.connect(true);
+
+      return webRTCPeer;
+    } catch (exc) {
+      throw exc;
     }
+  }
 
-    await webRTCPeer.connect(true);
-
-    return webRTCPeer;
+  static async disconnectConnection(remotePeer) {
+    try {
+      let webRTCPeer = remotePeer.getWebRTCPeer();
+      if (webRTCPeer) {
+        await webRTCPeer.disconnect();
+      }
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   static async handleReceivedSignalDataPacket(webRTCSignalDataPacket) {
     try {
-      /*
-      console.warn('TODO: Handle received WebRTC signal', {
-        webRTCSignalDataPacket
-      });
-      */
-
       const { fromPeerId, data: signalData } = webRTCSignalDataPacket;
       const remotePeer = Peer.getPeerWithId(fromPeerId);
       if (!remotePeer) {
         console.error(`Remote peer does not exist in cache with id: ${fromPeerId}`);
         return;
       }
-      
+
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
         webRTCPeer = new WebRTCPeer(false, remotePeer); // TODO: Handle media stream
       }
 
       if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
-        await webRTCPeer.connect();
+        await webRTCPeer.connect(false);
       }
 
       webRTCPeer.signal(signalData);
@@ -63,9 +75,6 @@ class WebRTCPeer extends EventEmitter {
 
     this._isConnected = false;
     this._isConnecting = false;
-
-    // Automatically connect
-    // this.connect();
   }
 
   sleep(ms = 1000) {
@@ -80,7 +89,7 @@ class WebRTCPeer extends EventEmitter {
     try {
       if (this._isConnecting) {
         console.warn('Aborted connect attempt because it is already in a connecting state');
-  
+
         return;
       }
 
@@ -89,63 +98,83 @@ class WebRTCPeer extends EventEmitter {
 
         await this.sleep();
       }
-  
+
       this._isConnecting = true;
-  
+
       this._simplePeer = null;
-  
+
       if (asInitiator !== null) {
         this._isInitiator = asInitiator;
       }
-  
+
       const remotePeerId = this._remotePeer.getPeerId();
-  
+
       this._simplePeer = new SimplePeer({
         initiator: this._isInitiator,
         // stream: this._mediaStream
       });
-    
+
       this._simplePeer.on('signal', signalData => {
         const dataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE, signalData);
         sendSocketPeerDataPacket(dataPacket);
-  
+
         console.debug(`Received signal from peer with id: ${remotePeerId}`);
       });
-    
+
       this._simplePeer.on('connect', () => {
         this._isConnecting = false;
         this._isConnected = true;
-  
+
         console.debug(`WebRTC connected to remote peer with id: ${remotePeerId}`);
+
+        this._simplePeer.send('Hello');
+      });
+
+      this._simplePeer.on('data', data => {
+        console.debug(`WebRTC connection received data from peer with id: ${remotePeerId}`, data);
+
+        if (data.length === EVT_REQUEST_DISCONNECT.length &&
+          data.toString() === EVT_REQUEST_DISCONNECT) {
+          this.disconnect();
+        }
       });
 
       this._simplePeer.on('close', () => {
         this._isConnecting = false;
         this._isConnected = false;
+
+        this._simplePeer.removeAllListeners();
+
         this._simplePeer = null;
-  
+
         console.debug(`WebRTC connection has closed from peer with id: ${remotePeerId}`);
       });
-    
+
       this._simplePeer.on('error', err => {
-        console.error(err);
+        console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
+          err
+        });
       });
-    
-      // Emits when received data from remote
-      /*
-      localWebRTCUser.on('data', data => {
-    
-      });
-      */
+
     } catch (exc) {
       throw exc;
     }
   }
 
+  /**
+   * Retrieves whether or not the WebRTCPeer is currently connectED.
+   * 
+   * @return {boolean}
+   */
   getIsConnected() {
     return this._isConnected;
   }
 
+  /**
+   * Retrieves whether or not the WebRTCPeer is currently connectING.
+   * 
+   * @return {boolean}
+   */
   getIsConnecting() {
     return this._isConnecting;
   }
@@ -160,19 +189,17 @@ class WebRTCPeer extends EventEmitter {
 
   disconnect() {
     if (this._simplePeer) {
+      if (this._isConnected) {
+        this._simplePeer.send(EVT_REQUEST_DISCONNECT);
+      }
+
       return new Promise((resolve, reject) => {
         this._simplePeer.once('close', () => {
-          this._isConnecting = false;
-          this._isConnected = false;
-          this._simplePeer = null;
-          
           resolve();
         });
-        
+
         this._simplePeer.destroy();
       });
-    } else {
-      this._simplePeer = null;
     }
   }
 }
