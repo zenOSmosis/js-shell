@@ -87,6 +87,7 @@ class Peer extends P2PSharedObject {
       _p2pLinkedState.dispatchAction(ACTION_ADD_REMOTE_PEER, this);
     }
 
+    // TODO: Don't set true by default
     this._isConnected = true;
 
     this._webRTCPeer = null;
@@ -169,6 +170,9 @@ class Peer extends P2PSharedObject {
     return aboutDescription;
   }
 
+  /**
+   * @return {boolean}
+   */
   getIsConnected() {
     return this._isConnected;
   }
@@ -177,8 +181,9 @@ class Peer extends P2PSharedObject {
     if (this._isLocalUser) {
       console.error('Cannot disconnect local user');
     } else {
-      this._isConnected = true;
+      this._isConnected = false;
 
+      // TODO: Don't remove
       _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
     }
   }
