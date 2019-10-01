@@ -11,6 +11,11 @@ export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
 // Emitted between Peers when one wishes to disconnect
 export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
 
+export const EVT_CONNECT = 'connect';
+export const EVT_DATA = 'data';
+export const EVT_ERROR = 'error';
+export const EVT_DISCONNECT = 'disconnect';
+
 class WebRTCPeer extends EventEmitter {
   static async initiateConnection(remotePeer, mediaStream = null) {
     try {
@@ -96,7 +101,8 @@ class WebRTCPeer extends EventEmitter {
       if (this._isConnected) {
         await this.disconnect();
 
-        await this.sleep();
+        // Pause to let the other peer sync up
+        await this.sleep(1000);
       }
 
       this._isConnecting = true;
@@ -125,18 +131,32 @@ class WebRTCPeer extends EventEmitter {
         this._isConnecting = false;
         this._isConnected = true;
 
+        this.emit(EVT_CONNECT);
+
         console.debug(`WebRTC connected to remote peer with id: ${remotePeerId}`);
 
+        // TODO: Remove
         this._simplePeer.send('Hello');
       });
 
       this._simplePeer.on('data', data => {
         console.debug(`WebRTC connection received data from peer with id: ${remotePeerId}`, data);
 
+        this.emit(EVT_DATA);
+
+        // Checking data length before trying to convert data to string
         if (data.length === EVT_REQUEST_DISCONNECT.length &&
           data.toString() === EVT_REQUEST_DISCONNECT) {
           this.disconnect();
         }
+      });
+
+      this._simplePeer.on('error', err => {
+        this.emit(EVT_ERROR, err);
+        
+        console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
+          err
+        });
       });
 
       this._simplePeer.on('close', () => {
@@ -145,15 +165,11 @@ class WebRTCPeer extends EventEmitter {
 
         this._simplePeer.removeAllListeners();
 
+        this.emit(EVT_DISCONNECT);
+
         this._simplePeer = null;
 
         console.debug(`WebRTC connection has closed from peer with id: ${remotePeerId}`);
-      });
-
-      this._simplePeer.on('error', err => {
-        console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
-          err
-        });
       });
 
     } catch (exc) {
@@ -187,6 +203,9 @@ class WebRTCPeer extends EventEmitter {
     }
   }
 
+  /**
+   * @return {Promise<void>}
+   */
   disconnect() {
     if (this._simplePeer) {
       if (this._isConnected) {
@@ -195,6 +214,9 @@ class WebRTCPeer extends EventEmitter {
 
       return new Promise((resolve, reject) => {
         this._simplePeer.once('close', () => {
+
+          // Note: EVT_DISCONNECT is emitted directly within simplePeer close handler
+
           resolve();
         });
 
