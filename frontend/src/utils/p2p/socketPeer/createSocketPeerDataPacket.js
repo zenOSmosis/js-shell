@@ -25,14 +25,14 @@ const createSocketPeerDataPacket = (toPeerId, packetType, data, isReceivedReceip
   // A unique identifier for this data packet
   const packetUuid = uuidv4();
 
-  return {
+  return Object.seal({
     toPeerId,
     fromPeerId,
     packetUuid,
     packetType,
     data,
     isReceivedReceiptRequested
-  };
+  });
 };
 
 export default createSocketPeerDataPacket;
