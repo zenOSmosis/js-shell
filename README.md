@@ -123,6 +123,13 @@ Except where usage of 3rd party libraries is concerned, with their own naming co
 - Boolean variable / property names prefixed with "is," unless the words "has," "have," "are" (or other forms of plural designation) are utilized elsewhere in the name.
 - American English spelling variations (e.g. "isSizable" instead of "isSizeable").
 
+### Troubleshooting
+
+## Error: ENOSPC: System limit for number of file watchers reached
+- Solution: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+- Reference: https://github.com/gatsbyjs/gatsby/issues/11406 (note, Gatsby is not utilized in this project)
+
+
 ## Motto
 
 To contribute, however slightly, to the commonwealth of all human innovation and experience.
