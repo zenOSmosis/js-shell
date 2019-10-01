@@ -1,3 +1,5 @@
+// TODO: Automatically disconnect when Peer disconnects (or loses connection)
+
 import EventEmitter from 'events';
 import Peer from './Peer.class';
 import SimplePeer from 'simple-peer';
@@ -5,6 +7,7 @@ import {
   createSocketPeerDataPacket,
   sendSocketPeerDataPacket
 } from './socketPeer';
+import sleep from 'utils/sleep';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
 
@@ -13,18 +16,24 @@ export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
 
 export const EVT_CONNECT = 'connect';
 export const EVT_DATA = 'data';
-export const EVT_ERROR = 'error';
+export const EVT_CONNECT_ERROR = 'connectError';
 export const EVT_DISCONNECT = 'disconnect';
 
 class WebRTCPeer extends EventEmitter {
+  /**
+   * Initiates a WebRTC connection with the given Peer.
+   * 
+   * @param {Peer} remotePeer 
+   * @param {MediaStream} mediaStream 
+   */
   static async initiateConnection(remotePeer, mediaStream = null) {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
-        webRTCPeer = new WebRTCPeer(true, remotePeer, mediaStream);
+        webRTCPeer = new WebRTCPeer(remotePeer);
       }
 
-      await webRTCPeer.connect(true);
+      await webRTCPeer.connect(true, mediaStream);
 
       return webRTCPeer;
     } catch (exc) {
@@ -32,17 +41,10 @@ class WebRTCPeer extends EventEmitter {
     }
   }
 
-  static async disconnectConnection(remotePeer) {
-    try {
-      let webRTCPeer = remotePeer.getWebRTCPeer();
-      if (webRTCPeer) {
-        await webRTCPeer.disconnect();
-      }
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
+  /**
+   * 
+   * @param {SocketPeerDataPacket} webRTCSignalDataPacket 
+   */
   static async handleReceivedSignalDataPacket(webRTCSignalDataPacket) {
     try {
       const { fromPeerId, data: signalData } = webRTCSignalDataPacket;
@@ -54,11 +56,11 @@ class WebRTCPeer extends EventEmitter {
 
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
-        webRTCPeer = new WebRTCPeer(false, remotePeer); // TODO: Handle media stream
+        webRTCPeer = new WebRTCPeer(remotePeer);
       }
 
       if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
-        await webRTCPeer.connect(false);
+        await webRTCPeer.connect(false); // TODO: Handle media stream
       }
 
       webRTCPeer.signal(signalData);
@@ -67,14 +69,30 @@ class WebRTCPeer extends EventEmitter {
     }
   }
 
-  constructor(isInitiator, remotePeer, mediaStream = null) {
+  /**
+   * Disconnects the WebRTC connection from the given Peer.
+   * 
+   * @param {Peer} remotePeer 
+   */
+  static async disconnectConnection(remotePeer) {
+    try {
+      let webRTCPeer = remotePeer.getWebRTCPeer();
+      if (webRTCPeer) {
+        await webRTCPeer.disconnect();
+      }
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * @param {Peer} remotePeer 
+   */
+  constructor(remotePeer) {
     super();
 
-    this._isInitiator = isInitiator;
     this._remotePeer = remotePeer;
     this._remotePeer.setWebRTCPeer(this);
-
-    this._mediaStream = mediaStream;
 
     this._simplePeer = null;
 
@@ -82,15 +100,7 @@ class WebRTCPeer extends EventEmitter {
     this._isConnecting = false;
   }
 
-  sleep(ms = 1000) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
-  }
-
-  async connect(asInitiator = null) {
+  async connect(asInitiator = null, mediaStream = null) {
     try {
       if (this._isConnecting) {
         console.warn('Aborted connect attempt because it is already in a connecting state');
@@ -102,7 +112,7 @@ class WebRTCPeer extends EventEmitter {
         await this.disconnect();
 
         // Pause to let the other peer sync up
-        await this.sleep(1000);
+        await sleep(1000);
       }
 
       this._isConnecting = true;
@@ -152,7 +162,7 @@ class WebRTCPeer extends EventEmitter {
       });
 
       this._simplePeer.on('error', err => {
-        this.emit(EVT_ERROR, err);
+        this.emit(EVT_CONNECT_ERROR, err);
         
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
           err

@@ -2,7 +2,6 @@ import P2PSharedObject, {
   EVT_SHARED_UPDATE,
   EVT_ANY_UPDATE
 } from './P2PSharedObject.class';
-
 import P2PLinkedState, {
   ACTION_ADD_REMOTE_PEER,
   ACTION_REMOVE_REMOTE_PEER_WITH_ID,
@@ -10,19 +9,28 @@ import P2PLinkedState, {
 
   STATE_REMOTE_PEERS
 } from 'state/P2PLinkedState';
-
+import WebRTCPeer, {
+  EVT_CONNECT as EVT_WEB_RTC_CONNECT,
+  EVT_DATA as EVT_WEB_RTC_DATA,
+  EVT_CONNECT_ERROR as EVT_WEB_RTC_CONNECT_ERROR,
+  EVT_DISCONNECT as EVT_WEB_RTC_DISCONNECT
+} from './WebRTCPeer.class';
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
 
+// P2PSharedObject events
 export { EVT_SHARED_UPDATE, EVT_ANY_UPDATE };
-
-let _localUser = null;
 
 export const SHARED_DATA_KEY_USER_ID = 'userId';
 export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
+export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED = 'isWebRTCConnected';
+export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING = 'isWebRTCConnecting';
+export const PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR = 'isWebRTCError';
+
+let _localUser = null;
 const _p2pLinkedState = new P2PLinkedState();
 
 /**
@@ -77,7 +85,11 @@ class Peer extends P2PSharedObject {
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: null
     };
     
-    const initialPrivateData = {};
+    const initialPrivateData = {
+      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: false,
+      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: false,
+      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: false
+    };
 
     super(initialSharedData, initialPrivateData);
 
@@ -102,26 +114,49 @@ class Peer extends P2PSharedObject {
         _localUser = this;
       }
     }
+
+    this.on(EVT_ANY_UPDATE, () => {
+      _p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, this);
+    });
   }
 
+  /**
+   * @param {WebRTCPeer} webRTCPeer 
+   */
   setWebRTCPeer(webRTCPeer) {
     if (this._isLocalUser) {
       throw new Error('LocalUser cannot directly set WebRTCPeer');
-    } else if (this._webRTCPeer) {
+    }
+    
+    if (this._webRTCPeer) {
       throw new Error('Peer already has a WebRTCPeer instance');
     }
 
+    if (!(webRTCPeer instanceof WebRTCPeer)) {
+      throw new TypeError('webRTCPeer should be of WebRTCPeer type');
+    }
+
     this._webRTCPeer = webRTCPeer;
+
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT, () => {
+      this._setIsWebRTCConnected(true);
+      this._setWebRTCConnectError(null);
+    });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
+      this._setIsWebRTCConnected(false);
+    });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, (err) => {
+      this._setWebRTCConnectError(err);
+    });
   }
 
+  /**
+   * @return {WebRTCPeer}
+   */
   getWebRTCPeer() {
     return this._webRTCPeer;
-  }
-
-  setSharedData(sharedData) {
-    super.setSharedData(sharedData);
-
-    _p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, this);
   }
 
   /**
@@ -155,6 +190,9 @@ class Peer extends P2PSharedObject {
     return nickname;
   }
 
+  /**
+   * @param {string} aboutDescription 
+   */
   setAboutDescription(aboutDescription) {
     this.setSharedData({
       [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: aboutDescription
@@ -171,6 +209,63 @@ class Peer extends P2PSharedObject {
   }
 
   /**
+   * @param {boolean} isWebRTCConnected 
+   */
+  _setIsWebRTCConnected(isWebRTCConnected) {
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: isWebRTCConnected
+    });
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getIsWebRTCConnected() {
+    const { [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: isWebRTCConnected } = this._privateData;
+
+    return isWebRTCConnected;
+  }
+
+  /**
+   * 
+   * @param {boolean} isWebRTCConnecting 
+   */
+  _setIsWebRTCConnecting(isWebRTCConnecting) {
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: isWebRTCConnecting
+    });
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getIsWebRTCConnecting() {
+    const { [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: isWebRTCConnecting } = this._privateData;
+
+    return isWebRTCConnecting;
+  }
+
+  /**
+   * @param {Error} webRTCConnectError 
+   */
+  _setWebRTCConnectError(webRTCConnectError) {
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: webRTCConnectError
+    });
+  }
+
+  /**
+   * @return {Error}
+   */
+  getWebRTCConnectError() {
+    const { [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: webRTCConnectError } = this._privateData;
+
+    return webRTCConnectError;
+  }
+
+  /**
+   * TODO: Rename to getIsSocketConnected
+   * 
    * @return {boolean}
    */
   getIsConnected() {

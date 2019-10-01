@@ -8,8 +8,8 @@ class P2PSharedObject extends EventEmitter {
   constructor(initialSharedData, initialPrivateData = {}) {
     super();
 
-    this._sharedData = initialSharedData;
-    this._privateData = initialPrivateData;
+    this._sharedData = Object.seal(initialSharedData);
+    this._privateData = Object.seal(initialPrivateData);
 
     // See emit() for usage
     this._eventAnyUpdateDebounceTimeout = null;

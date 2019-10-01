@@ -13,7 +13,7 @@ import {
 } from 'shared/socketAPI/socketAPIEvents';
 import {
   _handleSocketPeerConnectionStatusUpdate,
-  _handleReceivedSocketPeerDataPacket
+  _routeReceivedSocketPeerDataPacket
 } from 'utils/p2p/socketPeer';
 import Peer, { SHARED_DATA_KEY_USER_ID } from 'utils/p2p/Peer.class';
 
@@ -48,7 +48,7 @@ class P2PController extends ClientProcess {
     socket.on(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleSocketPeerConnect);
     socket.on(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
     socket.on(SOCKET_API_EVT_PEER_DETAIL, this._handleReceivedSocketPeerDetail);
-    socket.on(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
+    socket.on(SOCKET_API_EVT_PEER_DATA, this._routeReceivedSocketPeerDataPacket);
 
     this.on(EVT_BEFORE_EXIT, () => {
       socket.off(EVT_SOCKET_CONNECT, this._syncConnectedSocketPeers);
@@ -56,7 +56,7 @@ class P2PController extends ClientProcess {
       socket.off(SOCKET_API_EVT_PEER_ID_CONNECT, this._handleRemoteSocketPeerConnect);
       socket.off(SOCKET_API_EVT_PEER_ID_DISCONNECT, this._handleSocketPeerDisconnect);
       socket.off(SOCKET_API_EVT_PEER_DETAIL, this._handleReceivedSocketPeerDetail);
-      socket.off(SOCKET_API_EVT_PEER_DATA, this._handleReceivedSocketPeerDataPacket);
+      socket.off(SOCKET_API_EVT_PEER_DATA, this._routeReceivedSocketPeerDataPacket);
     });
 
     // Perform initial sync
@@ -113,8 +113,8 @@ class P2PController extends ClientProcess {
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
   };
 
-  _handleReceivedSocketPeerDataPacket = (dataPacket) => {
-    _handleReceivedSocketPeerDataPacket(dataPacket);
+  _routeReceivedSocketPeerDataPacket = (dataPacket) => {
+    _routeReceivedSocketPeerDataPacket(dataPacket);
   };
 
   /*

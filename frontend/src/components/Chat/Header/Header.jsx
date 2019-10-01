@@ -15,16 +15,32 @@ class Header extends Component {
 
     const nickname = remotePeer.getNickname();
 
+    const isWebRTCConnected = remotePeer.getIsWebRTCConnected();
+    const isWebRTCConnecting = remotePeer.getIsWebRTCConnecting();
+    // const webRTCConnectError = remotePeer.getWebRTCConnectError();
+
     return (
       <div style={{backgroundColor: 'rgba(255,255,255,.8)', color: '#000', fontSize: '1.4rem', fontWeight: 'bold'}}>
         {nickname}
-        <TransparentButton onClick={ evt => WebRTCPeer.initiateConnection(remotePeer) }>
-          <Icon type="phone" />
-        </TransparentButton>
 
-        <button onClick={ evt => WebRTCPeer.disconnectConnection(remotePeer) }>
-          disconnect
-        </button>
+        {
+          isWebRTCConnecting &&
+          <span>WebRTC Connecting...</span>
+        }
+
+        {
+          !isWebRTCConnected &&
+          <TransparentButton onClick={ evt => WebRTCPeer.initiateConnection(remotePeer) }>
+            <Icon type="phone" />
+          </TransparentButton>
+        }
+
+        {
+          isWebRTCConnected &&
+          <button onClick={ evt => WebRTCPeer.disconnectConnection(remotePeer) }>
+            disconnect
+          </button>
+        }
       </div>
     );
   }
