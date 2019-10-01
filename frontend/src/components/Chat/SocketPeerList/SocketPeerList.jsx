@@ -30,6 +30,7 @@ class SocketPeerList extends Component {
             const peerId = peer.getPeerId();
             const nickname = peer.getNickname();
             const aboutDescription = peer.getAboutDescription();
+            const browserOnOs = peer.getBrowserOnOs();
 
             return (
               <GridItem
@@ -39,7 +40,7 @@ class SocketPeerList extends Component {
               // 
               >
                 <TransparentButton
-                  onClick={evt => this.selectPeer(peer)}
+                  onClick={evt => { this.selectPeer(peer); console.debug(peer); }}
                 >
                   <div>
                     <Avatar
@@ -51,6 +52,10 @@ class SocketPeerList extends Component {
                   <div>
                     {
                       nickname || '[Untitled Peer]'
+                    }
+
+                    {
+                      ` / ${browserOnOs}`
                     }
                   </div>
                 </TransparentButton>

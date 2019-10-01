@@ -153,6 +153,34 @@ class Peer extends P2PSharedObject {
   }
 
   /**
+   * @return {Object}
+   */
+  getSystemInfo() {
+    const { [SHARED_DATA_KEY_SYSTEM_INFO]: systemInfo } = this._sharedData;
+
+    return systemInfo;
+  }
+
+  /**
+   * @return {string}
+   */
+  getBrowserOnOs() {
+    const systemInfo = this.getSystemInfo();
+
+    if (systemInfo) {
+      const {
+        browser: {
+          name: browserName
+        }, os: {
+          name: osName
+        }
+      } = systemInfo;
+
+      return `${browserName} on ${osName}`;
+    }
+  }
+
+  /**
    * @return {WebRTCPeer}
    */
   getWebRTCPeer() {
