@@ -3,6 +3,8 @@ import { Icon } from 'antd';
 import Peer from 'utils/p2p/Peer.class';
 import TransparentButton from 'components/TransparentButton';
 import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
+import ScreenShareIcon from 'components/componentIcons/ScreenShareIcon';
+import WebcamIcon from 'components/componentIcons/WebcamIcon';
 import WebRTCPeer from 'utils/p2p/WebRTCPeer.class';
 import style from './Header.module.scss';
 
@@ -45,7 +47,11 @@ class Header extends Component {
         }
 
         <div>
-          <MicrophoneIcon />
+          <MicrophoneIcon /> { /* TODO: If clicked, init connection (or upgrade existing) w/ microphone */ }
+
+          <ScreenShareIcon />
+
+          <WebcamIcon />
         </div>
       </div>
     );
