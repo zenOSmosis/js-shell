@@ -8,6 +8,7 @@ const setUserData = async (userData, socket, ack) => {
     try {
       const sharedData = await dbSetUserData(userData, socket);
 
+      // Broadcast sharedData to all other peers
       broadcast(socket, SOCKET_API_EVT_PEER_DETAIL, sharedData);
     } catch (exc) {
       throw exc;

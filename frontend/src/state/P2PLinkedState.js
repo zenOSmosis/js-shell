@@ -9,17 +9,17 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 export const STATE_CONNECTED_SOCKET_PEERS = 'connectedSocketPeers';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
 export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
-export const STATE_LOCAL_PEER = 'localUser';
 export const STATE_REMOTE_PEERS = 'remotePeers';
+export const STATE_LAST_UPDATED_PEER = 'lastUpdatedPeer';
 
 export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
 export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
 export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUuid';
 export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUuid';
-export const ACTION_SET_LOCAL_PEER = 'setLocalUser';
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
 export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
+export const ACTION_NOTIFY_PEER_UPDATE = 'notifyPeerUpdate';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -38,8 +38,9 @@ export default class P2PLinkedState extends LinkedState {
       // TODO: Cache ChatMessages instead
       [STATE_CACHED_CHAT_MESSAGES]: [],
 
-      [STATE_LOCAL_PEER]: null,
-      [STATE_REMOTE_PEERS]: []
+      [STATE_REMOTE_PEERS]: [],
+
+      [STATE_LAST_UPDATED_PEER]: null
     }, {
       actions: {
         // Adds a chat message to the log
@@ -112,20 +113,6 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        // TODO: Rename to ACTION_SET_LOCAL_USER
-        [ACTION_SET_LOCAL_PEER]: (localUser) => {
-          this.setState({
-            // TODO: Rename to STATE_LOCAL_USER
-            [STATE_LOCAL_PEER]: localUser
-          });
-        },
-
-        [ACTION_SET_REMOTE_PEERS]: (remotePeers) => {
-          this.setState({
-            [STATE_REMOTE_PEERS]: remotePeers
-          });
-        },
-
         [ACTION_ADD_REMOTE_PEER]: (remotePeer) => {
           const remotePeers = this.getState(STATE_REMOTE_PEERS);
 
@@ -146,6 +133,12 @@ export default class P2PLinkedState extends LinkedState {
 
           this.setState({
             [STATE_REMOTE_PEERS]: remotePeers
+          });
+        },
+
+        [ACTION_NOTIFY_PEER_UPDATE]: (peer) => {
+          this.setState({
+            [STATE_LAST_UPDATED_PEER]: peer
           });
         }
       }

@@ -19,15 +19,22 @@ class SocketPeerList extends Component {
   }
 
   render() {
-    const { connectedPeers } = this.props;
+    const {
+      connectedPeers
+    } = this.props;
 
     return (
       <Grid>
         {
-          connectedPeers.map((peer, idx) => {
+          connectedPeers.map((peer) => {
+            const peerId = peer.getPeerId();
+            const nickname = peer.getNickname();
+            const aboutDescription = peer.getAboutDescription();
+
             return (
               <GridItem
-                key={idx}
+                key={peerId}
+                title={aboutDescription}
               // title={user.nickname}
               // 
               >
@@ -43,7 +50,7 @@ class SocketPeerList extends Component {
 
                   <div>
                     {
-                      peer.getPeerId()
+                      nickname || '[Untitled Peer]'
                     }
                   </div>
                 </TransparentButton>

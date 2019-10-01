@@ -8,7 +8,8 @@ import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
 import Switch from 'components/Switch';
 import {
-  STATE_REMOTE_PEERS
+  STATE_REMOTE_PEERS,
+  STATE_LAST_UPDATED_PEER
 } from 'state/P2PLinkedState';
 
 // import { Avatar, Input } from 'antd';
@@ -69,16 +70,28 @@ class ChatAppWindow extends Component {
           key={selectedPeer ? selectedPeer.getPeerId() : new Date().toISOString()}
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
-            const { [STATE_REMOTE_PEERS]: connectedPeers } = updatedState;
+            const {
+              [STATE_REMOTE_PEERS]: connectedPeers,
+              [STATE_LAST_UPDATED_PEER]: lastUpdatedPeer
+            } = updatedState;
+
+            const filteredState = {};
 
             if (connectedPeers !== undefined) {
-              return {
-                connectedPeers
-              };
+              filteredState[STATE_REMOTE_PEERS] = connectedPeers;
             }
+
+            if (lastUpdatedPeer !== undefined) {
+              filteredState[STATE_LAST_UPDATED_PEER] = lastUpdatedPeer;
+            }
+
+            return filteredState;
           }}
           render={(renderProps) => {
-            const { connectedPeers } = renderProps;
+            const {
+              [STATE_REMOTE_PEERS]: connectedPeers,
+              [STATE_LAST_UPDATED_PEER]: lastUpdatedPeer
+            } = renderProps;
 
             if (!connectedPeers.length) {
               return (
@@ -97,6 +110,7 @@ class ChatAppWindow extends Component {
                   <Full>
                     <SocketPeerList
                       connectedPeers={connectedPeers}
+                      lastUpdatedPeer={lastUpdatedPeer}
                       onPeerSelect={peer => this._handlePeerSelect(peer)}
                     />
                   </Full>

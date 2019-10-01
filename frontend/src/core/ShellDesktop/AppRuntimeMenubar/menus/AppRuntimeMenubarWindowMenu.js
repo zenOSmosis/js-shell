@@ -32,7 +32,14 @@ export default class AppRuntimeMenubarWindowMenu extends AppRuntimeMenubarMenu {
                 onClick: () => {
                   desktopWindow.minimize();
                 }
-              })
+              });
+
+              winMaxMinItems.push({
+                title: 'Move To 0:0',
+                onClick: () => {
+                  desktopWindow.moveTo(0, 0);
+                }
+              });
 
               return winMaxMinItems;
             } else {

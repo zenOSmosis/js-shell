@@ -5,14 +5,13 @@ import { setItem, getItem } from '../encryptedLocalStorage';
 import { socketAPIQuery } from '../socketAPI';
 import { SOCKET_API_ROUTE_SET_USER_DATA } from '../../shared/socketAPI/socketAPIRoutes';
 
-// TODO: Rename to LOCAL_USER_STORAGE_KEY
-export const LOCAL_PEER_STORAGE_KEY = 'LocalUser';
+export const LOCAL_USER_STORAGE_KEY = 'LocalUser';
 
 class LocalUser extends Peer {
   constructor() {
     super(true);
 
-    const cachedLocalUserData = getItem(LOCAL_PEER_STORAGE_KEY);
+    const cachedLocalUserData = getItem(LOCAL_USER_STORAGE_KEY);
     if (cachedLocalUserData) {
       const { privateData, sharedData } = cachedLocalUserData;
 
@@ -28,7 +27,30 @@ class LocalUser extends Peer {
     this._write();
   }
 
-  async writeRemote() {
+  /**
+   * Writes locally and to remote db / peers.
+   */
+  async _write() {
+    try {
+      const privateData = this._privateData;
+      const sharedData = this._sharedData;
+
+      // Write to local storage
+      setItem(LOCAL_USER_STORAGE_KEY, {
+        privateData,
+        sharedData
+      });
+
+      await this._writeRemote();
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * Writes to remote db / peers.
+   */
+  async _writeRemote() {
     try {
       const sharedData = this._sharedData;
       const privateData = this._privateData;
@@ -38,24 +60,6 @@ class LocalUser extends Peer {
         sharedData,
         privateData
       });
-    } catch (exc) {
-      throw exc;
-    }
-  }
-
-  // TODO: Block this if not the local peer
-  async _write() {
-    try {
-      const privateData = this._privateData;
-      const sharedData = this._sharedData;
-
-      // Write to local storage
-      setItem(LOCAL_PEER_STORAGE_KEY, {
-        privateData,
-        sharedData
-      });
-
-      await this.writeRemote();
     } catch (exc) {
       throw exc;
     }
