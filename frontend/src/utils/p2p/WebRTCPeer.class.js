@@ -16,6 +16,7 @@ export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
 
 export const EVT_CONNECT = 'connect';
 export const EVT_DATA = 'data';
+export const EVT_STREAM = 'stream';
 export const EVT_CONNECT_ERROR = 'connectError';
 export const EVT_DISCONNECT = 'disconnect';
 
@@ -23,17 +24,22 @@ class WebRTCPeer extends EventEmitter {
   /**
    * Initiates a WebRTC connection with the given Peer.
    * 
+   * Note: This either creates a new WebRTC instance, or reuses an existing one
+   * if one is already attached to the remotePeer.
+   * 
    * @param {Peer} remotePeer 
-   * @param {MediaStream} mediaStream 
+   * @param {MediaStream} mediaStream? Optional media stream to send to remote
+   * Peer
+   * @return {Promise<WebRTCPeer>}
    */
-  static async initiateConnection(remotePeer, mediaStream = null) {
+  static async initConnection(remotePeer, mediaStream = null) {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
         webRTCPeer = new WebRTCPeer(remotePeer);
       }
 
-      await webRTCPeer.connect(true, mediaStream);
+      await webRTCPeer.initConnection(true, mediaStream);
 
       return webRTCPeer;
     } catch (exc) {
@@ -60,7 +66,7 @@ class WebRTCPeer extends EventEmitter {
       }
 
       if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
-        await webRTCPeer.connect(false); // TODO: Handle media stream
+        await webRTCPeer.initConnection(false); // TODO: Handle media stream
       }
 
       webRTCPeer.signal(signalData);
@@ -78,7 +84,7 @@ class WebRTCPeer extends EventEmitter {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (webRTCPeer) {
-        await webRTCPeer.disconnect();
+        await webRTCPeer.disinitConnection();
       }
     } catch (exc) {
       throw exc;
@@ -100,7 +106,15 @@ class WebRTCPeer extends EventEmitter {
     this._isConnecting = false;
   }
 
-  async connect(asInitiator = null, mediaStream = null) {
+  /**
+   * IMPORTANT! This resolves after the underlying SimplePeer engine has
+   * initialized, NOT after it connects.
+   * 
+   * @param {boolean} asInitiator 
+   * @param {MediaStream} mediaStream?
+   * @return {Promise<void>} 
+   */
+  async initConnection(asInitiator, mediaStream = null) {
     try {
       if (this._isConnecting) {
         console.warn('Aborted connect attempt because it is already in a connecting state');
@@ -109,7 +123,7 @@ class WebRTCPeer extends EventEmitter {
       }
 
       if (this._isConnected) {
-        await this.disconnect();
+        await this.disinitConnection();
 
         // Pause to let the other peer sync up
         await sleep(1000);
@@ -127,7 +141,7 @@ class WebRTCPeer extends EventEmitter {
 
       this._simplePeer = new SimplePeer({
         initiator: this._isInitiator,
-        // stream: this._mediaStream
+        stream: mediaStream
       });
 
       /**
@@ -154,6 +168,12 @@ class WebRTCPeer extends EventEmitter {
         this._simplePeer.send('Hello');
       });
 
+      this._simplePeer.on('stream', stream => {
+        console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
+
+        this.emit(EVT_STREAM, stream);
+      });
+
       this._simplePeer.on('data', data => {
         console.debug(`WebRTC connection received data from peer with id: ${remotePeerId}`, data);
 
@@ -162,7 +182,7 @@ class WebRTCPeer extends EventEmitter {
         // Checking data length before trying to convert data to string
         if (data.length === EVT_REQUEST_DISCONNECT.length &&
           data.toString() === EVT_REQUEST_DISCONNECT) {
-          this.disconnect();
+          this.disinitConnection();
         }
       });
 
@@ -229,7 +249,7 @@ class WebRTCPeer extends EventEmitter {
   /**
    * @return {Promise<void>}
    */
-  disconnect() {
+  disinitConnection() {
     if (this._simplePeer) {
       if (this._isConnected) {
         this._simplePeer.send(EVT_REQUEST_DISCONNECT);

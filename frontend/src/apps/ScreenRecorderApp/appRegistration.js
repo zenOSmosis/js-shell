@@ -42,14 +42,14 @@ export default registerApp({
 
         const displayMediaOptions = {
           video: {
-            cursor: 'never'
+            cursor: 'never' // TODO: Remove hardcoding
           },
-          audio: false
+          audio: false // TODO: Remove hardcoding
         };
 
-        let stream;
+        const stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
-        videoElem.srcObject = stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+        videoElem.srcObject = stream;
         dumpOptionsInfo();
 
         videoElem.play();
@@ -57,7 +57,7 @@ export default registerApp({
         // Prototype video recording on remote
         (async () => {
           try {
-            // TODO: Fix hard-coded path
+            // TODO: Remove hard-coded path
             const TEMP_PATH = '/tmp/screen_record.webm';
 
             await socketFS.rm(TEMP_PATH);
@@ -76,8 +76,8 @@ export default registerApp({
                 totalBytes += newBytes;
               });
             }
+            // Record in chunks of 1 second
             rec.start(1000);
-  
 
             appProcess.on('beforeExit', () => {
               rec.stop();

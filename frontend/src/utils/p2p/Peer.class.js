@@ -11,7 +11,8 @@ import P2PLinkedState, {
 } from 'state/P2PLinkedState';
 import WebRTCPeer, {
   EVT_CONNECT as EVT_WEB_RTC_CONNECT,
-  EVT_DATA as EVT_WEB_RTC_DATA,
+  // EVT_DATA as EVT_WEB_RTC_DATA,
+  EVT_STREAM as EVT_WEB_RTC_STREAM,
   EVT_CONNECT_ERROR as EVT_WEB_RTC_CONNECT_ERROR,
   EVT_DISCONNECT as EVT_WEB_RTC_DISCONNECT
 } from './WebRTCPeer.class';
@@ -121,6 +122,8 @@ class Peer extends P2PSharedObject {
   }
 
   /**
+   * TODO: Rename to mountWebRTCPeer
+   * 
    * @param {WebRTCPeer} webRTCPeer 
    */
   setWebRTCPeer(webRTCPeer) {
@@ -143,14 +146,42 @@ class Peer extends P2PSharedObject {
       this._setWebRTCConnectError(null);
     });
 
-    this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
-      this._setIsWebRTCConnected(false);
+    // Prototype stream handling
+    this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (stream) => {
+      console.debug({
+        stream
+      });
+
+      try {
+        const streamEl = document.createElement('video');
+        document.body.appendChild(streamEl);
+        streamEl.style.position = 'absolute';
+        streamEl.style.right = '0px';
+        streamEl.srcObject = stream;
+        streamEl.play();
+
+        // TODO: Remove streamEl when stream has stopped
+      } catch (exc) {
+        console.error(exc);
+      }
     });
 
     this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, (err) => {
       this._setWebRTCConnectError(err);
     });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
+      this._setIsWebRTCConnected(false);
+    });
   }
+
+  /**
+   * @return {WebRTCPeer}
+   */
+  getWebRTCPeer() {
+    return this._webRTCPeer;
+  }
+
 
   /**
    * @return {Object}
@@ -162,6 +193,8 @@ class Peer extends P2PSharedObject {
   }
 
   /**
+   * Returns a simple description of "browserName on osName."
+   * 
    * @return {string}
    */
   getBrowserOnOs() {
@@ -179,14 +212,6 @@ class Peer extends P2PSharedObject {
       return `${browserName} on ${osName}`;
     }
   }
-
-  /**
-   * @return {WebRTCPeer}
-   */
-  getWebRTCPeer() {
-    return this._webRTCPeer;
-  }
-
   /**
    * @return {string}
    */
@@ -203,6 +228,9 @@ class Peer extends P2PSharedObject {
     return this._isLocalUser;
   }
 
+  /**
+   * @param {string} nickname 
+   */
   setNickname(nickname) {
     this.setSharedData({
       [SHARED_DATA_KEY_NICKNAME]: nickname

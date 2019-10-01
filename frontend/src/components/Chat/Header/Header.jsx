@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Icon } from 'antd';
 import Peer from 'utils/p2p/Peer.class';
 import TransparentButton from 'components/TransparentButton';
+import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
 import WebRTCPeer from 'utils/p2p/WebRTCPeer.class';
+import style from './Header.module.scss';
 
 class Header extends Component {
   render() {
@@ -20,7 +22,7 @@ class Header extends Component {
     // const webRTCConnectError = remotePeer.getWebRTCConnectError();
 
     return (
-      <div style={{backgroundColor: 'rgba(255,255,255,.8)', color: '#000', fontSize: '1.4rem', fontWeight: 'bold'}}>
+      <div className={style['chat-header']}>
         {nickname}
 
         {
@@ -30,7 +32,7 @@ class Header extends Component {
 
         {
           !isWebRTCConnected &&
-          <TransparentButton onClick={ evt => WebRTCPeer.initiateConnection(remotePeer) }>
+          <TransparentButton onClick={ evt => WebRTCPeer.initConnection(remotePeer) }>
             <Icon type="phone" />
           </TransparentButton>
         }
@@ -41,6 +43,10 @@ class Header extends Component {
             disconnect
           </button>
         }
+
+        <div>
+          <MicrophoneIcon />
+        </div>
       </div>
     );
   }

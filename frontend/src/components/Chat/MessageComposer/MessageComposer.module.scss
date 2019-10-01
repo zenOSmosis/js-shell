@@ -1,0 +1,28 @@
+.message-composer {
+  display: table;
+  width: 100%;
+  margin: .4em 0em;
+
+  input {
+    padding: 1em;
+    font-weight: bold;
+    width: 100%;
+  }
+
+  input,
+  button {
+    height: 3em !important;
+  }
+
+  .row {
+    display: table-row;
+
+    .cell {
+      display: table-cell;
+
+      button {
+        width: 100% !important;
+      }
+    }
+  }
+}
