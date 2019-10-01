@@ -21,6 +21,7 @@ services:
   dev_proxy:
     # build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
     build: ./docker_modules/dev-ssl-proxy
+    # restart: always
     depends_on:
       - backend
     networks:
@@ -35,6 +36,7 @@ services:
 
   backend:
     build: ./backend
+    # restart: always
     depends_on:
       - redis
       - mongo
@@ -68,6 +70,7 @@ services:
   # @see https://codewithhugo.com/setting-up-express-and-redis-with-docker-compose/
   redis:
     image: redis
+    # restart: always
     networks:
       - shell-core-service-network
     expose:
@@ -75,7 +78,7 @@ services:
   
   mongo:
     image: mongo
-    restart: always
+    # restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -91,7 +94,7 @@ services:
 
   mongo-express:
     image: mongo-express
-    restart: always
+    # restart: always
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
@@ -111,6 +114,7 @@ services:
   # Note: No direct network access to frontend; proxied through backend
   frontend:
     build: ./frontend
+    # restart: always
     depends_on:
       - backend
     volumes:
