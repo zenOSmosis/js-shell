@@ -1,5 +1,5 @@
 import ChatMessage, { SOCKET_PEER_CHAT_MESSAGE_PACKET_TYPE } from '../ChatMessage.class';
-import { WebRTCPeer, SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE } from '../webRTC';
+import WebRTCPeer, { SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE } from '../WebRTCPeer.class';
 
 /**
  * Internally called when the client has received a SocketPeerDataPacket from

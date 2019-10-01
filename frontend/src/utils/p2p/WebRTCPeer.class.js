@@ -1,10 +1,10 @@
 import EventEmitter from 'events';
-import Peer from '../Peer.class';
+import Peer from './Peer.class';
 import SimplePeer from 'simple-peer';
 import {
   createSocketPeerDataPacket,
   sendSocketPeerDataPacket
-} from '../socketPeer';
+} from './socketPeer';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
 

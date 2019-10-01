@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'antd';
 import Peer from 'utils/p2p/Peer.class';
 import TransparentButton from 'components/TransparentButton';
-import {
-  initiateConnection,
-  disconnectConnection
-} from 'utils/p2p/webRTC';
+import WebRTCPeer from 'utils/p2p/WebRTCPeer.class';
 
 class Header extends Component {
   render() {
@@ -21,11 +18,11 @@ class Header extends Component {
     return (
       <div style={{backgroundColor: 'rgba(255,255,255,.8)', color: '#000', fontSize: '1.4rem', fontWeight: 'bold'}}>
         {nickname}
-        <TransparentButton onClick={ evt => initiateConnection(remotePeer) }>
+        <TransparentButton onClick={ evt => WebRTCPeer.initiateConnection(remotePeer) }>
           <Icon type="phone" />
         </TransparentButton>
 
-        <button onClick={ evt => disconnectConnection(remotePeer) }>
+        <button onClick={ evt => WebRTCPeer.disconnectConnection(remotePeer) }>
           disconnect
         </button>
       </div>
