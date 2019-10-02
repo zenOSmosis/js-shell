@@ -4,7 +4,7 @@ import React from 'react';
 import registerApp from 'utils/desktop/registerApp';
 import ScreenRecorderWindow from './ScreenRecorderWindow';
 import RecordScreenIcon from 'components/componentIcons/RecordScreenIcon';
-
+import stopMediaStream from 'utils/mediaStream/stopMediaStream';
 import * as socketFS from 'utils/socketFS';
 
 export default registerApp({
@@ -16,6 +16,7 @@ export default registerApp({
   },
   cmd: (appProcess) => {
     let videoElem = null;
+    let stream = null;
 
     appProcess.on('stateUpdate', (updatedState) => {
       appProcess.setViewProps(updatedState);
@@ -47,7 +48,7 @@ export default registerApp({
           audio: false // TODO: Remove hardcoding
         };
 
-        const stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+        stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
         videoElem.srcObject = stream;
         dumpOptionsInfo();
@@ -100,11 +101,8 @@ export default registerApp({
     };
 
     const stopCapture = () => {
-      if (videoElem && videoElem.srcObject) {
-        let tracks = videoElem.srcObject.getTracks();
-
-        tracks.forEach(track => track.stop());
-        videoElem.srcObject = null;
+      if (stream) {
+        stopMediaStream(stream);
       }
     };
 

@@ -1,6 +1,7 @@
 // TODO: Should this be renamed to ClientAudioInputProcess?
 
 import ClientProcess from 'process/ClientProcess';
+import stopMediaStream from 'utils/mediaStream/stopMediaStream';
 
 export const NUM_INPUT_CHANNELS = 1; // TODO: Read from input stream, instead
 export const NUM_OUTPUT_CHANNELS = 1;
@@ -193,16 +194,7 @@ class ClientAudioProcess extends ClientProcess {
     try {
       await this._audioContext.close();
 
-      if (!this._outputStream) {
-        console.warn('_outputStream is not available');
-      } else {
-        // Stop each track
-        const tracks = this._outputStream.getTracks();
-
-        tracks.forEach((track) => {
-          track.stop();
-        });
-      }
+      stopMediaStream(this._outputStream);
 
       this._scriptNode.disconnect(this._audioContext.destination);
       this._source.disconnect(this._scriptNode);
