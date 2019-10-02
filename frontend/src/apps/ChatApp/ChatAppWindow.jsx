@@ -7,6 +7,7 @@ import LabeledComponent from 'components/LabeledComponent';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
 import Switch from 'components/Switch';
+import StreamGrid from 'components/Chat/StreamGrid';
 import {
   STATE_REMOTE_PEERS,
   STATE_LAST_UPDATED_PEER
@@ -20,22 +21,29 @@ class ChatAppWindow extends Component {
     super(...args);
 
     this.state = {
-      selectedPeer: null
+      selectedPeer: null,
+      isShowingMessages: true
     };
 
     const { p2pLinkedState } = this.props.appRuntime.getState();
     this._p2pLinkedState = p2pLinkedState;
   }
 
-  _handlePeerSelect = (peer) => {
+  _handlePeerSelect(selectedPeer) {
     this.setState({
-      selectedPeer: peer
+      selectedPeer
     });
-  };
+  }
+
+  _handleShowMessagesSelect(isShowingMessages) {
+    this.setState({
+      isShowingMessages
+    });
+  }
 
   render() {
     const { ...propsRest } = this.props;
-    const { selectedPeer } = this.state;
+    const { selectedPeer, isShowingMessages } = this.state;
 
     return (
       <Window
@@ -56,18 +64,19 @@ class ChatAppWindow extends Component {
 
         toolbarRight={
           <LabeledComponent
-            label="Messages"
+            label="Show Messages"
           >
             <Switch
               checkedChildren="Show"
               unCheckedChildren="Hide"
-              defaultChecked={true}
+              checked={isShowingMessages}
+              onChange={isChecked => this._handleShowMessagesSelect(isChecked)}
             />
           </LabeledComponent>
         }
       >
         <LinkedStateRenderer
-          key={selectedPeer ? selectedPeer.getPeerId() : new Date().toISOString()}
+          key={new Date().toISOString()}
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
             const {
@@ -117,10 +126,15 @@ class ChatAppWindow extends Component {
 
                   <Full>
                     {
-                      selectedPeer &&
+                      (isShowingMessages && selectedPeer) &&
                       <Chat
                         remotePeer={selectedPeer}
                       />
+                    }
+
+                    {
+                      !isShowingMessages &&
+                      <StreamGrid remotePeers={connectedPeers} />
                     }
                   </Full>
                 </SplitterLayout>

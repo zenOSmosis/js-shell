@@ -30,6 +30,7 @@ export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED = 'isWebRTCConnected';
 export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING = 'isWebRTCConnecting';
 export const PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR = 'isWebRTCError';
+export const PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS = 'webRTCMediaStreams';
 
 let _localUser = null;
 const _p2pLinkedState = new P2PLinkedState();
@@ -89,7 +90,8 @@ class Peer extends P2PSharedObject {
     const initialPrivateData = {
       [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: false,
       [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: false,
-      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: false
+      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: false,
+      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: []
     };
 
     super(initialSharedData, initialPrivateData);
@@ -120,68 +122,6 @@ class Peer extends P2PSharedObject {
       _p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, this);
     });
   }
-
-  /**
-   * TODO: Rename to mountWebRTCPeer
-   * 
-   * @param {WebRTCPeer} webRTCPeer 
-   */
-  setWebRTCPeer(webRTCPeer) {
-    if (this._isLocalUser) {
-      throw new Error('LocalUser cannot directly set WebRTCPeer');
-    }
-    
-    if (this._webRTCPeer) {
-      throw new Error('Peer already has a WebRTCPeer instance');
-    }
-
-    if (!(webRTCPeer instanceof WebRTCPeer)) {
-      throw new TypeError('webRTCPeer should be of WebRTCPeer type');
-    }
-
-    this._webRTCPeer = webRTCPeer;
-
-    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT, () => {
-      this._setIsWebRTCConnected(true);
-      this._setWebRTCConnectError(null);
-    });
-
-    // Prototype stream handling
-    this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (stream) => {
-      console.debug({
-        stream
-      });
-
-      try {
-        const streamEl = document.createElement('video');
-        document.body.appendChild(streamEl);
-        streamEl.style.position = 'absolute';
-        streamEl.style.right = '0px';
-        streamEl.srcObject = stream;
-        streamEl.play();
-
-        // TODO: Remove streamEl when stream has stopped
-      } catch (exc) {
-        console.error(exc);
-      }
-    });
-
-    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, (err) => {
-      this._setWebRTCConnectError(err);
-    });
-
-    this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
-      this._setIsWebRTCConnected(false);
-    });
-  }
-
-  /**
-   * @return {WebRTCPeer}
-   */
-  getWebRTCPeer() {
-    return this._webRTCPeer;
-  }
-
 
   /**
    * @return {Object}
@@ -262,6 +202,93 @@ class Peer extends P2PSharedObject {
     const { [SHARED_DATA_KEY_ABOUT_DESCRIPTION]: aboutDescription } = this._sharedData;
 
     return aboutDescription;
+  }
+
+    /**
+   * TODO: Rename to mountWebRTCPeer
+   * 
+   * @param {WebRTCPeer} webRTCPeer 
+   */
+  setWebRTCPeer(webRTCPeer) {
+    if (this._isLocalUser) {
+      throw new Error('LocalUser cannot directly set WebRTCPeer');
+    }
+    
+    if (this._webRTCPeer) {
+      throw new Error('Peer already has a WebRTCPeer instance');
+    }
+
+    if (!(webRTCPeer instanceof WebRTCPeer)) {
+      throw new TypeError('webRTCPeer should be of WebRTCPeer type');
+    }
+
+    this._webRTCPeer = webRTCPeer;
+
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT, () => {
+      this._setIsWebRTCConnected(true);
+      this._setWebRTCConnectError(null);
+    });
+
+    // Prototype stream handling
+    this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (mediaStream) => {
+      this._addWebRTCMediaStream(mediaStream);
+    });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, (err) => {
+      this._setWebRTCConnectError(err);
+    });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
+      // Clear all WebRTC media streams
+      this._setWebRTCMediaStreams([]);
+
+      this._setIsWebRTCConnected(false);
+    });
+  }
+
+  /**
+   * @return {WebRTCPeer}
+   */
+  getWebRTCPeer() {
+    return this._webRTCPeer;
+  }
+
+  /**
+   * @param {MediaStream} mediaStream 
+   */
+  _addWebRTCMediaStream(mediaStream) {
+    if (this._isLocalUser) {
+      throw new Error('_addWebRTCMediaStream is only available for remote peers');
+    }
+
+    // Add mediaStream to privateData mediaStream
+    const { [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+    mediaStreams.push(mediaStream);
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams
+    });
+  }
+
+  /**
+   * @param {MediaStream[]} mediaStreams 
+   */
+  _setWebRTCMediaStreams(mediaStreams) {
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams
+    });
+  }
+
+  /**
+   * @return {MediaStream[]}
+   */
+  getWebRTCMediaStreams() {
+    if (this._isLocalUser) {
+      throw new Error('getWebRTCMediaStreams is only available for remote peers');
+    }
+
+    const { [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+
+    return mediaStreams;
   }
 
   /**

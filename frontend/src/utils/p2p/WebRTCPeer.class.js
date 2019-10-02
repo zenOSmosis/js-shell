@@ -66,7 +66,7 @@ class WebRTCPeer extends EventEmitter {
       }
 
       if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
-        await webRTCPeer.initConnection(false); // TODO: Handle media stream
+        await webRTCPeer.initConnection(false); // TODO: Handle response media stream
       }
 
       webRTCPeer.signal(signalData);
@@ -165,19 +165,19 @@ class WebRTCPeer extends EventEmitter {
         console.debug(`WebRTC connected to remote peer with id: ${remotePeerId}`);
 
         // TODO: Remove
-        this._simplePeer.send('Hello');
+        // this._simplePeer.send('Hello');
       });
 
       this._simplePeer.on('stream', stream => {
-        console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
-
         this.emit(EVT_STREAM, stream);
+
+        console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
       });
 
       this._simplePeer.on('data', data => {
-        console.debug(`WebRTC connection received data from peer with id: ${remotePeerId}`, data);
-
         this.emit(EVT_DATA);
+
+        console.debug(`WebRTC connection received data from peer with id: ${remotePeerId}`, data);
 
         // Checking data length before trying to convert data to string
         if (data.length === EVT_REQUEST_DISCONNECT.length &&
@@ -198,9 +198,11 @@ class WebRTCPeer extends EventEmitter {
         this._isConnecting = false;
         this._isConnected = false;
 
-        this._simplePeer.removeAllListeners();
-
         this.emit(EVT_DISCONNECT);
+
+        // Important! Remove all event listeners from underlying SimplePeer
+        // library, or there will be a memory leak when we set it to null
+        this._simplePeer.removeAllListeners();
 
         this._simplePeer = null;
 

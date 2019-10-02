@@ -5,10 +5,33 @@ import TransparentButton from 'components/TransparentButton';
 import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
 import ScreenShareIcon from 'components/componentIcons/ScreenShareIcon';
 import WebcamIcon from 'components/componentIcons/WebcamIcon';
-import WebRTCPeer from 'utils/p2p/WebRTCPeer.class';
+import WebRTCPeer, { EVT_STREAM } from 'utils/p2p/WebRTCPeer.class';
 import style from './Header.module.scss';
 
+// TODO: Refactor this elsewhere
+const captureUserMediaStream = async (constraints = {audio: true, video: true}) => {
+  try {
+    const micStream = await window.navigator.mediaDevices.getUserMedia(constraints);
+
+    return micStream;
+  } catch (exc) {
+    throw exc;
+  }
+};
+
 class Header extends Component {
+  async initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer) {
+    try {
+      const userMediaStream = await captureUserMediaStream();
+
+      const webRTCPeer = await WebRTCPeer.initConnection(remotePeer, userMediaStream);
+
+      return webRTCPeer;
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
   render() {
     const { remotePeerId } = this.props;
 
@@ -34,7 +57,7 @@ class Header extends Component {
 
         {
           !isWebRTCConnected &&
-          <TransparentButton onClick={ evt => WebRTCPeer.initConnection(remotePeer) }>
+          <TransparentButton onClick={ evt => this.initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer) }>
             <Icon type="phone" />
           </TransparentButton>
         }
