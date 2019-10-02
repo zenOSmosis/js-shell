@@ -62,24 +62,54 @@ class WebRTCPeer extends EventEmitter {
         return;
       }
 
+      const remotePeerId = remotePeer.getPeerId();
+
+      let webRTCPeer = remotePeer.getWebRTCPeer();
+      if (!webRTCPeer) {
+        webRTCPeer = new WebRTCPeer(remotePeer);
+      }
+
       switch (packetType) {
         case SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE:
           await (async () => {
             try {
               const { data: signalData } = dataPacket;
 
-              let webRTCPeer = remotePeer.getWebRTCPeer();
-              if (!webRTCPeer) {
-                webRTCPeer = new WebRTCPeer(remotePeer);
+              // Don't accept signals if the WebRTCPeer state is rejected
+              if (webRTCPeer.getHasRejected()) {
+                console.warn('Ignoring RTC signal because of rejection status', {
+                  signalData
+                });
+                return;
               }
 
+              // Init a new WebRTCPeer connection if an existing one is not
+              // already established
               if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
+                try {
+                  // TODO: Replace this w/ a modal dialog indicating a ring
+                  // (and have dialog disappear if remote stops connection
+                  // attempt before close)
+                  await new Promise((resolve, reject) => {
+                    if (window.confirm(`Accept new WebRTC connection request from Peer with id "${remotePeerId}?"`)) {
+                      resolve();
+                    } else {
+                      reject();
+                    }
+                  });
+                } catch (exc) {
+                  // TODO: Throw custom Error
+                  throw new Error('WebRTC connection rejection');
+                }
+
                 await webRTCPeer.initConnection(false); // TODO: Handle response media stream
               }
 
               webRTCPeer.signal(signalData);
             } catch (exc) {
-              throw exc;
+              console.error(exc);
+
+              await webRTCPeer.reject();
             }
           })();
           break;
@@ -93,14 +123,12 @@ class WebRTCPeer extends EventEmitter {
                 errorData
               });
 
-              const remotePeerWebRTCPeer = remotePeer.getWebRTCPeer();
-
-              if (!remotePeerWebRTCPeer) {
+              if (!webRTCPeer) {
                 return;
               }
 
               // Mirror the disconnect state to the local representation of the remote peer
-              await remotePeerWebRTCPeer.disconnect();
+              await webRTCPeer.disconnect();
             } catch (exc) {
               throw exc;
             }
@@ -143,6 +171,7 @@ class WebRTCPeer extends EventEmitter {
 
     this._isConnected = false;
     this._isConnecting = false;
+    this._hasRejected = false;
   }
 
   /**
@@ -169,6 +198,7 @@ class WebRTCPeer extends EventEmitter {
       }
 
       this._isConnecting = true;
+      this._hasRejected = false;
 
       this._simplePeer = null;
 
@@ -234,6 +264,8 @@ class WebRTCPeer extends EventEmitter {
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
           err
         });
+
+        this.disconnect();
       });
 
       this._simplePeer.on('close', () => {
@@ -272,6 +304,39 @@ class WebRTCPeer extends EventEmitter {
    */
   getIsConnecting() {
     return this._isConnecting;
+  }
+
+  /**
+   * Rejects the recent call attempt.
+   * 
+   * @return {Promise<void>}
+   */
+  async reject() {
+    try {
+      const remotePeerId = this._remotePeer.getPeerId();
+
+      this._hasRejected = true;
+      
+      // Emit rejection data to remote Peer
+      // TODO: Use custom Error handler
+      const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, new Error('WebRTCRejection').message);
+      sendSocketPeerDataPacket(errorDataPacket);
+  
+      await sleep(1000);
+
+      // Reset rejection state so a new call can be made
+      this._hasRejected = false;
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * @return {boolean} Resolves true if WebRTCPeer is currently rejecting the
+   * most recent call.
+   */
+  getHasRejected() {
+    return this._hasRejected;
   }
 
   /**
