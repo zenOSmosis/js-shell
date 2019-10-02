@@ -10,6 +10,7 @@ import {
 import sleep from 'utils/sleep';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
+export const SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE = 'webRTCError';
 
 // Emitted between Peers when one wishes to disconnect
 export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
@@ -49,27 +50,64 @@ class WebRTCPeer extends EventEmitter {
 
   /**
    * 
-   * @param {SocketPeerDataPacket} webRTCSignalDataPacket 
+   * @param {SocketPeerDataPacket} dataPacket 
    */
-  static async handleReceivedSignalDataPacket(webRTCSignalDataPacket) {
+  static async handleReceivedSocketPeerDataPacket(dataPacket) {
     try {
-      const { fromPeerId, data: signalData } = webRTCSignalDataPacket;
+      const { packetType, fromPeerId } = dataPacket;
       const remotePeer = Peer.getPeerWithId(fromPeerId);
+
       if (!remotePeer) {
-        console.error(`Remote peer does not exist in cache with id: ${fromPeerId}`);
+        console.error(`Remote peer "${fromPeerId}" does not exist in cache`);
         return;
       }
 
-      let webRTCPeer = remotePeer.getWebRTCPeer();
-      if (!webRTCPeer) {
-        webRTCPeer = new WebRTCPeer(remotePeer);
+      switch (packetType) {
+        case SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE:
+          await (async () => {
+            try {
+              const { data: signalData } = dataPacket;
+
+              let webRTCPeer = remotePeer.getWebRTCPeer();
+              if (!webRTCPeer) {
+                webRTCPeer = new WebRTCPeer(remotePeer);
+              }
+
+              if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
+                await webRTCPeer.initConnection(false); // TODO: Handle response media stream
+              }
+
+              webRTCPeer.signal(signalData);
+            } catch (exc) {
+              throw exc;
+            }
+          })();
+          break;
+
+        case SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE:
+          await (async () => {
+            try {
+              const { data: errorData } = dataPacket;
+
+              console.error(`Remote peer "${fromPeerId}" WebRTC error`, {
+                errorData
+              });
+
+              const remotePeerWebRTCPeer = remotePeer.getWebRTCPeer();
+
+              if (!remotePeerWebRTCPeer) {
+                return;
+              }
+
+              // Mirror the disconnect state to the local representation of the remote peer
+              await remotePeerWebRTCPeer.disconnect();
+            } catch (exc) {
+              throw exc;
+            }
+          })();
+          break;
       }
 
-      if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
-        await webRTCPeer.initConnection(false); // TODO: Handle response media stream
-      }
-
-      webRTCPeer.signal(signalData);
     } catch (exc) {
       throw exc;
     }
@@ -187,8 +225,11 @@ class WebRTCPeer extends EventEmitter {
       });
 
       this._simplePeer.on('error', err => {
+        const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, err);
+        sendSocketPeerDataPacket(errorDataPacket);
+
         this.emit(EVT_CONNECT_ERROR, err);
-        
+
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
           err
         });
