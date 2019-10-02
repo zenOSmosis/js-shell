@@ -41,7 +41,6 @@ services:
       - redis
       - mongo
     volumes:
-      # - ./backend:/shell/backend # Only during development
       - /tmp:/tmp # Only during development
       - ./:/shell # Only during development
     environment:
@@ -56,6 +55,7 @@ services:
       MONGO_SHELL_PASSWORD: shellpassword
     user: ${UGID}
     command: ["npm", "run", "start:dev"]
+    privileged: true # Only during development or special deployments
     cap_add:
       - SYS_ADMIN # Only during development or special deployments
       - NET_ADMIN # Only during development or special deployments
@@ -119,10 +119,6 @@ services:
       - backend
     volumes:
       # Backend is mapped w/ frontend because of shared object in utils/bind
-      # jh: Not yet sure how this will work in production environment
-      # - ./frontend:/shell/frontend # Only during development
-      # - ./backend:/shell/backend # Only during development
-      # - ./cli:/shell/cli # Only during development
       - ./:/shell # Only during development
     environment:
       NODE_ENV: development

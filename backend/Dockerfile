@@ -13,6 +13,7 @@ RUN apt-get update \
     nano `#optional` \
     neofetch `#optional` \
     redis-tools `#For Redis administration (optional)` \
+    sshfs \
     telnet `#optional` \
   && apt-get clean
 
