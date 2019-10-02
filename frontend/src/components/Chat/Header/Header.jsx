@@ -62,7 +62,7 @@ class Header extends Component {
 
         {
           isWebRTCConnected &&
-          <button onClick={ evt => WebRTCPeer.disconnectConnection(remotePeer) }>
+          <button onClick={ evt => WebRTCPeer.disconnect(remotePeer) }>
             disconnect
           </button>
         }

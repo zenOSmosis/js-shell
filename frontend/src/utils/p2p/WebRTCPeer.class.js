@@ -116,9 +116,10 @@ class WebRTCPeer extends EventEmitter {
   /**
    * Disconnects the WebRTC connection from the given Peer.
    * 
-   * @param {Peer} remotePeer 
+   * @param {Peer} remotePeer
+   * @return {Promise<void>}
    */
-  static async disconnectConnection(remotePeer) {
+  static async disconnect(remotePeer) {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (webRTCPeer) {
