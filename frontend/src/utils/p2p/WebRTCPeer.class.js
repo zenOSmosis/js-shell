@@ -84,7 +84,7 @@ class WebRTCPeer extends EventEmitter {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (webRTCPeer) {
-        await webRTCPeer.disinitConnection();
+        await webRTCPeer.disconnect();
       }
     } catch (exc) {
       throw exc;
@@ -123,7 +123,7 @@ class WebRTCPeer extends EventEmitter {
       }
 
       if (this._isConnected) {
-        await this.disinitConnection();
+        await this.disconnect();
 
         // Pause to let the other peer sync up
         await sleep(1000);
@@ -182,7 +182,7 @@ class WebRTCPeer extends EventEmitter {
         // Checking data length before trying to convert data to string
         if (data.length === EVT_REQUEST_DISCONNECT.length &&
           data.toString() === EVT_REQUEST_DISCONNECT) {
-          this.disinitConnection();
+          this.disconnect();
         }
       });
 
@@ -251,7 +251,7 @@ class WebRTCPeer extends EventEmitter {
   /**
    * @return {Promise<void>}
    */
-  disinitConnection() {
+  disconnect() {
     if (this._simplePeer) {
       if (this._isConnected) {
         this._simplePeer.send(EVT_REQUEST_DISCONNECT);

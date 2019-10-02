@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import style from './MediaStreamVideo.module.scss';
 
 class MediaStreamVideo extends Component {
   constructor(props) {
@@ -9,22 +11,54 @@ class MediaStreamVideo extends Component {
   }
 
   componentDidMount() {
-    const { mediaStream } = this.props;
+    this.autosetMediaStream();
+  }
 
-    if ('srcObject' in this._elVideo) {
-      this._elVideo.srcObject = mediaStream
-    } else {
-      this._elVideo.src = window.URL.createObjectURL(mediaStream) // for older browsers
+  componentDidUpdate() {
+    this.autosetMediaStream();
+  }
+
+  autosetMediaStream() {
+    const { mediaStream } = this.props;
+    const currentMediaStream = this._elVideo.src;
+
+    if (Object.is(mediaStream, currentMediaStream)) {
+      return;
     }
 
-    this._elVideo.play();
+    if (this._elVideo.playing) {
+      this._elVideo.stop();
+    }
+
+    if (!mediaStream) {
+      return;
+    }
+
+    // if ('srcObject' in this._elVideo) {
+      this._elVideo.srcObject = mediaStream;
+    // } else {
+    //  this._elVideo.src = window.URL.createObjectURL(mediaStream); // for older browsers
+    // }
+
+    try {
+      this._elVideo.play();
+    } catch (exc) {
+      console.error(exc);
+    }
   }
 
   // TODO: Include selector to select track
 
   render() {
+    const { className } = this.props;
+
     return (
-      <video ref={c => this._elVideo = c} style={{ width: '100%', height: '100%' }}>
+      <video
+        className={classNames(style['media-stream-video'], className)}
+        ref={c => this._elVideo = c}
+        controls="0"
+        playsinline="1"
+      >
 
       </video>
     );

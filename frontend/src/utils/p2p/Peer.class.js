@@ -355,14 +355,25 @@ class Peer extends P2PSharedObject {
     return this._isConnected;
   }
 
-  disconnect() {
-    if (this._isLocalUser) {
-      console.error('Cannot disconnect local user');
-    } else {
-      this._isConnected = false;
+  /**
+   * @return {Promise<void>}
+   */
+  async disconnect() {
+    try {
+      if (this._isLocalUser) {
+        console.error('Cannot disconnect local user');
+      } else {
+        this._isConnected = false;
 
-      // TODO: Don't remove
-      _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
+        if (this._webRTCPeer) {
+          await this._webRTCPeer.disconnect();
+        }
+  
+        // TODO: Don't remove
+        _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
+      }
+    } catch (exc) {
+      console.error(exc);
     }
   }
 }

@@ -64,7 +64,7 @@ class ChatAppWindow extends Component {
 
         toolbarRight={
           <LabeledComponent
-            label="Show Messages"
+            label="Messages"
           >
             <Switch
               checkedChildren="Show"
