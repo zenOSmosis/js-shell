@@ -147,7 +147,7 @@ class ClientAudioProcess extends ClientProcess {
   }
 
   /**
-   * @return {Promise<{}>}
+   * @return {Promise<Object>}
    */
   async fetchOutputAudioFormat() {
     try {
