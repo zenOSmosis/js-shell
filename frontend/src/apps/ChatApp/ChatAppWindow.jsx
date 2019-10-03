@@ -7,7 +7,6 @@ import LabeledComponent from 'components/LabeledComponent';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
 import Switch from 'components/Switch';
-import StreamGrid from 'components/Chat/StreamGrid';
 import {
   STATE_REMOTE_PEERS,
   STATE_LAST_UPDATED_PEER
@@ -76,7 +75,7 @@ class ChatAppWindow extends Component {
         }
       >
         <LinkedStateRenderer
-          key={new Date().toISOString()}
+          key={`${selectedPeer ? selectedPeer.getPeerId() : null}-${isShowingMessages ? 'with' : 'without'}messages`}
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
             const {
@@ -126,15 +125,11 @@ class ChatAppWindow extends Component {
 
                   <Full>
                     {
-                      (isShowingMessages && selectedPeer) &&
+                      selectedPeer &&
                       <Chat
                         remotePeer={selectedPeer}
+                        isShowingMessages={isShowingMessages}
                       />
-                    }
-
-                    {
-                      !isShowingMessages &&
-                      <StreamGrid remotePeers={connectedPeers} />
                     }
                   </Full>
                 </SplitterLayout>

@@ -18,6 +18,10 @@ class MediaStreamVideo extends Component {
     this.autosetMediaStream();
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   autosetMediaStream() {
     const { mediaStream } = this.props;
     const currentMediaStream = this._elVideo.src;
