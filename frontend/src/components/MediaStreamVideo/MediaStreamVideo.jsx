@@ -60,10 +60,9 @@ class MediaStreamVideo extends Component {
       <video
         className={classNames(style['media-stream-video'], className)}
         ref={c => this._elVideo = c}
-        controls="0"
-        playsinline="1"
+        controls={false}
+        playsInline={true}
       >
-
       </video>
     );
   }
