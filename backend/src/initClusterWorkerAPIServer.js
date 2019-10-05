@@ -107,6 +107,7 @@ const initClusterWorkerAPIServer = (app, io) => {
               throw new Error('User / Device is already connected');
             }
 
+            // Associate socketId with userData
             await setUserData({
               sharedData: {
                 userId
@@ -119,6 +120,7 @@ const initClusterWorkerAPIServer = (app, io) => {
           }
         })();
 
+        // Add userId as property to socket
         socket.userId = userId;
 
         // Must call next, regardless of whether authentication was performed or not
@@ -167,8 +169,11 @@ const initClusterWorkerAPIServer = (app, io) => {
               userId
             });
 
+            // Disassociate socketId from userData
             await setUserData({
-              userId
+              sharedData: {
+                userId
+              }
             }, null);
           } catch (exc) {
             throw exc;

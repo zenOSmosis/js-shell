@@ -15,13 +15,18 @@ const setUserData = async (userData, socket = null) => {
   try {
     const { sharedData, privateData } = userData;
 
-    const usersCollection = await fetchUsersCollection();
+    if (!sharedData) {
+      throw new Error('No sharedData set in order to obtain userId');
+    }
 
     const { userId } = sharedData;
 
+    // Forbid setting of sharedData without userId
     if (userId === undefined) {
       throw new Error('userId must be specified when setting user data');
     }
+
+    const usersCollection = await fetchUsersCollection();
 
     const socketId = (
       socket === null ?
