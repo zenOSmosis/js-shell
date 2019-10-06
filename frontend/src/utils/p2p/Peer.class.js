@@ -10,6 +10,7 @@ import P2PLinkedState, {
   STATE_REMOTE_PEERS
 } from 'state/P2PLinkedState';
 import WebRTCPeer, {
+  EVT_CONNECT_IN_PROGRESS as EVT_WEB_RTC_CONNECT_IN_PROGRESS,
   EVT_CONNECT as EVT_WEB_RTC_CONNECT,
   // EVT_DATA as EVT_WEB_RTC_DATA,
   EVT_STREAM as EVT_WEB_RTC_STREAM,
@@ -27,9 +28,7 @@ export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
-export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED = 'isWebRTCConnected';
-export const PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING = 'isWebRTCConnecting';
-export const PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR = 'isWebRTCError';
+export const PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME = 'webRTCLastUpdateTime';
 export const PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS = 'webRTCMediaStreams';
 
 let _localUser = null;
@@ -88,9 +87,7 @@ class Peer extends P2PSharedObject {
     };
     
     const initialPrivateData = {
-      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: false,
-      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: false,
-      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: false,
+      [PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: null,
       [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: []
     };
 
@@ -224,25 +221,24 @@ class Peer extends P2PSharedObject {
 
     this._webRTCPeer = webRTCPeer;
 
-    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT, () => {
-      this._setIsWebRTCConnected(true);
-      this._setWebRTCConnectError(null);
-    });
+    const _setLastUpdateTime = () => {
+      this._setPrivateData({
+        [PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: new Date()
+      });
+    };
+
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_IN_PROGRESS, _setLastUpdateTime);
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT, _setLastUpdateTime);
+    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, _setLastUpdateTime);
 
     // Prototype stream handling
     this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (mediaStream) => {
       this._addWebRTCMediaStream(mediaStream);
     });
 
-    this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, (err) => {
-      this._setWebRTCConnectError(err);
-    });
-
     this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
       // Clear all WebRTC media streams
       this._setWebRTCMediaStreams([]);
-
-      this._setIsWebRTCConnected(false);
     });
   }
 
@@ -292,58 +288,36 @@ class Peer extends P2PSharedObject {
   }
 
   /**
-   * @param {boolean} isWebRTCConnected 
+   * @return {boolean}
    */
-  _setIsWebRTCConnected(isWebRTCConnected) {
-    this._setPrivateData({
-      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: isWebRTCConnected
-    });
+  getIsWebRTCConnecting() {
+    if (!this._webRTCPeer) {
+      return;
+    }
+
+    return this._webRTCPeer.getIsConnecting();
   }
 
   /**
    * @return {boolean}
    */
   getIsWebRTCConnected() {
-    const { [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTED]: isWebRTCConnected } = this._privateData;
+    if (!this._webRTCPeer) {
+      return;
+    }
 
-    return isWebRTCConnected;
-  }
-
-  /**
-   * 
-   * @param {boolean} isWebRTCConnecting 
-   */
-  _setIsWebRTCConnecting(isWebRTCConnecting) {
-    this._setPrivateData({
-      [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: isWebRTCConnecting
-    });
-  }
-
-  /**
-   * @return {boolean}
-   */
-  getIsWebRTCConnecting() {
-    const { [PRIVATE_DATA_KEY_IS_WEB_RTC_CONNECTING]: isWebRTCConnecting } = this._privateData;
-
-    return isWebRTCConnecting;
-  }
-
-  /**
-   * @param {Error} webRTCConnectError 
-   */
-  _setWebRTCConnectError(webRTCConnectError) {
-    this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: webRTCConnectError
-    });
+    return this._webRTCPeer.getIsConnected();
   }
 
   /**
    * @return {Error}
    */
   getWebRTCConnectError() {
-    const { [PRIVATE_DATA_KEY_WEB_RTC_CONNECT_ERROR]: webRTCConnectError } = this._privateData;
+    if (!this._webRTCPeer) {
+      return;
+    }
 
-    return webRTCConnectError;
+    return this._webRTCPeer.getConnectError();
   }
 
   /**

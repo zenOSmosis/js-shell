@@ -15,6 +15,7 @@ export const SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE = 'webRTCError';
 // Emitted between Peers when one wishes to disconnect
 export const EVT_REQUEST_DISCONNECT = 'requestDisconnect';
 
+export const EVT_CONNECT_IN_PROGRESS = 'connectInProgress';
 export const EVT_CONNECT = 'connect';
 export const EVT_DATA = 'data';
 export const EVT_STREAM = 'stream';
@@ -175,6 +176,7 @@ class WebRTCPeer extends EventEmitter {
 
     this._isConnected = false;
     this._isConnecting = false;
+    this._connectError = null;
     this._hasRejected = false;
   }
 
@@ -192,19 +194,18 @@ class WebRTCPeer extends EventEmitter {
         console.warn('Aborted connect attempt because it is already in a connecting state');
 
         return;
-      }
-
-      if (this._isConnected) {
+      } else if (this._isConnected) {
         await this.disconnect();
 
         // Pause to let the other peer sync up
         await sleep(1000);
       }
 
-      this._isConnecting = true;
-      this._hasRejected = false;
-
       this._simplePeer = null;
+
+      this._isConnecting = true;
+      this._connectError = null;
+      this._hasRejected = false;
 
       if (asInitiator !== null) {
         this._isInitiator = asInitiator;
@@ -263,6 +264,8 @@ class WebRTCPeer extends EventEmitter {
         const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, err);
         sendSocketPeerDataPacket(errorDataPacket);
 
+        this._connectError = err;
+
         this.emit(EVT_CONNECT_ERROR, err);
 
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
@@ -287,9 +290,20 @@ class WebRTCPeer extends EventEmitter {
         console.debug(`WebRTC connection has closed from peer with id: ${remotePeerId}`);
       });
 
+      this.emit(EVT_CONNECT_IN_PROGRESS);
+
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * Retrieves whether or not the WebRTCPeer is currently connectING.
+   * 
+   * @return {boolean}
+   */
+  getIsConnecting() {
+    return this._isConnecting;
   }
 
   /**
@@ -302,12 +316,10 @@ class WebRTCPeer extends EventEmitter {
   }
 
   /**
-   * Retrieves whether or not the WebRTCPeer is currently connectING.
-   * 
-   * @return {boolean}
+   * @return {Error}
    */
-  getIsConnecting() {
-    return this._isConnecting;
+  getConnectError() {
+    return this._connectError;
   }
 
   /**
