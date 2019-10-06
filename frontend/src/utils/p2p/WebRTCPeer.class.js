@@ -7,6 +7,7 @@ import {
   createSocketPeerDataPacket,
   sendSocketPeerDataPacket
 } from './socketPeer';
+import { serializeError, deserializeError } from 'serialize-error';
 import sleep from 'utils/sleep';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
@@ -261,13 +262,14 @@ class WebRTCPeer extends EventEmitter {
       });
 
       // Called when WebRTC receives remote error
-      this._simplePeer.on('error', err => {
+      this._simplePeer.on('error', jsonError => {
         const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, err);
         sendSocketPeerDataPacket(errorDataPacket);
 
-        this._connectError = err;
+        const err = deserializeError(jsonError);
+        this._connectError = deserializeError(err);
 
-        this.emit(EVT_CONNECT_ERROR, err);
+        this.emit(EVT_CONNECT_ERROR, this._connectError);
 
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
           err
@@ -337,7 +339,7 @@ class WebRTCPeer extends EventEmitter {
 
       // Emit rejection data to remote Peer
       // TODO: Use custom Error handler
-      const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, new Error('WebRTCRejection').message);
+      const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, serializeError(new Error('WebRTCRejection')));
       sendSocketPeerDataPacket(errorDataPacket);
 
       await sleep(1000);
