@@ -230,6 +230,7 @@ class WebRTCPeer extends EventEmitter {
         });
       });
 
+      // Called when WebRTC connects
       this._simplePeer.on('connect', () => {
         this._isConnecting = false;
         this._isConnected = true;
@@ -237,17 +238,16 @@ class WebRTCPeer extends EventEmitter {
         this.emit(EVT_CONNECT);
 
         console.debug(`WebRTC connected to remote peer with id: ${remotePeerId}`);
-
-        // TODO: Remove
-        // this._simplePeer.send('Hello');
       });
 
+      // Called when WebRTC receives remote stream
       this._simplePeer.on('stream', stream => {
         this.emit(EVT_STREAM, stream);
 
         console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
       });
 
+      // Called when WebRTC receives remote data
       this._simplePeer.on('data', data => {
         this.emit(EVT_DATA);
 
@@ -260,6 +260,7 @@ class WebRTCPeer extends EventEmitter {
         }
       });
 
+      // Called when WebRTC receives remote error
       this._simplePeer.on('error', err => {
         const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, err);
         sendSocketPeerDataPacket(errorDataPacket);
@@ -275,6 +276,7 @@ class WebRTCPeer extends EventEmitter {
         this.disconnect();
       });
 
+      // Called when WebRTC connection stops
       this._simplePeer.on('close', () => {
         this._isConnecting = false;
         this._isConnected = false;

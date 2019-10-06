@@ -1,3 +1,5 @@
+// TODO: Create local private data which won't be sent over wire
+
 import EventEmitter from 'events';
 
 export const EVT_SHARED_UPDATE = 'sharedUpdate';

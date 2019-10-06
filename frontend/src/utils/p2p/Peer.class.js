@@ -343,7 +343,7 @@ class Peer extends P2PSharedObject {
           await this._webRTCPeer.disconnect();
         }
   
-        // TODO: Don't remove
+        // TODO: Don't remove from LinkedState
         _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
       }
     } catch (exc) {
