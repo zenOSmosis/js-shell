@@ -10,13 +10,18 @@ import {
   captureUserMediaStream,
   stopMediaStream
 } from 'utils/mediaStream';
+import { fetchAggregatedMediaDeviceInfo } from 'utils/mediaDevices';
 import style from './Header.module.scss';
 
 class Header extends Component {
   async initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer) {
     try {
-      // TODO: Detect if audio / video device is available before trying to capture
-      const userMediaStream = await captureUserMediaStream();
+      const { hasAudioInput, hasVideoInput } = await fetchAggregatedMediaDeviceInfo();
+
+      const userMediaStream = await captureUserMediaStream({
+        audio: hasAudioInput,
+        video: hasVideoInput
+      });
 
       const webRTCPeer = await WebRTCPeer.initConnection(remotePeer, userMediaStream);
 

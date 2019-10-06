@@ -29,6 +29,10 @@ import beep from 'utils/audio/beep';
 import getLogicalProcessors from 'utils/getLogicalProcessors';
 import getPrototypeChain from 'utils/class/getPrototypeChain';
 import * as socketFS from 'utils/socketFS';
+import {
+  fetchAggregatedMediaDeviceInfo,
+  fetchMediaDevices
+} from 'utils/mediaDevices';
 
 /**
  * @extends ClientJITRuntime
@@ -72,6 +76,10 @@ class UI_JITRuntime extends ClientJITRuntime {
         },
         getLogicalProcessors,
         getPrototypeChain,
+        mediaDevices: {
+          fetchAggregatedMediaDeviceInfo,
+          fetchMediaDevices 
+        },
         socketAPIQuery,
         // socketAPIRoutes,
         // socketAPIEvents
