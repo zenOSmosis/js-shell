@@ -123,14 +123,16 @@ export default class SourceCodeAppWindow extends Component {
               margin: '0rem .5rem'
             }}>
               on target:
-              <select onChange={evt => this.selectRunTarget(evt.target.value)}>
+              <select
+                onChange={evt => this.selectRunTarget(evt.target.value)}
+                value={selectedRunTarget}
+              >
                 {
                   RUN_TARGETS.map((runTarget, idx) => {
                     return (
                       <option
                         key={idx}
                         value={runTarget}
-                        selected={runTarget === selectedRunTarget}
                       >
                         {runTarget}
                       </option>
