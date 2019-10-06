@@ -134,6 +134,10 @@ class WebRTCPeer extends EventEmitter {
             }
           })();
           break;
+
+        default:
+          console.warn(`Unknown WebRTCPeer SocketPeerDataPacket with type: ${packetType}`);
+          break;
       }
 
     } catch (exc) {
@@ -316,12 +320,12 @@ class WebRTCPeer extends EventEmitter {
       const remotePeerId = this._remotePeer.getPeerId();
 
       this._hasRejected = true;
-      
+
       // Emit rejection data to remote Peer
       // TODO: Use custom Error handler
       const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, new Error('WebRTCRejection').message);
       sendSocketPeerDataPacket(errorDataPacket);
-  
+
       await sleep(1000);
 
       // Reset rejection state so a new call can be made
