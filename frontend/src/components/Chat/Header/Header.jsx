@@ -14,9 +14,36 @@ import { fetchAggregatedMediaDeviceInfo } from 'utils/mediaDevices';
 import style from './Header.module.scss';
 
 class Header extends Component {
-  async initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer) {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasAudioInput: null,
+      hasVideoInput: null
+    };
+  }
+
+  componentDidMount() {
+    this.fetchAggregatedMediaDeviceInfo();
+  }
+
+  async fetchAggregatedMediaDeviceInfo() {
     try {
       const { hasAudioInput, hasVideoInput } = await fetchAggregatedMediaDeviceInfo();
+
+      this.setState({
+        hasAudioInput,
+        hasVideoInput
+      });
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  async initWebRTCConnectionAndUserMediaStreamWithPeer() {
+    try {
+      const { remotePeer } = this.props;
+      const { hasAudioInput, hasVideoInput } = this.state;
 
       const userMediaStream = await captureUserMediaStream({
         audio: hasAudioInput,
@@ -36,9 +63,12 @@ class Header extends Component {
   }
 
   render() {
-    const { remotePeerId } = this.props;
+    const { remotePeer } = this.props;
+    const {
+      hasAudioInput,
+      hasVideoInput
+    } = this.state;
 
-    const remotePeer = Peer.getPeerWithId(remotePeerId);
     if (!remotePeer) {
       return false;
     }
@@ -73,11 +103,21 @@ class Header extends Component {
         }
 
         <div>
-          <MicrophoneIcon /> { /* TODO: If clicked, init connection (or upgrade existing) w/ microphone */ }
+          {
+            // TODO: Verify WebRTC is available before presenting any of these options
+          }
+
+          {
+            hasAudioInput &&
+            <MicrophoneIcon />
+          }
+          
+          {
+            hasVideoInput &&
+            <WebcamIcon />
+          }
 
           <ScreenShareIcon />
-
-          <WebcamIcon />
         </div>
       </div>
     );

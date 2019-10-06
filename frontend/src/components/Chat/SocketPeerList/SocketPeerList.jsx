@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Grid, GridItem } from 'components/Grid';
-import TransparentButton from 'components/TransparentButton';
+import Row, { Column } from 'components/RowColumn';
 import { Avatar } from 'antd';
+import classNames from 'classnames';
+import styles from './SocketPeerList.module.scss';
 
 class SocketPeerList extends Component {
   selectPeer(peer) {
@@ -14,11 +15,17 @@ class SocketPeerList extends Component {
 
   render() {
     const {
-      connectedPeers
+      className,
+      connectedPeers,
+      selectedPeer,
+      style
     } = this.props;
 
     return (
-      <Grid>
+      <ul
+        className={classNames(styles['socket-peer-list'], className)}
+        style={style}
+      >
         {
           connectedPeers.map((peer) => {
             const peerId = peer.getPeerId();
@@ -27,37 +34,52 @@ class SocketPeerList extends Component {
             const browserOnOs = peer.getBrowserOnOs();
 
             return (
-              <GridItem
+              <li
                 key={peerId}
                 title={aboutDescription}
-              // title={user.nickname}
-              // 
+                className={(Object.is(peer, selectedPeer) ? styles['active'] : null)}
               >
-                <TransparentButton
-                  onClick={evt => { this.selectPeer(peer); console.debug(peer); }}
+                <div
+                  onMouseDown={evt => this.selectPeer(peer)}
+                  onTouchStart={evt => this.selectPeer(peer)}
                 >
-                  <div>
-                    <Avatar
-                      size={36}
-                      icon="user"
-                    />
-                  </div>
+                  <Row>
+                    <Column style={{ textAlign: 'center', minWidth: 42, maxWidth: 42 }}>
+                      <Avatar
+                        size={36}
+                        icon="user"
+                      />
+                    </Column>
 
-                  <div>
-                    {
-                      nickname || '[Untitled Peer]'
-                    }
+                    <Column>
+                      <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        <div style={{ display: 'inline', fontWeight: 'bold' }}>
+                          {
+                            nickname || '[Untitled Peer]'
+                          }
+                        </div>
 
-                    {
-                      ` / ${browserOnOs}`
-                    }
-                  </div>
-                </TransparentButton>
-              </GridItem>
+                        <div style={{ display: 'inline', fontSize: '.8rem', fontStyle: 'italic', marginLeft: 4 }}>
+                          {
+                            `/ ${browserOnOs}`
+                          }
+                        </div>
+                      </div>
+                      <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        [ Last chat message ]
+                      </div>
+                    </Column>
+
+                    <Column style={{ maxWidth: 40 }}>
+                      abc
+                    </Column>
+                  </Row>
+                </div>
+              </li>
             );
           })
         }
-      </Grid>
+      </ul>
     );
   }
 }

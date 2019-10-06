@@ -32,6 +32,9 @@ const Message = (props = {}) => {
     return false;
   }
 
+  // Message is rendered, so mark it as read
+  chatMessage.markAsRead();
+
   return (
     <div
       className={classNames(style['chat-message'], (isFromLocal ? style['local'] : style['remote']))}

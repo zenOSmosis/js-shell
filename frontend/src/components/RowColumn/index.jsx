@@ -36,6 +36,7 @@ const Column = (props = {}) => {
   );
 };
 
+export default Row;
 export {
   Row,
   Column

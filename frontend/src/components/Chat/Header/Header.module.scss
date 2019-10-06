@@ -1,6 +1,8 @@
+@import 'core/core.styles.scss';
+
 .chat-header {
-  background-color: #000;
-  color: blue;
+  background-color: $listBgColor;
+  color: $panelTextColorActive;
   font-weight: bold;
   font-size: 1.2rem;
 }

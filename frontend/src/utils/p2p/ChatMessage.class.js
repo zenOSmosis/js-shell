@@ -26,7 +26,7 @@ export const SHARED_DATA_KEY_IS_TYPING = 'isTyping';
 export const SHARED_DATA_KEY_MESSAGE_BODY = 'messageBody';
 export const SHARED_DATA_KEY_IS_FINALIZED = 'isFinalized';
 
-const commonP2PLinkedState = new P2PLinkedState();
+const _p2pLinkedState = new P2PLinkedState();
 
 class ChatMessage extends P2PSharedObject {
   /**
@@ -38,14 +38,14 @@ class ChatMessage extends P2PSharedObject {
     const { data: sharedData } = dataPacket;
     const { messageUuid } = sharedData;
 
-    let chatMessage = commonP2PLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid);
+    let chatMessage = _p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid);
 
     if (!chatMessage) {
       chatMessage = ChatMessage.createFromSharedData(sharedData);
     } else {
       // Manipulate existing
 
-      commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, (updatableChatMessage) => {
+      _p2pLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, (updatableChatMessage) => {
         updatableChatMessage.setSharedData(sharedData);
 
         const updatedChatMessage = updatableChatMessage;
@@ -53,7 +53,7 @@ class ChatMessage extends P2PSharedObject {
         return updatedChatMessage;
       });
     }
-  };
+  }
 
   /**
    * Creates a new ChatMessage instance from the given sharedData and registers
@@ -68,7 +68,7 @@ class ChatMessage extends P2PSharedObject {
     const chatMessage = new ChatMessage(toPeerId, fromPeerId, sharedData);
 
     return chatMessage;
-  };
+  }
 
   constructor(toPeerId, fromPeerId = null, existingSharedData = null) {
     const localUserId = getLocalUserId();
@@ -100,7 +100,7 @@ class ChatMessage extends P2PSharedObject {
     this._isTypingTimeout = null;
 
     // Add the message to the state store
-    commonP2PLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
+    _p2pLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
 
     if (isFromLocal) {
       // Send sharedData across the wire when EVT_SHARED_UPDATE is emitted
@@ -121,7 +121,7 @@ class ChatMessage extends P2PSharedObject {
         const messageUuid = this.getUuid();
 
         this.on(EVT_SHARED_UPDATE, () => {
-          commonP2PLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, () => {
+          _p2pLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, () => {
             return this;
           });
         });
@@ -326,12 +326,23 @@ class ChatMessage extends P2PSharedObject {
     return isSent;
   }
 
+  markAsRead() {
+    const localUserId = getLocalUserId();
+
+    this.addReadByPeerId(localUserId);
+  }
+
   /**
    * 
    * @param {string} socketPeerId 
    */
   addReadByPeerId(socketPeerId) {
     const { [PRIVATE_DATA_KEY_READ_BY_SOCKET_PEER_IDS]: readByPeerIds } = this._privateData;
+
+    // Prevent duplicate adds
+    if (readByPeerIds.includes(socketPeerId)) {
+      return;
+    }
 
     readByPeerIds.push(socketPeerId);
 
@@ -354,6 +365,11 @@ class ChatMessage extends P2PSharedObject {
    */
   addReceivedByPeerId(socketPeerId) {
     const { [PRIVATE_DATA_KEY_RECEIVED_BY_SOCKET_PEER_IDS]: receivedByPeerIds } = this._privateData;
+
+    // Prevent duplicate adds
+    if (receivedByPeerIds.includes(socketPeerId)) {
+      return;
+    }
 
     receivedByPeerIds.push(socketPeerId);
 

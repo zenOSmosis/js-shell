@@ -1,3 +1,5 @@
+@import 'core/core.styles.scss';
+
 .dock {
   position: absolute;
   bottom: 0px;
@@ -17,7 +19,7 @@
     padding: 4px;
     margin-bottom: -6px;
     display: inline-block;
-    background-color: rgba(0,0,0,.4);
+    background-color: $panelBgColor;
     border: 1px rgba(255,255,255,.2) solid;
     border-bottom: 0px transparent;
     border-top-left-radius: .4rem;
@@ -53,8 +55,8 @@
       }
 
       &.open {
-        border-top-color: #ffff00;
-        color: #61dafB;
+        border-top-color: rgba(255,255,255,.4);
+        color: $panelTextColorActive;
       }
 
       button.dock-item-button {

@@ -58,8 +58,7 @@ class Chat extends Component {
                   <Layout>
                     <Header>
                       <ChatHeader
-                        // TODO: Use remotePeer
-                        remotePeerId={remotePeerId}
+                        remotePeer={remotePeer}
                       />
                     </Header>
                     {

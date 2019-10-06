@@ -14,6 +14,13 @@
   flex-basis: 100%;
   flex: 1;
   position: relative;
+  
+  /*
+  Hack to enable child elements to have width: 100% & use textOverflow
+  @see https://stackoverflow.com/questions/39838908/text-overflow-ellipsis-not-working-in-nested-flexbox
+  */
+  min-width: 0px;
+  
   padding: 0px !important;
   margin: 0px !important;
 }

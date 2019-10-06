@@ -118,6 +118,7 @@ class ChatAppWindow extends Component {
                   <Full>
                     <SocketPeerList
                       connectedPeers={connectedPeers}
+                      selectedPeer={selectedPeer}
                       lastUpdatedPeer={lastUpdatedPeer}
                       onPeerSelect={peer => this._handlePeerSelect(peer)}
                     />

@@ -1,3 +1,5 @@
+/* TODO: Rework these rules */
+
 $bodyBgColor: #282c34;
 $bodyTextColor: #ffffff;
 
@@ -5,9 +7,11 @@ $windowTextColor: #e2e2e2;
 
 $imageFadeInTransitionTime: 1s;
 
+/* TODO: Rename */
 $activeHighlightBgColor: #3482F5;
 $activeHighlightTextColor: #ffffff;
 
+/* TODO: Rename to modalOverlayBgColor */
 $overlayBgColor: rgba(0,0,0,.7);
 
 $inputBgColor: #515151;
@@ -24,3 +28,11 @@ $inputTextColorHover: $inputTextColor;
 $inputTextColorDisabled: #999999;
 $inputBgColorDisabled: transparent;
 $inputBorderColorDisabled: $inputTextColorDisabled;
+
+$panelBgColor: rgba(0,0,0,.4);
+$panelTextColor: #999;
+$panelTextColorActive: $activeHighlightBgColor;
+
+$listBgColor: $panelBgColor;
+$listBgColorHover: rgba(255,255,255,.1);
+$listBgColorActive: $activeHighlightBgColor;
