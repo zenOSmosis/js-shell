@@ -2,9 +2,9 @@ import P2PSharedObject, { EVT_SHARED_UPDATE } from './P2PSharedObject.class';
 import uuidv4 from 'uuidv4';
 import { createSocketPeerDataPacket, sendSocketPeerDataPacket } from './socketPeer';
 import P2PLinkedState, {
-  ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID,
-  ACTION_CACHE_CHAT_MESSAGE,
-  ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID
+  ACTION_GET_CHAT_MESSAGE_WITH_UUID,
+  ACTION_ADD_CHAT_MESSAGE,
+  ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID
 } from 'state/P2PLinkedState';
 import 'shared/p2p/SocketPeerDataPacket.typedef';
 import { getLocalUserId } from './Peer.class';
@@ -38,14 +38,14 @@ class ChatMessage extends P2PSharedObject {
     const { data: sharedData } = dataPacket;
     const { messageUuid } = sharedData;
 
-    let chatMessage = _p2pLinkedState.dispatchAction(ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid);
+    let chatMessage = _p2pLinkedState.dispatchAction(ACTION_GET_CHAT_MESSAGE_WITH_UUID, messageUuid);
 
     if (!chatMessage) {
       chatMessage = ChatMessage.createFromSharedData(sharedData);
     } else {
       // Manipulate existing
 
-      _p2pLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, (updatableChatMessage) => {
+      _p2pLinkedState.dispatchAction(ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID, messageUuid, (updatableChatMessage) => {
         updatableChatMessage.setSharedData(sharedData);
 
         const updatedChatMessage = updatableChatMessage;
@@ -100,7 +100,7 @@ class ChatMessage extends P2PSharedObject {
     this._isTypingTimeout = null;
 
     // Add the message to the state store
-    _p2pLinkedState.dispatchAction(ACTION_CACHE_CHAT_MESSAGE, this);
+    _p2pLinkedState.dispatchAction(ACTION_ADD_CHAT_MESSAGE, this);
 
     if (isFromLocal) {
       // Send sharedData across the wire when EVT_SHARED_UPDATE is emitted
@@ -121,7 +121,7 @@ class ChatMessage extends P2PSharedObject {
         const messageUuid = this.getUuid();
 
         this.on(EVT_SHARED_UPDATE, () => {
-          _p2pLinkedState.dispatchAction(ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID, messageUuid, () => {
+          _p2pLinkedState.dispatchAction(ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID, messageUuid, () => {
             return this;
           });
         });

@@ -12,10 +12,10 @@ export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
 export const STATE_REMOTE_PEERS = 'remotePeers';
 export const STATE_LAST_UPDATED_PEER = 'lastUpdatedPeer';
 
-export const ACTION_CACHE_CHAT_MESSAGE = 'cacheChatMessage';
-export const ACTION_GET_CACHED_CHAT_MESSAGES = 'getCachedChatMessages';
-export const ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID = 'getCachedChatMessageWithUuid';
-export const ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID = 'updateCachedChatMessageWithUuid';
+export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
+export const ACTION_GET_CHAT_MESSAGES = 'getChatMessages';
+export const ACTION_GET_CHAT_MESSAGE_WITH_UUID = 'getChatMessageWithUuid';
+export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
 export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
@@ -44,8 +44,8 @@ export default class P2PLinkedState extends LinkedState {
     }, {
       actions: {
         // Adds a chat message to the log
-        // This should only be called by the ChatManager app
-        [ACTION_CACHE_CHAT_MESSAGE]: (chatMessage) => {
+        // Important: This should only be called by the ChatMessage class
+        [ACTION_ADD_CHAT_MESSAGE]: (chatMessage) => {
           if (!chatMessage) {
             console.warn('chatMessage does not exist');
             return;
@@ -60,7 +60,7 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        [ACTION_GET_CACHED_CHAT_MESSAGES]: (withFilter = null) => {
+        [ACTION_GET_CHAT_MESSAGES]: (withFilter = null) => {
           let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
 
           if (typeof withFilter === 'function') {
@@ -70,7 +70,7 @@ export default class P2PLinkedState extends LinkedState {
           return chatMessages;
         },
 
-        [ACTION_GET_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid) => {
+        [ACTION_GET_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid) => {
           const chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
           const lenChatMessages = chatMessages.length;
 
@@ -86,7 +86,7 @@ export default class P2PLinkedState extends LinkedState {
         /**
          * Updates an existing chat message with updated data.
          */
-        [ACTION_UPDATE_CACHED_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid, updateHandler) => {
+        [ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid, updateHandler) => {
           if (typeof updateHandler !== 'function') {
             throw new Error('updateHandler is not a function');
           }
