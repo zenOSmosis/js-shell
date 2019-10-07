@@ -4,7 +4,6 @@ import P2PSharedObject, {
 } from './P2PSharedObject.class';
 import P2PLinkedState, {
   ACTION_ADD_REMOTE_PEER,
-  ACTION_REMOVE_REMOTE_PEER_WITH_ID,
   ACTION_NOTIFY_PEER_UPDATE,
 
   STATE_REMOTE_PEERS
