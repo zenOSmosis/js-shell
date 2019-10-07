@@ -45,6 +45,10 @@ export default class Moveable extends Component {
   moveTo(posX, posY, isUsingHA = true) {
     this._posX = parseInt(posX) || 0;
     this._posY = parseInt(posY) || 0;
+
+    // Prevent drag above boundary top
+    this._posY = this._posY >= 0 ? this._posY : 0;
+
     if (isUsingHA) {
       // Run the move handler using hardware acceleration
       window.requestAnimationFrame(() => {
