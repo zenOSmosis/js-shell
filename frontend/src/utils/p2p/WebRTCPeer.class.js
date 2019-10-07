@@ -263,16 +263,15 @@ class WebRTCPeer extends EventEmitter {
 
       // Called when WebRTC receives remote error
       this._simplePeer.on('error', jsonError => {
-        const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, err);
-        sendSocketPeerDataPacket(errorDataPacket);
+        this._connectError = deserializeError(jsonError);
 
-        const err = deserializeError(jsonError);
-        this._connectError = deserializeError(err);
+        const errorDataPacket = createSocketPeerDataPacket(remotePeerId, SOCKET_PEER_WEB_RTC_ERROR_PACKET_TYPE, this._connectError);
+        sendSocketPeerDataPacket(errorDataPacket);
 
         this.emit(EVT_CONNECT_ERROR, this._connectError);
 
         console.error(`WebRTC connection has errored with peer with id: ${remotePeerId}`, {
-          err
+          err: this._connectError
         });
 
         this.disconnect();

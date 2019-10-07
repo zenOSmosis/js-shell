@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
-import Peer from 'utils/p2p/Peer.class';
 import TransparentButton from 'components/TransparentButton';
 import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
 import ScreenShareIcon from 'components/componentIcons/ScreenShareIcon';

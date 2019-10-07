@@ -22,10 +22,6 @@ class Scrollable extends Component {
   }
 
   componentDidMount() {
-    console.debug({
-      scrollableFull: this._root
-    });
-
     this._root.onscroll = (evt) => {
       const { scrollLeft, scrollTop } = evt.target;
       
