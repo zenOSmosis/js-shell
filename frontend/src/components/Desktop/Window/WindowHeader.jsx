@@ -102,71 +102,70 @@ export default class WindowHeader extends Component {
           {
             // Header content area is rendered in here
           }
-          <div>
-            <Row>
-              {
-                // TODO: Move styles to styles.css
-              }
-              <Column style={{ textAlign: 'left' }}>
-                <div style={{
-                  display: 'inline-block',
-                  verticalAlign: 'middle',
-                  whiteSpace: 'nowrap',
-                  paddingLeft: 2,
-                  overflow: 'hidden',
-                  position: 'relative',
-                }}>
-                  {
-                    // TODO: Move dots to their own view
-                  }
-                  {
-                    // Red dot
-                  }
-                  <button
-                    className={classNames(style['dot'], style['red'])}
-                    onClick={(evt) => desktopWindow.close()}
-                  ></button>
 
-                  {
-                    // Yellow dot
-                  }
-                  <button
-                    className={classNames(style['dot'], style['yellow'])}
-                    onClick={(evt) => desktopWindow.toggleMinimize()}
-                  ></button>
+          <Row>
+            {
+              // TODO: Move styles to styles.css
+            }
+            <Column style={{ textAlign: 'left' }}>
+              <div style={{
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                whiteSpace: 'nowrap',
+                paddingLeft: 2,
+                overflow: 'hidden',
+                position: 'relative',
+              }}>
+                {
+                  // TODO: Move dots to their own view
+                }
+                {
+                  // Red dot
+                }
+                <button
+                  className={classNames(style['dot'], style['red'])}
+                  onClick={(evt) => desktopWindow.close()}
+                ></button>
 
-                  {
-                    // Green dot
-                  }
-                  <button
-                    className={classNames(style['dot'], style['green'])}
-                    onClick={(evt) => desktopWindow.toggleMaximize()}
-                  ></button>
-                </div>
-              </Column>
-              <Column style={{ textAlign: 'center' }}>
-                <div style={{
-                  whiteSpace: 'nowrap',
-                  width: '100%',
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  display: 'inline-block',
-                  verticalAlign: 'middle'
-                }}>
-                  {
-                    toolbar
-                  }
-                </div>
-              </Column>
-              <Column style={{ textAlign: 'right' }}>
-                <div className="column right">
-                  {
-                    toolbarRight
-                  }
-                </div>
-              </Column>
-            </Row>
-          </div>
+                {
+                  // Yellow dot
+                }
+                <button
+                  className={classNames(style['dot'], style['yellow'])}
+                  onClick={(evt) => desktopWindow.toggleMinimize()}
+                ></button>
+
+                {
+                  // Green dot
+                }
+                <button
+                  className={classNames(style['dot'], style['green'])}
+                  onClick={(evt) => desktopWindow.toggleMaximize()}
+                ></button>
+              </div>
+            </Column>
+            <Column style={{ textAlign: 'center' }}>
+              <div style={{
+                whiteSpace: 'nowrap',
+                width: '100%',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                display: 'inline-block',
+                verticalAlign: 'middle'
+              }}>
+                {
+                  toolbar
+                }
+              </div>
+            </Column>
+            <Column style={{ textAlign: 'right' }}>
+              <div className="column right">
+                {
+                  toolbarRight
+                }
+              </div>
+            </Column>
+          </Row>
 
           {
             subToolbar &&
