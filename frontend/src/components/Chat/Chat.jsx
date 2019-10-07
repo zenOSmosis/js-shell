@@ -6,7 +6,10 @@ import Cover from '../Cover';
 import { Layout, Header, Content, Footer } from '../Layout';
 import MessageComposer from './MessageComposer';
 import MessageList from './MessageList';
-import P2PLinkedState, { STATE_CACHED_CHAT_MESSAGES, ACTION_GET_CHAT_MESSAGES } from 'state/P2PLinkedState';
+import P2PLinkedState, {
+  STATE_CHAT_MESSAGES,
+  ACTION_GET_CHAT_MESSAGES
+} from 'state/P2PLinkedState';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 class Chat extends Component {
@@ -22,7 +25,7 @@ class Chat extends Component {
           key={remotePeerId}
           linkedState={P2PLinkedState}
           onUpdate={(updatedState, p2pLinkedState) => {
-            const { [STATE_CACHED_CHAT_MESSAGES]: stateChatMessages } = updatedState;
+            const { [STATE_CHAT_MESSAGES]: stateChatMessages } = updatedState;
 
             if (stateChatMessages !== undefined) {
               /**

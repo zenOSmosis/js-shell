@@ -8,18 +8,22 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 
 export const STATE_CONNECTED_SOCKET_PEERS = 'connectedSocketPeers';
 export const STATE_WEBRTC_CONNECTIONS = 'webRTCConnections';
-export const STATE_CACHED_CHAT_MESSAGES = 'cachedChatMessages';
 export const STATE_REMOTE_PEERS = 'remotePeers';
 export const STATE_LAST_UPDATED_PEER = 'lastUpdatedPeer';
+export const STATE_CHAT_MESSAGES = 'chatMessages';
 
-export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
-export const ACTION_GET_CHAT_MESSAGES = 'getChatMessages';
-export const ACTION_GET_CHAT_MESSAGE_WITH_UUID = 'getChatMessageWithUuid';
-export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
+// Peers
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
 export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
 export const ACTION_NOTIFY_PEER_UPDATE = 'notifyPeerUpdate';
+
+// Chat messages
+export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
+export const ACTION_GET_CHAT_MESSAGES = 'getChatMessages';
+export const ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID = 'getLastChatMessageToOrFromPeerId';
+export const ACTION_GET_CHAT_MESSAGE_WITH_UUID = 'getChatMessageWithUuid';
+export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -36,7 +40,7 @@ export default class P2PLinkedState extends LinkedState {
       [STATE_WEBRTC_CONNECTIONS]: [],
 
       // TODO: Cache ChatMessages instead
-      [STATE_CACHED_CHAT_MESSAGES]: [],
+      [STATE_CHAT_MESSAGES]: [],
 
       [STATE_REMOTE_PEERS]: [],
 
@@ -51,17 +55,17 @@ export default class P2PLinkedState extends LinkedState {
             return;
           }
 
-          const currentChatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
+          const currentChatMessages = this.getState(STATE_CHAT_MESSAGES);
 
           currentChatMessages.push(chatMessage);
 
           this.setState({
-            [STATE_CACHED_CHAT_MESSAGES]: currentChatMessages
+            [STATE_CHAT_MESSAGES]: currentChatMessages
           });
         },
 
         [ACTION_GET_CHAT_MESSAGES]: (withFilter = null) => {
-          let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
+          let chatMessages = this.getState(STATE_CHAT_MESSAGES);
 
           if (typeof withFilter === 'function') {
             chatMessages = chatMessages.filter(withFilter);
@@ -70,8 +74,34 @@ export default class P2PLinkedState extends LinkedState {
           return chatMessages;
         },
 
+        /**
+         * @param {string} peerId
+         * @return {ChatMessage}
+         */
+        [ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID]: (peerId) => {
+          const chatMessages = this.getState(STATE_CHAT_MESSAGES);
+          const lenChatMessages = chatMessages.length;
+
+          for (let i = lenChatMessages - 1; i >= 0; i--) {
+            const testChatMessage = chatMessages[i];
+
+            // Skip non-finalized messages
+            if (!testChatMessage.getIsFinalized()) {
+              continue;
+            }
+
+            if (testChatMessage.getToPeerId() === peerId) {
+              return testChatMessage;
+            }
+
+            if (testChatMessage.getFromPeerId() === peerId) {
+              return testChatMessage;
+            }
+          }
+        },
+
         [ACTION_GET_CHAT_MESSAGE_WITH_UUID]: (chatMessageUuid) => {
-          const chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
+          const chatMessages = this.getState(STATE_CHAT_MESSAGES);
           const lenChatMessages = chatMessages.length;
 
           // Walk backwards
@@ -91,7 +121,7 @@ export default class P2PLinkedState extends LinkedState {
             throw new Error('updateHandler is not a function');
           }
 
-          let chatMessages = this.getState(STATE_CACHED_CHAT_MESSAGES);
+          let chatMessages = this.getState(STATE_CHAT_MESSAGES);
 
           chatMessages = chatMessages.map(chatMessage => {
             const testChatMessageUuid = chatMessage.getUuid();
@@ -109,7 +139,7 @@ export default class P2PLinkedState extends LinkedState {
           });
 
           this.setState({
-            [STATE_CACHED_CHAT_MESSAGES]: chatMessages
+            [STATE_CHAT_MESSAGES]: chatMessages
           });
         },
 

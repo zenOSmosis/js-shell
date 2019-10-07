@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
 import Row, { Column } from 'components/RowColumn';
 import { Avatar, Tooltip } from 'antd';
+import P2PLinkedState, {
+  ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID
+} from 'state/P2PLinkedState';
 import classNames from 'classnames';
 import styles from './SocketPeerList.module.scss';
 
 class SocketPeerList extends Component {
+  constructor(props) {
+    super(props);
+
+    this._p2pLinkedState = new P2PLinkedState();
+  }
+
+  componentWillUnmount() {
+    this._p2pLinkedState.destroy();
+    this._p2pLinkedState = null;
+  }
+
   selectPeer(peer) {
     const { onPeerSelect } = this.props;
 
@@ -39,6 +53,9 @@ class SocketPeerList extends Component {
               os: { name: osName, version: osVersion },
               platform: {type: platformType}
             } = systemInfo;
+
+            const lastChatMessage = this._p2pLinkedState.dispatchAction(ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID, peerId);
+            const lastChatMessageBody = lastChatMessage ? lastChatMessage.getMessageBody() : null;
 
             return (
               <li
@@ -111,7 +128,9 @@ class SocketPeerList extends Component {
                           </div>
                         </div>
                         <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                          [ Last chat message ]
+                          {
+                            lastChatMessageBody
+                          }
                         </div>
                       </Column>
 
