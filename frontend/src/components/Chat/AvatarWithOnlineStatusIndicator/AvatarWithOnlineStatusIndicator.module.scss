@@ -1,0 +1,18 @@
+.avatar-with-online-indicator {
+  position: relative;
+
+  .online-indicator {
+    position: absolute;
+    right: 4px;
+    bottom: 0px;
+    border: 1px #ccc solid;
+    
+    &.online {
+      background-color: #4DD965;
+    }
+
+    &.offline {
+      background-color: #FC0001;
+    }
+  }
+}

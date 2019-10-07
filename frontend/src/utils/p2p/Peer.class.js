@@ -49,7 +49,7 @@ class Peer extends P2PSharedObject {
     const { [SHARED_DATA_KEY_USER_ID]: userId } = rawData;
 
     let peer = Peer.getPeerWithId(userId);
-    if (!peer || !peer.getIsConnected()) {
+    if (!peer) {
       peer = new Peer(false);
     }
   
@@ -99,8 +99,7 @@ class Peer extends P2PSharedObject {
       _p2pLinkedState.dispatchAction(ACTION_ADD_REMOTE_PEER, this);
     }
 
-    // TODO: Don't set true by default
-    this._isConnected = true;
+    this._isOnline = null;
 
     this._webRTCPeer = null;
 
@@ -306,7 +305,7 @@ class Peer extends P2PSharedObject {
       return;
     }
 
-    return this._webRTCPeer.getIsConnected();
+    return this._webRTCPeer.getIsOnline();
   }
 
   /**
@@ -321,34 +320,29 @@ class Peer extends P2PSharedObject {
   }
 
   /**
-   * TODO: Rename to getIsSocketConnected
+   * TODO: Limit setting ability to P2PController
    * 
-   * @return {boolean}
-   */
-  getIsConnected() {
-    return this._isConnected;
-  }
-
-  /**
    * @return {Promise<void>}
    */
-  async disconnect() {
+  async setIsOnline(isOnline) {
     try {
-      if (this._isLocalUser) {
-        console.error('Cannot disconnect local user');
-      } else {
-        this._isConnected = false;
+      this._isOnline = isOnline;
 
-        if (this._webRTCPeer) {
-          await this._webRTCPeer.disconnect();
-        }
-  
-        // TODO: Don't remove from LinkedState
-        _p2pLinkedState.dispatchAction(ACTION_REMOVE_REMOTE_PEER_WITH_ID, this.getPeerId());
+      if (!this._isOnline && this._webRTCPeer) {
+        await this._webRTCPeer.disconnect();
       }
     } catch (exc) {
       console.error(exc);
     }
+  }
+
+  /**
+   * TODO: Rename to getIsSocketConnected
+   * 
+   * @return {boolean}
+   */
+  getIsOnline() {
+    return this._isOnline;
   }
 }
 

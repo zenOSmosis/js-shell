@@ -1,0 +1,3 @@
+import AvatarWithOnlineStatusIndicator from './AvatarWithOnlineStatusIndicator';
+
+export default AvatarWithOnlineStatusIndicator;

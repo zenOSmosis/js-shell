@@ -98,6 +98,8 @@ class P2PController extends ClientProcess {
       [SHARED_DATA_KEY_USER_ID]: peerId
     });
 
+    peer.setIsOnline(true);
+
     const socketPeerId = peer.getPeerId();
 
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
@@ -108,7 +110,7 @@ class P2PController extends ClientProcess {
       [SHARED_DATA_KEY_USER_ID]: socketPeerId
     });
 
-    peer.disconnect();
+    peer.setIsOnline(false);
 
     _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
   };

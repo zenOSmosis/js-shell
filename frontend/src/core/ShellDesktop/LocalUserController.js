@@ -1,6 +1,10 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
 import LocalUser from 'utils/localUser/LocalUser.class';
-import { openAuthenticate } from 'utils/socket.io';
+import socketIO, {
+  openAuthenticate,
+  EVT_SOCKET_CONNECT,
+  EVT_SOCKET_DISCONNECT
+} from 'utils/socket.io';
 
 class LocalUserController extends ClientProcess {
   constructor(...args) {
@@ -10,10 +14,18 @@ class LocalUserController extends ClientProcess {
 
     this._localUser = new LocalUser();
     const userId = this._localUser.getPeerId();
+
+    this._handleSocketConnect = this._handleSocketConnect.bind(this);
+    this._handleSocketDisconnect = this._handleSocketDisconnect.bind(this);
+
+    socketIO.on(EVT_SOCKET_CONNECT, this._handleSocketConnect);
+    socketIO.on(EVT_SOCKET_DISCONNECT, this._handleSocketDisconnect);
     
     this.on(EVT_BEFORE_EXIT, () => {
-      this._localUser.destroy();
+      socketIO.off(EVT_SOCKET_CONNECT, this._handleSocketConnect);
+      socketIO.off(EVT_SOCKET_DISCONNECT, this._handleSocketDisconnect);
 
+      this._localUser.destroy();
       this._localUser = null;
     });
 
@@ -21,6 +33,14 @@ class LocalUserController extends ClientProcess {
     openAuthenticate({
       userId
     });
+  }
+
+  _handleSocketConnect() {
+    this._localUser.setIsOnline(true);
+  }
+
+  _handleSocketDisconnect() {
+    this._localUser.setIsOnline(false);
   }
 }
 

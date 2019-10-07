@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Row, { Column } from 'components/RowColumn';
-import { Avatar, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import P2PLinkedState, {
   ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID
 } from 'state/P2PLinkedState';
 import classNames from 'classnames';
 import styles from './SocketPeerList.module.scss';
+import AvatarWithOnlineStatusIndicator from '../AvatarWithOnlineStatusIndicator';
 
 class SocketPeerList extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ class SocketPeerList extends Component {
         {
           connectedPeers.map((peer) => {
             const peerId = peer.getPeerId();
+            const isOnline = peer.getIsOnline();
             const nickname = peer.getNickname();
             const aboutDescription = peer.getAboutDescription();
             const browserOnOs = peer.getBrowserOnOs();
@@ -51,7 +53,7 @@ class SocketPeerList extends Component {
               browser: { name: browserName, version: browserVersion },
               engine: { name: engineName, version: engineVersion },
               os: { name: osName, version: osVersion },
-              platform: {type: platformType}
+              platform: { type: platformType }
             } = systemInfo;
 
             const lastChatMessage = this._p2pLinkedState.dispatchAction(ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID, peerId);
@@ -73,7 +75,7 @@ class SocketPeerList extends Component {
                       [ Call Placeholder ]
 
                       <h2>System Info</h2>
-                      <table style={{width: '100%'}}>
+                      <table style={{ width: '100%' }}>
                         <thead>
                           <tr>
                             <td>Kind</td>
@@ -106,10 +108,9 @@ class SocketPeerList extends Component {
                     onTouchStart={evt => this.selectPeer(peer)}
                   >
                     <Row>
-                      <Column style={{ textAlign: 'center', minWidth: 42, maxWidth: 42 }}>
-                        <Avatar
-                          size={36}
-                          icon="user"
+                      <Column style={{ textAlign: 'center', minWidth: 42, maxWidth: 42, position: 'relative' }}>
+                        <AvatarWithOnlineStatusIndicator
+                          isOnline={isOnline}
                         />
                       </Column>
 

@@ -14,6 +14,7 @@ const fetchConnectedPeers = async () => {
     const connectedPeers = [];
     for (let i = 0; i < lenConnectedUsers; i++) {
       const peer = Peer.createFromRawData(rawUsers[i]);
+      peer.setIsOnline(true);
 
       connectedPeers.push(peer);
     }
