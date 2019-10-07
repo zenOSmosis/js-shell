@@ -304,7 +304,7 @@ class Peer extends P2PSharedObject {
       return;
     }
 
-    return this._webRTCPeer.getIsOnline();
+    return this._webRTCPeer.getIsConnected();
   }
 
   /**
