@@ -10,7 +10,7 @@ import AppRegistryLinkedState from 'state/AppRegistryLinkedState';
 // import DesktopLinkedState from 'state/DesktopLinkedState';
 import DockItem from './DockItem';
 import classNames from 'classnames';
-import style from './Dock.module.scss';
+import styles from './Dock.module.scss';
 
 /**
  * The items in the Dock represent a filtered subset of AppRegistration
@@ -33,13 +33,13 @@ class Dock extends Component {
     return (
       <div
         {...propsRest}
-        className={classNames(style['dock'], className)}
+        className={classNames(styles['dock'], className)}
       >
         {
           // TODO: Convert items to a UL
         }
 
-        <div className={style['dock-items']}>
+        <div className={styles['dock-items']}>
           {
             appRegistrations.map((appRegistration, idx) => {
               const iconView = appRegistration.getIconView();

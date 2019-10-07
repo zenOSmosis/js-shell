@@ -3,7 +3,7 @@ import Cover from '../Cover';
 import Full from '../Full';
 import Image from '../Image';
 import classNames from 'classnames';
-import style from './Background.module.css';
+import styles from './Background.module.css';
 
 export default class Background extends Component {
   render() {
@@ -17,11 +17,11 @@ export default class Background extends Component {
     return (
       <Full
         {...propsRest}
-        className={classNames(style['background'], className)}
+        className={classNames(styles['background'], className)}
       >
-        <Cover className={style['cover']}>
+        <Cover className={styles['cover']}>
           <Image
-            className={style['image']}
+            className={styles['image']}
             src={src}
           />
         </Cover>

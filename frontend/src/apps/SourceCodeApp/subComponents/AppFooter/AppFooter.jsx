@@ -2,7 +2,7 @@ import React from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import { ACTIVE_APP_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
 import { Row, Column } from 'components/Layout';
-import style from './AppFooter.module.css';
+import styles from './AppFooter.module.css';
 
 const AppFooter = (props) => {
   const { editorLinkedState } = props;
@@ -55,7 +55,7 @@ const AppFooter = (props) => {
         const languages = propsLanguages ? propsLanguages : [];
 
         return (
-          <Row className={style['app-footer']}>
+          <Row className={styles['app-footer']}>
             <Column>
               Ln {positionLineNumber}, Col {positionColumn}
             </Column>

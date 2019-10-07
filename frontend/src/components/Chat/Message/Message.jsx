@@ -2,14 +2,14 @@ import React from 'react';
 import { Avatar } from 'antd';
 // import { Row, Column } from 'components/Layout';
 import classNames from 'classnames';
-import style from './Message.module.scss';
+import styles from './Message.module.scss';
 
 const MessageAvatar = () => {
   return (
     <Avatar
       size={36}
       icon="user"
-      className={style['avatar']}
+      className={styles['avatar']}
     />
   )
 };
@@ -37,11 +37,11 @@ const Message = (props = {}) => {
 
   return (
     <div
-      className={classNames(style['chat-message'], (isFromLocal ? style['local'] : style['remote']))}
+      className={classNames(styles['chat-message'], (isFromLocal ? styles['local'] : styles['remote']))}
     >
       <MessageAvatar />
 
-      <div className={style['chat-bubble']}>
+      <div className={styles['chat-bubble']}>
         {
           isTyping &&
           <span style={{fontStyle: 'italic'}}>...typing</span>

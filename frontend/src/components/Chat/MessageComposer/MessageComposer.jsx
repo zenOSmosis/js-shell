@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ChatMessage from 'utils/p2p/ChatMessage.class';
-import style from './MessageComposer.module.scss';
+import styles from './MessageComposer.module.scss';
 import PropTypes from 'prop-types';
 
 class MessageComposer extends Component {
@@ -83,16 +83,16 @@ class MessageComposer extends Component {
 
   render() {
     return (
-      <div className={style['message-composer']}>
-        <div className={style['row']}>
-          <div className={style['cell']}>
+      <div className={styles['message-composer']}>
+        <div className={styles['row']}>
+          <div className={styles['cell']}>
             <input
               ref={ c => this._elInput = c }
               placeholder="Enter a message"
               onKeyDown={evt => this._handleKeyDown(evt)}
             />
           </div>
-          <div className={style['cell']}>
+          <div className={styles['cell']}>
             <button onClick={evt => this._handleMessageSend()}>Send</button>
           </div>
         </div>

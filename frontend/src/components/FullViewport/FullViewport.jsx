@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './FullViewport.module.css';
+import styles from './FullViewport.module.css';
 
 export const EVT_RESIZE = 'resize';
 
@@ -46,7 +46,7 @@ export default class FullViewport extends Component {
       <div
         ref={c => this._base = c}
         {...propsRest}
-        className={classNames(style['full-viewport'], className)}
+        className={classNames(styles['full-viewport'], className)}
       >
         {children}
       </div>

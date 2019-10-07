@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './Full.module.css';
+import styles from './Full.module.css';
 
 class Full extends Component {
   render() {
@@ -9,7 +9,7 @@ class Full extends Component {
     return (
       <div
         {...propsRest}
-        className={classNames(style['full'], className)}
+        className={classNames(styles['full'], className)}
       >
         {
           children

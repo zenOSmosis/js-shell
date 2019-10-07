@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import style from './MediaStreamVideo.module.scss';
+import styles from './MediaStreamVideo.module.scss';
 
 class MediaStreamVideo extends Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class MediaStreamVideo extends Component {
 
     return (
       <video
-        className={classNames(style['media-stream-video'], className)}
+        className={classNames(styles['media-stream-video'], className)}
         ref={c => this._elVideo = c}
         controls={false}
         playsInline={true}

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Cover from 'components/Cover';
 import SocketFSFileChooserWindow from 'components/SocketFSFileChooserWindow';
 import DesktopLinkedState, { hocConnect, STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS, ACTION_CLOSE_FILE_CHOOSER_DIALOG } from 'state/DesktopLinkedState';
-import style from './FileChooserOverlayContent.module.scss';
+import styles from './FileChooserOverlayContent.module.scss';
 
 /**
  * IMPORTANT!  This should run as a singleton!
@@ -22,7 +22,7 @@ const FileChooserOverlayContext = (props) => {
 
       {
         activeFileChooserDialogParams &&
-        <Cover className={style['overlay']}>
+        <Cover className={styles['overlay']}>
           <SocketFSFileChooserWindow
             dialogParams={activeFileChooserDialogParams}
 

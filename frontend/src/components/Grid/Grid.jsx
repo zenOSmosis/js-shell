@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import style from './Grid.module.scss';
+import styles from './Grid.module.scss';
 
 export const Grid = (props) => {
   let { children, className } = props;
@@ -8,10 +8,10 @@ export const Grid = (props) => {
   return (
     <div
       {...props}
-      className={classNames(style['grid'], className)}
+      className={classNames(styles['grid'], className)}
     >
-      <div className={style['flex']}>
-        <div className={style['items-wrapper']}>
+      <div className={styles['flex']}>
+        <div className={styles['items-wrapper']}>
           {
             children
           }
@@ -30,7 +30,7 @@ export const GridItem = (props) => {
   return (
     <div
       {...rest}
-      className={classNames(style['item'], className)}
+      className={classNames(styles['item'], className)}
     >
       {children}
     </div>

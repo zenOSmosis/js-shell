@@ -2,7 +2,7 @@ import React from 'react';
 import Full from '../Full';
 import { Row, Column } from '../RowColumn';
 import Section from '../Section';
-import style from './Layout.module.css';
+import styles from './Layout.module.css';
 import classNames from 'classnames';
 
 export {
@@ -18,7 +18,7 @@ export const Layout = (props) => {
   return (
     <Full
       { ...propsRest }
-      className={classNames(style['layout'], className)}
+      className={classNames(styles['layout'], className)}
     >
       {
         children
@@ -33,7 +33,7 @@ export const Header = (props) => {
   return (
     <div
       {...propsRest}
-      className={classNames(style['header'], className)}
+      className={classNames(styles['header'], className)}
     >
       {
         children
@@ -48,7 +48,7 @@ export const Content = (props) => {
   return (
     <div
       {...propsRest}
-      className={classNames(style['content'], className)}
+      className={classNames(styles['content'], className)}
     >
       {
         children
@@ -62,7 +62,7 @@ export const Footer = (props) => {
   return (
     <div
       {...propsRest}
-      className={classNames(style['footer'], className)}
+      className={classNames(styles['footer'], className)}
     >
       {
         children

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import style from './Image.module.scss';
+import styles from './Image.module.scss';
 import PropTypes from 'prop-types';
 
 class Image extends Component {
@@ -29,7 +29,7 @@ class Image extends Component {
     return (
       <img
         {...propsRest}
-        className={classNames(style['image'], (isLoaded ? style['loaded'] : null), className)}
+        className={classNames(styles['image'], (isLoaded ? styles['loaded'] : null), className)}
         onLoad={evt => this.setState({ isLoaded: true })}
         alt={alt}
         title={title}

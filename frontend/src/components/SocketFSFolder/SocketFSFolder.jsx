@@ -5,7 +5,7 @@ import SocketFSFolderNode from './SocketFSFolderNode';
 import { dirDetail } from 'utils/socketFS';
 import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
 import PropTypes from 'prop-types';
-import style from './SocketFSFolderNode.module.scss';
+import styles from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
 import debounce from 'debounce';
 
@@ -193,7 +193,7 @@ class SocketFSFolder extends Component {
               const isSelected = selectedDirChildren.includes(dirChild);
 
               return {
-                className: classNames(style['node'], (isSelected ? style['selected'] : null)),
+                className: classNames(styles['node'], (isSelected ? styles['selected'] : null)),
                 onDoubleClick: (evt) => this._handleNodeInteract(evt, dirChild),
                 onMouseDown: (evt) => this._handleNodeInteract(evt, dirChild),
                 // onTouchStart: (evt) => this._handleNodeInteract(evt, dirChild)
@@ -299,7 +299,7 @@ class SocketFSFolder extends Component {
                 return (
                   <div
                     key={idx}
-                    className={classNames(style['node'], (isSelected ? style['selected'] : null))}
+                    className={classNames(styles['node'], (isSelected ? styles['selected'] : null))}
                     onMouseDown={evt => this._handleNodeInteract(evt, dirChild)}
                   // onTouchStart={evt => this._handleNodeInteract(evt, dirChild)}
                   >

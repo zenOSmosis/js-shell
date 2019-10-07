@@ -9,7 +9,7 @@ import DragResizable from 'components/DragResizable';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Moveable from 'components/Moveable';
 import StackingContext from 'components/StackingContext';
-import style from './Window.module.scss';
+import styles from './Window.module.scss';
 // import AppRuntime from 'core/AppRuntime';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 
@@ -386,7 +386,7 @@ class Window extends Component {
 
       this.restore();
 
-      $(this._el).addClass(style[CSS_CLASS_NAME_FOCUS]);
+      $(this._el).addClass(styles[CSS_CLASS_NAME_FOCUS]);
 
       this._isFocused = true;
 
@@ -408,7 +408,7 @@ class Window extends Component {
       
       this._isFocused = false;
   
-      $(this._el).removeClass(style[CSS_CLASS_NAME_FOCUS]);
+      $(this._el).removeClass(styles[CSS_CLASS_NAME_FOCUS]);
   
       this.doCoverIfShould();
 
@@ -832,7 +832,7 @@ class Window extends Component {
 
         // Note: The width & height of the transition layer are intentionally
         // kept at 0 width / height
-        className={style['window']}
+        className={styles['window']}
       >
 
         <Moveable
@@ -851,7 +851,7 @@ class Window extends Component {
               moveableComponent={this._moveableComponent}
               minWidth={minWidth}
               minHeight={minHeight}
-              bodyClassName={style['window-resizable']}
+              bodyClassName={styles['window-resizable']}
               onBodyMount={c => this._resizableBody = c}
               onResizeMove={this._handleMove}
               enable={isResizeEnabled}
@@ -863,7 +863,7 @@ class Window extends Component {
                   <div
                     {...propsRest}
                     ref={c => this._paintedComponent = c}
-                    className={style['window-painted']}
+                    className={styles['window-painted']}
                   >
 
                     {
@@ -886,13 +886,13 @@ class Window extends Component {
                     }
                     <div
                       ref={c => this.windowBodyWrapper = c}
-                      className={style['window-body-wrapper']}
+                      className={styles['window-body-wrapper']}
                     >
 
                       {
                         // Window background
                       }
-                      <Cover className={style['window-body-background']}>
+                      <Cover className={styles['window-body-background']}>
                         {
                           // This is the background of the window
                         }
@@ -903,7 +903,7 @@ class Window extends Component {
                       }
                       <Cover
                         ref={c => this._windowBodyComponent = c}
-                        className={style['window-body']}
+                        className={styles['window-body']}
                         style={bodyStyle}
                       >
                         <ErrorBoundary>

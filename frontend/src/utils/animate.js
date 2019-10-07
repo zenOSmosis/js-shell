@@ -265,7 +265,7 @@ let animate = (() => {
     };
 
     for (let t in animations) {
-      if (el.style[t] !== undefined) {
+      if (el.styles[t] !== undefined) {
         return animations[t];
       }
     }

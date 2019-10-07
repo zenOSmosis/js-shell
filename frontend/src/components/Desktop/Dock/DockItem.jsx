@@ -4,7 +4,7 @@ import TransparentButton from 'components/TransparentButton';
 import { getWindowStackCentral } from 'core/ShellDesktop';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
-import style from './Dock.module.scss';
+import styles from './Dock.module.scss';
 
 const EVT_CONTEXT_MENU = 'contextmenu';
 const EVT_MOUSEDOWN = 'mousedown';
@@ -89,7 +89,7 @@ export default class DockItem extends Component {
       <div
         ref={c => this._root = c}
         // effect="wobble" // TODO: Use variable
-        className={classNames(style['dock-item'], (isLaunched ? style['open'] : null))}
+        className={classNames(styles['dock-item'], (isLaunched ? styles['open'] : null))}
       >
         <Tooltip
           title={title}
@@ -99,11 +99,11 @@ export default class DockItem extends Component {
             onMouseOver={evt => this.setState({ isDockItemHovered: true })}
             onMouseLeave={evt => this.setState({ isDockItemHovered: false })}
             onClick={evt => this._handleDockItemClick(appRegistration)}
-            className={style['dock-item-button']}
+            className={styles['dock-item-button']}
           >
             <IconView />
 
-            <div className={style['app-indicator-wrapper']}>
+            <div className={styles['app-indicator-wrapper']}>
               {
                 appRuntimes.map((appRuntime, idx) => {
                   // Prevent more than 5 indicators
@@ -113,7 +113,7 @@ export default class DockItem extends Component {
                   }
 
                   return (
-                    <div key={idx} className={style['app-indicator']}></div>
+                    <div key={idx} className={styles['app-indicator']}></div>
                   );
                 })
               }
@@ -122,10 +122,10 @@ export default class DockItem extends Component {
         </Tooltip>
         {
           isMenuVisible &&
-          <div className={style['dock-item-context-menu-wrapper']}>
+          <div className={styles['dock-item-context-menu-wrapper']}>
             <div
               ref={ref => { this._overlay = ref }}
-              className={style['overlay']}
+              className={styles['overlay']}
             >
               <Menu
                 onClick={evt => { this.setState({ isMenuVisible: false }) }}

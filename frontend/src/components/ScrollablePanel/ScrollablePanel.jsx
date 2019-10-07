@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import style from './ScrollablePanel.module.css';
+import styles from './ScrollablePanel.module.css';
 import classNames from 'classnames';
 import Scrollable from '../Scrollable';
 
@@ -44,7 +44,7 @@ class ScrollablePanel extends Component {
     return (
       <div
         {...propsRest}
-        className={classNames(style['scrollable-panel'], className)}
+        className={classNames(styles['scrollable-panel'], className)}
       >
         {
           // TODO: Only allow scrolling according to orientation

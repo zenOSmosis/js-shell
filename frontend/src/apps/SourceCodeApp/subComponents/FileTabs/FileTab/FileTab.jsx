@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TransparentButton from 'components/TransparentButton';
 // import textEllipsis from 'utils/text/textEllipsis';
-import style from './FileTab.module.css';
+import styles from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
 import {
   activateAppFile,
@@ -70,7 +70,7 @@ class FileTab extends Component {
 
     return (
       <div
-        className={style['file-tab']}
+        className={styles['file-tab']}
       >
         <Row>
           <Column>
@@ -81,7 +81,7 @@ class FileTab extends Component {
 
           <Column>
             <TransparentButton onClick={evt => this._handleActivate()}>
-              <div className={style['file-name']}>
+              <div className={styles['file-name']}>
                 {
                   base &&
                   <span>{base}</span>

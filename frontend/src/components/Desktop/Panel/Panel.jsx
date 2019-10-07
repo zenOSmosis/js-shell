@@ -10,7 +10,7 @@ import Time from './Time';
 import DesktopLinkedState from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
 import classNames from 'classnames';
-import style from './Panel.module.scss';
+import styles from './Panel.module.scss';
 
 class Panel extends Component {
   _onFullScreenToggle() {
@@ -34,14 +34,14 @@ class Panel extends Component {
     return (
       <div
         {...propsRest}
-        className={classNames(style['panel'], className)}
+        className={classNames(styles['panel'], className)}
       >
         <Row>
-          <Column className={style['column-left']}>
+          <Column className={styles['column-left']}>
             <Menubar />
           </Column>
 
-          <Column className={style['column-right']}>
+          <Column className={styles['column-right']}>
             <div>
               <Time />
 

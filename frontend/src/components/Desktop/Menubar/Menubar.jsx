@@ -3,7 +3,7 @@ import { /* Icon, */ Dropdown } from 'antd';
 import { Menu, /* MenuDivider, */ MenuItem, /* SubMenu */ } from 'components/Menu';
 import AppRuntimeLinkedState from 'state/AppRuntimeLinkedState';
 import hocConnect from 'state/hocConnect';
-import style from './Menubar.module.scss';
+import styles from './Menubar.module.scss';
 import classNames from 'classnames';
 import { EVT_MENUBAR_UPDATE } from 'core/AppRuntime';
 import KeyboardLinkedState, {
@@ -252,7 +252,7 @@ class Menubar extends Component {
     const { activeTopLevelIdx, activeMenuItemIdx, menus } = this.state;
 
     return (
-      <ul className={style['menubar']}>
+      <ul className={styles['menubar']}>
         {
           menus.map((menu, idx) => {
             const menuData = menu.getMenuData();
@@ -277,7 +277,7 @@ class Menubar extends Component {
                 overlay={
                   // Override passed Menu container, using only the children of it
                   <Menu
-                    className={style['dropdown-menu']}
+                    className={styles['dropdown-menu']}
                     mode="vertical"
                   >
                     {
@@ -294,7 +294,7 @@ class Menubar extends Component {
 
                         return (
                           <MenuItem
-                            className={classNames(style['item'], (activeMenuItemIdx === itemIdx ? style['active'] : null))}
+                            className={classNames(styles['item'], (activeMenuItemIdx === itemIdx ? styles['active'] : null))}
                             key={itemIdx}
                             disabled={isDisabled}
                             onMouseOver={evt => this._activateMenuItemWithIdx(itemIdx)}
@@ -312,7 +312,7 @@ class Menubar extends Component {
                 }
               >
                 <li
-                  className={classNames(style['title'], (activeTopLevelIdx === idx ? style['active'] : null))}
+                  className={classNames(styles['title'], (activeTopLevelIdx === idx ? styles['active'] : null))}
                   onMouseOver={evt => this._handleTopLevelMenuMouseOver(idx)}
                 >
                   {

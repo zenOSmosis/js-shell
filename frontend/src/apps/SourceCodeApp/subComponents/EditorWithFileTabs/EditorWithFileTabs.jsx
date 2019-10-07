@@ -4,7 +4,7 @@ import Full from 'components/Full';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import MonacoEditor from 'components/MonacoEditor';
 import FileTabs from '../FileTabs';
-import style from './EditorWithFileTabs.module.css';
+import styles from './EditorWithFileTabs.module.css';
 import {
   ACTIVE_APP_FILE,
   OPENED_APP_FILES,
@@ -89,7 +89,7 @@ class EditorWithFileTabs extends Component {
                           ref={c => this._editorRefs[idx] = c}
 
                           // Hide editors which are not active
-                          containerClassName={classNames(style['editor'], isHidden ? style['hidden'] : null)}
+                          containerClassName={classNames(styles['editor'], isHidden ? styles['hidden'] : null)}
 
                           key={appFileUuid}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}

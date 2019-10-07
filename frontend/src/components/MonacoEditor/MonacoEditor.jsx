@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import Full from '../Full';
 import createAsyncComponent from 'utils/react/createAsyncComponent';
 import classNames from 'classnames';
-import style from './MonacoEditor.module.css';
+import styles from './MonacoEditor.module.css';
 import MonacoEditorEvents from './MonacoEditorEvents';
 
 export const DEFAULT_TAB_SIZE = 2;
@@ -167,7 +167,7 @@ export default class MonacoEditor extends Component {
 
     return (
       <Full
-        className={classNames(style['monaco-editor-container'], containerClassName)}
+        className={classNames(styles['monaco-editor-container'], containerClassName)}
         style={containerStyle}
       >
         {

@@ -3,7 +3,7 @@ import Full from '../Full';
 import Center from '../Center';
 import Cover from '../Cover';
 // import 'react-dropzone-uploader/dist/styles.css';
-import style from './FileDropZone.module.scss';
+import styles from './FileDropZone.module.scss';
 
 class FileDropZone extends Component {
   constructor() {
@@ -68,13 +68,13 @@ class FileDropZone extends Component {
         onDragLeave={evt => this._handleDragLeave(evt)}
         onDragOver={evt => this._handleDragOver(evt)}
         onDrop={evt => this._handleDrop(evt)}
-        className={style['file-drop-zone']}
+        className={styles['file-drop-zone']}
       >
         {
           isDragging &&
-          <Cover className={style['drag-cover']}>
-            <Full className={style['inner-full']}>
-              <Center className={style['center']}>
+          <Cover className={styles['drag-cover']}>
+            <Full className={styles['inner-full']}>
+              <Center className={styles['center']}>
                 <div>
                   Upload Files
                 </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import style from './Scrollable.module.css';
+import styles from './Scrollable.module.css';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -87,9 +87,9 @@ class Scrollable extends Component {
         {...propsRest}
         ref={ c => this._root = c }
         className={classNames(
-          style['scrollable'],
-          (allowScrollY ? style['scroll-y'] : ''),
-          (allowScrollX ? style['scroll-x'] : ''),
+          styles['scrollable'],
+          (allowScrollY ? styles['scroll-y'] : ''),
+          (allowScrollX ? styles['scroll-x'] : ''),
           className
         )}
       >

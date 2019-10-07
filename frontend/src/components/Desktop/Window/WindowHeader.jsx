@@ -3,7 +3,7 @@ import Window from '../Window';
 import Gesture from 'components/Gesture';
 import { Row, Column } from 'components/Layout';
 import classNames from 'classnames';
-import style from './Window.module.scss';
+import styles from './Window.module.scss';
 
 export default class WindowHeader extends Component {
   constructor(...args) {
@@ -90,7 +90,7 @@ export default class WindowHeader extends Component {
     return (
       <div
         {...propsRest}
-        className={classNames(style['window-header'], className)}
+        className={classNames(styles['window-header'], className)}
       >
         <Gesture
           touch={true}
@@ -123,7 +123,7 @@ export default class WindowHeader extends Component {
                   // Red dot
                 }
                 <button
-                  className={classNames(style['dot'], style['red'])}
+                  className={classNames(styles['dot'], styles['red'])}
                   onClick={(evt) => desktopWindow.close()}
                 ></button>
 
@@ -131,7 +131,7 @@ export default class WindowHeader extends Component {
                   // Yellow dot
                 }
                 <button
-                  className={classNames(style['dot'], style['yellow'])}
+                  className={classNames(styles['dot'], styles['yellow'])}
                   onClick={(evt) => desktopWindow.toggleMinimize()}
                 ></button>
 
@@ -139,7 +139,7 @@ export default class WindowHeader extends Component {
                   // Green dot
                 }
                 <button
-                  className={classNames(style['dot'], style['green'])}
+                  className={classNames(styles['dot'], styles['green'])}
                   onClick={(evt) => desktopWindow.toggleMaximize()}
                 ></button>
               </div>

@@ -10,7 +10,7 @@ import {
   stopMediaStream
 } from 'utils/mediaStream';
 import { fetchAggregatedMediaDeviceInfo } from 'utils/mediaDevices';
-import style from './Header.module.scss';
+import styles from './Header.module.scss';
 
 class Header extends Component {
   constructor(props) {
@@ -79,7 +79,7 @@ class Header extends Component {
     // const webRTCConnectError = remotePeer.getWebRTCConnectError();
 
     return (
-      <div className={style['chat-header']}>
+      <div className={styles['chat-header']}>
         {nickname}
 
         {
