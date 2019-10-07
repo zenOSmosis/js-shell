@@ -96,7 +96,7 @@ class SocketPeerList extends Component {
                         />
                       </Column>
 
-                      <Column>
+                      <Column isForcedMinWidth={true}>
                         <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                           <div style={{ display: 'inline', fontWeight: 'bold' }}>
                             {
