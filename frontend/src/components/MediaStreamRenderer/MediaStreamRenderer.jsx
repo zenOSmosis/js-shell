@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 class MediaStreamRenderer extends Component {
   static propTypes = {
-    elementType: PropTypes.string,
+    elementType: PropTypes.oneOf('video', 'audio'),
     mediaStream: PropTypes.instanceOf(MediaStream)
   }
 
@@ -59,7 +59,11 @@ class MediaStreamRenderer extends Component {
   // TODO: Include selector to select track
 
   render() {
-    const { className, elementType = 'video', ...propsRest } = this.props;
+    const {
+      className,
+      elementType = 'video',
+      ...propsRest
+    } = this.props;
 
     return React.createElement(
       elementType,
