@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import MediaStreamVideo from 'components/MediaStreamVideo';
+import MediaStreamRenderer from 'components/MediaStreamRenderer';
 import Peer from 'utils/p2p/Peer.class';
 import PropTypes from 'prop-types';
 
@@ -22,7 +22,7 @@ class ChatPeerMediaStreamVideo extends Component {
         {
           webRTCStreams.map((mediaStream, idx) => {
             return (
-              <MediaStreamVideo key={idx} mediaStream={mediaStream} />
+              <MediaStreamRenderer key={idx} mediaStream={mediaStream} />
             )
           })
         }
