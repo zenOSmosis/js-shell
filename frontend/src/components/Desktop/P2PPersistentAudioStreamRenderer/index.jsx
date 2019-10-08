@@ -1,0 +1,3 @@
+import P2PPersistentAudioStreamRenderer from './P2PPersistentAudioStreamRenderer';
+
+export default P2PPersistentAudioStreamRenderer;

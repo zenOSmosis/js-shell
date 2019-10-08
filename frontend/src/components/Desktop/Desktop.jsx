@@ -17,6 +17,7 @@ import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
 import FileChooserOverlayContext from './FileChooserOverlayContext';
+import P2PPersistentAudioStreamRenderer from './P2PPersistentAudioStreamRenderer';
 // import Login from './Login';
 // import URLRedirector from './URLRedirector';
 // import AppRouteController from './AppRouteController';
@@ -129,6 +130,8 @@ class Desktop extends Component {
               </FileChooserOverlayContext>
             </FullViewport>
           </FullscreenProvider>
+          
+          <P2PPersistentAudioStreamRenderer />
         </DesktopKeyboardInterruptProvider>
       </div>
     );
