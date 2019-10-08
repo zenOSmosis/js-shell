@@ -14,7 +14,7 @@ export const STATE_CHAT_MESSAGES = 'chatMessages';
 export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
 export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
-export const ACTION_NOTIFY_PEER_UPDATE = 'notifyPeerUpdate';
+export const ACTION_SET_LAST_UPDATED_PEER = 'notifyPeerUpdate';
 
 // Chat message actions
 export const ACTION_ADD_CHAT_MESSAGE = 'addChatMessage';
@@ -158,7 +158,7 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
-        [ACTION_NOTIFY_PEER_UPDATE]: (peer) => {
+        [ACTION_SET_LAST_UPDATED_PEER]: (peer) => {
           this.setState({
             [STATE_LAST_UPDATED_PEER]: peer
           });

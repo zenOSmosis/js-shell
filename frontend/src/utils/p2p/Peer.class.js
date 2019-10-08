@@ -4,7 +4,7 @@ import P2PSharedObject, {
 } from './P2PSharedObject.class';
 import P2PLinkedState, {
   ACTION_ADD_REMOTE_PEER,
-  ACTION_NOTIFY_PEER_UPDATE,
+  ACTION_SET_LAST_UPDATED_PEER,
 
   STATE_REMOTE_PEERS
 } from 'state/P2PLinkedState';
@@ -114,7 +114,7 @@ class Peer extends P2PSharedObject {
     }
 
     this.on(EVT_ANY_UPDATE, () => {
-      _p2pLinkedState.dispatchAction(ACTION_NOTIFY_PEER_UPDATE, this);
+      _p2pLinkedState.dispatchAction(ACTION_SET_LAST_UPDATED_PEER, this);
     });
   }
 
