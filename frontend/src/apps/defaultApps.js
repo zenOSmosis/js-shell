@@ -22,5 +22,6 @@ import './SourceCodeApp';
 // import './A3DApp';
 import './MongoExpressApp';
 import './TerminalApp';
+import './IconsApp';
 // import './DocsApp';
 // import './SettingsApp';
