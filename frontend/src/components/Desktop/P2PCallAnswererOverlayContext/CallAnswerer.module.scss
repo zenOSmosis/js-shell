@@ -1,0 +1,41 @@
+@import 'core/core.styles.scss';
+
+.call-answerer {
+  background-color: $overlayBgColor;
+  text-align: center;
+
+  .title-wrapper {
+    font-weight: bold;
+  }
+
+  .avatar-wrapper {
+    margin: 20px;
+  }
+
+  .button-panel {
+
+    button {
+      margin: 5px;
+  
+      width: 60px;
+      height: 60px;
+      border-radius: 60px;
+  
+      font-size: 30px;
+  
+      & > .answer {
+        color: $startGreen;
+      }
+  
+      & > .reject {
+        color: $stopRed;
+      }
+    }
+
+    .divider {
+      height: 90px;  
+      vertical-align: top;
+    }
+
+  }
+}

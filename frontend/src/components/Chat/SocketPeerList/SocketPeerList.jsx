@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Row, { Column } from 'components/RowColumn';
+import PhoneCallIcon from 'components/componentIcons/PhoneCallIcon';
 import { Tooltip } from 'antd';
 import P2PLinkedState, {
   ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID
@@ -72,70 +73,87 @@ class SocketPeerList extends Component {
                       <h1>
                         {nickname}
                       </h1>
-                      [ Call Placeholder ]
+                      
+                      <div className={styles['call-controls']}>
+                        <button
+                          onClick={() => this.initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer)}
+                        >
+                          <PhoneCallIcon />
+                        </button>
+                      </div>
 
                       <h2>System Info</h2>
-                      <table style={{ width: '100%' }}>
+                      <table>
                         <thead>
                           <tr>
-                            <td>Kind</td>
+                            <td></td>
                             <td>Name</td>
                             <td>Version</td>
                           </tr>
+                        </thead>
+                        <tbody>
                           <tr>
-                            <td>Browser</td>
+                            <td className={styles['header']}>Browser:</td>
                             <td>{browserName}</td>
                             <td>{browserVersion}</td>
                           </tr>
                           <tr>
-                            <td>Engine</td>
+                            <td className={styles['header']}>Engine:</td>
                             <td>{engineName}</td>
                             <td>{engineVersion}</td>
                           </tr>
                           <tr>
-                            <td>OS</td>
+                            <td className={styles['header']}>OS:</td>
                             <td>{osName}</td>
                             <td>{osVersion}</td>
                           </tr>
-                        </thead>
+                        </tbody>
                       </table>
-                      Platform Type: {platformType}
+
+                      <div>
+                        <span style={{fontWeight: 'bold'}}>Platform Type:</span> {platformType}
+                      </div>
                     </div>
                   }
                 >
                   <div
+                    className={styles['peer']}
                     onMouseDown={evt => this.selectPeer(peer)}
                     onTouchStart={evt => this.selectPeer(peer)}
                   >
                     <Row>
-                      <Column style={{ textAlign: 'center', minWidth: 42, maxWidth: 42, position: 'relative' }}>
+                      <Column className={styles['avatar-wrapper']}>
                         <AvatarWithOnlineStatusIndicator
                           isOnline={isOnline}
                         />
                       </Column>
 
-                      <Column isForcedMinWidth={true}>
-                        <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                          <div style={{ display: 'inline', fontWeight: 'bold' }}>
+                      <Column 
+                        className={styles['description-wrapper']}
+                        isForcedMinWidth={true}
+                      >
+                        <div>
+                          <div className={styles['title-wrapper']}>
                             {
                               nickname || '[Untitled Peer]'
                             }
                           </div>
 
-                          <div style={{ display: 'inline', fontSize: '.8rem', fontStyle: 'italic', marginLeft: 4 }}>
+                          <div className={styles['status-wrapper']}>
                             {
                               `/ ${browserOnOs}`
                             }
                           </div>
                         </div>
-                        <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+
+                        <div>
                           {
                             lastChatMessageBody
                           }
                         </div>
                       </Column>
 
-                      <Column style={{ maxWidth: 40 }}>
+                      <Column className={styles['last-seen-wrapper']}>
                         abc
                       </Column>
                     </Row>

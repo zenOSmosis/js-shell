@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Icon } from 'antd';
-import TransparentButton from 'components/TransparentButton';
+import PhoneCallIcon from 'components/componentIcons/PhoneCallIcon';
+import PhoneHangupIcon from 'components/componentIcons/PhoneHangupIcon';
 import MicrophoneIcon from 'components/componentIcons/MicrophoneIcon';
 import ScreenShareIcon from 'components/componentIcons/ScreenShareIcon';
 import WebcamIcon from 'components/componentIcons/WebcamIcon';
@@ -88,35 +88,44 @@ class Header extends Component {
         }
 
         {
-          !isWebRTCConnected &&
-          <TransparentButton onClick={ evt => this.initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer) }>
-            <Icon type="phone" />
-          </TransparentButton>
-        }
+          !isWebRTCConnected
+            ?
+            <button
+              style={{width: 40, height: 40, borderRadius: 40, margin: 4}}
+              onClick={() => this.initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer)}
+            >
+              <PhoneCallIcon />
+            </button>
+            :
+            <div style={{ display: 'inline-block' }}>
+              {
+                // TODO: Verify WebRTC is available before presenting any of these options
+              }
 
-        {
-          isWebRTCConnected &&
-          <button onClick={ evt => WebRTCPeer.disconnect(remotePeer) }>
-            disconnect
-          </button>
+              {
+                hasAudioInput &&
+                <button>
+                  <MicrophoneIcon />
+                </button>
+              }
+
+              {
+                hasVideoInput &&
+                <WebcamIcon />
+              }
+
+              <ScreenShareIcon />
+
+              |
+  
+            <button onClick={evt => WebRTCPeer.disconnect(remotePeer)}>
+                <PhoneHangupIcon />
+              </button>
+            </div>
         }
 
         <div>
-          {
-            // TODO: Verify WebRTC is available before presenting any of these options
-          }
 
-          {
-            hasAudioInput &&
-            <MicrophoneIcon />
-          }
-          
-          {
-            hasVideoInput &&
-            <WebcamIcon />
-          }
-
-          <ScreenShareIcon />
         </div>
       </div>
     );

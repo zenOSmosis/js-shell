@@ -9,9 +9,10 @@ export const P2P_LINKED_STATE_SCOPE_NAME = 'p2pConnections';
 export const STATE_REMOTE_PEERS = 'remotePeers';
 export const STATE_LAST_UPDATED_PEER = 'lastUpdatedPeer';
 export const STATE_CHAT_MESSAGES = 'chatMessages';
+export const STATE_INCOMING_CALL_REQUESTS = 'incomingCallRequests';
+export const STATE_LAST_INCOMING_CALL_REQUEST_RESPONSE = 'lastIncomingCallRequestResponse';
 
 // Peer actions
-export const ACTION_SET_REMOTE_PEERS = 'setRemotePeers';
 export const ACTION_ADD_REMOTE_PEER = 'addRemotePeer';
 export const ACTION_REMOVE_REMOTE_PEER_WITH_ID = 'removeRemotePeerWithId';
 export const ACTION_SET_LAST_UPDATED_PEER = 'notifyPeerUpdate';
@@ -23,6 +24,11 @@ export const ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID = 'getLastChatMessa
 export const ACTION_GET_CHAT_MESSAGE_WITH_UUID = 'getChatMessageWithUuid';
 export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 
+// Call actions
+export const ACTION_ADD_INCOMING_CALL_REQUEST = 'addIncomingCallRequest';
+export const ACTION_REMOVE_INCOMING_CALL_REQUEST = 'removeIncomingCallRequest';
+export const ACTION_SET_LAST_INCOMING_CALL_REQUEST_RESPONSE = 'setLastIncomingCallRequestResponse';
+
 /**
  * Manages peer-to-peer (P2P) connectivity.
  * 
@@ -31,12 +37,15 @@ export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 export default class P2PLinkedState extends LinkedState {
   constructor() {
     super(P2P_LINKED_STATE_SCOPE_NAME, {
-      // TODO: Cache ChatMessages instead
-      [STATE_CHAT_MESSAGES]: [],
-
       [STATE_REMOTE_PEERS]: [],
 
-      [STATE_LAST_UPDATED_PEER]: null
+      [STATE_LAST_UPDATED_PEER]: null,
+
+      [STATE_CHAT_MESSAGES]: [],
+
+      [STATE_INCOMING_CALL_REQUESTS]: [],
+
+      [STATE_LAST_INCOMING_CALL_REQUEST_RESPONSE]: {}
     }, {
       actions: {
         // Adds a chat message to the log

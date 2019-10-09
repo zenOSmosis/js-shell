@@ -4,7 +4,7 @@ ul.socket-peer-list {
   list-style: none;
   margin: 0px;
   padding: 0px;
-  backgroundColor: $listBgColor;
+  background-color: $listBgColor;
 
   li {
     text-align: left;
@@ -17,6 +17,69 @@ ul.socket-peer-list {
 
     &:hover:not(.active) {
       background-color: $listBgColorHover;
+    }
+
+    .peer {
+      .avatar-wrapper {
+        text-align: center;
+        min-width: 42px;
+        max-width: 42px;
+        position: relative;
+      }
+
+      .description-wrapper {
+        & > div {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          .title-wrapper {
+            display: inline;
+            font-weight: bold;
+          }
+
+          .status-wrapper {
+            display: inline;
+            font-size: .8rem;
+            font-style: italic;
+            margin-left: 4px;
+          }
+        }
+      }
+
+      .last-seen-wrapper {
+        max-width: 40px;
+      }
+    }
+  }
+}
+
+.tooltip {
+  text-align: center;
+
+  .call-controls {
+    button {
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      margin: 4px;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    thead td,
+    .header {
+      font-weight: bold;
+    }
+
+    tbody td {
+      &.header {
+        text-align: right;
+      }
+
+      text-align: left;
     }
   }
 }

@@ -1,3 +1,5 @@
+@import 'core/core.styles.scss';
+
 .avatar-with-online-indicator {
   position: relative;
 
@@ -8,11 +10,11 @@
     border: 1px #ccc solid;
     
     &.online {
-      background-color: #4DD965;
+      background-color: $startGreen;
     }
 
     &.offline {
-      background-color: #FC0001;
+      background-color: $stopRed;
     }
   }
 }

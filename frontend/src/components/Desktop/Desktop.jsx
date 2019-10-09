@@ -17,6 +17,7 @@ import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
 import FileChooserOverlayContext from './FileChooserOverlayContext';
+import P2PCallAnswererOverlayContext from './P2PCallAnswererOverlayContext';
 import P2PPersistentAudioStreamRenderer from './P2PPersistentAudioStreamRenderer';
 // import Login from './Login';
 // import URLRedirector from './URLRedirector';
@@ -73,64 +74,66 @@ class Desktop extends Component {
           >
             <FullViewport>
               <FileChooserOverlayContext>
+                <P2PCallAnswererOverlayContext>
 
-                {
-                  // <URLRedirector /> 
-                }
+                  {
+                    // <URLRedirector /> 
+                  }
 
-                <ContextMenuProvider>
+                  <ContextMenuProvider>
 
-                  <DesktopBackground ref={c => this._desktopBackground = c}>
+                    <DesktopBackground ref={c => this._desktopBackground = c}>
 
+                      {
+                        // Top Panel
+                      }
+                      <Panel />
+
+                      <Notifications />
+
+                      {
+                        // TODO: Implement DrawersLayer as a separate component
+                        // @see https://ant.design/components/drawer/
+                        /*
+                        <Drawer
+                          mask={false}
+                          bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
+                          onContextMenu={ (evt) => alert('context') }
+                          placement="right"
+                          visible={true}
+                        >
+                          Well, hello
+                        </Drawer>
+                        */
+                      }
+
+                      {
+                        // Binds windows to URL location; sets page title
+                        // <AppRouteController />
+                      }
+
+                      <GUIProcessRenderer />
+
+                      <VersionLabel />
+
+                      {
+                        // Bottom Dock
+                      }
+                      <Dock />
+
+                    </DesktopBackground>
                     {
-                      // Top Panel
-                    }
-                    <Panel />
-
-                    <Notifications />
-
-                    {
-                      // TODO: Implement DrawersLayer as a separate component
-                      // @see https://ant.design/components/drawer/
                       /*
-                      <Drawer
-                        mask={false}
-                        bodyStyle={{backgroundColor: 'rgba(0,0,0,.4)'}}
-                        onContextMenu={ (evt) => alert('context') }
-                        placement="right"
-                        visible={true}
-                      >
-                        Well, hello
-                      </Drawer>
+                      !isLoggedIn && <Login />
                       */
                     }
 
-                    {
-                      // Binds windows to URL location; sets page title
-                      // <AppRouteController />
-                    }
-
-                    <GUIProcessRenderer />
-
-                    <VersionLabel />
-
-                    {
-                      // Bottom Dock
-                    }
-                    <Dock />
-
-                  </DesktopBackground>
-                  {
-                    /*
-                    !isLoggedIn && <Login />
-                    */
-                  }
-
-                </ContextMenuProvider>
+                  </ContextMenuProvider>
+                </P2PCallAnswererOverlayContext>
               </FileChooserOverlayContext>
             </FullViewport>
           </FullscreenProvider>
-          
+
           <P2PPersistentAudioStreamRenderer />
         </DesktopKeyboardInterruptProvider>
       </div>
