@@ -2,28 +2,29 @@ import React, { Component, Fragment } from 'react';
 import CallAnswerer from './CallAnswerer';
 import captureUserMediaStream from 'utils/mediaStream/captureUserMediaStream';
 import P2PLinkedState, {
-  STATE_INCOMING_CALL_REQUESTS
+  STATE_INCOMING_CALL_REQUESTS,
+  ACTION_RESPOND_TO_INCOMING_CALL_REQUEST
 } from 'state/P2PLinkedState';
 import hocConnect from 'state/hocConnect';
 
 // Important!  This should be implemented as a singleton
 class P2PCallAnswererOverlayContext extends Component {
-  async answer(mediaConstraints) {
+  async answer(incomingCallRequest, mediaConstraints) {
     try {
+      const { p2pLinkedState } = this.props;
+
       const mediaStream = await captureUserMediaStream(mediaConstraints);
 
-      // TODO: Remove
-      console.debug({
-        mediaStream
-      });
+      p2pLinkedState.dispatchAction(ACTION_RESPOND_TO_INCOMING_CALL_REQUEST, incomingCallRequest, true, mediaStream);
     } catch (exc) {
       throw exc;
     }
   }
 
-  reject() {
-    // TODO: Finish implementing
-    console.error('reject');
+  reject(incomingCallRequest) {
+    const { p2pLinkedState } = this.props;
+
+    p2pLinkedState.dispatchAction(ACTION_RESPOND_TO_INCOMING_CALL_REQUEST, incomingCallRequest, false);
   }
 
   render() {
@@ -44,8 +45,8 @@ class P2PCallAnswererOverlayContext extends Component {
             return (
               <CallAnswerer
                 key={idx}
-                onAnswer={mediaConstraints => this.answer(mediaConstraints)}
-                onReject={() => this.reject()}
+                onAnswer={mediaConstraints => this.answer(incomingCallRequest, mediaConstraints)}
+                onReject={() => this.reject(incomingCallRequest)}
               />
             );
           })
@@ -55,10 +56,12 @@ class P2PCallAnswererOverlayContext extends Component {
   }
 }
 
-export default hocConnect(P2PCallAnswererOverlayContext, P2PLinkedState, (updatedState) => {
+export default hocConnect(P2PCallAnswererOverlayContext, P2PLinkedState, (updatedState, p2pLinkedState) => {
   const { [STATE_INCOMING_CALL_REQUESTS]: incomingCallRequests } = updatedState;
 
-  const filteredState = {};
+  const filteredState = {
+    p2pLinkedState
+  };
 
   if (incomingCallRequests !== undefined) {
     filteredState[STATE_INCOMING_CALL_REQUESTS] = incomingCallRequests;

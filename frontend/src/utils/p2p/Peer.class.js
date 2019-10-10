@@ -270,20 +270,7 @@ class Peer extends P2PSharedObject {
    */
   async handleWebRTCIncomingCallRequest() {
     try {
-      // TODO: Replace this w/ a modal dialog indicating a ring
-      // (and have dialog disappear if remote stops connection
-      // attempt before close)
-      
-      /*
-      await new Promise((resolve, reject) => {
-        if (window.confirm(`Accept new WebRTC connection request from Peer with id "${this.getPeerId()}?"`)) {
-          resolve();
-        } else {
-          // TODO: Use custom WebRTCRejection error
-          reject(new Error('WebRTCRejection'));
-        }
-      });*/
-
+      // TODO: Implement automatic cancelling of dispatched action if the request is cancelled
       const baseOutgoingMediaStream = await _p2pLinkedState.dispatchAction(ACTION_DISPATCH_INCOMING_CALL_REQUEST, this);
 
       this.setWebRTCOutgoingMediaStreams([baseOutgoingMediaStream]);

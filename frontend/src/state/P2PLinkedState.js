@@ -26,6 +26,7 @@ export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 
 // Call actions
 export const ACTION_DISPATCH_INCOMING_CALL_REQUEST = 'dispatchIncomingCallRequest';
+export const ACTION_RESPOND_TO_INCOMING_CALL_REQUEST = 'respondToIncomingCallRequest';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -172,6 +173,9 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
+        /**
+         * @return {Promise<MediaStream>} Resolves the outgoing media stream, if exists.
+         */
         [ACTION_DISPATCH_INCOMING_CALL_REQUEST]: async (remotePeer) => {
           try {
             // Add to current incoming call requests
@@ -184,16 +188,54 @@ export default class P2PLinkedState extends LinkedState {
             });
 
             // Await resolution
-            await new Promise((resolve, reject) => {
+            const outgoingMediaStream = await new Promise((resolve, reject) => {
+              const _updateListener = (updatedState) => {
+                const { [STATE_LAST_INCOMING_CALL_REQUEST_RESPONSE]: lastIncomingCallRequestResponse } = updatedState;
 
+                if (lastIncomingCallRequestResponse !== undefined) {
+                  const { incomingCallRequest, isAccepted, outgoingMediaStream } = lastIncomingCallRequestResponse;
+
+                  if (Object.is(incomingCallRequest, remotePeer)) {
+                    // Remove this call request
+                    const { [STATE_INCOMING_CALL_REQUESTS]: updatedIncomingCallRequests } = this.getState();
+                    updatedIncomingCallRequests.splice(updatedIncomingCallRequests.indexOf(remotePeer));
+                    this.setState({
+                      [STATE_INCOMING_CALL_REQUESTS]: updatedIncomingCallRequests
+                    });
+
+                    // Stop listening to the updated state
+                    this.off(EVT_LINKED_STATE_UPDATE, _updateListener);
+
+                    if (isAccepted) {
+                      resolve(outgoingMediaStream);
+                    } else {
+                      reject();
+                    }
+                  }
+                }
+              };
+
+              // Listen for state changes
+              this.on(EVT_LINKED_STATE_UPDATE, _updateListener);
             });
 
-            // Remove from incoming call requests
-
-            // Return response
+            return outgoingMediaStream;
           } catch (exc) {
             throw exc;
           }
+        },
+
+        [ACTION_RESPOND_TO_INCOMING_CALL_REQUEST]: (incomingCallRequest, isAccepted, outgoingMediaStream = null) => {
+          // TODO: Document w/ typedef
+          const response = {
+            incomingCallRequest,
+            isAccepted,
+            outgoingMediaStream
+          };
+
+          this.setState({
+            [STATE_LAST_INCOMING_CALL_REQUEST_RESPONSE]: response
+          });
         }
       }
     });
