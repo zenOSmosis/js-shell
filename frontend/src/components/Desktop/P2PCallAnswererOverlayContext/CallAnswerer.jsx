@@ -47,7 +47,7 @@ const CallAnswerer = (props) => {
       <Center>
         <div>
           <div className={styles['title-wrapper']}>
-            Incoming call from Joe Hampton
+            Incoming call from ...
           </div>
 
           <div className={styles['avatar-wrapper']}>
