@@ -49,6 +49,7 @@ ul.socket-peer-list {
 
       .last-seen-wrapper {
         max-width: 40px;
+        text-align: center;
       }
     }
   }
@@ -56,15 +57,6 @@ ul.socket-peer-list {
 
 .tooltip {
   text-align: center;
-
-  .call-controls {
-    button {
-      width: 40px;
-      height: 40px;
-      border-radius: 40px;
-      margin: 4px;
-    }
-  }
 
   table {
     width: 100%;

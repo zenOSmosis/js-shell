@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 class MediaStreamRenderer extends Component {
   static propTypes = {
-    elementType: PropTypes.oneOf('video', 'audio'),
+    elementType: PropTypes.oneOf(['video', 'audio']),
     mediaStream: PropTypes.instanceOf(MediaStream)
   }
 
@@ -62,6 +62,7 @@ class MediaStreamRenderer extends Component {
     const {
       className,
       elementType = 'video',
+      mediaStream,
       ...propsRest
     } = this.props;
 

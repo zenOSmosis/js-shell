@@ -9,8 +9,10 @@ import FolderIcon from './FolderIcon';
 import FullScreenIcon from './FullScreenIcon';
 import HelloIcon from './HelloIcon';
 import IconsIcon from './IconsIcon';
+import LaptopIcon from './LaptopIcon';
 import MediaIcon from './MediaIcon';
 import MicrophoneIcon from './MicrophoneIcon';
+import MobileIcon from './MobileIcon';
 import MongoExpressIcon from './MongoExpressIcon';
 import NoWifiIcon from './NoWifiIcon';
 import PhoneAnswerIcon from './PhoneAnswerIcon';
@@ -39,8 +41,10 @@ export {
   FullScreenIcon,
   HelloIcon,
   IconsIcon,
+  LaptopIcon,
   MediaIcon,
   MicrophoneIcon,
+  MobileIcon,
   MongoExpressIcon,
   NoWifiIcon,
   PhoneAnswerIcon,

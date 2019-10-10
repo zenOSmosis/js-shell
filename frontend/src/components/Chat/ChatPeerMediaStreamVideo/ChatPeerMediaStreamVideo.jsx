@@ -15,7 +15,7 @@ class ChatPeerMediaStreamVideo extends Component {
       return;
     }
 
-    const webRTCStreams = remotePeer.getWebRTCMediaStreams();
+    const webRTCStreams = remotePeer.getWebRTCIncomingMediaStreams();
 
     return (
       <Fragment>

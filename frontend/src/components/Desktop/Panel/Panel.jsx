@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FullScreenIcon from 'components/componentIcons/FullScreenIcon';
-import SearchIcon from 'components/componentIcons/SearchIcon';
-import SidebarIcon from 'components/componentIcons/SidebarIcon';
+// import SearchIcon from 'components/componentIcons/SearchIcon';
+// import SidebarIcon from 'components/componentIcons/SidebarIcon';
 import TransparentButton from 'components/TransparentButton';
 import { Row, Column } from 'components/RowColumn';
 import Menubar from '../Menubar';
@@ -47,17 +47,25 @@ class Panel extends Component {
 
               <SocketSignal />
 
-              <TransparentButton>
-                <SearchIcon />
-              </TransparentButton>
+              {
+                /*
+                <TransparentButton>
+                  <SearchIcon />
+                </TransparentButton>
+                */
+              }
 
               <TransparentButton onClick={this._onFullScreenToggle.bind(this)}>
                 <FullScreenIcon />
               </TransparentButton>
 
-              <TransparentButton>
-                <SidebarIcon />
-              </TransparentButton>
+              {
+                /*
+                <TransparentButton>
+                  <SidebarIcon />
+                </TransparentButton>
+                */
+              }
             </div>
           </Column>
         </Row>

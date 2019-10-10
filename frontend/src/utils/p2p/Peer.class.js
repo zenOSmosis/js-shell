@@ -16,6 +16,7 @@ import WebRTCPeer, {
   EVT_CONNECT_ERROR as EVT_WEB_RTC_CONNECT_ERROR,
   EVT_DISCONNECT as EVT_WEB_RTC_DISCONNECT
 } from './WebRTCPeer.class';
+import { stopMediaStream } from 'utils/mediaStream';
 import generateId from '../string/generateId';
 import Bowser from 'bowser';
 
@@ -27,8 +28,9 @@ export const SHARED_DATA_KEY_SYSTEM_INFO = 'systemInfo';
 export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
-export const PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME = 'webRTCLastUpdateTime';
-export const PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS = 'webRTCMediaStreams';
+export const PRIVATE_DATA_KEY_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME = 'webRTCLastUpdateTime';
+export const PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS = 'webRTCOutgoingMediaStreams';
+export const PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS = 'webRTCIncomingMediaStreams';
 
 let _localUser = null;
 const _p2pLinkedState = new P2PLinkedState();
@@ -86,8 +88,9 @@ class Peer extends P2PSharedObject {
     };
     
     const initialPrivateData = {
-      [PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: null,
-      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: []
+      [PRIVATE_DATA_KEY_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: null,
+      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: [],
+      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: []
     };
 
     super(initialSharedData, initialPrivateData);
@@ -111,6 +114,8 @@ class Peer extends P2PSharedObject {
       } else {
         _localUser = this;
       }
+    } else {
+      this._initWebRTCPeer();
     }
 
     this.on(EVT_ANY_UPDATE, () => {
@@ -199,12 +204,7 @@ class Peer extends P2PSharedObject {
     return aboutDescription;
   }
 
-    /**
-   * TODO: Rename to mountWebRTCPeer
-   * 
-   * @param {WebRTCPeer} webRTCPeer 
-   */
-  setWebRTCPeer(webRTCPeer) {
+  _initWebRTCPeer() {
     if (this._isLocalUser) {
       throw new Error('LocalUser cannot directly set WebRTCPeer');
     }
@@ -213,15 +213,11 @@ class Peer extends P2PSharedObject {
       throw new Error('Peer already has a WebRTCPeer instance');
     }
 
-    if (!(webRTCPeer instanceof WebRTCPeer)) {
-      throw new TypeError('webRTCPeer should be of WebRTCPeer type');
-    }
-
-    this._webRTCPeer = webRTCPeer;
+    this._webRTCPeer = new WebRTCPeer(this);
 
     const _setLastUpdateTime = () => {
       this._setPrivateData({
-        [PRIVATE_DATA_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: new Date()
+        [PRIVATE_DATA_KEY_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: new Date()
       });
     };
 
@@ -231,12 +227,15 @@ class Peer extends P2PSharedObject {
 
     // Prototype stream handling
     this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (mediaStream) => {
-      this._addWebRTCMediaStream(mediaStream);
+      this._addWebRTCIncomingMediaStream(mediaStream);
     });
 
     this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
+      this.stopWebRTCOutgoingMediaStreams();
+
       // Clear all WebRTC media streams
-      this._setWebRTCMediaStreams([]);
+      this.setWebRTCOutgoingMediaStreams([]);
+      this._setWebRTCIncomingMediaStreams([]);
     });
   }
 
@@ -247,40 +246,118 @@ class Peer extends P2PSharedObject {
     return this._webRTCPeer;
   }
 
-  /**
-   * @param {MediaStream} mediaStream 
+  /** 
+   * IMPORTANT! This resolves after the underlying SimplePeer engine has
+   * initialized, NOT after it connects.
+   * 
+   * @param {boolean} asInitiator
+   * @return {Promise<void>}
    */
-  _addWebRTCMediaStream(mediaStream) {
-    if (this._isLocalUser) {
-      throw new Error('_addWebRTCMediaStream is only available for remote peers');
-    }
+  async initWebRTCConnection(asInitiator) {
+    try {
+      const outgoingMediaStreams = this.getWebRTCOutgoingMediaStreams();
+      const baseMediaStream = outgoingMediaStreams[0];
 
-    // Add mediaStream to privateData mediaStream
-    const { [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams } = this._privateData;
-    mediaStreams.push(mediaStream);
-    this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams
-    });
+      await this._webRTCPeer.initConnection(asInitiator, baseMediaStream);
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * @return {Promise<void>}
+   */
+  async handleWebRTCIncomingCallRequest() {
+    try {
+      // TODO: Replace this w/ a modal dialog indicating a ring
+      // (and have dialog disappear if remote stops connection
+      // attempt before close)
+      await new Promise((resolve, reject) => {
+        if (window.confirm(`Accept new WebRTC connection request from Peer with id "${this.getPeerId()}?"`)) {
+          resolve();
+        } else {
+          // TODO: Use custom WebRTCRejection error
+          reject(new Error('WebRTCRejection'));
+        }
+      });
+
+      await this.initWebRTCConnection(false); // TODO: Handle response media stream
+    } catch (exc) {
+      throw exc;
+    }
+  }
+
+  /**
+   * @return {Promise<void}
+   */
+  async disconnectWebRTC() {
+    try {
+      await this._webRTCPeer.disconnect();
+    } catch (exc) {
+      throw exc;
+    }
   }
 
   /**
    * @param {MediaStream[]} mediaStreams 
    */
-  _setWebRTCMediaStreams(mediaStreams) {
+  setWebRTCOutgoingMediaStreams(mediaStreams) {
     this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams
+      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: mediaStreams
     });
   }
 
   /**
    * @return {MediaStream[]}
    */
-  getWebRTCMediaStreams() {
+  getWebRTCOutgoingMediaStreams() {
+    const { [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+
+    return mediaStreams;
+  }
+
+  stopWebRTCOutgoingMediaStreams() {
+    const outgoingMediaStreams = this.getWebRTCOutgoingMediaStreams();
+
+    for (let mediaStream of outgoingMediaStreams) {
+      stopMediaStream(mediaStream);
+    }
+  }
+
+  /**
+   * @param {MediaStream} mediaStream 
+   */
+  _addWebRTCIncomingMediaStream(mediaStream) {
     if (this._isLocalUser) {
-      throw new Error('getWebRTCMediaStreams is only available for remote peers');
+      throw new Error('_addWebRTCIncomingMediaStream is only available for remote peers');
     }
 
-    const { [PRIVATE_DATA_KEY_WEB_RTC_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+    // Add mediaStream to privateData mediaStream
+    const { [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+    mediaStreams.push(mediaStream);
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams
+    });
+  }
+
+  /**
+   * @param {MediaStream[]} mediaStreams 
+   */
+  _setWebRTCIncomingMediaStreams(mediaStreams) {
+    this._setPrivateData({
+      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams
+    });
+  }
+
+  /**
+   * @return {MediaStream[]}
+   */
+  getWebRTCIncomingMediaStreams() {
+    if (this._isLocalUser) {
+      throw new Error('getWebRTCIncomingMediaStreams is only available for remote peers');
+    }
+
+    const { [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
 
     return mediaStreams;
   }
@@ -289,7 +366,7 @@ class Peer extends P2PSharedObject {
    * @return {boolean}
    */
   getIsWebRTCConnecting() {
-    if (!this._webRTCPeer) {
+    if (this._isLocalUser) {
       return;
     }
 
@@ -300,7 +377,7 @@ class Peer extends P2PSharedObject {
    * @return {boolean}
    */
   getIsWebRTCConnected() {
-    if (!this._webRTCPeer) {
+    if (this._isLocalUser) {
       return;
     }
 
@@ -311,7 +388,7 @@ class Peer extends P2PSharedObject {
    * @return {Error}
    */
   getWebRTCConnectError() {
-    if (!this._webRTCPeer) {
+    if (this._isLocalUser) {
       return;
     }
 
@@ -328,6 +405,8 @@ class Peer extends P2PSharedObject {
       this._isOnline = isOnline;
 
       if (!this._isOnline && this._webRTCPeer) {
+        // Force WebRTCPeer to disconnect when Peer is no longer connected to
+        // server
         await this._webRTCPeer.disconnect();
       }
     } catch (exc) {

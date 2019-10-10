@@ -35,12 +35,16 @@ class WebRTCPeer extends EventEmitter {
    * Peer
    * @return {Promise<WebRTCPeer>}
    */
-  static async initConnection(remotePeer, mediaStream = null) {
+  /*
+  static async initConnection(remotePeer) {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
         webRTCPeer = new WebRTCPeer(remotePeer);
       }
+
+      const outgoingMediaStreams = remotePeer.getWebRTCOutgoingMediaStreams();
+      const mediaStream = outgoingMediaStreams ? outgoingMediaStreams[0] : null;
 
       await webRTCPeer.initConnection(true, mediaStream);
 
@@ -49,6 +53,7 @@ class WebRTCPeer extends EventEmitter {
       throw exc;
     }
   }
+  */
 
   /**
    * 
@@ -89,22 +94,10 @@ class WebRTCPeer extends EventEmitter {
               // already established
               if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
                 try {
-                  // TODO: Replace this w/ a modal dialog indicating a ring
-                  // (and have dialog disappear if remote stops connection
-                  // attempt before close)
-                  await new Promise((resolve, reject) => {
-                    if (window.confirm(`Accept new WebRTC connection request from Peer with id "${remotePeerId}?"`)) {
-                      resolve();
-                    } else {
-                      reject();
-                    }
-                  });
+                  await remotePeer.handleWebRTCIncomingCallRequest();
                 } catch (exc) {
-                  // TODO: Throw custom Error
-                  throw new Error('WebRTC connection rejection');
+                  throw exc;
                 }
-
-                await webRTCPeer.initConnection(false); // TODO: Handle response media stream
               }
 
               webRTCPeer.signal(signalData);
@@ -153,6 +146,7 @@ class WebRTCPeer extends EventEmitter {
    * @param {Peer} remotePeer
    * @return {Promise<void>}
    */
+  /*
   static async disconnect(remotePeer) {
     try {
       let webRTCPeer = remotePeer.getWebRTCPeer();
@@ -163,6 +157,7 @@ class WebRTCPeer extends EventEmitter {
       throw exc;
     }
   }
+  */
 
   /**
    * @param {Peer} remotePeer 
@@ -171,7 +166,6 @@ class WebRTCPeer extends EventEmitter {
     super();
 
     this._remotePeer = remotePeer;
-    this._remotePeer.setWebRTCPeer(this);
 
     this._simplePeer = null;
 

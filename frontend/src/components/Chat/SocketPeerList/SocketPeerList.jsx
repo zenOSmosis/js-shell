@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Row, { Column } from 'components/RowColumn';
-import PhoneCallIcon from 'components/componentIcons/PhoneCallIcon';
+import AvatarWithOnlineStatusIndicator from '../AvatarWithOnlineStatusIndicator';
 import { Tooltip } from 'antd';
+import CallControls from '../CallControls';
+import SystemIcon from '../SystemIcon';
+import classNames from 'classnames';
+import styles from './SocketPeerList.module.scss';
 import P2PLinkedState, {
   ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID
 } from 'state/P2PLinkedState';
-import classNames from 'classnames';
-import styles from './SocketPeerList.module.scss';
-import AvatarWithOnlineStatusIndicator from '../AvatarWithOnlineStatusIndicator';
 
 class SocketPeerList extends Component {
   constructor(props) {
@@ -43,13 +44,13 @@ class SocketPeerList extends Component {
         style={style}
       >
         {
-          connectedPeers.map((peer) => {
-            const peerId = peer.getPeerId();
-            const isOnline = peer.getIsOnline();
-            const nickname = peer.getNickname();
-            const aboutDescription = peer.getAboutDescription();
-            const browserOnOs = peer.getBrowserOnOs();
-            const systemInfo = peer.getSystemInfo();
+          connectedPeers.map((remotePeer) => {
+            const peerId = remotePeer.getPeerId();
+            const isOnline = remotePeer.getIsOnline();
+            const nickname = remotePeer.getNickname();
+            const aboutDescription = remotePeer.getAboutDescription();
+            const browserOnOs = remotePeer.getBrowserOnOs();
+            const systemInfo = remotePeer.getSystemInfo();
             const {
               browser: { name: browserName, version: browserVersion },
               engine: { name: engineName, version: engineVersion },
@@ -64,23 +65,20 @@ class SocketPeerList extends Component {
               <li
                 key={peerId}
                 title={aboutDescription}
-                className={(Object.is(peer, selectedPeer) ? styles['active'] : null)}
+                className={(Object.is(remotePeer, selectedPeer) ? styles['active'] : null)}
               >
                 <Tooltip
                   placement="left"
                   title={
                     <div className={styles['tooltip']}>
+                      <div style={{float: 'right'}}>
+                        <SystemIcon platformType={platformType} />
+                      </div>
                       <h1>
-                        {nickname}
+                        {nickname}&nbsp;
                       </h1>
                       
-                      <div className={styles['call-controls']}>
-                        <button
-                          onClick={() => this.initWebRTCConnectionAndUserMediaStreamWithPeer(remotePeer)}
-                        >
-                          <PhoneCallIcon />
-                        </button>
-                      </div>
+                      <CallControls remotePeer={remotePeer} />
 
                       <h2>System Info</h2>
                       <table>
@@ -109,17 +107,13 @@ class SocketPeerList extends Component {
                           </tr>
                         </tbody>
                       </table>
-
-                      <div>
-                        <span style={{fontWeight: 'bold'}}>Platform Type:</span> {platformType}
-                      </div>
                     </div>
                   }
                 >
                   <div
                     className={styles['peer']}
-                    onMouseDown={evt => this.selectPeer(peer)}
-                    onTouchStart={evt => this.selectPeer(peer)}
+                    onMouseDown={evt => this.selectPeer(remotePeer)}
+                    onTouchStart={evt => this.selectPeer(remotePeer)}
                   >
                     <Row>
                       <Column className={styles['avatar-wrapper']}>
@@ -154,7 +148,11 @@ class SocketPeerList extends Component {
                       </Column>
 
                       <Column className={styles['last-seen-wrapper']}>
-                        abc
+                        <div>abc</div>
+
+                        <div>
+                          <SystemIcon platformType={platformType} />
+                        </div>
                       </Column>
                     </Row>
                   </div>
