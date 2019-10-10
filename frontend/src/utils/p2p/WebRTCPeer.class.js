@@ -69,8 +69,6 @@ class WebRTCPeer extends EventEmitter {
         return;
       }
 
-      const remotePeerId = remotePeer.getPeerId();
-
       let webRTCPeer = remotePeer.getWebRTCPeer();
       if (!webRTCPeer) {
         webRTCPeer = new WebRTCPeer(remotePeer);

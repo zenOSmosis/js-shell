@@ -25,9 +25,7 @@ export const ACTION_GET_CHAT_MESSAGE_WITH_UUID = 'getChatMessageWithUuid';
 export const ACTION_UPDATE_CHAT_MESSAGE_WITH_UUID = 'updateChatMessageWithUuid';
 
 // Call actions
-export const ACTION_ADD_INCOMING_CALL_REQUEST = 'addIncomingCallRequest';
-export const ACTION_REMOVE_INCOMING_CALL_REQUEST = 'removeIncomingCallRequest';
-export const ACTION_SET_LAST_INCOMING_CALL_REQUEST_RESPONSE = 'setLastIncomingCallRequestResponse';
+export const ACTION_DISPATCH_INCOMING_CALL_REQUEST = 'dispatchIncomingCallRequest';
 
 /**
  * Manages peer-to-peer (P2P) connectivity.
@@ -167,10 +165,35 @@ export default class P2PLinkedState extends LinkedState {
           });
         },
 
+        // Note, peer could be the local user or remotePeer
         [ACTION_SET_LAST_UPDATED_PEER]: (peer) => {
           this.setState({
             [STATE_LAST_UPDATED_PEER]: peer
           });
+        },
+
+        [ACTION_DISPATCH_INCOMING_CALL_REQUEST]: async (remotePeer) => {
+          try {
+            // Add to current incoming call requests
+            let { [STATE_INCOMING_CALL_REQUESTS]: incomingCallRequests } = this.getState();
+            // TODO: Ensure remotePeer is not already associated with an incoming call request
+            incomingCallRequests.push(remotePeer);
+            incomingCallRequests = [...new Set(incomingCallRequests)];
+            this.setState({
+              [STATE_INCOMING_CALL_REQUESTS]: incomingCallRequests
+            });
+
+            // Await resolution
+            await new Promise((resolve, reject) => {
+
+            });
+
+            // Remove from incoming call requests
+
+            // Return response
+          } catch (exc) {
+            throw exc;
+          }
         }
       }
     });

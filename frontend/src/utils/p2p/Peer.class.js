@@ -3,10 +3,11 @@ import P2PSharedObject, {
   EVT_ANY_UPDATE
 } from './P2PSharedObject.class';
 import P2PLinkedState, {
+  STATE_REMOTE_PEERS,
+
   ACTION_ADD_REMOTE_PEER,
   ACTION_SET_LAST_UPDATED_PEER,
-
-  STATE_REMOTE_PEERS
+  ACTION_DISPATCH_INCOMING_CALL_REQUEST
 } from 'state/P2PLinkedState';
 import WebRTCPeer, {
   EVT_CONNECT_IN_PROGRESS as EVT_WEB_RTC_CONNECT_IN_PROGRESS,
@@ -272,6 +273,8 @@ class Peer extends P2PSharedObject {
       // TODO: Replace this w/ a modal dialog indicating a ring
       // (and have dialog disappear if remote stops connection
       // attempt before close)
+      
+      /*
       await new Promise((resolve, reject) => {
         if (window.confirm(`Accept new WebRTC connection request from Peer with id "${this.getPeerId()}?"`)) {
           resolve();
@@ -279,9 +282,13 @@ class Peer extends P2PSharedObject {
           // TODO: Use custom WebRTCRejection error
           reject(new Error('WebRTCRejection'));
         }
-      });
+      });*/
 
-      await this.initWebRTCConnection(false); // TODO: Handle response media stream
+      const baseOutgoingMediaStream = await _p2pLinkedState.dispatchAction(ACTION_DISPATCH_INCOMING_CALL_REQUEST, this);
+
+      this.setWebRTCOutgoingMediaStreams([baseOutgoingMediaStream]);
+
+      await this.initWebRTCConnection(false);
     } catch (exc) {
       throw exc;
     }
@@ -302,6 +309,10 @@ class Peer extends P2PSharedObject {
    * @param {MediaStream[]} mediaStreams 
    */
   setWebRTCOutgoingMediaStreams(mediaStreams) {
+    if (!Array.isArray(mediaStreams)) {
+      throw new Error('mediaStreams should be an array');
+    }
+
     this._setPrivateData({
       [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: mediaStreams
     });
