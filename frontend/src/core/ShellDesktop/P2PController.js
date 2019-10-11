@@ -102,7 +102,7 @@ class P2PController extends ClientProcess {
 
     const socketPeerId = peer.getPeerId();
 
-    _handleSocketPeerConnectionStatusUpdate(socketPeerId, true);
+    _handleSocketPeerConnectionStatusUpdate(peer, true);
   };
   
   _handleSocketPeerDisconnect = (socketPeerId) => {
@@ -112,7 +112,7 @@ class P2PController extends ClientProcess {
 
     peer.setIsOnline(false);
 
-    _handleSocketPeerConnectionStatusUpdate(socketPeerId, false);
+    _handleSocketPeerConnectionStatusUpdate(peer, false);
   };
 
   _routeReceivedSocketPeerDataPacket = (dataPacket) => {

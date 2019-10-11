@@ -8,5 +8,6 @@ import SystemIcon from './SystemIcon';
 export default Chat;
 export {
   NormalizedNickname,
-  SocketPeerList
+  SocketPeerList,
+  SystemIcon
 };

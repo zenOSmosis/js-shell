@@ -191,6 +191,7 @@ class WebRTCPeer extends EventEmitter {
         console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
       });
 
+      // Called when WebRTC receives remote stream track
       this._simplePeer.on('track', track => {
         this.emit(EVT_TRACK, track);
 

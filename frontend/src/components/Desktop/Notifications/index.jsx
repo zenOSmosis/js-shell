@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import DesktopLinkedState, { hocConnect } from 'state/DesktopLinkedState';
 import { notification } from 'antd';
 
@@ -8,15 +8,15 @@ import { notification } from 'antd';
  */
 const Notifications = () => {
   return (
-    <div style={{ display: 'none' }}></div>
+    <Fragment />
   );
 };
 
 export default hocConnect(Notifications, DesktopLinkedState, (updatedState) => {
-  const {lastNotification} = updatedState;
+  const { lastNotification } = updatedState;
 
   if (lastNotification) {
-    const {message, description, onClick} = lastNotification;
+    const { message, description, onClick } = lastNotification;
 
     if (message === null && description === null) {
       return;

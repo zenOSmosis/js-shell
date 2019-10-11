@@ -44,6 +44,15 @@ class Header extends Component {
     const isWebRTCConnecting = remotePeer.getIsWebRTCConnecting();
     // const webRTCConnectError = remotePeer.getWebRTCConnectError();
 
+    const outgoingMediaStream = remotePeer.getWebRTCOutgoingMediaStream();
+    const incomingMediaStream = remotePeer.getWebRTCIncomingMediaStream();
+
+    // TODO: Remove
+    console.debug({
+      outgoingMediaStream,
+      incomingMediaStream
+    });
+
     return (
       <div className={styles['chat-header']}>
         <NormalizedNickname nickname={nickname} />
@@ -54,6 +63,20 @@ class Header extends Component {
         }
 
         <CallControls remotePeer={remotePeer} />
+
+        <div>
+          {
+            outgoingMediaStream &&
+            outgoingMediaStream.getTracks().length
+          }
+
+          |
+
+          {
+            incomingMediaStream &&
+            incomingMediaStream.getTracks().length
+          }
+        </div>
       </div>
     );
   }
