@@ -251,40 +251,6 @@ class WebRTCPeer extends EventEmitter {
   }
 
   /**
-   * Adds a MediaStream to the connection.
-   * 
-   * Note: Though WebRTC support for addStream has been deprecated, it is
-   * handled internally via SimplePeer.
-   * @see https://github.com/feross/simple-peer/issues/556
-   * 
-   * @see https://github.com/feross/simple-peer#peeraddstreamstream
-   * 
-   * @param {MediaStream} mediaStream 
-   */
-  /*
-  addStream(mediaStream) {
-    this._simplePeer.addStream(mediaStream);
-  }
-  */
-
-  /**
-   * Removes a MediaStream from the connection.
-   * 
-   * Note: Though WebRTC support for addStream has been deprecated, it is
-   * handled internally via SimplePeer.
-   * @see https://github.com/feross/simple-peer/issues/556
-   * 
-   * @see https://github.com/feross/simple-peer#peerremovestreamstream
-   * 
-   * @param {MediaStream} mediaStream 
-   */
-  /*
-  removeStream(mediaStream) {
-    this._simplePeer.removeStream(mediaStream);
-  }
-  */
-
-  /**
    * Adds a MediaStreamTrack to the connection.
    * 
    * @see https://github.com/feross/simple-peer#peeraddtracktrack-stream

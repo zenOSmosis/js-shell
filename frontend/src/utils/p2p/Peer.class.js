@@ -14,6 +14,7 @@ import WebRTCPeer, {
   EVT_CONNECT as EVT_WEB_RTC_CONNECT,
   // EVT_DATA as EVT_WEB_RTC_DATA,
   EVT_STREAM as EVT_WEB_RTC_STREAM,
+  EVT_TRACK as EVT_WEB_RTC_TRACK,
   EVT_CONNECT_ERROR as EVT_WEB_RTC_CONNECT_ERROR,
   EVT_DISCONNECT as EVT_WEB_RTC_DISCONNECT
 } from './WebRTCPeer.class';
@@ -227,7 +228,14 @@ class Peer extends P2PSharedObject {
     this._webRTCPeer.on(EVT_WEB_RTC_CONNECT_ERROR, _setLastUpdateTime);
 
     // Prototype stream handling
-    this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (mediaStream) => {
+    this._webRTCPeer.on(EVT_WEB_RTC_STREAM, mediaStream => {
+      this._setWebRTCIncomingMediaStream(mediaStream);
+    });
+
+    this._webRTCPeer.on(EVT_WEB_RTC_TRACK, track => {
+      // Re-sync any listeners which may be monitoring the track count from the
+      // stream
+      const mediaStream = this.getWebRTCIncomingMediaStream();
       this._setWebRTCIncomingMediaStream(mediaStream);
     });
 
@@ -300,32 +308,32 @@ class Peer extends P2PSharedObject {
     });
   }
 
-  /*
-  addWebRTCOutgoingMediaStream(mediaStream) {
-    this._webRTCPeer.addStream(mediaStream);
-  }
-  */
+  /**
+   * @param {MediaStreamTrack} track 
+   */
+  addWebRTCOutgoingMediaStreamTrack(track) {
+    const mediaStream = this.getWebRTCOutgoingMediaStream();
 
-  addWebRTCOutgoingMediaStreamTrack(track, mediaStream = null) {
-    if (!mediaStream) {
-      mediaStream = this.getWebRTCOutgoingMediaStream();
-    }
-
+    // Add new track to remote peer
     this._webRTCPeer.addTrack(track, mediaStream);
+
+    // Local tracking (this does not affect the actual remote stream)
+    mediaStream.addTrack(track);
+    this.setWebRTCOutgoingMediaStream(mediaStream);
   }
 
-  /*
-  removeWebRTCOutgoingMediaStream(mediaStream) {
-    this._webRTCPeer.removeStream(mediaStream);
-  }
-  */
+  /**
+   * @param {MediaStreamTrack} track 
+   */
+  removeWebRTCOutgoingMediaStreamTrack(track) {
+    const mediaStream = this.getWebRTCOutgoingMediaStream();
 
-  removeWebRTCOutgoingMediaStreamTrack(track, mediaStream = null) {
-    if (!mediaStream) {
-      mediaStream = this.getWebRTCOutgoingMediaStream();
-    }
-
+    // Remove track from remote peer
     this._webRTCPeer.removeTrack(track, mediaStream);
+
+    // Local tracking (this does not affect the actual remote stream)
+    mediaStream.addTrack(track);
+    this.setWebRTCOutgoingMediaStream(mediaStream);
   }
 
   /**

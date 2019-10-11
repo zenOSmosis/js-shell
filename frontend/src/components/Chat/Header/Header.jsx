@@ -64,6 +64,9 @@ class Header extends Component {
 
         <CallControls remotePeer={remotePeer} />
 
+        {
+          // TODO: Update accordingly
+        }
         <div>
           {
             outgoingMediaStream &&
