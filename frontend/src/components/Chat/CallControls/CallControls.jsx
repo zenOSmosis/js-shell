@@ -9,7 +9,7 @@ import {
 import LabeledComponent from 'components/LabeledComponent';
 import styles from './CallControls.module.scss';
 import { fetchAggregatedMediaDeviceInfo } from 'utils/mediaDevices';
-import { captureUserMediaStream } from 'utils/mediaStream';
+import { captureUserMediaStream, captureDisplayMediaStream } from 'utils/mediaStream';
 
 class CallControls extends Component {
   constructor(props) {
@@ -110,20 +110,69 @@ class CallControls extends Component {
         if (hasAudioInput) {
           inCallComponents.push({
             Component: MicrophoneIcon,
-            title: 'Microphone'
+            title: 'Microphone',
+            onClick: async () => {
+              try {
+                // TODO: Toggle existing media stream
+  
+                const displayMediaStream = await captureUserMediaStream({
+                  audio: true
+                });
+  
+                const audioTracks = displayMediaStream.getAudioTracks();
+                const audioTrack = audioTracks[0];
+  
+                remotePeer.addWebRTCOutgoingMediaStreamTrack(audioTrack);
+              } catch (exc) {
+                throw exc;
+              }
+            }
           });
         }
   
         if (hasVideoInput) {
           inCallComponents.push({
             Component: WebcamIcon,
-            title: 'Webcam'
+            title: 'Webcam',
+            onClick: async () => {
+              try {
+                // TODO: Toggle existing media stream
+  
+                const displayMediaStream = await captureUserMediaStream({
+                  video: true
+                });
+  
+                const videoTracks = displayMediaStream.getVideoTracks();
+                const videoTrack = videoTracks[0];
+  
+                remotePeer.addWebRTCOutgoingMediaStreamTrack(videoTrack);
+              } catch (exc) {
+                throw exc;
+              }
+            }
           });
         }
   
         inCallComponents.push({
           Component: ScreenShareIcon,
-          title: 'Share Screen'
+          title: 'Share Screen',
+          onClick: async () => {
+            try {
+              // TODO: Toggle existing media stream
+
+              const displayMediaStream = await captureDisplayMediaStream({
+                audio: false,
+                video: true
+              });
+
+              const videoTracks = displayMediaStream.getVideoTracks();
+              const videoTrack = videoTracks[0];
+
+              remotePeer.addWebRTCOutgoingMediaStreamTrack(videoTrack);
+            } catch (exc) {
+              throw exc;
+            }
+          }
         });
   
         inCallComponents.push({

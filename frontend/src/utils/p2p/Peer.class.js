@@ -300,6 +300,34 @@ class Peer extends P2PSharedObject {
     });
   }
 
+  /*
+  addWebRTCOutgoingMediaStream(mediaStream) {
+    this._webRTCPeer.addStream(mediaStream);
+  }
+  */
+
+  addWebRTCOutgoingMediaStreamTrack(track, mediaStream = null) {
+    if (!mediaStream) {
+      mediaStream = this.getWebRTCOutgoingMediaStream();
+    }
+
+    this._webRTCPeer.addTrack(track, mediaStream);
+  }
+
+  /*
+  removeWebRTCOutgoingMediaStream(mediaStream) {
+    this._webRTCPeer.removeStream(mediaStream);
+  }
+  */
+
+  removeWebRTCOutgoingMediaStreamTrack(track, mediaStream = null) {
+    if (!mediaStream) {
+      mediaStream = this.getWebRTCOutgoingMediaStream();
+    }
+
+    this._webRTCPeer.removeTrack(track, mediaStream);
+  }
+
   /**
    * @return {MediaStream[]}
    */

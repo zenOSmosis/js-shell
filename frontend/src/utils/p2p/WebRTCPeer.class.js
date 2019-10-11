@@ -20,44 +20,14 @@ export const EVT_CONNECT_IN_PROGRESS = 'connectInProgress';
 export const EVT_CONNECT = 'connect';
 export const EVT_DATA = 'data';
 export const EVT_STREAM = 'stream';
+export const EVT_TRACK = 'track';
 export const EVT_CONNECT_ERROR = 'connectError';
 export const EVT_DISCONNECT = 'disconnect';
 
 class WebRTCPeer extends EventEmitter {
   /**
-   * Initiates a WebRTC connection with the given Peer.
-   * 
-   * Note: This either creates a new WebRTC instance, or reuses an existing one
-   * if one is already attached to the remotePeer.
-   * 
-   * @param {Peer} remotePeer 
-   * @param {MediaStream} mediaStream? Optional media stream to send to remote
-   * Peer
-   * @return {Promise<WebRTCPeer>}
-   */
-  /*
-  static async initConnection(remotePeer) {
-    try {
-      let webRTCPeer = remotePeer.getWebRTCPeer();
-      if (!webRTCPeer) {
-        webRTCPeer = new WebRTCPeer(remotePeer);
-      }
-
-      const outgoingMediaStreams = remotePeer.getWebRTCOutgoingMediaStream();
-      const mediaStream = outgoingMediaStreams ? outgoingMediaStreams[0] : null;
-
-      await webRTCPeer.initConnection(true, mediaStream);
-
-      return webRTCPeer;
-    } catch (exc) {
-      throw exc;
-    }
-  }
-  */
-
-  /**
-   * 
-   * @param {SocketPeerDataPacket} dataPacket 
+   * @param {SocketPeerDataPacket} dataPacket
+   * @return {Promise<void>} 
    */
   static async handleReceivedSocketPeerDataPacket(dataPacket) {
     try {
@@ -137,25 +107,6 @@ class WebRTCPeer extends EventEmitter {
       throw exc;
     }
   }
-
-  /**
-   * Disconnects the WebRTC connection from the given Peer.
-   * 
-   * @param {Peer} remotePeer
-   * @return {Promise<void>}
-   */
-  /*
-  static async disconnect(remotePeer) {
-    try {
-      let webRTCPeer = remotePeer.getWebRTCPeer();
-      if (webRTCPeer) {
-        await webRTCPeer.disconnect();
-      }
-    } catch (exc) {
-      throw exc;
-    }
-  }
-  */
 
   /**
    * @param {Peer} remotePeer 
@@ -240,6 +191,12 @@ class WebRTCPeer extends EventEmitter {
         console.debug(`WebRTC connection received stream from peer with id: ${remotePeerId}`, stream);
       });
 
+      this._simplePeer.on('track', track => {
+        this.emit(EVT_TRACK, track);
+
+        console.debug(`WebRTC connection received track from peer with id: ${remotePeerId}`, track);
+      });
+
       // Called when WebRTC receives remote data
       this._simplePeer.on('data', data => {
         this.emit(EVT_DATA);
@@ -290,6 +247,64 @@ class WebRTCPeer extends EventEmitter {
     } catch (exc) {
       throw exc;
     }
+  }
+
+  /**
+   * Adds a MediaStream to the connection.
+   * 
+   * Note: Though WebRTC support for addStream has been deprecated, it is
+   * handled internally via SimplePeer.
+   * @see https://github.com/feross/simple-peer/issues/556
+   * 
+   * @see https://github.com/feross/simple-peer#peeraddstreamstream
+   * 
+   * @param {MediaStream} mediaStream 
+   */
+  /*
+  addStream(mediaStream) {
+    this._simplePeer.addStream(mediaStream);
+  }
+  */
+
+  /**
+   * Removes a MediaStream from the connection.
+   * 
+   * Note: Though WebRTC support for addStream has been deprecated, it is
+   * handled internally via SimplePeer.
+   * @see https://github.com/feross/simple-peer/issues/556
+   * 
+   * @see https://github.com/feross/simple-peer#peerremovestreamstream
+   * 
+   * @param {MediaStream} mediaStream 
+   */
+  /*
+  removeStream(mediaStream) {
+    this._simplePeer.removeStream(mediaStream);
+  }
+  */
+
+  /**
+   * Adds a MediaStreamTrack to the connection.
+   * 
+   * @see https://github.com/feross/simple-peer#peeraddtracktrack-stream
+   * 
+   * @param {MediaStreamTrack} track 
+   * @param {MediaStream} mediaStream 
+   */
+  addTrack(track, mediaStream) {
+    this._simplePeer.addTrack(track, mediaStream);
+  }
+
+  /**
+   * Removes a MediaStreamTrack from the connection.
+   * 
+   * @see https://github.com/feross/simple-peer#peerremovetracktrack-stream
+   * 
+   * @param {MediaStreamTrack} track 
+   * @param {MediaStream} mediaStream 
+   */
+  removeTrack(track, mediaStream) {
+    this._simplePeer.removeTrack(track, mediaStream);
   }
 
   /**
