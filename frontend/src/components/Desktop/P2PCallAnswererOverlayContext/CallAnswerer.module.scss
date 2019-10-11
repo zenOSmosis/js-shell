@@ -19,8 +19,9 @@
   
       width: 60px;
       height: 60px;
+      padding: 0px;
       border-radius: 60px;
-  
+      position: relative;
       font-size: 30px;
   
       & > .answer {
