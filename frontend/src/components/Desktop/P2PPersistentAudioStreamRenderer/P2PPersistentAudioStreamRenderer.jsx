@@ -14,32 +14,20 @@ class P2PPersistentAudioStreamRenderer extends Component {
     return (
       <Fragment>
         {
-          remotePeers.map(remotePeer => {
-            const remotePeerMediaStreams = remotePeer.getWebRTCIncomingMediaStreams();
+          remotePeers.map((remotePeer, idx) => {
+            const incomingMediaStream = remotePeer.getWebRTCIncomingMediaStream();
 
-            if (!remotePeerMediaStreams.length) {
+            if (!incomingMediaStream) {
               return false;
             }
-
-            const remotePeerId = remotePeer.getPeerId();
             
             return (
-              <Fragment
-                key={remotePeerId}
-              >
-                {
-                  remotePeerMediaStreams.map((mediaStream, idx) => {
-                    return (
-                      <MediaStreamRenderer
-                        key={idx}
-                        elementType="audio"
-                        mediaStream={mediaStream}
-                        style={{display: 'none'}}
-                      />
-                    );
-                  })
-                }
-              </Fragment>
+              <MediaStreamRenderer
+                key={idx}
+                elementType="audio"
+                mediaStream={incomingMediaStream}
+                style={{display: 'none'}}
+              />
             );
           })
         }

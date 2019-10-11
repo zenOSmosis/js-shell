@@ -43,7 +43,7 @@ class WebRTCPeer extends EventEmitter {
         webRTCPeer = new WebRTCPeer(remotePeer);
       }
 
-      const outgoingMediaStreams = remotePeer.getWebRTCOutgoingMediaStreams();
+      const outgoingMediaStreams = remotePeer.getWebRTCOutgoingMediaStream();
       const mediaStream = outgoingMediaStreams ? outgoingMediaStreams[0] : null;
 
       await webRTCPeer.initConnection(true, mediaStream);
@@ -179,7 +179,7 @@ class WebRTCPeer extends EventEmitter {
    * 
    * @param {boolean} asInitiator 
    * @param {MediaStream} mediaStream?
-   * @return {Promise<void>} 
+   * @return {Promise<void>}
    */
   async initConnection(asInitiator, mediaStream = null) {
     try {

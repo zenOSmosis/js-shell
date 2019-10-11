@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import MediaStreamRenderer from 'components/MediaStreamRenderer';
 import Peer from 'utils/p2p/Peer.class';
 import PropTypes from 'prop-types';
@@ -12,21 +12,17 @@ class ChatPeerMediaStreamVideo extends Component {
     const { remotePeer } = this.props;
 
     if (!remotePeer) {
-      return;
+      return false;
     }
 
-    const webRTCStreams = remotePeer.getWebRTCIncomingMediaStreams();
+    const incomingMediaStream = remotePeer.getWebRTCIncomingMediaStream();
+
+    if (!incomingMediaStream) {
+      return false;
+    }
 
     return (
-      <Fragment>
-        {
-          webRTCStreams.map((mediaStream, idx) => {
-            return (
-              <MediaStreamRenderer key={idx} mediaStream={mediaStream} />
-            )
-          })
-        }
-      </Fragment>
+      <MediaStreamRenderer mediaStream={incomingMediaStream} />
     );
   }
 }

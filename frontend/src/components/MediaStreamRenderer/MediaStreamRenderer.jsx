@@ -10,7 +10,7 @@ class MediaStreamRenderer extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props); 
 
     this._elMedia = null;
   }
@@ -19,11 +19,9 @@ class MediaStreamRenderer extends Component {
     this.autosetMediaStream();
   }
 
-  componentDidUpdate() {
-    this.autosetMediaStream();
-  }
-
   shouldComponentUpdate() {
+    this.autosetMediaStream();
+
     return false;
   }
 

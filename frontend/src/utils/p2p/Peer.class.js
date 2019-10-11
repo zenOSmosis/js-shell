@@ -30,8 +30,8 @@ export const SHARED_DATA_KEY_NICKNAME = 'nickname';
 export const SHARED_DATA_KEY_ABOUT_DESCRIPTION = 'aboutDescription';
 
 export const PRIVATE_DATA_KEY_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME = 'webRTCLastUpdateTime';
-export const PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS = 'webRTCOutgoingMediaStreams';
-export const PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS = 'webRTCIncomingMediaStreams';
+export const PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAM = 'webRTCOutgoingMediaStream';
+export const PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAM = 'webRTCIncomingMediaStream';
 
 let _localUser = null;
 const _p2pLinkedState = new P2PLinkedState();
@@ -90,8 +90,8 @@ class Peer extends P2PSharedObject {
     
     const initialPrivateData = {
       [PRIVATE_DATA_KEY_WEB_RTC_LAST_CONNECT_STATUS_UPDATE_TIME]: null,
-      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: [],
-      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: []
+      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAM]: null,
+      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAM]: null
     };
 
     super(initialSharedData, initialPrivateData);
@@ -228,15 +228,15 @@ class Peer extends P2PSharedObject {
 
     // Prototype stream handling
     this._webRTCPeer.on(EVT_WEB_RTC_STREAM, (mediaStream) => {
-      this._addWebRTCIncomingMediaStream(mediaStream);
+      this._setWebRTCIncomingMediaStream(mediaStream);
     });
 
     this._webRTCPeer.on(EVT_WEB_RTC_DISCONNECT, () => {
-      this.stopWebRTCOutgoingMediaStreams();
+      this.stopWebRTCOutgoingMediaStream();
 
-      // Clear all WebRTC media streams
-      this.setWebRTCOutgoingMediaStreams([]);
-      this._setWebRTCIncomingMediaStreams([]);
+      // Clear WebRTC outgoing & incoming media streams
+      this.setWebRTCOutgoingMediaStream(null);
+      this._setWebRTCIncomingMediaStream(null);
     });
   }
 
@@ -256,10 +256,9 @@ class Peer extends P2PSharedObject {
    */
   async initWebRTCConnection(asInitiator) {
     try {
-      const outgoingMediaStreams = this.getWebRTCOutgoingMediaStreams();
-      const baseMediaStream = outgoingMediaStreams[0];
+      const outgoingMediaStream = this.getWebRTCOutgoingMediaStream();
 
-      await this._webRTCPeer.initConnection(asInitiator, baseMediaStream);
+      await this._webRTCPeer.initConnection(asInitiator, outgoingMediaStream);
     } catch (exc) {
       throw exc;
     }
@@ -273,7 +272,7 @@ class Peer extends P2PSharedObject {
       // TODO: Implement automatic cancelling of dispatched action if the request is cancelled
       const baseOutgoingMediaStream = await _p2pLinkedState.dispatchAction(ACTION_DISPATCH_INCOMING_CALL_REQUEST, this);
 
-      this.setWebRTCOutgoingMediaStreams([baseOutgoingMediaStream]);
+      this.setWebRTCOutgoingMediaStream(baseOutgoingMediaStream);
 
       await this.initWebRTCConnection(false);
     } catch (exc) {
@@ -293,71 +292,49 @@ class Peer extends P2PSharedObject {
   }
 
   /**
-   * @param {MediaStream[]} mediaStreams 
+   * @param {MediaStream} mediaStream 
    */
-  setWebRTCOutgoingMediaStreams(mediaStreams) {
-    if (!Array.isArray(mediaStreams)) {
-      throw new Error('mediaStreams should be an array');
-    }
-
+  setWebRTCOutgoingMediaStream(mediaStream) {
     this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: mediaStreams
+      [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAM]: mediaStream
     });
   }
 
   /**
    * @return {MediaStream[]}
    */
-  getWebRTCOutgoingMediaStreams() {
-    const { [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+  getWebRTCOutgoingMediaStream() {
+    const { [PRIVATE_DATA_KEY_WEB_RTC_OUTGOING_MEDIA_STREAM]: mediaStream } = this._privateData;
 
-    return mediaStreams;
+    return mediaStream;
   }
 
-  stopWebRTCOutgoingMediaStreams() {
-    const outgoingMediaStreams = this.getWebRTCOutgoingMediaStreams();
+  stopWebRTCOutgoingMediaStream() {
+    const outgoingMediaStream = this.getWebRTCOutgoingMediaStream();
 
-    for (let mediaStream of outgoingMediaStreams) {
-      stopMediaStream(mediaStream);
-    }
+    stopMediaStream(outgoingMediaStream);
   }
 
   /**
    * @param {MediaStream} mediaStream 
    */
-  _addWebRTCIncomingMediaStream(mediaStream) {
-    if (this._isLocalUser) {
-      throw new Error('_addWebRTCIncomingMediaStream is only available for remote peers');
-    }
-
-    // Add mediaStream to privateData mediaStream
-    const { [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
-    mediaStreams.push(mediaStream);
+  _setWebRTCIncomingMediaStream(mediaStream) {
     this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams
+      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAM]: mediaStream
     });
   }
 
   /**
-   * @param {MediaStream[]} mediaStreams 
+   * @return {MediaStream}
    */
-  _setWebRTCIncomingMediaStreams(mediaStreams) {
-    this._setPrivateData({
-      [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams
-    });
-  }
-
-  /**
-   * @return {MediaStream[]}
-   */
-  getWebRTCIncomingMediaStreams() {
+  getWebRTCIncomingMediaStream() {
     if (this._isLocalUser) {
-      throw new Error('getWebRTCIncomingMediaStreams is only available for remote peers');
+      throw new Error('getWebRTCIncomingMediaStream is only available for remote peers');
     }
 
-    const { [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAMS]: mediaStreams } = this._privateData;
+    const { [PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAM]: mediaStream } = this._privateData;
 
-    return mediaStreams;
+    return mediaStream;
   }
 
   /**

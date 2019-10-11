@@ -93,7 +93,7 @@ class CallControls extends Component {
                 audio: hasAudioInput
               });
 
-              remotePeer.setWebRTCOutgoingMediaStreams([mediaStream]);
+              remotePeer.setWebRTCOutgoingMediaStream(mediaStream);
               await remotePeer.initWebRTCConnection(true);
             } catch (exc) {
               throw exc;
