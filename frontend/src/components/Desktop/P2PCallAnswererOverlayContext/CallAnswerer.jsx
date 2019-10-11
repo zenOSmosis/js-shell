@@ -7,17 +7,12 @@ import PhoneAnswerIcon from 'components/componentIcons/PhoneAnswerIcon';
 import WebcamIcon from 'components/componentIcons/WebcamIcon';
 import PhoneHangupIcon from 'components/componentIcons/PhoneHangupIcon';
 import { Avatar, Divider } from 'antd';
+import Peer from 'utils/p2p/Peer.class';
 import styles from './CallAnswerer.module.scss';
+import PropTypes from 'prop-types';
 import fetchAggregatedMediaDeviceInfo from 'utils/mediaDevices/fetchAggregatedMediaDeviceInfo';
 
 const CallAnswerer = (props) => {
-  const { remotePeer } = props;
-  if (!remotePeer) {
-    return false;
-  }
-
-  const remoteNickname = remotePeer.getNickname();
-
   const [inputOptions, setInputOptions] = useState({
     hasAudioInput: false,
     hasVideoInput: false
@@ -40,6 +35,14 @@ const CallAnswerer = (props) => {
       }
     })();
   }, [setInputOptions]);
+
+  const { remotePeer, onAnswer, onReject } = props;
+  
+  if (!remotePeer) {
+    return false;
+  }
+
+  const remoteNickname = remotePeer.getNickname();
 
   if (!inputOptions) {
     return false;
@@ -73,7 +76,7 @@ const CallAnswerer = (props) => {
                 label="Audio"
               >
                 <button
-                  onClick={() => props.onAnswer({
+                  onClick={() => onAnswer({
                     audio: hasAudioInput
                   })}
                   title="Answer with Audio"
@@ -91,7 +94,7 @@ const CallAnswerer = (props) => {
                 label="Video"
               >
                 <button
-                  onClick={() => props.onAnswer({
+                  onClick={() => onAnswer({
                     audio: hasAudioInput,
                     video: hasVideoInput
                   })}
@@ -110,7 +113,7 @@ const CallAnswerer = (props) => {
               label="Reject"
             >
               <button
-                onClick={() => props.onReject()}
+                onClick={() => onReject()}
                 title="Reject"
               >
                 <PhoneHangupIcon
@@ -124,6 +127,12 @@ const CallAnswerer = (props) => {
       </Center>
     </Cover>
   )
+};
+
+CallAnswerer.propTypes = {
+  remotePeer: PropTypes.instanceOf(Peer).isRequired,
+  onAnswer: PropTypes.func.isRequired,
+  onReject: PropTypes.func.isRequired
 };
 
 export default CallAnswerer;
