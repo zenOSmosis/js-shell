@@ -3,6 +3,7 @@ import { LaptopIcon, MobileIcon } from 'components/componentIcons';
 import PropTypes from 'prop-types';
 
 const SystemIcon = (props) => {
+  // TODO: Derive platformType from remotePeer
   const { platformType, ...propsRest } = props;
 
   return platformType === 'desktop' ?

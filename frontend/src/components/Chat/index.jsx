@@ -3,6 +3,7 @@
 import Chat from './Chat';
 import NormalizedNickname from './NormalizedNickname';
 import SocketPeerList from './SocketPeerList';
+import SystemIcon from './SystemIcon';
 
 export default Chat;
 export {
