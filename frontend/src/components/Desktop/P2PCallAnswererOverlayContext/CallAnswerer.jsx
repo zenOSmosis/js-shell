@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Cover from 'components/Cover';
 import Center from 'components/Center';
+import { NormalizedNickname } from 'components/Chat';
 import LabeledComponent from 'components/LabeledComponent';
 import PhoneAnswerIcon from 'components/componentIcons/PhoneAnswerIcon';
 import WebcamIcon from 'components/componentIcons/WebcamIcon';
@@ -10,6 +11,13 @@ import styles from './CallAnswerer.module.scss';
 import fetchAggregatedMediaDeviceInfo from 'utils/mediaDevices/fetchAggregatedMediaDeviceInfo';
 
 const CallAnswerer = (props) => {
+  const { remotePeer } = props;
+  if (!remotePeer) {
+    return false;
+  }
+
+  const remoteNickname = remotePeer.getNickname();
+
   const [inputOptions, setInputOptions] = useState({
     hasAudioInput: false,
     hasVideoInput: false
@@ -41,13 +49,13 @@ const CallAnswerer = (props) => {
     hasAudioInput = false,
     hasVideoInput = false
   } = inputOptions;
-
+  
   return (
     <Cover className={styles['call-answerer']}>
       <Center>
         <div>
           <div className={styles['title-wrapper']}>
-            Incoming call from ...
+            Incoming call from <NormalizedNickname nickname={remoteNickname} />
           </div>
 
           <div className={styles['avatar-wrapper']}>

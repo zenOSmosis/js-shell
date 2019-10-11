@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CallControls from '../CallControls';
+import NormalizedNickname from '../NormalizedNickname';
 import WebRTCPeer, { EVT_DISCONNECT } from 'utils/p2p/WebRTCPeer.class';
 import {
   captureUserMediaStream,
@@ -45,7 +46,7 @@ class Header extends Component {
 
     return (
       <div className={styles['chat-header']}>
-        {nickname}
+        <NormalizedNickname nickname={nickname} />
 
         {
           isWebRTCConnecting &&

@@ -45,6 +45,7 @@ class P2PCallAnswererOverlayContext extends Component {
             return (
               <CallAnswerer
                 key={idx}
+                remotePeer={incomingCallRequest}
                 onAnswer={mediaConstraints => this.answer(incomingCallRequest, mediaConstraints)}
                 onReject={() => this.reject(incomingCallRequest)}
               />

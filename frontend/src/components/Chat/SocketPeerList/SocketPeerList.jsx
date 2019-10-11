@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Row, { Column } from 'components/RowColumn';
+import NormalizedNickname from '../NormalizedNickname';
 import AvatarWithOnlineStatusIndicator from '../AvatarWithOnlineStatusIndicator';
 import { Tooltip } from 'antd';
 import CallControls from '../CallControls';
@@ -75,7 +76,7 @@ class SocketPeerList extends Component {
                         <SystemIcon platformType={platformType} />
                       </div>
                       <h1>
-                        {nickname}&nbsp;
+                        <NormalizedNickname nickname={nickname} />&nbsp;
                       </h1>
                       
                       <CallControls remotePeer={remotePeer} />
@@ -128,9 +129,7 @@ class SocketPeerList extends Component {
                       >
                         <div>
                           <div className={styles['title-wrapper']}>
-                            {
-                              nickname || '[Untitled Peer]'
-                            }
+                            <NormalizedNickname nickname={nickname} />
                           </div>
 
                           <div className={styles['status-wrapper']}>
