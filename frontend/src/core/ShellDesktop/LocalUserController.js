@@ -22,6 +22,9 @@ class LocalUserController extends ClientProcess {
     socketIO.on(EVT_SOCKET_DISCONNECT, this._handleSocketDisconnect);
     
     this.on(EVT_BEFORE_EXIT, () => {
+      // Stop socketIO connection when LocalUserController is stopped
+      socketIO.close();
+
       socketIO.off(EVT_SOCKET_CONNECT, this._handleSocketConnect);
       socketIO.off(EVT_SOCKET_DISCONNECT, this._handleSocketDisconnect);
 
