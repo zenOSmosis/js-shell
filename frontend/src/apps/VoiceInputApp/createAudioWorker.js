@@ -22,7 +22,7 @@ const createAudioWorker = (appRuntime) => {
   
     const sttSocket = io(self.location.origin, {
       // TODO: Replace hard-coded Socket.io path
-      path: '/stt-socket'
+      path: '/stt-socket/socket.io'
     });
   
     /**

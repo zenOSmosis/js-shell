@@ -12,12 +12,21 @@ networks:
   shell-core-service-network:
 
 services:
+  # Enables proxying to host machine w/o depending on host network binding
+  # (network_mode: host), which are not available using custom networks
+  dockerhost:
+    image: qoomon/docker-host
+    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+    restart: on-failure
+    networks:
+      - shell-core-service-network
+  
   # Creates a self-signed SSL proxy for local development
-  # This permits access to media devices (e.g. microphone / camera) during development
+  # This permits access to media devices (e.g. microphone / camera) during
+  # development
   # 
   # This is not intended to run on a production web server
-  #
-  # TODO: Possibly bugfix; not able to use custom port / Docker network alias from dev_proxy
+  # (use https://github.com/linuxserver/docker-letsencrypt instead)
   dev_proxy:
     # build: https://github.com/zenOSmosis/docker-dev-ssl-proxy.git
     build: ./docker_modules/dev-ssl-proxy
@@ -29,7 +38,11 @@ services:
     volumes:
       - ./docker_modules/dev-ssl-proxy:/app # Only during development
     environment:
-      PROXY_ADDRESS: http://backend:3001 # Important, don't use quotations here, or it may break the template
+      PROXY_ADDRESS: http://backend:3001 # Important, don't use quotations
+      # here, or it may break the template
+    expose:
+      - 80
+      - 443
     ports:
       - 80:80
       - 443:443
@@ -62,7 +75,8 @@ services:
     networks:
       - shell-core-service-network
     # Only during development or special deployments
-    # Note: Note: These options are ignored when deploying a stack in swarm mode with a (version 3) Compose file.
+    # Note: Note: These options are ignored when deploying a stack in swarm
+    # mode with a (version 3) Compose file.
     # @see https://docs.docker.com/compose/compose-file/
     expose:
       - 3001
@@ -141,14 +155,3 @@ services:
   #    - 3478:3478
   #    - 3478:3478/udp
   #    - 65435-65535:65435-65535/udp
-
-  # Prototype STT socket w/ Socket.io interface
-  # stt-socket: # TODO: Rename to stt_socket (w/ underscore) for consistency 
-  #  build: ./docker_modules/docker-stt-socket
-  #  networks:
-  #    - shell-core-service-network
-  #  expose:
-  #    - 80
-  #  volumes:
-  #    - ./docker_modules/docker-stt-socket:/app # Only during development
-  #    - /tmp/stt-socket:/tmp # Only during development
