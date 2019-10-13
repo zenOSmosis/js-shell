@@ -44,7 +44,7 @@ const _p2pLinkedState = new P2PLinkedState();
  */
 const _getLocalSystemInfo = () => {
   return Bowser.parse(window.navigator.userAgent);
-}
+};
 
 class Peer extends P2PSharedObject {
   // TODO: Rename to createFromSharedData
@@ -284,6 +284,8 @@ class Peer extends P2PSharedObject {
 
       await this.initWebRTCConnection(false);
     } catch (exc) {
+      await this._webRTCPeer.disconnect();
+
       throw exc;
     }
   }

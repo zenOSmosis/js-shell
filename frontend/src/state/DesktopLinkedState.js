@@ -1,4 +1,5 @@
 import { DESKTOP_CONTEXT_MENU_IS_TRAPPING, DESKTOP_DEFAULT_BACKGROUND_URL } from 'config';
+import uuidv4 from 'uuidv4';
 
 // import Window from 'components/Desktop/Window';
 // import App from '../utils/desktop/registerApp';
@@ -12,10 +13,7 @@ export {
 
 const DESKTOP_LINKED_SCOPE_NAME = 'desktop-linked-state';
 
-export const ACTION_OPEN_FILE_CHOOSER_DIALOG = 'launchFileChooserDialog';
-export const ACTION_CLOSE_FILE_CHOOSER_DIALOG = 'closeFileChooserDialog';
 export const STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS = 'isShowingFileChooser';
-
 export const STATE_CONTEXT_MENU_IS_TRAPPING = 'contextMenuIsTrapping';
 export const STATE_LAST_NOTIFICATION = 'lastNotification';
 export const STATE_REDIRECT_LOCATION = 'redirectLocation';
@@ -24,6 +22,12 @@ export const STATE_IS_VIEWPORT_FOCUSED = 'isViewportFocused';
 export const STATE_VIEWPORT_SIZE = 'viewportSize';
 export const STATE_IS_FULLSCREEN_REQUESTED = 'isFullScreenRequested';
 export const STATE_SHELL_DESKTOP_PROCESS = 'shellDesktopProcess';
+export const STATE_DESKTOP_MODALS = 'activeDesktopModals';
+
+export const ACTION_OPEN_FILE_CHOOSER_DIALOG = 'launchFileChooserDialog';
+export const ACTION_CLOSE_FILE_CHOOSER_DIALOG = 'closeFileChooserDialog';
+export const ACTION_ADD_DESKTOP_MODAL = 'addDesktopModal';
+export const ACTION_REMOVE_DESKTOP_MODAL_WITH_UUID = 'removeDesktopModal';
 
 /**
  * Maintains state directly related to the Shell Desktop and its running
@@ -64,7 +68,9 @@ class DesktopLinkedState extends LinkedState {
 
       [STATE_SHELL_DESKTOP_PROCESS]: null,
 
-      [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
+      [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null,
+
+      [STATE_DESKTOP_MODALS]: []
     }, {
       actions: {
         [ACTION_OPEN_FILE_CHOOSER_DIALOG]: (params) => {
@@ -78,6 +84,44 @@ class DesktopLinkedState extends LinkedState {
         [ACTION_CLOSE_FILE_CHOOSER_DIALOG]: () => {
           this.setState({
             [STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS]: null
+          });
+        },
+
+        /**
+         * @param {React.Component} Component React component to render as a Modal.
+         * @return {string}
+         */
+        [ACTION_ADD_DESKTOP_MODAL]: (Component) => {
+          const { [STATE_DESKTOP_MODALS]: desktopModals } = this.getState();
+
+          const uuid = uuidv4();
+
+          desktopModals.push({
+            uuid,
+            Component
+          });
+
+          this.setState({
+            [STATE_DESKTOP_MODALS]: desktopModals
+          });
+
+          return uuid;
+        },
+
+        /**
+         * @param {string} uuid
+         */
+        [ACTION_REMOVE_DESKTOP_MODAL_WITH_UUID]: (uuid) => {
+          let { [STATE_DESKTOP_MODALS]: desktopModals } = this.getState();
+
+          desktopModals = desktopModals.filter(modal => {
+            const { uuid: testUuid } = modal;
+
+            return testUuid !== uuid;
+          });
+
+          this.setState({
+            [STATE_DESKTOP_MODALS]: desktopModals
           });
         }
       }

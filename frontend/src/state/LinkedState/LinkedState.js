@@ -64,7 +64,8 @@ class LinkedState extends EventEmitter {
 
   /**
    * @param {string} actionName 
-   * @param  {Array} actionData 
+   * @param {Array} actionData
+   * @return {any}
    */
   dispatchAction(actionName, ...actionData) {
     const { actions } = this._options;

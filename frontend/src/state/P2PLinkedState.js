@@ -178,11 +178,22 @@ export default class P2PLinkedState extends LinkedState {
          */
         [ACTION_DISPATCH_INCOMING_CALL_REQUEST]: async (remotePeer) => {
           try {
+            // TODO: Verify remotePeer is a Peer type
+
+            const remotePeerId = remotePeer.getPeerId();
+
             // Add to current incoming call requests
             let { [STATE_INCOMING_CALL_REQUESTS]: incomingCallRequests } = this.getState();
-            // TODO: Ensure remotePeer is not already associated with an incoming call request
+
+            // Ensure remotePeer is not already associated with an incoming call request
+            for (let i = 0; i < incomingCallRequests.length; i++) {
+              if (incomingCallRequests[i].getPeerId() === remotePeerId) {
+                return;
+              }
+            }
+
             incomingCallRequests.push(remotePeer);
-            incomingCallRequests = [...new Set(incomingCallRequests)];
+            
             this.setState({
               [STATE_INCOMING_CALL_REQUESTS]: incomingCallRequests
             });

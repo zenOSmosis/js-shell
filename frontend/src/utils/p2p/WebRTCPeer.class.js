@@ -134,11 +134,7 @@ class WebRTCPeer extends EventEmitter {
    */
   async initConnection(asInitiator, mediaStream = null) {
     try {
-      if (this._isConnecting) {
-        console.warn('Aborted connect attempt because it is already in a connecting state');
-
-        return;
-      } else if (this._isConnected) {
+      if (this._isConnected) {
         await this.disconnect();
 
         // Pause to let the other peer sync up
@@ -272,6 +268,10 @@ class WebRTCPeer extends EventEmitter {
    */
   removeTrack(track, mediaStream) {
     this._simplePeer.removeTrack(track, mediaStream);
+  }
+
+  setIsConnecting(isConnecting) {
+    this._isConnecting = isConnecting;
   }
 
   /**

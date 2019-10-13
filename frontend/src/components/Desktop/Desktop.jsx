@@ -17,7 +17,7 @@ import FullViewport from 'components/FullViewport';
 import DesktopBackground from './DesktopBackground';
 import VersionLabel from './VersionLabel';
 import FileChooserOverlayContext from './FileChooserOverlayContext';
-import P2PCallAnswererOverlayContext from './P2PCallAnswererOverlayContext';
+import DesktopModalOverlayProvider from './DesktopModalOverlayProvider';
 import P2PPersistentAudioStreamRenderer from './P2PPersistentAudioStreamRenderer';
 // import Login from './Login';
 // import URLRedirector from './URLRedirector';
@@ -74,7 +74,7 @@ class Desktop extends Component {
           >
             <FullViewport>
               <FileChooserOverlayContext>
-                <P2PCallAnswererOverlayContext>
+                <DesktopModalOverlayProvider>
 
                   {
                     // <URLRedirector /> 
@@ -129,7 +129,7 @@ class Desktop extends Component {
                     }
 
                   </ContextMenuProvider>
-                </P2PCallAnswererOverlayContext>
+                </DesktopModalOverlayProvider>
               </FileChooserOverlayContext>
             </FullViewport>
           </FullscreenProvider>
