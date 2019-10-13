@@ -62,16 +62,26 @@ class WebRTCPeer extends EventEmitter {
               // already established
               if (!webRTCPeer.getIsConnecting() && !webRTCPeer.getIsConnected()) {
                 try {
+                  // Set isConnecting flag, so we don't get here again
+                  webRTCPeer.setIsConnecting(true);
+
+                  // Capture the original signal
+                  webRTCPeer.signal(signalData);
+
+                  // Peer will obtain media stream, and respond to the WebRTC connection attempt
                   await remotePeer.handleWebRTCIncomingCallRequest();
                 } catch (exc) {
                   throw exc;
                 }
+              } else {
+                // Send / cache the next signal
+                webRTCPeer.signal(signalData);
               }
-
-              webRTCPeer.signal(signalData);
             } catch (exc) {
               console.error(exc);
 
+              // TODO: Monitor error for rejection before sending rejection
+              // If no rejection, send another error type, instead
               await webRTCPeer.reject();
             }
           })();
@@ -122,6 +132,8 @@ class WebRTCPeer extends EventEmitter {
     this._isConnecting = false;
     this._connectError = null;
     this._hasRejected = false;
+
+    this._bufferedSignalStack = [];
   }
 
   /**
@@ -239,6 +251,13 @@ class WebRTCPeer extends EventEmitter {
         console.debug(`WebRTC connection has closed from peer with id: ${remotePeerId}`);
       });
 
+      // Emit cached signals to signal stack
+      for (let i = 0; i < this._bufferedSignalStack.length; i++) {
+        this.signal(this._bufferedSignalStack[i]);
+      }
+      // Reset the signal stack
+      this._bufferedSignalStack = [];
+
       this.emit(EVT_CONNECT_IN_PROGRESS);
 
     } catch (exc) {
@@ -309,6 +328,8 @@ class WebRTCPeer extends EventEmitter {
       const remotePeerId = this._remotePeer.getPeerId();
 
       this._hasRejected = true;
+      this._isConnecting = false;
+      this._isConnected = false;
 
       // Emit rejection data to remote Peer
       // TODO: Use custom Error handler
@@ -337,6 +358,13 @@ class WebRTCPeer extends EventEmitter {
    */
   signal(signalData) {
     try {
+      if (!this._simplePeer) {
+        console.warn('Buffering WebRTC signal until SimplePeer is ready', signalData);
+
+        this._bufferedSignalStack.push(signalData);
+        return;
+      }
+
       this._simplePeer.signal(signalData);
 
       const remotePeerId = this._remotePeer.getPeerId();

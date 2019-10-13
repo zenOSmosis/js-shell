@@ -188,6 +188,7 @@ export default class P2PLinkedState extends LinkedState {
             // Ensure remotePeer is not already associated with an incoming call request
             for (let i = 0; i < incomingCallRequests.length; i++) {
               if (incomingCallRequests[i].getPeerId() === remotePeerId) {
+                console.warn('An existing request is already found for remote peer', remotePeer);
                 return;
               }
             }
