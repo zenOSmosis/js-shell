@@ -100,8 +100,6 @@ class P2PController extends ClientProcess {
 
     peer.setIsOnline(true);
 
-    const socketPeerId = peer.getPeerId();
-
     _handleSocketPeerConnectionStatusUpdate(peer, true);
   };
   
