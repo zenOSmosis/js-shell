@@ -757,9 +757,9 @@ class ClientProcess extends EventEmitter {
     const children = this.getChildren();
     for (let i = 0; i < children.length; i++) {
       try {
-        const proc = children[i];
+        const child = children[i];
 
-        await proc.exit();
+        await child.exit(exitSignal);
       } catch (exc) {
         console.error(exc);
       }
