@@ -7,7 +7,6 @@ import SocketLinkedState, {
   STATE_SOCKET_AUTHENTICATION_ERROR,
   STATE_SOCKET_CONNECT_ERROR
 } from 'state/SocketLinkedState';
-import { SOCKET_API_ROUTE_REQUEST_DISCONNECT } from 'shared/socketAPI/socketAPIRoutes';
 import { SOCKET_API_EVT_AUTHENTICATION_ERROR } from 'shared/socketAPI/socketAPIEvents';
 
 const socketLinkedState = new SocketLinkedState();
@@ -21,15 +20,6 @@ export const EVT_SOCKET_RECONNECT_ATTEMPT = 'reconnect_attempt';
 const socket = io.connect(SOCKET_IO_URL, {
   autoConnect: false
 });
-
-/**
- * Overrides socket.disconnect() with request disconnect event, as there does
- * not seem to be a way to disconnect the Socket directly from the client side.
- */
-// TODO: Use socket.close() on client
-socket.disconnect = () => {
-  socket.emit(SOCKET_API_ROUTE_REQUEST_DISCONNECT);
-};
 
 // Socket connect
 socket.on(EVT_SOCKET_CONNECT, () => {

@@ -37,9 +37,7 @@ import {
   // SOCKET_API_ROUTE_GET_USER_DATA,
 
   // webSearch
-  SOCKET_API_ROUTE_WEB_SEARCH,
-
-  SOCKET_API_ROUTE_REQUEST_DISCONNECT
+  SOCKET_API_ROUTE_WEB_SEARCH
 } from './routes';
 
 import debugError from './debugError';
@@ -122,11 +120,6 @@ const initSocketAPIRoutes = (socket, io) => {
 
   // webSearch
   socket.on(SOCKET_API_ROUTE_WEB_SEARCH, webSearch);
-
-  // Handle client disconnect request
-  socket.on(SOCKET_API_ROUTE_REQUEST_DISCONNECT, () => {
-    socket.disconnect();
-  });
 
   console.log(`Initialized Socket.io routes for socket with id: ${socket.id}`);
 };

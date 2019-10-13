@@ -35,8 +35,6 @@ export const SOCKET_API_ROUTE_GET_USER_DATA = 'api/user/getUserData';
 // webSearch
 export const SOCKET_API_ROUTE_WEB_SEARCH = 'api/webSearch';
 
-export const SOCKET_API_ROUTE_REQUEST_DISCONNECT = 'api/requestDisconnect';
-
 // Non-utilized
 // export const SOCKET_API_ROUTE_FETCH_X_APPS = 'api/fetch-apps';
 // export const SOCKET_API_ROUTE_FETCH_X_APP_CATEGORIES = 'api/fetch-app-categories';
