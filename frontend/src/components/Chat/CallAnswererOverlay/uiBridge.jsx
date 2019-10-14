@@ -17,6 +17,7 @@ import P2PLinkedState, { STATE_INCOMING_CALL_REQUESTS } from 'state/P2PLinkedSta
     if (incomingCallRequests && incomingCallRequests.length) {
       const lastIncomingCallRequest = incomingCallRequests[incomingCallRequests.length - 1];
 
+      // TODO: Implement automatic modal removal if remote rejects before local accepts
       const modalUuid = _desktopLinkedState.dispatchAction(ACTION_ADD_DESKTOP_MODAL, () => {
         return (
           <CallAnswererOverlay

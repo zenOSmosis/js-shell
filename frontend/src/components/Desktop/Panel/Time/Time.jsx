@@ -59,7 +59,7 @@ export default class Time extends Component {
 
     const formattedTime = moment().format(timeFormat);
 
-    const dayIdx = parseInt(moment().format('e'));
+    const dayIdx = parseInt(moment().format('e'), 10);
 
     const day = _days[dayIdx];
 

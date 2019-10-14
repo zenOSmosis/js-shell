@@ -54,7 +54,7 @@ class Scrollable extends Component {
    * @param {number} delta Number of pixels
    */
   scrollLeftDelta(delta) {
-    const newScrollLeft = this._scrollLeft + parseInt(delta);
+    const newScrollLeft = this._scrollLeft + parseInt(delta, 10);
 
     this._root.scrollLeft = newScrollLeft;
   }
@@ -65,7 +65,7 @@ class Scrollable extends Component {
    * @param {number} delta Number of pixels
    */
   scrollTopDelta(delta) {
-    const newScrollTop = this._scrollLeft + parseInt(delta);
+    const newScrollTop = this._scrollLeft + parseInt(delta, 10);
 
     this._root.scrollTop = newScrollTop;
   }

@@ -1,6 +1,6 @@
 // TODO: Add support for these
 // const DESIRED_FPS = 90;
-// const BUFFER_MS = parseInt(1000 / DESIRED_FPS);
+// const BUFFER_MS = parseInt(1000 / DESIRED_FPS, 10);
 
 /**
  * Adds a short-term buffer between rapid GUI changes in order to free CPU time

@@ -64,7 +64,7 @@ export default class SystemInformationWindow extends Component {
   }
 
   initSpeakerTest(totalChannels = 2) {
-    totalChannels = parseInt(totalChannels);
+    totalChannels = parseInt(totalChannels, 10);
 
     // @see https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture
     systemCommand('speaker-test', ['-c', totalChannels]);

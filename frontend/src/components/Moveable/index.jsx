@@ -43,8 +43,8 @@ export default class Moveable extends Component {
    * frame acceleration on this method call. 
    */
   moveTo(posX, posY, isUsingHA = true) {
-    this._posX = parseInt(posX) || 0;
-    this._posY = parseInt(posY) || 0;
+    this._posX = parseInt(posX, 10) || 0;
+    this._posY = parseInt(posY, 10) || 0;
 
     // Prevent drag above boundary top
     this._posY = this._posY >= 0 ? this._posY : 0;
@@ -103,8 +103,8 @@ export default class Moveable extends Component {
   }
 
   getPosition() {
-    const x = parseInt(this._posX);
-    const y = parseInt(this._posY);
+    const x = parseInt(this._posX, 10);
+    const y = parseInt(this._posY, 10);
 
     return {
       x,

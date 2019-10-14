@@ -73,7 +73,7 @@ export default class Box3D extends Component {
 
   setPerspective(perspective = 200) {
     bufferAnimateFrame(() => {
-      this._boxScene.style.perspective = `${parseInt(perspective)}px`;
+      this._boxScene.style.perspective = `${parseInt(perspective, 10)}px`;
     });
   }
 

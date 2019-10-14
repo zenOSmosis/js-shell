@@ -41,8 +41,8 @@ const fetchAllParsedIconPaths = async (readDirectories = config.FREEDESKTOP_ICON
 
           // Derive width / height from path part
           const parsedRes = parsedIconPath.resolution.split('x');
-          parsedIconPath.width = parseInt(parsedRes[0]);
-          parsedIconPath.height = parseInt(parsedRes[1]);
+          parsedIconPath.width = parseInt(parsedRes[0], 10);
+          parsedIconPath.height = parseInt(parsedRes[1], 10);
         }
       });
 

@@ -90,8 +90,8 @@ class DragResizable extends Component {
   _setMinWidthHeight() {
     let { minWidth, minHeight } = this.props;
 
-    minWidth = parseInt(minWidth) || RESIZABLE_DEFAULT_MIN_WIDTH;
-    minHeight = parseInt(minHeight) || RESIZABLE_DEFAULT_MIN_HEIGHT;
+    minWidth = parseInt(minWidth, 10) || RESIZABLE_DEFAULT_MIN_WIDTH;
+    minHeight = parseInt(minHeight, 10) || RESIZABLE_DEFAULT_MIN_HEIGHT;
 
     window.requestAnimationFrame(() => {
       this._$main.css({

@@ -652,7 +652,7 @@ class Window extends Component {
       return;
     }
 
-    perspective = parseInt(perspective);
+    perspective = parseInt(perspective, 10);
     this._perspective = perspective;
 
     window.requestAnimationFrame(() => {

@@ -32,7 +32,7 @@
  */
 const fetchRandomUsers = async (maxUsers = 25) => {
   try {
-    maxUsers = parseInt(maxUsers);
+    maxUsers = parseInt(maxUsers, 10);
 
     const apiResp = await fetch(`https://randomuser.me/api/?results=${maxUsers}`);
 
