@@ -1,6 +1,5 @@
 import ClientProcess from 'process/ClientProcess';
 
-
 let _hasStarted = false;
 
 /**
