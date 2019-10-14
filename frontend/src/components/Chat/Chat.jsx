@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import Peer from 'utils/p2p/Peer.class';
 import Full from '../Full';
 import ChatHeader from './Header';
 import ChatPeerMediaStreamVideo from './ChatPeerMediaStreamVideo';
@@ -13,6 +15,11 @@ import P2PLinkedState, {
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 
 class Chat extends Component {
+  static propTypes = {
+    remotePeer: PropTypes.instanceOf(Peer).isRequired,
+    isShowingMessages: PropTypes.bool
+  }
+
   render() {
     const { remotePeer, isShowingMessages = true } = this.props;
     const remotePeerId = remotePeer.getPeerId();

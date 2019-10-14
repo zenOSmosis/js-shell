@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import ChatMessage from 'utils/p2p/ChatMessage.class';
 import { Avatar } from 'antd';
 // import { Row, Column } from 'components/Layout';
 import classNames from 'classnames';
@@ -53,6 +55,10 @@ const Message = (props = {}) => {
       </div>
     </div>
   );
+};
+
+Message.propTypes = {
+  chatMessage: PropTypes.instanceOf(ChatMessage).isRequired
 };
 
 export default Message;

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Peer from 'utils/p2p/Peer.class';
 import CallControls from '../CallControls';
 import NormalizedNickname from '../NormalizedNickname';
 import WebRTCPeer, { EVT_DISCONNECT } from 'utils/p2p/WebRTCPeer.class';
@@ -9,6 +11,10 @@ import {
 import styles from './Header.module.scss';
 
 class Header extends Component {
+  static propTypes = {
+    remotePeer: PropTypes.instanceOf(Peer).isRequired
+  }
+
   async initWebRTCConnectionAndUserMediaStreamWithPeer() {
     try {
       const { remotePeer } = this.props;
