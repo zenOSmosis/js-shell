@@ -37,6 +37,8 @@ export const PRIVATE_DATA_KEY_WEB_RTC_INCOMING_MEDIA_STREAM = 'webRTCIncomingMed
 let _localUser = null;
 const _p2pLinkedState = new P2PLinkedState();
 
+const DEFAULT_NICKNAME = '[Unknown Peer]';
+
 /**
  * @see https://www.npmjs.com/package/bowser
  * 
@@ -60,7 +62,7 @@ class Peer extends P2PSharedObject {
     peer.setSharedData(rawData);
 
     return peer;
-  };
+  }
 
   /**
    * @return {Peer}
@@ -79,7 +81,29 @@ class Peer extends P2PSharedObject {
         return testPeer;
       }
     }
-  };
+  }
+
+  /**
+   * @typedef {Object} NormalizedNicknameData
+   * @property {string} normalizedNickname
+   * @property {boolean} hasSpecifiedNickname
+   * 
+   * @param {string} nickname
+   * @return {NormalizedNicknameData}
+   */
+  static getNormalizedNicknameData(nickname) {
+    let normalizedNickname = nickname;
+    const hasSpecifiedNickname = (normalizedNickname && normalizedNickname.length);
+
+    if (!hasSpecifiedNickname) {
+      normalizedNickname = DEFAULT_NICKNAME;
+    }
+
+    return {
+      normalizedNickname,
+      hasSpecifiedNickname
+    };
+  }
 
   constructor(isLocalUser = false) {
     const initialSharedData = {
@@ -186,6 +210,17 @@ class Peer extends P2PSharedObject {
     const { [SHARED_DATA_KEY_NICKNAME]: nickname } = this._sharedData;
 
     return nickname;
+  }
+
+  /**
+   * @return {string}
+   */
+  getNormalizedNickname() {
+    const nickname = this.getNickname();
+
+    const { normalizedNickname } = Peer.getNormalizedNicknameData(nickname);
+
+    return normalizedNickname;
   }
 
   /**

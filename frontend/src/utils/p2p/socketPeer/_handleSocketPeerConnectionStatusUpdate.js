@@ -1,7 +1,5 @@
-import React from 'react';
 import createDesktopNotification from 'utils/desktop/createDesktopNotification';
 import Peer from '../Peer.class';
-import { NormalizedNickname } from 'components/Chat';
 
 /**
  * Internally called when a remote SocketPeer connects.
@@ -18,13 +16,9 @@ const _handleSocketPeerConnectionStatusUpdate = (peer, isConnected) => {
   }
   
   setTimeout(() => {  
-    const nickname = peer.getNickname();
+    const normalizedNickname = peer.getNormalizedNickname();
   
-    createDesktopNotification(
-      <div>
-        <NormalizedNickname nickname={nickname} /> {!isConnected ? 'dis' : ''}connected
-      </div>
-    );
+    createDesktopNotification(`${normalizedNickname} ${!isConnected ? 'dis' : ''}connected`);
   }, isConnected ? 1000 : 0); // Allow peer data to synchronize on new connections
 };
 

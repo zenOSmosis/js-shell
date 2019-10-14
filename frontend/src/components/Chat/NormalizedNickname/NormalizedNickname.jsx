@@ -1,18 +1,16 @@
 import React from 'react';
+import Peer from 'utils/p2p/Peer.class';
 import classNames from 'classnames';
 import styles from './NormalizedNickname.module.scss';
 import PropTypes from 'prop-types';
 
-const DEFAULT_NICKNAME = '[Unknown Peer]';
-
 const NormalizedNickname = (props) => {
   let { className, nickname, ...propsRest } = props;
 
-  const hasSpecifiedNickname = (nickname && nickname.length);
-
-  if (!hasSpecifiedNickname) {
-    nickname = DEFAULT_NICKNAME;
-  }
+  const {
+    normalizedNickname,
+    hasSpecifiedNickname
+  } = Peer.getNormalizedNicknameData(nickname);
 
   return (
     <span
@@ -25,13 +23,13 @@ const NormalizedNickname = (props) => {
         )
       }
     >
-      {nickname}
+      {normalizedNickname}
     </span>
   )
 };
 
 NormalizedNickname.propTypes = {
-  nickname: PropTypes.string.isRequired
+  nickname: PropTypes.string
 };
 
 export default NormalizedNickname;
