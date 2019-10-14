@@ -1,10 +1,10 @@
 import ClientProcess, { EVT_BEFORE_EXIT } from 'process/ClientProcess';
+import Peer, { SHARED_DATA_KEY_USER_ID } from 'utils/p2p/Peer.class';
 import socket, {
   EVT_SOCKET_CONNECT,
   EVT_SOCKET_DISCONNECT,
   getIsConnected as getIsSocketConnected
 } from 'utils/socket.io';
-import { fetchConnectedPeers } from 'utils/p2p/socketPeer';
 import {
   SOCKET_API_EVT_PEER_ID_CONNECT,
   SOCKET_API_EVT_PEER_ID_DISCONNECT,
@@ -12,10 +12,10 @@ import {
   SOCKET_API_EVT_PEER_DATA
 } from 'shared/socketAPI/socketAPIEvents';
 import {
+  fetchConnectedPeers,
   _handleSocketPeerConnectionStatusUpdate,
   _routeReceivedSocketPeerDataPacket
 } from 'utils/p2p/socketPeer';
-import Peer, { SHARED_DATA_KEY_USER_ID } from 'utils/p2p/Peer.class';
 
 /**
  * Listens to P2P actions and bind them to P2PLinkedState.
