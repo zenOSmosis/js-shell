@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
-import Chat, { SocketPeerList } from 'components/Chat';
+import Chat, { SocketPeerList, StreamGrid } from 'components/Chat';
 import Full from 'components/Full';
 import LabeledComponent from 'components/LabeledComponent';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
@@ -22,7 +22,8 @@ class ChatAppWindow extends Component {
 
     this.state = {
       selectedPeer: null,
-      isShowingMessages: true
+      isShowingMessages: true,
+      isShowingStreamGrid: false,
     };
 
     const { p2pLinkedState } = this.props.appRuntime.getState();
@@ -41,42 +42,53 @@ class ChatAppWindow extends Component {
     });
   }
 
+  _handleShowStreamGridSelect(isShowingStreamGrid) {
+    this.setState({
+      isShowingStreamGrid
+    });
+  }
+
   render() {
     const { ...propsRest } = this.props;
-    const { selectedPeer, isShowingMessages } = this.state;
+    const {
+      selectedPeer,
+      isShowingMessages,
+      isShowingStreamGrid
+    } = this.state;
 
     return (
       <Window
         {...propsRest}
-        /*
-        toolbar={
-          // If user isn't in a chat room
-          <div style={{ display: 'inline-block' }}>
-            <Search
-              size="small"
-              placeholder="Enter a Chat Room name"
-              style={{ minWidth: '220px' }}
-            />
-            <Button>Join</Button>
-          </div>
-        }
-        */
-
         toolbarRight={
-          <LabeledComponent
-            label="Messages"
-          >
-            <Switch
-              checkedChildren="Show"
-              unCheckedChildren="Hide"
-              checked={isShowingMessages}
-              onChange={isChecked => this._handleShowMessagesSelect(isChecked)}
-            />
-          </LabeledComponent>
+          <Fragment>
+            <LabeledComponent
+              label="Stream Grid"
+            >
+              <Switch
+                checkedChildren="Show"
+                unCheckedChildren="Hide"
+                checked={isShowingStreamGrid}
+                onChange={isChecked => this._handleShowStreamGridSelect(isChecked)}
+              />
+            </LabeledComponent>
+
+            <LabeledComponent
+              label="Messages"
+            >
+              <Switch
+                checkedChildren="Show"
+                unCheckedChildren="Hide"
+                checked={isShowingMessages}
+                onChange={isChecked => this._handleShowMessagesSelect(isChecked)}
+              />
+            </LabeledComponent>
+          </Fragment>
         }
       >
         <LinkedStateRenderer
+          // TODO: Document why this verbose key name is needed
           key={`${selectedPeer ? selectedPeer.getPeerId() : null}-${isShowingMessages ? 'with' : 'without'}-messages`}
+          
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
             const {
@@ -132,12 +144,15 @@ class ChatAppWindow extends Component {
                   </Full>
 
                   <Full>
+                    <StreamGrid />
                     {
+                      /*
                       selectedPeer &&
                       <Chat
                         remotePeer={selectedPeer}
                         isShowingMessages={isShowingMessages}
                       />
+                      */
                     }
                   </Full>
                 </SplitterLayout>

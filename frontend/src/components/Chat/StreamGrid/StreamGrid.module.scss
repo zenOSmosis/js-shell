@@ -1,0 +1,37 @@
+@import 'core/core.styles.scss';
+
+.stream-grid {
+  .header {
+    background-color: $panelBgColor;
+    color: $panelTextColor;
+    text-align: left;
+    padding: 10px;
+  }
+
+  .item {
+    background-color: #666666;
+    width: 180px;
+    height: 180px;
+    border: 2px black solid;
+    border-radius: 4px;
+
+    .track-status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+      background-color: #cccccc;
+
+      &.active {
+        background-color: green;
+      }
+    }
+
+    .content-body-wrapper {
+      display: inline-block;
+      width: calc(100% - 10px);
+      height: calc(100% - 10px);
+      border: 1px #000000 solid;
+    }
+  }
+}
