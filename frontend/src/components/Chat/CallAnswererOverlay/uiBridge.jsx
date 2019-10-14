@@ -1,5 +1,5 @@
 import React from 'react';
-import { CallAnswererOverlay } from 'components/Chat';
+import CallAnswererOverlay from './CallAnswererOverlay';
 import { EVT_LINKED_STATE_UPDATE } from 'state/LinkedState';
 import DesktopLinkedState, {
   ACTION_ADD_DESKTOP_MODAL,
