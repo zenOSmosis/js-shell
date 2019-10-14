@@ -78,6 +78,7 @@ select option {
   background-color: $inputBgColor;
   color: $inputTextColor;
   border: 1px $inputBorderColor solid;
+  border-radius: 4px;
   position: relative;
   vertical-align: middle;
 }
@@ -90,6 +91,10 @@ select option {
 select option:checked,
 select option:hover {
   background-color: $inputHighlightBgColor !important;
+}
+
+select {
+  margin: 0px 6px;
 }
 
 code {
