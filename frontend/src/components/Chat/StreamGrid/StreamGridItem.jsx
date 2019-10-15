@@ -5,7 +5,10 @@ import Center from 'components/Center';
 import MediaStreamRenderer from 'components/MediaStreamRenderer';
 import TrackStatusIndicator from './TrackStatusIndicator';
 import NormalizedNickname from '../NormalizedNickname';
+import DesktopLinkedState from 'state/DesktopLinkedState';
 import styles from './StreamGrid.module.scss';
+
+const _desktopLinkedState = new DesktopLinkedState();
 
 class StreamGridItem extends Component {
   constructor(props) {
@@ -71,7 +74,12 @@ class StreamGridItem extends Component {
               <Center>
                 {
                   localMediaStream &&
-                  <MediaStreamRenderer mediaStream={localMediaStream} />
+                  <div
+                    style={{width: '100%', height: '100%'}}
+                    onClick={() => _desktopLinkedState.setBackgroundMediaStream(localMediaStream)}
+                  >
+                    <MediaStreamRenderer mediaStream={localMediaStream} />
+                  </div>
                 }
               </Center>
             </div>

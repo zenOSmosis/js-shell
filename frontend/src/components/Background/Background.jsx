@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Cover from '../Cover';
 import Full from '../Full';
 import Image from '../Image';
+import MediaStreamRenderer from '../MediaStreamRenderer';
 import classNames from 'classnames';
 import styles from './Background.module.css';
 
@@ -20,10 +21,17 @@ export default class Background extends Component {
         className={classNames(styles['background'], className)}
       >
         <Cover className={styles['cover']}>
-          <Image
-            className={styles['image']}
-            src={src}
-          />
+          {
+            typeof src === 'string' &&
+            <Image
+              className={styles['image']}
+              src={src}
+            />
+          }
+          {
+            src instanceof MediaStream &&
+            <MediaStreamRenderer mediaStream={src} />
+          }
         </Cover>
         
         <Cover>

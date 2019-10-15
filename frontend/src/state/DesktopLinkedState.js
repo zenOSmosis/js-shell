@@ -17,7 +17,8 @@ export const STATE_ACTIVE_FILE_CHOOSER_DIALOG_PARAMS = 'isShowingFileChooser';
 export const STATE_CONTEXT_MENU_IS_TRAPPING = 'contextMenuIsTrapping';
 export const STATE_LAST_NOTIFICATION = 'lastNotification';
 export const STATE_REDIRECT_LOCATION = 'redirectLocation';
-export const STATE_BACKGROUND_URL = 'backgroundURL';
+export const STATE_BACKGROUND_URL = 'backgroundUrl';
+export const STATE_BACKGROUND_MEDIA_STREAM = 'backgroundMediaStream';
 export const STATE_IS_VIEWPORT_FOCUSED = 'isViewportFocused';
 export const STATE_VIEWPORT_SIZE = 'viewportSize';
 export const STATE_IS_FULLSCREEN_REQUESTED = 'isFullScreenRequested';
@@ -55,6 +56,8 @@ class DesktopLinkedState extends LinkedState {
 
       // The background image location of the Desktop
       [STATE_BACKGROUND_URL]: DESKTOP_DEFAULT_BACKGROUND_URL,
+
+      [STATE_BACKGROUND_MEDIA_STREAM]: null,
 
       // Whether the browser window is focused or not
       // TODO: Rename [back] to viewportIsFocused
@@ -158,12 +161,23 @@ class DesktopLinkedState extends LinkedState {
   /**
    * Sets the Desktop's background URL.
    *
-   * @param {string} backgroundURL 
+   * @param {string} backgroundURL__ 
    */
-  setBackgroundURL(backgroundURL) {
+  setBackgroundURL(backgroundURL__) {
     this.setState({
-      [STATE_BACKGROUND_URL]: backgroundURL
+      [STATE_BACKGROUND_URL]: backgroundURL__
     });
+  }
+
+  /**
+   * Sets the Desktop's background media stream.
+   * 
+   * @param {MediaStream} mediaStream 
+   */
+  setBackgroundMediaStream(mediaStream) {
+    this.setState({
+      [STATE_BACKGROUND_MEDIA_STREAM]: mediaStream
+    })
   }
 
   /**

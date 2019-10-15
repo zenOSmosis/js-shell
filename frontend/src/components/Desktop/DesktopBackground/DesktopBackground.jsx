@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Full from 'components/Full';
 import Background from 'components/Background';
-import DesktopLinkedState from 'state/DesktopLinkedState';
+import DesktopLinkedState, {
+  STATE_BACKGROUND_URL,
+  STATE_BACKGROUND_MEDIA_STREAM,
+  STATE_SHELL_DESKTOP_PROCESS
+} from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
 
 class DesktopBackground extends Component {
@@ -21,7 +25,7 @@ class DesktopBackground extends Component {
    * Internally called when the mousedown or touchstart events are called.
    */
   _handleMouseOrTouchStart = (evt) => {
-    const { shellDesktopProcess } = this.props;
+    const { [STATE_SHELL_DESKTOP_PROCESS]: shellDesktopProcess } = this.props;
 
     if (evt.target.parentNode === this._fullEl) {
       shellDesktopProcess.focus();
@@ -29,11 +33,11 @@ class DesktopBackground extends Component {
   };
 
   render() {
-    const { children, shellDesktopProcess, ...propsRest } = this.props;
+    const { children, src, shellDesktopProcess, ...propsRest } = this.props;
 
     return (
       <Background
-        {...propsRest}
+        src={src}
       >
         {
           /**
@@ -57,16 +61,24 @@ class DesktopBackground extends Component {
 }
 
 export default hocConnect(DesktopBackground, DesktopLinkedState, (updatedState) => {
-  const { backgroundURL, shellDesktopProcess } = updatedState;
+  const {
+    [STATE_BACKGROUND_URL]: backgroundUrl,
+    [STATE_BACKGROUND_MEDIA_STREAM]: backgroundMediaStream,
+    [STATE_SHELL_DESKTOP_PROCESS]: shellDesktopProcess
+  } = updatedState;
 
   const filteredState = {};
 
-  if (backgroundURL) {
-    filteredState.src = backgroundURL;
+  if (backgroundUrl !== undefined) {
+    filteredState.src = backgroundUrl;
   }
 
-  if (shellDesktopProcess) {
-    filteredState.shellDesktopProcess = shellDesktopProcess
+  if (backgroundMediaStream !== undefined && backgroundMediaStream !== null) {
+    filteredState.src = backgroundMediaStream;
+  }
+
+  if (shellDesktopProcess !== undefined) {
+    filteredState[STATE_SHELL_DESKTOP_PROCESS] = shellDesktopProcess;
   }
 
   if (Object.keys(filteredState).length) {
