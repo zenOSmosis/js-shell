@@ -212,7 +212,7 @@ class Window extends Component {
       this.autosetTitle();
 
       this.autosetPosition();
-      this.autosetSize();
+      this._autosetInitialSize();
 
       // TODO: Fix implementation
       // (works on Chrome in Linux; not on Windows)
@@ -248,10 +248,7 @@ class Window extends Component {
       throw exc;
     }
   }
-
-  /*
-  * Set init position based on last one
-  */
+  
   autosetPosition() {
     /*
     const { appRuntime } = this.props;
@@ -262,10 +259,7 @@ class Window extends Component {
    console.warn('TODO: Reimplement autoset position w/ this._windowStack');
   }
 
-  /*
-   * Set init position based on last one
-   */
-  autosetSize() {
+  _autosetInitialSize() {
     const { initialWidth, initialHeight } = this.props;
     
     this.resize(initialWidth, initialHeight);

@@ -13,36 +13,54 @@ class MediaStreamRenderer extends Component {
     super(props); 
 
     this._elMedia = null;
+    this._mediaStream = null;
+    this._isMounted = false;
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.autosetMediaStream();
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+
+    if (this._elMedia.stop !== undefined) {
+      this._elMedia.stop();
+    }
+  }
+
   shouldComponentUpdate() {
-    this.autosetMediaStream();
+    // this.autosetMediaStream();
 
     return false;
   }
 
   autosetMediaStream() {
-    const { mediaStream } = this.props;
-    const currentMediaStream = this._elMedia.src;
-
-    if (Object.is(mediaStream, currentMediaStream)) {
+    if (!this._isMounted) {
       return;
     }
 
+    if (this._mediaStream) {
+      return;
+    }
+
+    const { mediaStream: newMediaStream } = this.props;
+
+    if (!newMediaStream) {
+      return;
+    };
+
+    this._mediaStream = newMediaStream;
+
+    /*
     if (this._elMedia.playing) {
       this._elMedia.stop();
     }
-
-    if (!mediaStream) {
-      return;
-    }
+    */
 
     // if ('srcObject' in this._elMedia) {
-      this._elMedia.srcObject = mediaStream;
+      this._elMedia.srcObject = newMediaStream;
     // } else {
     //  this._elMedia.src = window.URL.createObjectURL(mediaStream); // for older browsers
     // }

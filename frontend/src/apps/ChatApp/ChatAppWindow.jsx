@@ -59,6 +59,8 @@ class ChatAppWindow extends Component {
     return (
       <Window
         {...propsRest}
+        initialWidth={800}
+        initialHeight={500}
         toolbarRight={
           <Fragment>
             <LabeledComponent
@@ -92,15 +94,15 @@ class ChatAppWindow extends Component {
           linkedState={this._p2pLinkedState}
           onUpdate={(updatedState) => {
             const {
-              [STATE_REMOTE_PEERS]: connectedPeers,
+              [STATE_REMOTE_PEERS]: remotePeers,
               [STATE_LAST_UPDATED_PEER]: lastUpdatedPeer,
               [STATE_CHAT_MESSAGES]: chatMessages
             } = updatedState;
 
             const filteredState = {};
 
-            if (connectedPeers !== undefined) {
-              filteredState[STATE_REMOTE_PEERS] = connectedPeers;
+            if (remotePeers !== undefined) {
+              filteredState[STATE_REMOTE_PEERS] = remotePeers;
             }
 
             if (lastUpdatedPeer !== undefined) {
@@ -115,12 +117,12 @@ class ChatAppWindow extends Component {
           }}
           render={(renderProps) => {
             const {
-              [STATE_REMOTE_PEERS]: connectedPeers,
+              [STATE_REMOTE_PEERS]: remotePeers,
               [STATE_LAST_UPDATED_PEER]: lastUpdatedPeer,
               // [STATE_CHAT_MESSAGES]: chatMessages
             } = renderProps;
 
-            if (!connectedPeers.length) {
+            if (!remotePeers.length) {
               return (
                 <Center>
                   No connected peers
@@ -136,7 +138,7 @@ class ChatAppWindow extends Component {
                 >
                   <Full>
                     <SocketPeerList
-                      connectedPeers={connectedPeers}
+                      remotePeers={remotePeers}
                       selectedPeer={selectedPeer}
                       lastUpdatedPeer={lastUpdatedPeer}
                       onPeerSelect={peer => this._handlePeerSelect(peer)}
@@ -144,7 +146,7 @@ class ChatAppWindow extends Component {
                   </Full>
 
                   <Full>
-                    <StreamGrid />
+                    <StreamGrid remotePeers={remotePeers} />
                     {
                       /*
                       selectedPeer &&

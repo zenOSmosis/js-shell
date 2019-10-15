@@ -34,7 +34,7 @@ class SocketPeerList extends Component {
   render() {
     const {
       className,
-      connectedPeers,
+      remotePeers,
       selectedPeer,
       style
     } = this.props;
@@ -45,7 +45,7 @@ class SocketPeerList extends Component {
         style={style}
       >
         {
-          connectedPeers.map((remotePeer) => {
+          remotePeers.map((remotePeer) => {
             const peerId = remotePeer.getPeerId();
             const isOnline = remotePeer.getIsOnline();
             const nickname = remotePeer.getNickname();
