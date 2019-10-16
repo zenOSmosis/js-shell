@@ -45,7 +45,7 @@ class SocketPeerList extends Component {
         style={style}
       >
         {
-          remotePeers.map((remotePeer) => {
+          remotePeers.map(remotePeer => {
             const peerId = remotePeer.getPeerId();
             const isOnline = remotePeer.getIsOnline();
             const nickname = remotePeer.getNickname();
@@ -62,6 +62,66 @@ class SocketPeerList extends Component {
             const lastChatMessage = this._p2pLinkedState.dispatchAction(ACTION_GET_LAST_CHAT_MESSAGE_TO_OR_FROM_PEER_ID, peerId);
             const lastChatMessageBody = lastChatMessage ? lastChatMessage.getMessageBody() : null;
 
+            return (
+              <li
+                key={peerId}
+                title={aboutDescription}
+                className={(Object.is(remotePeer, selectedPeer) ? styles['active'] : null)}
+              >
+                <div
+                  className={styles['peer']}
+                  onMouseDown={evt => this.selectPeer(remotePeer)}
+                  onTouchStart={evt => this.selectPeer(remotePeer)}
+                >
+                  <Row>
+                    <Column className={styles['avatar-wrapper']}>
+                      <AvatarWithOnlineStatusIndicator
+                        isOnline={isOnline}
+                      />
+                    </Column>
+
+                    <Column
+                      className={styles['description-wrapper']}
+                      isForcedMinWidth={true}
+                    >
+                      <div>
+                        <div className={styles['title-wrapper']}>
+                          <NormalizedNickname nickname={nickname} />
+                        </div>
+
+                        <div className={styles['status-wrapper']}>
+                          {
+                            `/ ${browserOnOs}`
+                          }
+                        </div>
+                      </div>
+
+                      <div>
+                        {
+                          lastChatMessageBody
+                        }
+                      </div>
+                    </Column>
+
+                    <Column className={styles['last-seen-wrapper']}>
+                      <div>[ last seen ]</div>
+
+                      <div>
+                        <SystemIcon platformType={platformType} />
+                      </div>
+                    </Column>
+                  </Row>
+                  <Row>
+                    <Column>
+                      <CallControls remotePeer={remotePeer} />
+                    </Column>
+                  </Row>
+                </div>
+              </li>
+            );
+
+            /*
+            // return w/ tooltip
             return (
               <li
                 key={peerId}
@@ -154,10 +214,16 @@ class SocketPeerList extends Component {
                         </div>
                       </Column>
                     </Row>
+                    <Row>
+                      <Column>
+                        <CallControls remotePeer={remotePeer} />
+                      </Column>
+                    </Row>
                   </div>
                 </Tooltip>
               </li>
             );
+            */
           })
         }
       </ul>

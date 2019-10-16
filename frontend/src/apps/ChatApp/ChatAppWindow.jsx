@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
-import Chat, { SocketPeerList, StreamGrid } from 'components/Chat';
+import /* Chat, */ { SocketPeerList, StreamGrid } from 'components/Chat';
 import Full from 'components/Full';
-import LabeledComponent from 'components/LabeledComponent';
+// import LabeledComponent from 'components/LabeledComponent';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
 import SplitterLayout from 'components/SplitterLayout';
-import Switch from 'components/Switch';
+// import Switch from 'components/Switch';
 import {
   STATE_REMOTE_PEERS,
   STATE_LAST_UPDATED_PEER,
@@ -60,8 +60,10 @@ class ChatAppWindow extends Component {
       <Window
         {...propsRest}
         initialWidth={800}
-        initialHeight={500}
-        toolbarRight={
+        initialHeight={500}        
+        // TODO: Handle accordingly
+        /*
+        old_toolbarRight={
           <Fragment>
             <LabeledComponent
               label="Stream Grid"
@@ -86,6 +88,7 @@ class ChatAppWindow extends Component {
             </LabeledComponent>
           </Fragment>
         }
+        */
       >
         <LinkedStateRenderer
           // TODO: Document why this verbose key name is needed
