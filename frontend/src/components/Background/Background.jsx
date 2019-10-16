@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Cover from '../Cover';
 import Full from '../Full';
 import Image from '../Image';
-import MediaStreamRenderer from '../MediaStreamRenderer';
 import classNames from 'classnames';
 import styles from './Background.module.css';
 
@@ -39,7 +38,7 @@ export default class Background extends Component {
             })()
           }
         </Cover>
-        
+
         <Cover>
           {
             children

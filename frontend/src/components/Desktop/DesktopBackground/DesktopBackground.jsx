@@ -37,6 +37,7 @@ class DesktopBackground extends Component {
 
     return (
       <Background
+        {...propsRest}
         src={src}
       >
         {
