@@ -20,6 +20,7 @@ import IFrame from 'components/IFrame';
 import Window from 'components/Desktop/Window';
 import socketAPIQuery from 'utils/socketAPI/socketAPIQuery';
 import SocketChannel from 'shared/socketAPI/SocketChannel';
+import parseUrl from 'utils/parseUrl';
 
 // Note: Currently commented-out due to inconsistent exports
 // import socketAPIRoutes from 'shared/socketAPI/socketAPIRoutes';
@@ -80,6 +81,7 @@ class UI_JITRuntime extends ClientJITRuntime {
           fetchAggregatedMediaDeviceInfo,
           fetchMediaDevices 
         },
+        parseUrl,
         socketAPIQuery,
         // socketAPIRoutes,
         // socketAPIEvents
