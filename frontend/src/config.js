@@ -1,6 +1,9 @@
 // Default dynamic app configuration
 
-import parseURL from './utils/parseURL';
+import parseUrl from './utils/parseUrl';
+
+const _parsedUrl = parseUrl(window.location.href);
+const { protocol, hostname } = _parsedUrl;
 
 export const PROJECT_NAME = 'Shell Desktop';
 
@@ -9,9 +12,7 @@ export const DOM_ROOT_ID = 'root';
 export const HOST_REST_URL = (() => {
   // TODO: Enable this to work w/o global window object
   if (typeof window !== 'undefined') {
-    const parsedWinURL = parseURL(window.location.href);
-
-    return `${parsedWinURL.protocol}//${parsedWinURL.hostname}`
+    return `${protocol}//${hostname}`;
   }
 })();
 
@@ -36,5 +37,23 @@ export const DONATION_LINKS = [
   {
     title: 'Buy me a coffee',
     url: 'https://www.buymeacoffee.com/Kg8VCULYI'
+  }
+];
+
+const { REACT_APP_WEB_RTC_USERNAME, REACT_APP_WEB_RTC_PASSWORD } = process.env;
+
+// TODO: Use environment variables
+export const WEB_RTC_ICE_SERVERS = [
+  {
+    urls: [
+      `stun:${hostname}:3478`,
+      `stun:${hostname}:65435`,
+      `stun:${hostname}:65436`,
+      `stun:${hostname}:65437`,
+      `stun:${hostname}:65438`,
+      `stun:${hostname}:65439`
+    ],
+    username: REACT_APP_WEB_RTC_USERNAME,
+    credential: REACT_APP_WEB_RTC_PASSWORD
   }
 ];

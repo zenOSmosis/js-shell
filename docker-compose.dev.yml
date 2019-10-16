@@ -118,12 +118,12 @@ services:
     expose:
       - 8081
 
-  searx:
-    build: ./docker_modules/searx
-    networks:
-      - shell-core-service-network
-    expose:
-      - 8080
+  # searx:
+  #  build: ./docker_modules/searx
+  #  networks:
+  #    - shell-core-service-network
+  #  expose:
+  #    - 8080
 
   # Note: No direct network access to frontend; proxied through backend
   frontend:
@@ -137,6 +137,8 @@ services:
     environment:
       NODE_ENV: development
       REACT_APP_PROJECT_NAME: Shell Desktop
+      REACT_APP_WEB_RTC_USERNAME: username
+      REACT_APP_WEB_RTC_PASSWORD: password
       # - HTTPS=true
     networks:
       - shell-core-service-network
@@ -145,13 +147,18 @@ services:
       - 3000
     user: ${UGID}
    
-  # coturn:
-  #  build: ./docker_modules/docker-coturn
-  #  networks:
-  #   - shell-core-service-network
-  #  volumes:
-  #    - ./docker_modules/docker-coturn:/app # Only during development
-  #  ports:
-  #    - 3478:3478
-  #    - 3478:3478/udp
-  #    - 65435-65535:65435-65535/udp
+  # TODO: Use environment variable w/ username / password
+  coturn:
+    build: ./docker_modules/docker-coturn
+    networks:
+     - shell-core-service-network
+    volumes:
+      - ./docker_modules/docker-coturn:/app # Only during development
+    environment:
+      USERNAME: username
+      PASSWORD: password
+      REALM: realm
+    ports:
+      - 3478:3478
+      - 3478:3478/udp
+      - 65435-65535:65435-65535/udp

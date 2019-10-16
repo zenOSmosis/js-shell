@@ -8,6 +8,7 @@ import {
   sendSocketPeerDataPacket
 } from './socketPeer';
 import { serializeError, deserializeError } from 'serialize-error';
+import { WEB_RTC_ICE_SERVERS } from 'config';
 import sleep from 'utils/sleep';
 
 export const SOCKET_PEER_WEB_RTC_SIGNAL_PACKET_TYPE = 'webRTCSignal';
@@ -167,7 +168,10 @@ class WebRTCPeer extends EventEmitter {
 
       this._simplePeer = new SimplePeer({
         initiator: this._isInitiator,
-        stream: mediaStream
+        stream: mediaStream,
+        config: {
+          iceServers: WEB_RTC_ICE_SERVERS
+        }
       });
 
       /**
