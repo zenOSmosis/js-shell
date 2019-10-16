@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Peer from 'utils/p2p/Peer.class';
 import {
   PhoneCallIcon,
   PhoneHangupIcon,
@@ -11,7 +13,16 @@ import styles from './CallControls.module.scss';
 import { fetchAggregatedMediaDeviceInfo } from 'utils/mediaDevices';
 import { captureUserMediaStream, captureDisplayMediaStream } from 'utils/mediaStream';
 
+/**
+ * UI controls for creating a new call (request) or for managing an existing call.
+ * 
+ * @extends {React.Component}
+ */
 class CallControls extends Component {
+  static propTypes = {
+    remotePeer: PropTypes.instanceOf(Peer).isRequired
+  };
+
   constructor(props) {
     super(props);
 
