@@ -128,16 +128,6 @@ class MediaStreamAudioVisualizer extends Component {
       const CANVAS_WIDTH = this._elCanvas.width;
       const CANVAS_HEIGHT = this._elCanvas.height;
 
-      // Start drawing the next frame
-      /*
-      requestAnimationFrame(() => {
-        _draw(this._mediaStream.id);
-      });
-      */
-      setTimeout(() => {
-        _draw(this._mediaStream.id);
-      }, 75);
-
       // Fill the dataArray with byte frequency data
       this._analyser.getByteFrequencyData(dataArray);
 
@@ -151,11 +141,18 @@ class MediaStreamAudioVisualizer extends Component {
       for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] === 0 ? 0 : CANVAS_HEIGHT / (255 / dataArray[i]) * 1.5;
 
-        this._canvasCtx.fillStyle = 'rgb(' + (barHeight + CANVAS_WIDTH) + ',50,50)';
+        this._canvasCtx.fillStyle = `rgb(${barHeight + CANVAS_WIDTH}, 50, 50)`;
         this._canvasCtx.fillRect(x, CANVAS_HEIGHT - barHeight / 2, barWidth, barHeight);
 
         x += barWidth + 1;
       }
+
+      // Start drawing the next frame, using setTimeout to throttle
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          _draw(this._mediaStream.id);
+        });
+      }, 75);
     };
 
     // Start rendering
