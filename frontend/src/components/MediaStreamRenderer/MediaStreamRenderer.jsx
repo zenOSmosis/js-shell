@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import styles from './MediaStreamRenderer.module.scss';
+import debounce from 'debounce';
 import PropTypes from 'prop-types';
 
 class MediaStreamRenderer extends Component {
@@ -14,16 +15,18 @@ class MediaStreamRenderer extends Component {
 
     this._elMedia = null;
     this._mediaStream = null;
-    this._isMounted = false;
+
+    // Debounce is applied to _autosetMediaStream to prevent it from erroring
+    // if streams are changed rapidly
+    this._autosetMediaStream = debounce(this._autosetMediaStream, 50);
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    this.autosetMediaStream();
+    this._autosetMediaStream();
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    this._mediaStream = null;
 
     if (this._elMedia.stop !== undefined) {
       this._elMedia.stop();
@@ -31,33 +34,31 @@ class MediaStreamRenderer extends Component {
   }
 
   shouldComponentUpdate() {
-    // this.autosetMediaStream();
+    this._autosetMediaStream();
 
     return false;
   }
 
-  autosetMediaStream() {
-    if (!this._isMounted) {
-      return;
-    }
-
-    if (this._mediaStream) {
-      return;
-    }
-
+  _autosetMediaStream() {
     const { mediaStream: newMediaStream } = this.props;
 
     if (!newMediaStream) {
+      if (typeof this._elMedia.stop === 'function') {
+        this._elMedia.stop();
+      }
+      
       return;
     };
 
-    this._mediaStream = newMediaStream;
+    const existingId = this._mediaStream ? this._mediaStream.id : null;
+    const newId = newMediaStream.id;
 
-    /*
-    if (this._elMedia.playing) {
-      this._elMedia.stop();
+    // Skip stream set if it's the current stream
+    if (existingId === newId) {
+      return;
     }
-    */
+
+    this._mediaStream = newMediaStream;
 
     // if ('srcObject' in this._elMedia) {
       this._elMedia.srcObject = newMediaStream;
