@@ -6,7 +6,7 @@ import {Grid, GridItem} from '../../../Grid';
 import Icon from '../../../Icon';
 import socket from './../../../../utils/socket.io';
 import {Input, Icon as AntdIcon} from 'antd';
-import parseURL from '../../../utils/parseURL';
+import parseUrl from '../../../utils/parseUrl';
 
 export default class AppMenu extends Component {
   state = {
@@ -56,7 +56,7 @@ export default class AppMenu extends Component {
   }
 
   render () {
-    const parsedWinURL = parseURL(window.href);
+    const parsedWinURL = parseUrl(window.href);
     // TODO: Move hardcoded value
     const API_PORT = 3001;
 

@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} ParsedURL
+ * @typedef {Object} ParsedUrl
  * @property {string} protocol e.g "https:"
  * @property {string} hostname e.g. "example.com"
  * @property {number} port e.g. 3000
@@ -9,11 +9,11 @@
  * @property {string} host e.g. "example.com:3000" 
  */
 
- /**
-  * @param {string} url
-  * @return {ParsedURL}
-  */
-const parseURL = (url) => {
+/**
+ * @param {string} url
+ * @return {ParsedUrl}
+ */
+const parseUrl = (url) => {
   let parser = document.createElement('a');
   parser.href = url;
 
@@ -42,4 +42,4 @@ const parseURL = (url) => {
   };
 };
 
-export default parseURL;
+export default parseUrl;
