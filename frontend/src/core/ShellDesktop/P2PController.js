@@ -30,11 +30,6 @@ class P2PController extends ClientProcess {
       console.debug('Initializing Socket.io peer connections');
       this._initSocketIOServices();
 
-      /*
-      console.debug('Initialzing WebRTC services');
-      this._initWebRTCServices();
-      */
-
       await super._init();
 
     } catch (exc) {
@@ -91,7 +86,7 @@ class P2PController extends ClientProcess {
 
   _handleReceivedSocketPeerDetail = (socketPeerSharedData) => {
     Peer.createFromRawData(socketPeerSharedData);
-  };
+  }
 
   _handleSocketPeerConnect = (peerId) => {
     const peer = Peer.createFromRawData({
@@ -101,7 +96,7 @@ class P2PController extends ClientProcess {
     peer.setIsOnline(true);
 
     _handleSocketPeerConnectionStatusUpdate(peer, true);
-  };
+  }
   
   _handleSocketPeerDisconnect = (socketPeerId) => {
     const peer = Peer.createFromRawData({
@@ -111,17 +106,11 @@ class P2PController extends ClientProcess {
     peer.setIsOnline(false);
 
     _handleSocketPeerConnectionStatusUpdate(peer, false);
-  };
+  }
 
   _routeReceivedSocketPeerDataPacket = (dataPacket) => {
     _routeReceivedSocketPeerDataPacket(dataPacket);
-  };
-
-  /*
-  _initWebRTCServices() {
-    console.warn('TODO: Handle WebRTC services init');
   }
-  */
 }
 
 export default P2PController;
