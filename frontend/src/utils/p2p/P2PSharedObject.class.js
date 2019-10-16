@@ -30,6 +30,8 @@ class P2PSharedObject extends EventEmitter {
   emit(eventName, eventData = null) {
     // Prevent double-firing on EVT_ANY_UPDATE, due to this event being
     // emitted twice on shared/private update multi-sets
+    // Note: The debounce method is not used for a wrapper here so that
+    // non-EVT_ANY_UPDATE events will still pass through w/o debouncing
     if (eventName === EVT_ANY_UPDATE) {
       clearTimeout(this._eventAnyUpdateDebounceTimeout);
 
