@@ -107,7 +107,7 @@ class Window extends Component {
     onClose: PropTypes.func,
 
     // TODO: PropType additional types
-  };
+  }
   
   constructor(props) {
     super(props);
@@ -167,24 +167,28 @@ class Window extends Component {
     this._restorePosition = {};
   }
 
+  // TODO: Implement mixin functionality w/ EventEmitter
   emit(...args) {
     if (this._events) {
       this._events.emit(...args);
     }
   }
 
+  // TODO: Implement mixin functionality w/ EventEmitter
   on(...args) {
     if (this._events) {
       this._events.on(...args);
     }
   }
 
+  // TODO: Implement mixin functionality w/ EventEmitter
   off(...args) {
     if (this._events) {
       this._events.off(...args);
     }
   }
 
+  // TODO: Implement mixin functionality w/ EventEmitter
   once(...args) {
     if (this._events) {
       this._events.once(...args);
@@ -367,7 +371,7 @@ class Window extends Component {
         this._isSkippingUpdates = false;
       }, 1);
     }
-  };
+  }
 
   async focus() {
     try {
@@ -692,7 +696,7 @@ class Window extends Component {
     this._isActiveHeaderGesture = true;
 
     this.doCoverIfShould();
-  };
+  }
 
   /**
    * Internally called when the Window Header has stopped detecting a gesture
@@ -704,13 +708,13 @@ class Window extends Component {
     this._isActiveHeaderGesture = false;
 
     this.doCoverIfShould();
-  };
+  }
 
   _handleResizeStart = (evt) => {
     this._isResizing = true;
 
     this.doCoverIfShould();
-  };
+  }
 
   /**
    * Called when the <DragResizable /> layer is being resized.
@@ -749,13 +753,13 @@ class Window extends Component {
     }
 
     this.emit(EVT_RESIZE);
-  };
+  }
 
   _handleResizeEnd = (evt) => {
     this._isResizing = false;
 
     this.doCoverIfShould();
-  };
+  }
 
   /**
    * Note, the actual handling is provided in combination of <Moveable> and <DragResizable>.
@@ -767,7 +771,7 @@ class Window extends Component {
         appRuntime.recordWindowPosition(pos);
       }
     }
-  };
+  }
 
   /**
    * @return {boolean} Whether or not the window can be resized by the user. 
@@ -913,6 +917,7 @@ class Window extends Component {
                       }
                       <Cover
                         ref={c => this._bodyCoverComponent = c}
+                        className={styles['window-body-cover']}
 
                       // TODO: Activate to true when window is inactive,
                       // being moved, or resized.
