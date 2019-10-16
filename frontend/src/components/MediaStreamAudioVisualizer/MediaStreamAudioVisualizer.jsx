@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Full from '../Full';
 import debounce from 'debounce';
 
+let _sharedAudioCtx = null;
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
  */
@@ -18,7 +20,12 @@ class MediaStreamAudioVisualizer extends Component {
     this._elCanvas = null;
     this._canvasCtx = null;
 
-    this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    this._audioCtx = _sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+    if (!_sharedAudioCtx) {
+      _sharedAudioCtx = this._audioCtx;
+    }
+
     this._source = null;
     this._analyser = this._audioCtx.createAnalyser();
     this._mediaStream = null;
@@ -42,7 +49,10 @@ class MediaStreamAudioVisualizer extends Component {
   }
 
   componentWillUnmount() {
-    this._source.disconnect(this._analyser);
+    if (this._source && this._analyser) {
+      this._source.disconnect(this._analyser);
+    }
+
     this._source = null;
     this._audioCtx = null;
 
@@ -56,12 +66,21 @@ class MediaStreamAudioVisualizer extends Component {
       }
 
       const fullSize = this._elFull.getBoundingClientRect();
+      const { width: newWidth, height: newHeight } = fullSize;
+      const { width: currWidth, height: currHeight } = this._elCanvas;
 
-      this._elCanvas.width = fullSize.width;
-      this._elCanvas.height = fullSize.height;
+      if (newWidth !== currWidth || newHeight !== currHeight) {
+        this._elCanvas.width = newWidth;
+        this._elCanvas.height = newHeight;
+
+        console.debug({
+          width: this._elCanvas.width,
+          height: this._elCanvas.height
+        })
+      }
+
+      setTimeout(_autoSize, 1000);
     };
-    
-    setTimeout(_autoSize, 1000);
 
     _autoSize();
   }
@@ -76,6 +95,10 @@ class MediaStreamAudioVisualizer extends Component {
     if (this._mediaStream && propsMediaStream && this._mediaStream.id === propsMediaStream.id) {
       return;
     } else {
+      if (!propsMediaStream || !this._audioCtx) {
+        return;
+      }
+
       this._mediaStream = propsMediaStream;
     }
 
@@ -98,6 +121,10 @@ class MediaStreamAudioVisualizer extends Component {
         return;
       }
 
+      if (!this._elCanvas) {
+        return;
+      }
+
       const CANVAS_WIDTH = this._elCanvas.width;
       const CANVAS_HEIGHT = this._elCanvas.height;
 
@@ -117,15 +144,15 @@ class MediaStreamAudioVisualizer extends Component {
       this._canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       this._canvasCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-      const barWidth = (CANVAS_WIDTH / bufferLength) * 2.5;
+      const barWidth = (CANVAS_WIDTH / bufferLength);
       let barHeight;
       let x = 0;
 
       for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i] / 2;
+        barHeight = dataArray[i] === 0 ? 0 : CANVAS_HEIGHT / (255 / dataArray[i]) * 1.5;
 
         this._canvasCtx.fillStyle = 'rgb(' + (barHeight + CANVAS_WIDTH) + ',50,50)';
-        this._canvasCtx.fillRect(x, CANVAS_WIDTH - barHeight / 2, barWidth, barHeight);
+        this._canvasCtx.fillRect(x, CANVAS_HEIGHT - barHeight / 2, barWidth, barHeight);
 
         x += barWidth + 1;
       }
@@ -143,6 +170,8 @@ class MediaStreamAudioVisualizer extends Component {
         }
         <canvas
           ref={c => this._elCanvas = c}
+          width={150}
+          height={150}
         ></canvas>
       </Full>
     );

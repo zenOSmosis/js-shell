@@ -29,8 +29,14 @@ export default class Background extends Component {
             />
           }
           {
-            src instanceof MediaStream &&
-            <MediaStreamRenderer mediaStream={src} />
+            (typeof src === 'object' || typeof src === 'function') &&
+            (() => {
+              const DisplayComponent = src;
+
+              return (
+                <DisplayComponent />
+              );
+            })()
           }
         </Cover>
         

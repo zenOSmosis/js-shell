@@ -4,7 +4,7 @@ import Full from 'components/Full';
 import Background from 'components/Background';
 import DesktopLinkedState, {
   STATE_BACKGROUND_URL,
-  STATE_BACKGROUND_MEDIA_STREAM,
+  STATE_BACKGROUND_COMPONENT,
   STATE_SHELL_DESKTOP_PROCESS
 } from 'state/DesktopLinkedState';
 import hocConnect from 'state/hocConnect';
@@ -63,7 +63,7 @@ class DesktopBackground extends Component {
 export default hocConnect(DesktopBackground, DesktopLinkedState, (updatedState) => {
   const {
     [STATE_BACKGROUND_URL]: backgroundUrl,
-    [STATE_BACKGROUND_MEDIA_STREAM]: backgroundMediaStream,
+    [STATE_BACKGROUND_COMPONENT]: backgroundComponent,
     [STATE_SHELL_DESKTOP_PROCESS]: shellDesktopProcess
   } = updatedState;
 
@@ -73,8 +73,8 @@ export default hocConnect(DesktopBackground, DesktopLinkedState, (updatedState) 
     filteredState.src = backgroundUrl;
   }
 
-  if (backgroundMediaStream !== undefined && backgroundMediaStream !== null) {
-    filteredState.src = backgroundMediaStream;
+  if (backgroundComponent !== undefined && backgroundComponent !== null) {
+    filteredState.src = backgroundComponent;
   }
 
   if (shellDesktopProcess !== undefined) {

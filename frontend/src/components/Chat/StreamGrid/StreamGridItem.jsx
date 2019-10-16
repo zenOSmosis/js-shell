@@ -75,15 +75,35 @@ class StreamGridItem extends Component {
               <Center>
                 {
                   localMediaStream &&
-                  mediaStreamTrack.kind === 'video' ?
-                    <div
-                      style={{width: '100%', height: '100%'}}
-                      onClick={() => _desktopLinkedState.setBackgroundMediaStream(localMediaStream)}
-                    >
-                      <MediaStreamRenderer mediaStream={localMediaStream} />
-                    </div>
-                  :
-                    <MediaStreamAudioVisualizer mediaStream={localMediaStream} />
+                  (() => {
+                    const { kind } = mediaStreamTrack;
+
+                    let RenderComponent = false;
+                    let callback;
+                    if (kind === 'video') {
+                      RenderComponent = () => <MediaStreamRenderer mediaStream={localMediaStream} />;
+                      callback = () => _desktopLinkedState.setBackgroundComponent(() => 
+                        <MediaStreamRenderer mediaStream={localMediaStream} />
+                      );
+                    }
+
+                    if (kind === 'audio') {
+                      RenderComponent = () => <MediaStreamAudioVisualizer mediaStream={localMediaStream} />;
+                      callback = () => _desktopLinkedState.setBackgroundComponent(() => 
+                        <MediaStreamAudioVisualizer mediaStream={localMediaStream} />
+                      );
+                    }
+
+                    return (
+                      <div
+                        style={{width: '100%', height: '100%'}}
+                        onClick={callback}
+                      >
+                        <RenderComponent />
+                      </div>
+                    );
+                  })()
+                    
                 }
               </Center>
             </div>

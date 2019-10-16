@@ -40,6 +40,10 @@ class MediaStreamRenderer extends Component {
   }
 
   _autosetMediaStream() {
+    if (!this._elMedia) {
+      return;
+    }
+
     const { mediaStream: newMediaStream } = this.props;
 
     if (!newMediaStream) {

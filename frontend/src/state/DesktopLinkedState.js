@@ -18,7 +18,7 @@ export const STATE_CONTEXT_MENU_IS_TRAPPING = 'contextMenuIsTrapping';
 export const STATE_LAST_NOTIFICATION = 'lastNotification';
 export const STATE_REDIRECT_LOCATION = 'redirectLocation';
 export const STATE_BACKGROUND_URL = 'backgroundUrl';
-export const STATE_BACKGROUND_MEDIA_STREAM = 'backgroundMediaStream';
+export const STATE_BACKGROUND_COMPONENT = 'backgroundComponent';
 export const STATE_IS_VIEWPORT_FOCUSED = 'isViewportFocused';
 export const STATE_VIEWPORT_SIZE = 'viewportSize';
 export const STATE_IS_FULLSCREEN_REQUESTED = 'isFullScreenRequested';
@@ -57,7 +57,7 @@ class DesktopLinkedState extends LinkedState {
       // The background image location of the Desktop
       [STATE_BACKGROUND_URL]: DESKTOP_DEFAULT_BACKGROUND_URL,
 
-      [STATE_BACKGROUND_MEDIA_STREAM]: null,
+      [STATE_BACKGROUND_COMPONENT]: null,
 
       // Whether the browser window is focused or not
       // TODO: Rename [back] to viewportIsFocused
@@ -170,13 +170,13 @@ class DesktopLinkedState extends LinkedState {
   }
 
   /**
-   * Sets the Desktop's background media stream.
+   * Sets the Desktop's background component.
    * 
-   * @param {MediaStream} mediaStream 
+   * @param {React.Component} reactComponent 
    */
-  setBackgroundMediaStream(mediaStream) {
+  setBackgroundComponent(reactComponent) {
     this.setState({
-      [STATE_BACKGROUND_MEDIA_STREAM]: mediaStream
+      [STATE_BACKGROUND_COMPONENT]: reactComponent
     })
   }
 
