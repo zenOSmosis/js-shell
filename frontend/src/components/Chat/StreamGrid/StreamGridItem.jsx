@@ -3,6 +3,7 @@ import { GridItem } from 'components/Grid';
 import Layout, { Header, Content } from 'components/Layout';
 import Center from 'components/Center';
 import MediaStreamRenderer from 'components/MediaStreamRenderer';
+import MediaStreamAudioVisualizer from 'components/MediaStreamAudioVisualizer';
 import TrackStatusIndicator from './TrackStatusIndicator';
 import NormalizedNickname from '../NormalizedNickname';
 import DesktopLinkedState from 'state/DesktopLinkedState';
@@ -74,12 +75,15 @@ class StreamGridItem extends Component {
               <Center>
                 {
                   localMediaStream &&
-                  <div
-                    style={{width: '100%', height: '100%'}}
-                    onClick={() => _desktopLinkedState.setBackgroundMediaStream(localMediaStream)}
-                  >
-                    <MediaStreamRenderer mediaStream={localMediaStream} />
-                  </div>
+                  mediaStreamTrack.kind === 'video' ?
+                    <div
+                      style={{width: '100%', height: '100%'}}
+                      onClick={() => _desktopLinkedState.setBackgroundMediaStream(localMediaStream)}
+                    >
+                      <MediaStreamRenderer mediaStream={localMediaStream} />
+                    </div>
+                  :
+                    <MediaStreamAudioVisualizer mediaStream={localMediaStream} />
                 }
               </Center>
             </div>
