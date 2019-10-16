@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import EventEmitter from 'events';
+import mixin from 'utils/class/mixin';
 import WindowHeader from './WindowHeader';
 import ContextMenuProvider from 'components/ContextMenuProvider';
 import Cover from 'components/Cover';
@@ -112,11 +113,12 @@ class Window extends Component {
   constructor(props) {
     super(props);
 
+    // Apply EventEmitter methods to Window
+    mixin(this, [new EventEmitter()]);
+
     this.state = {
       title: null
     };
-
-    this._events = new EventEmitter();
 
     this._windowStack = getWindowStackCentral();
     (() => {
@@ -165,34 +167,6 @@ class Window extends Component {
      * @type {WindowPosition}
      */
     this._restorePosition = {};
-  }
-
-  // TODO: Implement mixin functionality w/ EventEmitter
-  emit(...args) {
-    if (this._events) {
-      this._events.emit(...args);
-    }
-  }
-
-  // TODO: Implement mixin functionality w/ EventEmitter
-  on(...args) {
-    if (this._events) {
-      this._events.on(...args);
-    }
-  }
-
-  // TODO: Implement mixin functionality w/ EventEmitter
-  off(...args) {
-    if (this._events) {
-      this._events.off(...args);
-    }
-  }
-
-  // TODO: Implement mixin functionality w/ EventEmitter
-  once(...args) {
-    if (this._events) {
-      this._events.once(...args);
-    }
   }
 
   async componentDidMount() {
@@ -976,13 +950,12 @@ class Window extends Component {
       this._windowStack = null;
 
       // Unregister event listeners
-      this._events.removeAllListeners();
+      this.removeAllListeners();
 
       const { onClose } = this.props;
       if (typeof onClose === 'function') {
         onClose();
       }
-      this._events = null;
     } catch (exc) {
       throw exc;
     }
