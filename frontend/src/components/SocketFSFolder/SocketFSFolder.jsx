@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import Full from '../Full';
 import ScrollableReactTable from '../ScrollableReactTable';
 import SocketFSFolderNode from './SocketFSFolderNode';
 import { dirDetail } from 'utils/socketFS';
 import unixTimeToHumanReadable from 'utils/time/unixTimeToHumanReadable';
-import PropTypes from 'prop-types';
+import bytesToSize from 'utils/string/bytesToSize';
 import styles from './SocketFSFolderNode.module.scss';
 import classNames from 'classnames';
 import debounce from 'debounce';
@@ -187,7 +188,7 @@ class SocketFSFolder extends Component {
             data={dirChildren}
             showPagination={false}
             pageSize={dirChildren.length}
-            getTrProps={(state, rowInfo, column) => {
+            getTrProps={(state, rowInfo /*, column */) => {
               const dirChild = rowInfo.original;
 
               const isSelected = selectedDirChildren.includes(dirChild);
@@ -223,8 +224,29 @@ class SocketFSFolder extends Component {
                       props.value
                     }
                   </SocketFSFolderNode>
-              }
-              ,
+              },
+              {
+                Header: 'Size',
+                accessor: 'stats.size',
+                Cell: (props) => {
+                  const { isDir } = props.original;
+
+                  if (isDir) {
+                    return <Fragment>--</Fragment>;
+                  }
+
+                  return (
+                    <SocketFSFolderNode
+                      dirChild={props.original}
+                      socketFSFolderComponent={this}
+                    >
+                      {
+                        bytesToSize(props.value)
+                      }
+                    </SocketFSFolderNode>
+                  );
+                }
+              },
               /*
               {
                 Header: 'Created',
@@ -268,19 +290,6 @@ class SocketFSFolder extends Component {
                   </SocketFSFolderNode>
               },
               */
-              {
-                Header: 'Size',
-                accessor: 'stats.size',
-                Cell: (props) =>
-                  <SocketFSFolderNode
-                    dirChild={props.original}
-                    socketFSFolderComponent={this}
-                  >
-                    {
-                      props.value
-                    }
-                  </SocketFSFolderNode>
-              },
             ]}
           />
         );
