@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import Full from '../Full';
 import debounce from 'debounce';
 
+// A shared AudioContext instance, if one is not passed to the visualizer
 let _sharedAudioCtx = null;
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
  */
 class MediaStreamAudioVisualizer extends Component {
+  static propTypes = {
+    audioContext: PropTypes.instanceOf(AudioContext), // or webkitAudioContext
+    mediaStream: PropTypes.instanceOf(MediaStream).isRequired
+  }
+
   constructor(props) {
     super(props);
 
@@ -20,14 +27,10 @@ class MediaStreamAudioVisualizer extends Component {
     this._elCanvas = null;
     this._canvasCtx = null;
 
-    this._audioCtx = _sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
-
-    if (!_sharedAudioCtx) {
-      _sharedAudioCtx = this._audioCtx;
-    }
+    this._audioCtx = null; 
 
     this._source = null;
-    this._analyser = this._audioCtx.createAnalyser();
+    this._analyser = null;
     this._mediaStream = null;
 
     this._autosetMediaStream = debounce(this._autosetMediaStream, 50);
@@ -37,9 +40,23 @@ class MediaStreamAudioVisualizer extends Component {
     this._isMounted = true;
     this._elFull = ReactDOM.findDOMNode(this._fullComponent);
 
+    // Init the drawing canvas
     this._canvasCtx = this._elCanvas.getContext('2d');
-
     this._initAutoCanvasSizer();
+
+    // Init the audio context
+    const { audioContext: propsAudioContext } = this.props;
+    if (propsAudioContext) {
+      this._audioCtx = propsAudioContext;
+    } else {
+      this._audioCtx = _sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+      if (!_sharedAudioCtx) {
+        _sharedAudioCtx = this._audioCtx;
+      }
+    }
+
+    this._analyser = this._audioCtx.createAnalyser();
 
     this._autosetMediaStream();
   }
@@ -59,6 +76,9 @@ class MediaStreamAudioVisualizer extends Component {
     this._isMounted = false;
   }
 
+  /**
+   * Dynamically resizes the underlying canvas view.
+   */
   _initAutoCanvasSizer() {
     const _autoSize = () => {
       if (!this._isMounted) {
@@ -72,16 +92,13 @@ class MediaStreamAudioVisualizer extends Component {
       if (newWidth !== currWidth || newHeight !== currHeight) {
         this._elCanvas.width = newWidth;
         this._elCanvas.height = newHeight;
-
-        console.debug({
-          width: this._elCanvas.width,
-          height: this._elCanvas.height
-        })
       }
 
+      // Re-render after ever second
       setTimeout(_autoSize, 1000);
     };
 
+    // Perform initial sizing calcuation
     _autoSize();
   }
 
