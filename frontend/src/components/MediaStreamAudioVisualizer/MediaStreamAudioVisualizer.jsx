@@ -76,6 +76,10 @@ class MediaStreamAudioVisualizer extends Component {
     this._isMounted = false;
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   /**
    * Dynamically resizes the underlying canvas view.
    */
