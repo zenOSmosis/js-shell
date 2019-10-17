@@ -53,9 +53,9 @@ class SocketPeerList extends Component {
             const browserOnOs = remotePeer.getBrowserOnOs();
             const systemInfo = remotePeer.getSystemInfo();
             const {
-              browser: { name: browserName, version: browserVersion },
-              engine: { name: engineName, version: engineVersion },
-              os: { name: osName, version: osVersion },
+              // browser: { name: browserName, version: browserVersion },
+              // engine: { name: engineName, version: engineVersion },
+              // os: { name: osName, version: osVersion },
               platform: { type: platformType }
             } = systemInfo;
 

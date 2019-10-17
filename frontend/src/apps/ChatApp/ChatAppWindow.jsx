@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Window from 'components/Desktop/Window';
 import Center from 'components/Center';
 import /* Chat, */ { SocketPeerList, StreamGrid } from 'components/Chat';
@@ -53,7 +53,7 @@ class ChatAppWindow extends Component {
     const {
       selectedPeer,
       isShowingMessages,
-      isShowingStreamGrid
+      // isShowingStreamGrid
     } = this.state;
 
     return (
