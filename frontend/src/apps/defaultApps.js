@@ -14,7 +14,7 @@ import './UserProfileApp';
 import './ChatApp';
 import './VoiceInputApp';
 import './ScreenRecorderApp';
-import './MediaPlayerApp';
+// import './MediaPlayerApp';
 import './SystemDetailApp';
 import './CalculatorApp';
 import './SourceCodeApp';

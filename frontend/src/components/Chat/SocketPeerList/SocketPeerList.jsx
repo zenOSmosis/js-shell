@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Row, { Column } from 'components/RowColumn';
 import NormalizedNickname from '../NormalizedNickname';
 import AvatarWithOnlineStatusIndicator from '../AvatarWithOnlineStatusIndicator';
-import { Tooltip } from 'antd';
+// import { Tooltip } from 'antd';
 import CallControls from '../CallControls';
 import SystemIcon from '../SystemIcon';
 import classNames from 'classnames';
@@ -104,7 +104,14 @@ class SocketPeerList extends Component {
                     </Column>
 
                     <Column className={styles['last-seen-wrapper']}>
-                      <div>[ last seen ]</div>
+                      <div>
+                        {
+                          isOnline ?
+                          <Fragment>Online</Fragment>
+                          :
+                          <Fragment>Offline</Fragment>
+                        }
+                      </div>
 
                       <div>
                         <SystemIcon platformType={platformType} />
