@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TransparentButton from 'components/TransparentButton';
-// import textEllipsis from 'utils/text/textEllipsis';
+// import textEllipsis from 'utils/string/textEllipsis';
 import styles from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
 import {
