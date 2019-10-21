@@ -187,9 +187,9 @@ class Window extends Component {
       // const { appRuntime, title: propsTitle } = this.props;
       // const title = (appRuntime ? appRuntime.getTitle() : propsTitle);
       // this.setTitle(title);
-      this.autosetTitle();
+      this._autosetTitle();
 
-      this.autosetPosition();
+      // this._autosetPosition();
       this._autosetInitialSize();
 
       // TODO: Fix implementation
@@ -214,7 +214,7 @@ class Window extends Component {
       return;
     }
 
-    this.autosetTitle();
+    this._autosetTitle();
   }
 
   async componentWillUnmount() {
@@ -227,15 +227,15 @@ class Window extends Component {
     }
   }
   
-  autosetPosition() {
-    /*
+  /*
+   * TODO: Re-implement
+  _autosetPosition() {
     const { appRuntime } = this.props;
     const initPos = (appRuntime ? appRuntime.getInitPosition() : { x: 0, y: 0 });
 
     this.moveTo(initPos.x, initPos.y);
-    */
-   console.warn('TODO: Reimplement autoset position w/ this._windowStack');
   }
+  */
 
   _autosetInitialSize() {
     const { initialWidth, initialHeight } = this.props;
@@ -256,7 +256,7 @@ class Window extends Component {
   /**
    * Automatically sets Window title based on configuration.
    */
-  autosetTitle() {
+  _autosetTitle() {
     const { title: existingTitle } = this.state;
     const { appRuntime, title: propsTitle } = this.props;
     
@@ -277,7 +277,7 @@ class Window extends Component {
    * @param {string} title 
    */
   setTitle(title) {
-    title = (title ? title.toString() : '');
+    title = (title ? title.toString() : DESKTOP_UNTITLED_WINDOW_DEFAULT_TITLE);
 
     // Ensure title is a different title
     const { title: existingTitle } = this.state;
@@ -343,7 +343,7 @@ class Window extends Component {
       // Allow updates to continue after focus
       setTimeout(() => {
         this._isSkippingUpdates = false;
-      }, 1);
+      }, 0);
     }
   }
 
