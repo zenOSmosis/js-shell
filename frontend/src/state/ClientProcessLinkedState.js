@@ -72,6 +72,21 @@ class ClientProcessLinkedState extends LinkedState {
   }
 
   /**
+   * @param {ClientProcess[]} processes
+   * @return {ClientGUIProcess[]} 
+   */
+  _getFilteredGUIProcesses(processes) {
+    const guiProcesses = [];
+    for (let i = 0; i < processes.length; i++) {
+      if (processes[i].getIsGUIProcess()) {
+        guiProcesses.push(processes[i]);
+      }
+    }
+
+    return guiProcesses;
+  }
+
+  /**
    * TODO: Document
    * 
    * @param {ClientProcess} process 
@@ -84,20 +99,15 @@ class ClientProcessLinkedState extends LinkedState {
     // console.debug('Removing process', process);
 
     let {
-      [STATE_PROCESSES]: processes,
-      [STATE_GUI_PROCESSES]: guiProcesses
+      [STATE_PROCESSES]: processes
     } = this.getState();
 
-    // Filter out the process
+    // Filter out the removed process
     processes = processes.filter(testProcess => {
       return !Object.is(process, testProcess);
     });
 
-    if (process.getIsGUIProcess()) {
-      guiProcesses = guiProcesses.filter(testProcess => {
-        return !Object.is(guiProcesses, testProcess);
-      });
-    }
+    const guiProcesses = this._getFilteredGUIProcesses(processes);
 
     this.setState({
       [STATE_PROCESSES]: processes,
