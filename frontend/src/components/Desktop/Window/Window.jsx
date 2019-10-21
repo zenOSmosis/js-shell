@@ -503,6 +503,10 @@ class Window extends Component {
   // TODO: Await for any effects to complete
   async restore() {
     try {
+      if (!this._isMinimized && !this._isMaximized) {
+        return;
+      }
+
       this.emit(EVT_BEFORE_RESTORE);
 
       if(this._isMinimized) {
