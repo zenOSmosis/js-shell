@@ -5,6 +5,25 @@ import hocConnect from 'state/hocConnect';
 import StackingContext from 'components/StackingContext';
 import equals from 'equals';
 
+class GUIProcessWrapper extends Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+  
+  render() {
+    const { proc } = this.props;
+    const GUIProcessView = proc.getReactComponent();
+
+    if (!GUIProcessView) {
+      return false;
+    }
+
+    return (
+      <GUIProcessView />
+    );
+  }
+}
+
 /**
  * Render area for all desktop windows.
  * 
@@ -19,17 +38,9 @@ class GUIProcessRenderer extends Component {
         <StackingContext>
           {
             childGUIProcesses.map((proc, idx) => {
-              const GUIProcessView = proc.getReactComponent();
-              if (!GUIProcessView) {
-                console.warn('No GUIProcessView on:', proc);
-                return false;
-              }
-
               return (
-                <GUIProcessView
-                  key={childGUIProcessPids[idx]}
-                />
-              )
+                <GUIProcessWrapper key={childGUIProcessPids[idx]} proc={proc} />
+              );
             })
           }
         </StackingContext>
