@@ -24,7 +24,7 @@ class AppRegistryLinkedState extends PersistentStorageLinkedState {
       // All registered AppRegistration instances
       [STATE_APP_REGISTRATIONS]: [],
 
-      // 
+      // TODO: Document
       [STATE_IDX_TICK]: _idxTick
     });
   }
