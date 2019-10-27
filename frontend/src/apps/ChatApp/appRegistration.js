@@ -23,6 +23,5 @@ export default registerApp({
       p2pLinkedState
     });
   },
-  allowMultipleWindows: true,
   iconView: () => <ChatIcon />
 });

@@ -106,13 +106,15 @@ class AppRegistration extends EventEmitter {
   }
 
   /**
+   * TODO: Rename to launch()
+   * 
    * Launches an AppRuntime based on this registration.
    * 
-   * @param {any[]} cmdArguments? cmd data to be sent to the
+   * @param {Object} cmdArguments? cmd data to be sent to the
    * AppRuntime instance.
    * @return {Promise<AppRuntime> | boolean}
    */
-  async launchApp(cmdArguments = []) {
+  async launchApp(cmdArguments = {}) {
     try {
       const appControlCentral = getAppControlCentral();
 

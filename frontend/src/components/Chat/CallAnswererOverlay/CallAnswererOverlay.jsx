@@ -4,6 +4,7 @@ import captureUserMediaStream from 'utils/mediaStream/captureUserMediaStream';
 import {
   ACTION_RESPOND_TO_INCOMING_CALL_REQUEST
 } from 'state/P2PLinkedState';
+import ChatApp from 'apps/ChatApp';
 
 class CallAnswererOverlay extends Component {
   async answer(incomingCallRequest, mediaConstraints) {
@@ -13,6 +14,9 @@ class CallAnswererOverlay extends Component {
       const mediaStream = await captureUserMediaStream(mediaConstraints);
 
       p2pLinkedState.dispatchAction(ACTION_RESPOND_TO_INCOMING_CALL_REQUEST, incomingCallRequest, true, mediaStream);
+
+      // Automatically launch the chat app when answering a call
+      ChatApp.launchApp();
 
       onResponse();
     } catch (exc) {

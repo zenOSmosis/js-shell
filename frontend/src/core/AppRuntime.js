@@ -22,9 +22,9 @@ export {
 class AppRuntime extends ClientGUIProcess {
   /**
    * @param {AppRegistration} appRegistration
-   * @param {any[]} cmdArguments?
+   * @param {Object} cmdArguments?
    */
-  constructor(appRegistration, cmdArguments = [], forcedParentProcess = null) {
+  constructor(appRegistration, cmdArguments = {}, forcedParentProcess = null) {
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration is not of AppRegistration type');
     }
@@ -37,7 +37,7 @@ class AppRuntime extends ClientGUIProcess {
     this._appRegistration = appRegistration;
 
     /**
-     * @type {Window | null} Shell Desktop Window.
+     * @type {Window | null} Shell Desktop Window, if available.
      */
     this._window = null;
 
@@ -141,7 +141,7 @@ class AppRuntime extends ClientGUIProcess {
   }
 
   /**
-   * @return {any[]}
+   * @return {Object}
    */
   getCmdArguments() {
     return this._cmdArguments;
@@ -176,6 +176,9 @@ class AppRuntime extends ClientGUIProcess {
     return this._menubar.getAuxMenusData();
   }
 
+  /**
+   * @param {Window} desktopWindow 
+   */
   setWindow(desktopWindow) {
     if (this._window) {
       console.warn('A window is already associated with this runtime');

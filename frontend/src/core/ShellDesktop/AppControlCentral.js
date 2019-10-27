@@ -1,6 +1,7 @@
 import ClientProcess, { EVT_EXIT } from 'process/ClientProcess';
 import AppRegistration from '../AppRegistration';
 import AppRuntime from '../AppRuntime';
+import { getWindowStackCentral } from './WindowStackCentral';
 
 let _appControlCentral = null;
 let _appControlCentralHasExited = false;
@@ -48,26 +49,34 @@ class AppControlCentral extends ClientProcess {
 
   /**
    * @param {AppRegistration} appRegistration
-   * @return {Promise<AppRuntime>}
+   * @param {Object} cmdArguments? TODO: Document
+   * @return {Promise<AppRuntime || void>}
    */
-  async launchAppRegistration(appRegistration, cmdArguments = []) {
+  async launchAppRegistration(appRegistration, cmdArguments = {}) {
     try {
       if (!(appRegistration instanceof AppRegistration)) {
         throw new Error('appRegistration is not an AppRegistration instance');
       }
 
       const appRuntimes = this.getJoinedAppRuntimesByRegistration(appRegistration);
+      const lenAppRuntimes = appRuntimes.length;
       const allowMultipleWindows = appRegistration.getAllowMultipleWindows();
 
-      if (appRuntimes.length && !allowMultipleWindows) {
-        // Gracefully fail
-        console.warn('App is already launched, or is launching');
-        return false;
+      if (lenAppRuntimes && !allowMultipleWindows) {
+        const windowStackCentral = getWindowStackCentral();
+
+        const mostRecentAppRuntime = appRuntimes[lenAppRuntimes - 1];
+        
+        // Bring most recent AppRuntime instance to the front
+        windowStackCentral.bringAppRuntimeWindowsToFront(mostRecentAppRuntime);
+
+        return mostRecentAppRuntime;
       }
 
       // Create the app process
       const appRuntime = new AppRuntime(appRegistration, cmdArguments);
 
+      // Handle exit cleanup
       appRuntime.once(EVT_EXIT, () => {
         this._removeConnectedAppRuntime(appRuntime);
       });

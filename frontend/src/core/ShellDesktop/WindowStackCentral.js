@@ -136,6 +136,9 @@ class WindowStackCentral extends ClientProcess {
     this.renderStack();
   }
 
+  /**
+   * @param {AppRegistration} appRegistration 
+   */
   bringAppRegistrationWindowsToFront(appRegistration) {
     if (!(appRegistration instanceof AppRegistration)) {
       throw new Error('appRegistration is not an AppRegistration instance');
