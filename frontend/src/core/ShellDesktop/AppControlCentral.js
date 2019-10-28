@@ -96,6 +96,9 @@ class AppControlCentral extends ClientProcess {
   }
 
   /**
+   * Closes all AppRuntime instances created from the given AppRegistration
+   * instance.
+   * 
    * @param {AppRegistration} appRegistration
    * @return {Promise<void>} 
    */
@@ -117,6 +120,9 @@ class AppControlCentral extends ClientProcess {
   }
 
   /**
+   * Retrieves relevant AppRuntime instances created from the given
+   * AppRegistration instance.
+   * 
    * @param {AppRegistration} appRegistration 
    * @return {AppRuntime[]}
    */
@@ -157,8 +163,8 @@ class AppControlCentral extends ClientProcess {
 //
 
 /**
- * @return {AppLaunchController} A constructed instance of the
- * AppLaunchController
+ * @return {AppLaunchController | void} A constructed instance of the
+ * AppLaunchController, or void if it has not currently launched.
  */
 const getAppControlCentral = () => {
   if (_appControlCentralHasExited) {
