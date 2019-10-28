@@ -87,7 +87,7 @@ class AppRegistration extends EventEmitter {
       let appRuntime;
 
       if (!this.getIsLaunched()) {
-        appRuntime = await this.launchApp();
+        appRuntime = await this.launch();
       } else {
         const joinedAppRuntimes = this.getJoinedAppRuntimes();
 
@@ -114,7 +114,7 @@ class AppRegistration extends EventEmitter {
    * AppRuntime instance.
    * @return {Promise<AppRuntime> | boolean}
    */
-  async launchApp(cmdArguments = {}) {
+  async launch(cmdArguments = {}) {
     try {
       const appControlCentral = getAppControlCentral();
 

@@ -16,7 +16,7 @@ class CallAnswererOverlay extends Component {
       p2pLinkedState.dispatchAction(ACTION_RESPOND_TO_INCOMING_CALL_REQUEST, incomingCallRequest, true, mediaStream);
 
       // Automatically launch the chat app when answering a call
-      ChatApp.launchApp();
+      ChatApp.launch();
 
       onResponse();
     } catch (exc) {

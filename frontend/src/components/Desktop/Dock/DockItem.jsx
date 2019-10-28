@@ -64,7 +64,7 @@ export default class DockItem extends Component {
     const isLaunched = appRegistration.getIsLaunched();
 
     if (!isLaunched) {
-      appRegistration.launchApp();
+      appRegistration.launch();
     } else {
       this._showAllAppRegistrationWindows(appRegistration);
     }
@@ -156,7 +156,7 @@ export default class DockItem extends Component {
                   allowLaunch &&
                   <MenuItem
                     key={`launch`}
-                    onClick={evt => { appRegistration.launchApp() }}
+                    onClick={evt => { appRegistration.launch() }}
                   >
                     {appRuntimes.length ? 'Open new window' : 'Open'}
                   </MenuItem>
