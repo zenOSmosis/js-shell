@@ -79,10 +79,10 @@ const ConnectedGUIProcessRenderer = (() => {
         if (_pid !== _shellDesktopPid) {
           childGUIProcessPids.push(_pid);
 
+          // Add this process to the list of GUI processes
           return true;
         } else {
           // This guiProcess is the Shell Desktop; filter it from the list
-
           return false;
         }
       });
