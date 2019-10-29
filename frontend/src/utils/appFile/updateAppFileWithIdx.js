@@ -10,7 +10,10 @@ const updateAppFileWithIdx = (uniqueMultiAppFileLinkedState, openedFileIdx, upda
     throw new Error('updatedProperties must be an object');
   }
 
-  let { [OPENED_APP_FILES]: openedAppFiles, [ACTIVE_APP_FILE]: activeAppFile } = uniqueMultiAppFileLinkedState.getState();
+  let {
+    [OPENED_APP_FILES]: openedAppFiles,
+    [ACTIVE_APP_FILE]: activeAppFile
+  } = uniqueMultiAppFileLinkedState.getState();
 
   if (!openedAppFiles[openedFileIdx]) {
     throw new Error(`openedAppFiles is missing index: ${openedFileIdx}`);
@@ -31,11 +34,18 @@ const updateAppFileWithIdx = (uniqueMultiAppFileLinkedState, openedFileIdx, upda
   updatedProperties.meta = meta;
   
   // Merge in merged updatedProperties w/ existing meta into current openedAppFile
-  openedAppFiles[openedFileIdx] = {...modAppFile, ...updatedProperties};
+  const wb = {...modAppFile, ...updatedProperties};
 
+  const { fileContent, nonModifiedFileContent } = wb;
+  const isModified = (fileContent !== nonModifiedFileContent);
+  wb['isModified'] = isModified;
+
+  openedAppFiles[openedFileIdx] = wb;
+  
   const filteredUpdatedState = {
     [OPENED_APP_FILES]: openedAppFiles
   };
+
   if (isActiveAppFile) {
     activeAppFile = openedAppFiles[openedFileIdx];
     filteredUpdatedState[ACTIVE_APP_FILE] = activeAppFile;

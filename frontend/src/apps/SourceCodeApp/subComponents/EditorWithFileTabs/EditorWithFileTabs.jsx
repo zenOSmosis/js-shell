@@ -107,8 +107,6 @@ class EditorWithFileTabs extends Component {
                             });
                           }}
                           onDidChangeContent={evt => {
-                            // TODO: Use this to trigger dirty / clean state w/ files
-                            // updateAppFileWithIdx()
                             const fileContent = this._editorRefs[idx].getValue();
 
                             updateAppFileWithIdx(editorLinkedState, idx, {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TransparentButton from 'components/TransparentButton';
-// import textEllipsis from 'utils/string/textEllipsis';
 import styles from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
 import {
@@ -15,7 +14,7 @@ class FileTab extends Component {
 
     // TODO: Validate instanceOf
     editorLinkedState: PropTypes.object.isRequired
-  };
+  }
 
   constructor(...args) {
     super(...args);
@@ -31,7 +30,7 @@ class FileTab extends Component {
       const { appFile } = this.props;
 
       const { fileDetail } = appFile;
-     
+
       if (fileDetail) {
         const { base } = fileDetail;
 
@@ -39,12 +38,17 @@ class FileTab extends Component {
           base
         });
       }
-      
+
     } catch (exc) {
       throw exc;
     }
   }
 
+  /**
+   * Internally called when the file tab is clicked on.
+   * 
+   * @return {Promise<void>}
+   */
   async _handleActivate() {
     try {
       const { editorLinkedState, appFile } = this.props;
@@ -55,11 +59,12 @@ class FileTab extends Component {
     }
   }
 
+  // TODO: Prompt to save first, if file is modifed
   async _handleClose() {
     try {
       const { editorLinkedState, appFile } = this.props;
 
-      await closeAppFile(editorLinkedState, appFile);  
+      await closeAppFile(editorLinkedState, appFile);
     } catch (exc) {
       throw exc;
     }
@@ -67,6 +72,8 @@ class FileTab extends Component {
 
   render() {
     const { base } = this.state;
+
+    const { appFile: { isModified } } = this.props;
 
     return (
       <div
@@ -88,7 +95,7 @@ class FileTab extends Component {
                 }
                 {
                   !base &&
-                  <span style={{fontStyle: 'italic'}}>Untitled</span>
+                  <span style={{ fontStyle: 'italic' }}>Untitled</span>
                 }
               </div>
             </TransparentButton>
@@ -96,14 +103,16 @@ class FileTab extends Component {
 
           <Column>
             <TransparentButton
+              // TODO: Close only if not modifed, else prompt to save first
               onClick={evt => this._handleClose()}
             >
-              x
+              {
+                // TODO: Import proper visual symobls
+                isModified ? 'o' : 'x'
+              }
             </TransparentButton>
           </Column>
         </Row>
-
-        { /* textEllipsis(filePath, 20) */}
       </div>
     );
   }

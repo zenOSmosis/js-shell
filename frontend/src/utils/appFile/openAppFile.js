@@ -13,7 +13,7 @@ import './AppFile.typedef';
  * 
  * @param {UniqueMultiAppFileLinkedState} uniqueMultiAppFileLinkedState 
  * @param {string} filePath 
- * @param {Object} readFileOptions
+ * @param {Object} readFileOptions? TODO: Document accordingly
  * @return {Promise<void>}
  */
 const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOptions = { encoding: 'utf-8' }) => {
@@ -71,7 +71,8 @@ const openAppFile = async (uniqueMultiAppFileLinkedState, filePath, readFileOpti
     appFile = {...appFile, ...{
       fileDetail, // via pathDetail socketFS API call
       filePath, // Absolute filesystem path
-      fileContent // Source code
+      fileContent, // Source code
+      nonModifiedFileContent: fileContent
     }};
 
     openedAppFiles.push(appFile);
