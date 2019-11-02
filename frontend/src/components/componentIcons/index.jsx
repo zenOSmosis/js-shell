@@ -3,6 +3,7 @@ import BlueprintIcon from './BlueprintIcon';
 import CalculatorIcon from './CalculatorIcon';
 import ChatIcon from './ChatIcon';
 import CubeIcon from './CubeIcon';
+import CircleIcon from './CircleIcon';
 import DeploymentUnitIcon from './DeploymentUnitIcon';
 import DocumentationIcon from './DocumentationIcon';
 import FolderIcon from './FolderIcon';
@@ -28,12 +29,14 @@ import TextIcon from './TextIcon';
 import VaultIcon from './VaultIcon';
 import WebcamIcon from './WebcamIcon';
 import WifiIcon from './WifiIcon';
+import XIcon from './XIcon';
 
 export {
   AvatarIcon,
   BlueprintIcon,
   CalculatorIcon,
   ChatIcon,
+  CircleIcon,
   CubeIcon,
   DeploymentUnitIcon,
   DocumentationIcon,
@@ -59,5 +62,6 @@ export {
   TextIcon,
   VaultIcon,
   WebcamIcon,
-  WifiIcon
+  WifiIcon,
+  XIcon
 };

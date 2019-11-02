@@ -6,6 +6,7 @@ import {
   activateAppFile,
   closeAppFile
 } from 'utils/appFile';
+import { CircleIcon, XIcon } from 'components/componentIcons';
 import PropTypes from 'prop-types';
 
 class FileTab extends Component {
@@ -108,7 +109,7 @@ class FileTab extends Component {
             >
               {
                 // TODO: Import proper visual symobls
-                isModified ? 'o' : 'x'
+                isModified ? <CircleIcon /> : <XIcon />
               }
             </TransparentButton>
           </Column>
