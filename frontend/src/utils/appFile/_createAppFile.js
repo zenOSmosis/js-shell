@@ -4,12 +4,12 @@ import uuidv4 from 'uuidv4';
 /**
  * Important! This does not register this AppFile.
  * 
- * Utilize openAppFile if looking to read from the filesystem.
+ * Note: Utilize openAppFile if looking to read from the filesystem.
  * 
  * @return {AppFile}
  */
 const _createAppFile = () => {
-  return {
+  return Object.seal({
     uuid: uuidv4(),
     isModified: false, // Not modified since opening, as it's just been opened
     fileDetail: null,
@@ -17,7 +17,7 @@ const _createAppFile = () => {
     fileContent: '',
     nonModifiedFileContent: '',
     meta: {}
-  }
+  });
 };
 
 export default _createAppFile;
