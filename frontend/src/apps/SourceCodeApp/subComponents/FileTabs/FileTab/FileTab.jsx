@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import TransparentButton from 'components/TransparentButton';
-import styles from './FileTab.module.css';
 import { Row, Column } from 'components/Layout';
 import {
   activateAppFile,
   closeAppFile
 } from 'utils/appFile';
 import { CircleIcon, XIcon } from 'components/componentIcons';
-import PropTypes from 'prop-types';
+import styles from './FileTab.module.scss';
+
+const UNTITLED_TAB_NAME = 'Untitled';
 
 class FileTab extends Component {
   static propTypes = {
@@ -83,6 +85,11 @@ class FileTab extends Component {
         <Row>
           <Column>
             <TransparentButton onClick={evt => this._handleActivate()}>
+              {
+                // TODO: When clicking here, activate tooltip showing file info
+
+                // TODO: Show file icon here
+              }
               i
             </TransparentButton>
           </Column>
@@ -90,25 +97,20 @@ class FileTab extends Component {
           <Column>
             <TransparentButton onClick={evt => this._handleActivate()}>
               <div className={styles['file-name']}>
-                {
-                  base &&
-                  <span>{base}</span>
-                }
-                {
-                  !base &&
-                  <span style={{ fontStyle: 'italic' }}>Untitled</span>
-                }
+                <span
+                  className={!base ? styles['untitled'] : null}
+                >
+                  {base ? base : UNTITLED_TAB_NAME}
+                </span>
               </div>
             </TransparentButton>
           </Column>
 
           <Column>
             <TransparentButton
-              // TODO: Close only if not modifed, else prompt to save first
               onClick={evt => this._handleClose()}
             >
               {
-                // TODO: Import proper visual symobls
                 isModified ? <CircleIcon /> : <XIcon />
               }
             </TransparentButton>
