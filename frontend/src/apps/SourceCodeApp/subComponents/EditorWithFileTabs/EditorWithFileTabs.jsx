@@ -7,8 +7,7 @@ import FileTabs from '../FileTabs';
 import styles from './EditorWithFileTabs.module.css';
 import {
   ACTIVE_APP_FILE,
-  OPENED_APP_FILES,
-  CURSOR_POSITION
+  OPENED_APP_FILES
 } from '../../state/UniqueSourceCodeAppLinkedState';
 import classNames from 'classnames';
 import {
@@ -102,7 +101,7 @@ class EditorWithFileTabs extends Component {
 
                             updateAppFileWithIdx(editorLinkedState, idx, {
                               meta: {
-                                [CURSOR_POSITION]: selection
+                                cursorPosition: selection
                               }
                             });
                           }}

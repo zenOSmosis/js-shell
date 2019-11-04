@@ -4,7 +4,6 @@ import UniqueMultiAppFileLinkedState, {
 } from 'state/UniqueMultiAppFileLinkedState';
 
 export const LANGUAGES = 'languages';
-export const CURSOR_POSITION = 'cursorPosition';
 
 /**
  * @extends UniqueLinkedState
@@ -12,18 +11,7 @@ export const CURSOR_POSITION = 'cursorPosition';
 class UniqueSourceCodeAppLinkedState extends UniqueMultiAppFileLinkedState {
   constructor() {
     super('source-code-app', {
-      [LANGUAGES]: [],
-
-      [CURSOR_POSITION]: {
-        endColumn: 0,
-        endLineNumber: 0,
-        positionColumn: 0,
-        positionLineNumber: 0,
-        selectionStartColumn: 0,
-        selectionStartLineNumber: 0,
-        startColumn: 0,
-        startLineNumber: 0
-      }
+      [LANGUAGES]: []
     });
   }
 }

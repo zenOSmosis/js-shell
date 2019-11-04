@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LinkedStateRenderer from 'components/LinkedStateRenderer';
-import { ACTIVE_APP_FILE, CURSOR_POSITION, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
+import { ACTIVE_APP_FILE, LANGUAGES } from '../../state/UniqueSourceCodeAppLinkedState';
 import { Row, Column } from 'components/Layout';
 import styles from './AppFooter.module.css';
 
@@ -29,35 +29,26 @@ class AppFooter extends Component {
             filteredState.languages = updatedState[LANGUAGES];
           }
 
-          let cursorPosition = null;
-
           if (updatedState[ACTIVE_APP_FILE]) {
-            const { language, meta: activeAppFileMeta } = updatedState[ACTIVE_APP_FILE];
+            const {
+              language,
+              meta: activeAppFileMeta
+            } = updatedState[ACTIVE_APP_FILE];
 
             filteredState.language = language;
 
             // Obtain cursor position from activeAppFile meta property
-            const { [CURSOR_POSITION]: metaCursorPosition } = activeAppFileMeta;
-            if (metaCursorPosition) {
-              cursorPosition = metaCursorPosition;
-            }
-          } else if (updatedState[CURSOR_POSITION]) {
-            // Obtain cursor position from updated editorLinkedState
-            cursorPosition = updatedState[CURSOR_POSITION];
-          }
+            const { cursorPosition } = activeAppFileMeta;
+            
+            if (cursorPosition) {
+              const { positionColumn, positionLineNumber } = cursorPosition;
 
-          if (cursorPosition) {
-            const { positionColumn, positionLineNumber } = cursorPosition;
-
-            if (positionColumn !== undefined &&
-              positionLineNumber !== undefined) {
-              filteredState = {
-                ...filteredState, ...{
-                  positionColumn,
-                  positionLineNumber
-                }
-              };
+              filteredState.positionColumn = positionColumn;
+              filteredState.positionLineNumber = positionLineNumber;
             }
+          } else {
+            filteredState.positionColumn = null;
+            filteredState.positionLineNumber = null;
           }
 
           return filteredState;
