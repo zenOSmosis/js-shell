@@ -4,6 +4,11 @@ import fetchPathSeparator from './fetchPathSeparator';
 import readdir from './readdir';
 import mime from 'mime-types';
 
+const KIND_FILE = 'File';
+const KIND_DIR = 'Directory';
+const KIND_UNKNOWN = '?';
+
+// TODO: Document output
 const pathDetail = async (path) => {
   try {
     const pathSeparator = await fetchPathSeparator();
@@ -19,6 +24,7 @@ const pathDetail = async (path) => {
     path = path.replace(new RegExp(pathSeparator + pathSeparator), pathSeparator);
 
     const stats = await stat(path);
+
     /**
     * @type {PathParse}
     */
@@ -38,14 +44,14 @@ const pathDetail = async (path) => {
     }
 
     // A user-friendly, string representation of the path type
-    let kind = (isFile ? 'File' : isDir ? 'Directory' : '?');
+    let kind = (isFile ? KIND_FILE : isDir ? KIND_DIR : KIND_UNKNOWN);
 
     let children = [];
     if (isDir) {
       children = await readdir(path);
     }
 
-    // Unix only
+    // Unix[-like] only
     const isHidden = parsedPath.base.startsWith('.');
     const parent = parsedPath.dir !== path ? parsedPath.dir : null;
 
