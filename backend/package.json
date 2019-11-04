@@ -18,7 +18,7 @@
     "farmhash": "^3.0.0",
     "fs-readdir-recursive": "^1.1.0",
     "http-proxy": "^1.17.0",
-    "mime-types": "^2.1.24",
+    "mime": "^2.4.4",
     "module-alias": "^2.2.1",
     "mongodb": "^3.3.2",
     "node-pty": "^0.8.1",

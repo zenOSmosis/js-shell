@@ -2,7 +2,7 @@ import pathLib from 'path';
 import stat from './stat';
 import fetchPathSeparator from './fetchPathSeparator';
 import readdir from './readdir';
-import mime from 'mime-types';
+import mime from 'mime';
 
 const KIND_FILE = 'File';
 const KIND_DIR = 'Directory';
@@ -55,7 +55,7 @@ const pathDetail = async (path) => {
     const isHidden = parsedPath.base.startsWith('.');
     const parent = parsedPath.dir !== path ? parsedPath.dir : null;
 
-    const mimeType = mime.lookup(path);
+    const mimeType = mime.getType(path);
 
     return {
       children,
