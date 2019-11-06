@@ -5,14 +5,17 @@ import { Row, Column } from 'components/Layout';
 import styles from './AppFooter.module.css';
 
 class AppFooter extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   _handleEditorLanguageChange(language) {
+    const { editorLinkedState } = this.props;
+
+    const activeAppFile = editorLinkedState.getState(ACTIVE_APP_FILE);
+
+    // TODO: Set activeAppFile meta.language to this value
+
     // TODO: Implement
     console.debug({
-      _handleEditorLanguageChange: language
+      _handleEditorLanguageChange: language,
+      activeAppFile
     });
   }
 
@@ -87,6 +90,8 @@ class AppFooter extends Component {
               <Column>
                 {language}
                 <select
+                  // TODO: Default to activeAppFile.meta.language
+
                   // TODO: Handle editor language selection
                   onChange={evt => this._handleEditorLanguageChange(evt.target.value)}
                 >

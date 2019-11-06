@@ -25,6 +25,7 @@ class EditorWithFileTabs extends Component {
       const editorlanguages = monacoEditorComponent.getLanguages();
 
       languages = editorlanguages.map(language => {
+        // TODO: Document
         return language.aliases[0];
       });
 
@@ -79,7 +80,7 @@ class EditorWithFileTabs extends Component {
                       // Is set to true if the file is not the active file
                       const isHidden = !Object.is(activeAppFile, appFile);
 
-                      const { language, fileContent } = appFile;
+                      const { fileContent } = appFile;
 
                       const { uuid: appFileUuid } = appFile;
 
@@ -92,20 +93,16 @@ class EditorWithFileTabs extends Component {
 
                           key={appFileUuid}
                           editorDidMount={(editor, monaco, monacoEditorComponent) => this._handleEditorMount(editor, monaco, monacoEditorComponent)}
-                          language={language}
+                          // language={language}
                           initialValue={fileContent}
                           onDidChangeCursorSelection={selection => {
-                            editorLinkedState.setState({
-                              [CURSOR_POSITION]: selection
-                            });
-
                             updateAppFileWithIdx(editorLinkedState, idx, {
                               meta: {
                                 cursorPosition: selection
                               }
                             });
                           }}
-                          onDidChangeContent={evt => {
+                          onDidChangeContent={(evt) => {
                             const fileContent = this._editorRefs[idx].getValue();
 
                             updateAppFileWithIdx(editorLinkedState, idx, {
