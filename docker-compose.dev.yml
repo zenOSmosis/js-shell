@@ -15,6 +15,7 @@ services:
   # Enables proxying to host machine w/o depending on host network binding
   # (network_mode: host), which are not available using custom networks
   dockerhost:
+    # TODO: Fork this to https://github.com/zenOSmosis
     image: qoomon/docker-host
     cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
     restart: on-failure
