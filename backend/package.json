@@ -17,7 +17,7 @@
     "express-session": "^1.16.1",
     "farmhash": "^3.0.0",
     "fs-readdir-recursive": "^1.1.0",
-    "http-proxy": "^1.17.0",
+    "http-proxy": "^1.18.1",
     "mime-types": "^2.1.24",
     "module-alias": "^2.2.1",
     "mongodb": "^3.3.2",
