@@ -10,7 +10,7 @@
   "author": "zenOSmosis (https://zenosmosis.com)",
   "license": "GPL-3.0",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "connect-mongo": "^3.0.0",
     "esm": "^3.2.25",
     "express": "^4.16.4",
